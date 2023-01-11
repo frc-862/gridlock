@@ -1,0 +1,19 @@
+name: Gradle Build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    - name: Init JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Set Executable flag
+      run: chmod +x ./gradlew
+    - name: Run Gradle build
+      run: ./gradlew build
+      env:
+        USERNAME: ${{ github.actor }}
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
