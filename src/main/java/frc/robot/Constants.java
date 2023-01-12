@@ -88,4 +88,8 @@ public final class Constants {
 
         }
     }
+
+    public static final class RobotMap {
+        public static final int PIGEON_ID = 0;
+    }
 }

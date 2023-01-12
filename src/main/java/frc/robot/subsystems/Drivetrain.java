@@ -20,9 +20,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.logging.DataLogger;
-import frc.thunder.swervelib.Mk3SwerveModuleHelper;
+import frc.thunder.swervelib.Mk4SwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
 
 public class Drivetrain extends SubsystemBase {
@@ -43,7 +44,7 @@ public class Drivetrain extends SubsystemBase {
                     -DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
     // Creating new pigeon2 gyro
-    private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(1, "Canivore");
+    private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.PIGEON_ID);
 
     // Creating new pose, odometry, and cahssis speeds
     private Pose2d pose = new Pose2d();
@@ -75,44 +76,44 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putData("Field", field2d);
 
         // Making front left module
-        frontLeftModule = Mk3SwerveModuleHelper.createNeo(
+        frontLeftModule = Mk4SwerveModuleHelper.createNeo(
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(0, 0),
-                Mk3SwerveModuleHelper.GearRatio.FAST,
+                Mk4SwerveModuleHelper.GearRatio.L2,
                 DrivetrainConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
                 DrivetrainConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
                 DrivetrainConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
                 DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
 
         // Making front right module
-        frontRightModule = Mk3SwerveModuleHelper.createNeo(
+        frontRightModule = Mk4SwerveModuleHelper.createNeo(
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(2, 0),
-                Mk3SwerveModuleHelper.GearRatio.FAST,
+                Mk4SwerveModuleHelper.GearRatio.L2,
                 DrivetrainConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
                 DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
                 DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
                 DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET);
 
         // Making backleft module
-        backLeftModule = Mk3SwerveModuleHelper.createNeo(
+        backLeftModule = Mk4SwerveModuleHelper.createNeo(
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(4, 0),
-                Mk3SwerveModuleHelper.GearRatio.FAST,
+                Mk4SwerveModuleHelper.GearRatio.L2,
                 DrivetrainConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
                 DrivetrainConstants.BACK_LEFT_MODULE_STEER_MOTOR,
                 DrivetrainConstants.BACK_LEFT_MODULE_STEER_ENCODER,
                 DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET);
 
         // Making back right module
-        backRightModule = Mk3SwerveModuleHelper.createNeo(
+        backRightModule = Mk4SwerveModuleHelper.createNeo(
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(6, 0),
-                Mk3SwerveModuleHelper.GearRatio.FAST,
+                Mk4SwerveModuleHelper.GearRatio.L2,
                 DrivetrainConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
                 DrivetrainConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
                 DrivetrainConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
