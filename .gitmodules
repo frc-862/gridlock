@@ -1,0 +1,3 @@
+[submodule "src/main/java/frc/thunder"]
+	path = src/main/java/frc/thunder
+	url = ../thunder
