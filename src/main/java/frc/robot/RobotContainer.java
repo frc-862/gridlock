@@ -12,54 +12,54 @@ import frc.thunder.LightningContainer;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer extends LightningContainer{
+public class RobotContainer extends LightningContainer {
 
   @Override
   protected void configureButtonBindings() {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   protected void configureSystemTests() {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   protected void configureDefaultCommands() {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   protected void releaseDefaultCommands() {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   protected void initializeDashboardCommands() {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   protected void configureAutonomousCommands() {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   protected void configureFaultCodes() {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   protected void configureFaultMonitors() {
     // TODO Auto-generated method stub
-    
+
   }
 
 }
