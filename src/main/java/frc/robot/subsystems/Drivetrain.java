@@ -107,8 +107,8 @@ public class Drivetrain extends SubsystemBase {
 
         // Making backleft module
         backLeftModule = Mk4SwerveModuleHelper.createNeo(
-                tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4)
-                        .withPosition(4, 0),
+                tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(
+                        4, 0),
                 swerveConfiguration, Mk4SwerveModuleHelper.GearRatio.L2,
                 DrivetrainConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
                 DrivetrainConstants.BACK_LEFT_MODULE_STEER_MOTOR,

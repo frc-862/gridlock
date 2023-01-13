@@ -45,9 +45,9 @@ public final class Constants {
                         DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
         // Module configuration constants
-        public static final double DRIVE_CURRENT_LIMIT = 0d;
-        public static final double STEER_CURRENT_LIMIT = 0d;
-        public static final double NOMINAL_VOLTAGE = 0d;
+        public static final double DRIVE_CURRENT_LIMIT = 40d;
+        public static final double STEER_CURRENT_LIMIT = 30d;
+        public static final double NOMINAL_VOLTAGE = 12d;
 
 
         // TODO add all the submodule IDs
