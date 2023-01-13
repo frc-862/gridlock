@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
@@ -50,7 +51,7 @@ public class Drivetrain extends SubsystemBase {
     private Pose2d pose = new Pose2d();
     private SwerveModulePosition[] modulePositions = { new SwerveModulePosition(), new SwerveModulePosition(),
             new SwerveModulePosition(), new SwerveModulePosition() };
-    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
+    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getHeading(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our feed forward
@@ -130,6 +131,13 @@ public class Drivetrain extends SubsystemBase {
         // Start logging data
         initLogging();
 
+        /*
+        //display gravity vector for PID tuning - leave commented out until tuning neccessary
+        tab.addDouble("gravityX", () -> getGravityVector()[0]);
+        tab.addDouble("gravityY", () -> getGravityVector()[1]);
+        tab.addDouble("gravityZ", () -> getGravityVector()[2]);
+        */
+
         CommandScheduler.getInstance().registerSubsystem(this);
 
     }
@@ -194,7 +202,7 @@ public class Drivetrain extends SubsystemBase {
      * Updates odometry using the current yaw and module states.
      */
     public void updateOdomtery() {
-        pose = odometry.update(getYaw2d(), modulePositions);
+        pose = odometry.update(getHeading(), modulePositions);
     }
 
     public void updateModulePositions() {
@@ -217,7 +225,7 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br steer angle", () -> Math.toDegrees(backRightModule.getSteerAngle()));
         DataLogger.addDataElement("br drive velocity", () -> backRightModule.getDriveVelocity());
 
-        DataLogger.addDataElement("Heading", () -> getYaw2d().getDegrees());
+        DataLogger.addDataElement("Heading", () -> getHeading().getDegrees());
 
         DataLogger.addDataElement("poseX", () -> getPose().getX());
         DataLogger.addDataElement("poseY", () -> getPose().getY());
@@ -244,7 +252,7 @@ public class Drivetrain extends SubsystemBase {
         pigeon.setYaw(initalRotation.getDegrees());
         pose = new Pose2d(initalPosition.getTranslation(), initalRotation);
         odometry = new SwerveDriveOdometry(kinematics,
-                getYaw2d(), modulePositions, pose);
+                getHeading(), modulePositions, pose);
 
     }
 
@@ -262,12 +270,43 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Gets the current pose of the robot.
+     * Gets the current heading of the robot.
      * 
-     * @return the current pose of the robot in meters
+     * @return the current heading of the robot in meters
      */
-    public Rotation2d getYaw2d() {
+    public Rotation2d getHeading() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
+    }
+
+    /**
+     * Gets the current pitch of the robot.
+     * 
+     * @return the current pitch of the robot in meters
+     */
+    public Rotation2d getPitch() {
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getPitch() - 90, 0, 360));
+    }
+
+    /**
+     * Gets the current roll of the robot.
+     * 
+     * @return the current roll of the robot in meters
+     */
+    public Rotation2d getRoll() {
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getRoll() - 90, 0, 360));
+    }
+
+    /**
+     * Gets the current heading of the robot.
+     * 
+     * @return the gravity vector as a double array (x, y, z)
+     */
+    public double[] getGravityVector() {
+        var vector = new double[3];
+        if(pigeon.getGravityVector(vector) == ErrorCode.OK)
+            return vector;
+        else 
+            return new double[-1];
     }
 
     /**
@@ -322,7 +361,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(getYaw2d(), modulePositions, pose);
+        odometry.resetPosition(getHeading(), modulePositions, pose);
     }
 
     /**

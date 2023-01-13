@@ -44,7 +44,7 @@ public class SwerveDrive extends CommandBase {
                         drivetrain.percentOutputToMetersPerSecond(m_translationXSupplier.getAsDouble()),
                         drivetrain.percentOutputToMetersPerSecond(m_translationYSupplier.getAsDouble()),
                         drivetrain.percentOutputToRadiansPerSecond(m_rotationSupplier.getAsDouble()),
-                        drivetrain.getYaw2d()));
+                        drivetrain.getHeading()));
     }
 
     @Override

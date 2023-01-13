@@ -92,4 +92,11 @@ public final class Constants {
     public static final class RobotMap {
         public static final int PIGEON_ID = 0;
     }
+
+    // Auto Balance constants
+    public static final double AB_MAX_AVERAGE_DEVIATION = 3;
+    public static final double AB_KP = 0;
+    public static final double AB_KI = 0;
+    public static final double AB_KD = 0;
+    
 }
