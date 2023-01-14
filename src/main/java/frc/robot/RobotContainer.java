@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.LEDController;
 import frc.thunder.LightningContainer;
 
 /**
@@ -13,11 +19,21 @@ import frc.thunder.LightningContainer;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer extends LightningContainer {
+  XboxController controller = new XboxController(0);
+  LEDController led = new LEDController();
 
   @Override
   protected void configureButtonBindings() {
-    // TODO Auto-generated method stub
+    var tab = Shuffleboard.getTab("leds");
 
+    tab.add(new InstantCommand(led::readyCollect, led));
+    tab.add(new InstantCommand(led::hasGamePiece, led));
+    tab.add(new InstantCommand(led::readyScore, led));
+    tab.add(new InstantCommand(led::readyDrop, led));
+    tab.add(new InstantCommand(led::believeScored, led));
+    tab.add(new InstantCommand(led::wantsCone, led));
+    tab.add(new InstantCommand(led::wantsCube, led));
+    tab.add(new InstantCommand(led::clearLED, led));
   }
 
   @Override
