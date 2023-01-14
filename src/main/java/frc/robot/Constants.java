@@ -52,29 +52,11 @@ public final class Constants {
 
         // TODO add all the submodule IDs
 
-        // Front left moudle configurations
-        public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 0;
-        public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 0;
-        public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 0;
-        public static final double FRONT_LEFT_MODULE_STEER_OFFSET = Math.toDegrees(0d);
-
-        // Front right moudle configurations
-        public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 0;
-        public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 0;
-        public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 0;
-        public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = Math.toDegrees(0d);
-
-        // Back left moudle configurations
-        public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 0;
-        public static final int BACK_LEFT_MODULE_STEER_MOTOR = 0;
-        public static final int BACK_LEFT_MODULE_STEER_ENCODER = 0;
-        public static final double BACK_LEFT_MODULE_STEER_OFFSET = Math.toDegrees(0d);
-
-        // Back right moudle configurations
-        public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 0;
-        public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 0;
-        public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 0;
-        public static final double BACK_RIGHT_MODULE_STEER_OFFSET = Math.toDegrees(0d);
+        // Module steer offsets
+        public static final double FRONT_LEFT_STEER_OFFSET = Math.toDegrees(0d);
+        public static final double FRONT_RIGHT_STEER_OFFSET = Math.toDegrees(0d);
+        public static final double BACK_LEFT_STEER_OFFSET = Math.toDegrees(0d);
+        public static final double BACK_RIGHT_STEER_OFFSET = Math.toDegrees(0d);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -102,19 +84,19 @@ public final class Constants {
             public static final int PIGEON_ID = 23;
             public static final int PDH = 21;
 
-            //FL
+            // FL
             public static final int FRONT_LEFT_DRIVE_MOTOR = 1;
             public static final int FRONT_LEFT_AZIMUTH_MOTOR = 2;
             public static final int FRONT_LEFT_CANCODER = 31;
-            //FR
+            // FR
             public static final int FRONT_RIGHT_DRIVE_MOTOR = 3;
             public static final int FRONT_RIGHT_AZIMUTH_MOTOR = 4;
             public static final int FRONT_RIGHT_CANCODER = 32;
-            //BR
+            // BR
             public static final int BACK_RIGHT_DRIVE_MOTOR = 5;
             public static final int BACK_RIGHT_AZIMUTH_MOTOR = 6;
             public static final int BACK_RIGHT_CANCODER = 33;
-            //BL
+            // BL
             public static final int BACK_LEFT_DRIVE_MOTOR = 7;
             public static final int BACK_LEFT_AZIMUTH_MOTOR = 8;
             public static final int BACK_LEFT_CANCODER = 34;
