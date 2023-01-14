@@ -19,13 +19,8 @@ public class LEDController extends SubsystemBase {
   String prevState = "none";
   String currentState = "none";
 
-  /** Creates a new LEDsController. */
   public LEDController() {
     led = new AddressableLED(ledPort);
-
-    // Reuse buffer
-    // Default to a length of 60, start empty output
-    // Length is expensive to set, so only set it once, then just update data
     ledBuffer = new AddressableLEDBuffer(ledLength);
     led.setLength(ledBuffer.getLength());
 
@@ -35,78 +30,51 @@ public class LEDController extends SubsystemBase {
   }
 
   public void readyCollect(){
-    for(int i=0; i<=ledLength; i ++){
-      ledBuffer.setRGB(i, 0, 255, 0);
-    }
-
+    setFullStripColor(0, 255, 0, 0.75f);
     currentState = "readyCollect";
   }
 
   public void hasGamePiece(){
-    for(int i=0; i<=ledLength; i++){
-      ledBuffer.setRGB(i, 0, 0, 255);
-    }
+    setFullStripColor(0, 0, 255, 0.75f);
 
     currentState = "hasGamePiece";
   }
 
   public void readyScore(){
-    for(int i=0; i<=ledLength; i++){
-      ledBuffer.setRGB(i, 230, 50, 200);
-    }
-
+    setFullStripColor(230, 50, 200, 0.75f);
     currentState = "readyScore";
   }
 
   public void readyDrop(){
-    for(int i=0; i<=ledLength; i++){
-      ledBuffer.setRGB(i, 96, 209, 149);
-    }
-
+    setFullStripColor(96, 209, 149, 0.75f);
     currentState = "readyDrop";
   }
 
   public void believeScored(){
-    for(int i=0; i<=ledLength; i++){
-      ledBuffer.setRGB(i, 219, 146, ledLength);
-    }
-
+    setFullStripColor(219, 146, 0, 0.75f);
     currentState = "believeScored";
   }
 
   public void wantsCone(){
-    for(int i=0; i<=ledLength; i++){
-      ledBuffer.setRGB(i, 255, 230, 30);
-    }
-
+    setFullStripColor(255, 230, 30, 0.75f);
     currentState = "wantsCone";
   }
   
   public void wantsCube(){
-    for(int i=0; i<=ledLength; i++){
-      ledBuffer.setRGB(i, 220, 30, 240);
-    }
-
+    setFullStripColor(220, 30, 240, 0.75f);
     currentState = "wantsCube";
   }
 
-  public void clearLED(){
-    for(int i=0; i<=ledLength; i++){
-      ledBuffer.setRGB(i, 225, 225, 225);
-    }
-
-    currentState = "clearLED";
+  public void fullWhite(){
+    setFullStripColor(255, 255, 255, 0.75f);
+    currentState = "fullWhite";
   }
 
   public void blink(){
     if ((System.currentTimeMillis() % 1000) < 500){
-      for(int i=0; i<=ledLength; i++){
-        ledBuffer.setRGB(i, 0, 0, 225);
-      }
+      setFullStripColor(0, 0, 255, 0.75f);
     } else {
-      for(int i=0; i<=ledLength; i++){
-        ledBuffer.setRGB(i, 225, 0, 0);
-      }
+      setFullStripColor(255, 0, 0, 0.75f);
     }
 
     currentState = "blink";
@@ -116,16 +84,15 @@ public class LEDController extends SubsystemBase {
     led.stop();
   }
 
-  public void chooseState(){
-    //future code here to decide what state to use - for now just blink
-    blink();
-  }
+  // future code here to decide what state to use - for now just use shuffleboard
+  //public void chooseState(){
+  //  blink();
+  //}
 
-  // This method will be called once per scheduler run
   @Override
   public void periodic() {
 
-    chooseState();
+    //chooseState();
 
     //for states like blink, we need to keep refreshing it. otherwise, we should only set it once
     if (prevState.equals(currentState)){
@@ -136,6 +103,19 @@ public class LEDController extends SubsystemBase {
       led.setData(ledBuffer);
       prevState = currentState;
     }
+  }
 
+  /**
+   * lets you set the full strip color and brightness
+   * 
+   * @param r value 0-255
+   * @param g value 0-255
+   * @param b value 0-255
+   * @param brightness decimal value for brightness where 1.0 is full brightness, 0.5 is half, etc.
+   */
+  private void setFullStripColor (int r, int g, int b, float brightness){
+    for(int i=0; i<=ledLength; i++){
+      ledBuffer.setRGB(i, (int) (r * brightness), (int) (g * brightness), (int) (b * brightness));
+    } 
   }
 }

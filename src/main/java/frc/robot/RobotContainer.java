@@ -31,7 +31,8 @@ public class RobotContainer extends LightningContainer {
     tab.add(new InstantCommand(led::believeScored, led));
     tab.add(new InstantCommand(led::wantsCone, led));
     tab.add(new InstantCommand(led::wantsCube, led));
-    tab.add(new InstantCommand(led::clearLED, led));
+    tab.add(new InstantCommand(led::fullWhite, led));
+    tab.add(new InstantCommand(led::blink, led));
   }
 
   @Override
