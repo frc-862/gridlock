@@ -98,6 +98,26 @@ public final class Constants {
     }
 
     public static final class RobotMap {
-        public static final int PIGEON_ID = 0;
+        public static final class CAN {
+            public static final int PIGEON_ID = 23;
+            public static final int PDH = 21;
+
+            //FL
+            public static final int FRONT_LEFT_DRIVE_MOTOR = 1;
+            public static final int FRONT_LEFT_AZIMUTH_MOTOR = 2;
+            public static final int FRONT_LEFT_CANCODER = 31;
+            //FR
+            public static final int FRONT_RIGHT_DRIVE_MOTOR = 3;
+            public static final int FRONT_RIGHT_AZIMUTH_MOTOR = 4;
+            public static final int FRONT_RIGHT_CANCODER = 32;
+            //BR
+            public static final int BACK_RIGHT_DRIVE_MOTOR = 5;
+            public static final int BACK_RIGHT_AZIMUTH_MOTOR = 6;
+            public static final int BACK_RIGHT_CANCODER = 33;
+            //BL
+            public static final int BACK_LEFT_DRIVE_MOTOR = 7;
+            public static final int BACK_LEFT_AZIMUTH_MOTOR = 8;
+            public static final int BACK_LEFT_CANCODER = 34;
+        }
     }
 }
