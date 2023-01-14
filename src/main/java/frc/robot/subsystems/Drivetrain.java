@@ -45,7 +45,7 @@ public class Drivetrain extends SubsystemBase {
                     -DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
     // Creating new pigeon2 gyro
-    private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.PIGEON_ID);
+    private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
     // Creating new pose, odometry, and cahssis speeds
     private Pose2d pose = new Pose2d();
