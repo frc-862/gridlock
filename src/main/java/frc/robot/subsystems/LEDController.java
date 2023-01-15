@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
 public class LEDController extends SubsystemBase {
 
+  //initialize variables
   int ledPort = 9;
   int ledLength = 36;
 
@@ -30,47 +31,55 @@ public class LEDController extends SubsystemBase {
   }
 
   public void readyCollect(){
+    //green
     setFullStripColor(0, 255, 0, 0.75f);
     currentState = "readyCollect";
   }
 
   public void hasGamePiece(){
+    //blue
     setFullStripColor(0, 0, 255, 0.75f);
-
     currentState = "hasGamePiece";
   }
 
   public void readyScore(){
+    //pink
     setFullStripColor(230, 50, 200, 0.75f);
     currentState = "readyScore";
   }
 
   public void readyDrop(){
+    //cyan
     setFullStripColor(96, 209, 149, 0.75f);
     currentState = "readyDrop";
   }
 
   public void believeScored(){
-    setFullStripColor(219, 146, 0, 0.75f);
+    //red
+    setFullStripColor(255, 0, 0, 0.75f);
     currentState = "believeScored";
   }
 
   public void wantsCone(){
+    //yellow
     setFullStripColor(255, 230, 30, 0.75f);
     currentState = "wantsCone";
   }
   
   public void wantsCube(){
+    //purple
     setFullStripColor(220, 30, 240, 0.75f);
     currentState = "wantsCube";
   }
 
   public void fullWhite(){
+    //white
     setFullStripColor(255, 255, 255, 0.75f);
     currentState = "fullWhite";
   }
 
   public void blink(){
+    //flashes between blue and red
     if ((System.currentTimeMillis() % 1000) < 500){
       setFullStripColor(0, 0, 255, 0.75f);
     } else {
@@ -80,6 +89,7 @@ public class LEDController extends SubsystemBase {
     currentState = "blink";
   }
 
+  //turn off LEDs
   public void stop(){
     led.stop();
   }
