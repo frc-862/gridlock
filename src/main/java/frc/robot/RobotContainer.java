@@ -2,19 +2,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 
-import java.util.HashMap;
-
-import com.pathplanner.lib.PathConstraints;
-
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.thunder.LightningContainer;
-import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
 

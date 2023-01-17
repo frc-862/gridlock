@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,22 +11,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.NeoSwerveModule;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.RobotMap;
-import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
-import frc.thunder.swervelib.Mk4SwerveModuleHelper;
-import frc.thunder.swervelib.SdsModuleConfigurations;
-import frc.thunder.swervelib.SwerveModule;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -57,13 +51,6 @@ public class Drivetrain extends SubsystemBase {
             new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
-    // Creating our feed forward
-    private final SimpleMotorFeedforward feedForward =
-            new SimpleMotorFeedforward(Gains.kS, Gains.kV, Gains.kA);
-
-    // Field2d for displaying on the dashboard
-    private final Field2d field2d = new Field2d();
-
     // Creating our list of module states
     private SwerveModuleState[] states;
 
@@ -76,13 +63,6 @@ public class Drivetrain extends SubsystemBase {
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
 
     public Drivetrain() {
-        // Creates our drivetrain shuffleboard tab for displaying module data
-        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
-        // Put our field2d on the dashboard
-        SmartDashboard.putData("Field", field2d);
-
-        SmartDashboard.putNumber("heading", getYaw2d().getDegrees());
 
         // Set our neo module configurations
         swerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
@@ -109,6 +89,7 @@ public class Drivetrain extends SubsystemBase {
                 RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER,
                 DrivetrainConstants.BACK_RIGHT_STEER_OFFSET);
 
+        // Update our module positions
         updateModulePositions();
 
         // Zero our gyro
@@ -116,6 +97,7 @@ public class Drivetrain extends SubsystemBase {
 
         // Start logging data
         initLogging();
+        initDashboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
 
@@ -123,10 +105,9 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update our module positions, odometery, and field2d
+        // Update our module positions, odometery
         updateModulePositions();
         updateOdomtery();
-        field2d.setRobotPose(pose);
         SmartDashboard.putString("pose", pose.getTranslation().toString());
     }
 
@@ -212,6 +193,37 @@ public class Drivetrain extends SubsystemBase {
 
         DataLogger.addDataElement("poseX", () -> getPose().getX());
         DataLogger.addDataElement("poseY", () -> getPose().getY());
+    }
+
+
+    public void initDashboard() {
+        // Creates our drivetrain shuffleboard tab for displaying module data
+        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+
+        // ShuffleboardLayout frontLeft = tab.getLayout("Front Left");// .withSize(2, 1).withPosition(0, 0);
+        // frontLeft.add("Current Angle", frontLeftModule.getSteerAngle());
+        // frontLeft.add("Target Angle", states[0].angle.getDegrees());
+        // frontLeft.add("Current Velocity", frontLeftModule.getDriveVelocity());
+        // frontLeft.add("Target Velocity", states[0]);
+
+        // ShuffleboardLayout frontRight = tab.getLayout("Front Right").withSize(2, 1).withPosition(0, 0);
+        // frontRight.add("Current Angle", frontRightModule.getSteerAngle());
+        // frontRight.add("Target Angle", states[1].angle.getDegrees());
+        // frontRight.add("Current Velocity", frontRightModule.getDriveVelocity());
+        // frontRight.add("Target Velocity", states[1]);
+
+        // ShuffleboardLayout backLeft = tab.getLayout("Back Left").withSize(2, 1).withPosition(0, 0);
+        // backLeft.add("Current Angle", backLeftModule.getSteerAngle());
+        // backLeft.add("Target Angle", states[2].angle.getDegrees());
+        // backLeft.add("Current Velocity", backLeftModule.getDriveVelocity());
+        // backLeft.add("Target Velocity", states[2]);
+
+        // ShuffleboardLayout backRight = tab.getLayout("Back Right").withSize(2, 1).withPosition(0, 0);
+        // backRight.add("Current Angle", backRightModule.getSteerAngle());
+        // backRight.add("Target Angle", states[3].angle.getDegrees());
+        // backRight.add("Current Velocity", backRightModule.getDriveVelocity());
+        // backRight.add("Target Velocity", states[3]);
+
     }
 
     /**

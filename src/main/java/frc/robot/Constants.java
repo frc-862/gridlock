@@ -51,15 +51,15 @@ public final class Constants {
         // TODO add all the submodule IDs
 
         // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = Math.toRadians(344.810d);
-        public static final double FRONT_RIGHT_STEER_OFFSET = Math.toRadians(9.582d);
-        public static final double BACK_LEFT_STEER_OFFSET = Math.toRadians(338.840d);
-        public static final double BACK_RIGHT_STEER_OFFSET = Math.toRadians(104.104d);
+        public static final double FRONT_LEFT_STEER_OFFSET = 0;
+        public static final double FRONT_RIGHT_STEER_OFFSET = 0;
+        public static final double BACK_LEFT_STEER_OFFSET = 0;
+        public static final double BACK_RIGHT_STEER_OFFSET = 0;
 
         // Gains vaules for PIDControllers
         public static final class Gains {
-            
-            public static final double kP = 0.15;
+
+            public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
 
@@ -71,9 +71,9 @@ public final class Constants {
 
         // Gains vaules for ProfiledPIDControllers
         public static final class ThetaGains {
-            public static final double kP = 4d;
+            public static final double kP = 1d;
             public static final double kI = 0d;
-            public static final double kD = 0.05;
+            public static final double kD = 0d;
 
         }
     }
