@@ -1,65 +1,75 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
+
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathConstraints;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.XboxControllerConstants;
+import frc.robot.commands.SwerveDrive;
+import frc.robot.subsystems.Drivetrain;
 import frc.thunder.LightningContainer;
+import frc.thunder.auto.AutonomousCommandFactory;
+import frc.thunder.filter.JoystickFilter;
+import frc.thunder.filter.JoystickFilter.Mode;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
 public class RobotContainer extends LightningContainer {
+    // Creates our drivetrain subsystem
+    private static final Drivetrain drivetrain = new Drivetrain();
 
-  @Override
-  protected void configureButtonBindings() {
-    // TODO Auto-generated method stub
+    // Creates our driver controller and deadzone
+    private static final XboxController driver = new XboxController(0);
+    private static final JoystickFilter joystickFilter = new JoystickFilter(XboxControllerConstants.DEADBAND,
+            XboxControllerConstants.MIN_POWER, XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
-  }
+    // Configure the button bindings
+    @Override
+    protected void configureButtonBindings() {
+        // Back button to reset feild centeric driving to current heading of the robot
+        new Trigger(driver::getBackButton)
+                .onTrue(new InstantCommand(drivetrain::zeroYaw, drivetrain));
+    }
 
-  @Override
-  protected void configureSystemTests() {
-    // TODO Auto-generated method stub
+    // Creates the autonomous commands
+    @Override
+    protected void configureAutonomousCommands() {}
 
-  }
+    @Override
+    protected void configureDefaultCommands() {
+        // Set up the default command for the drivetrain.
+        // The controls are for field-oriented driving:
+        // Left stick Y axis -> forward and backwards movement
+        // Left stick X axis -> left and right movement
+        // Right stick X axis -> rotation
+        drivetrain.setDefaultCommand(
+                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
+                        () -> joystickFilter.filter(driver.getLeftY()),
+                        () -> -joystickFilter.filter(driver.getRightX())));
 
-  @Override
-  protected void configureDefaultCommands() {
-    // TODO Auto-generated method stub
+    }
 
-  }
+    @Override
+    protected void configureSystemTests() {
+    }
 
-  @Override
-  protected void releaseDefaultCommands() {
-    // TODO Auto-generated method stub
+    @Override
+    protected void releaseDefaultCommands() {
+    }
 
-  }
+    @Override
+    protected void initializeDashboardCommands() {
+    }
 
-  @Override
-  protected void initializeDashboardCommands() {
-    // TODO Auto-generated method stub
+    @Override
+    protected void configureFaultCodes() {
+    }
 
-  }
-
-  @Override
-  protected void configureAutonomousCommands() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  protected void configureFaultCodes() {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  protected void configureFaultMonitors() {
-    // TODO Auto-generated method stub
-
-  }
-
+    @Override
+    protected void configureFaultMonitors() {
+    }
 }

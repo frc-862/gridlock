@@ -19,12 +19,14 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.NeoSwerveModule;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4SwerveModuleHelper;
+import frc.thunder.swervelib.SdsModuleConfigurations;
 import frc.thunder.swervelib.SwerveModule;
 
 public class Drivetrain extends SubsystemBase {
@@ -66,10 +68,10 @@ public class Drivetrain extends SubsystemBase {
     private SwerveModuleState[] states;
 
     // Creating our modules
-    private final SwerveModule frontLeftModule;
-    private final SwerveModule frontRightModule;
-    private final SwerveModule backLeftModule;
-    private final SwerveModule backRightModule;
+    private final NeoSwerveModule frontLeftModule;
+    private final NeoSwerveModule frontRightModule;
+    private final NeoSwerveModule backLeftModule;
+    private final NeoSwerveModule backRightModule;
 
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
 
@@ -80,47 +82,34 @@ public class Drivetrain extends SubsystemBase {
         // Put our field2d on the dashboard
         SmartDashboard.putData("Field", field2d);
 
+        SmartDashboard.putNumber("heading", getYaw2d().getDegrees());
+
         // Set our neo module configurations
         swerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
         swerveConfiguration.setSteerCurrentLimit(DrivetrainConstants.STEER_CURRENT_LIMIT);
         swerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
 
         // Making front left module
-        frontLeftModule = Mk4SwerveModuleHelper.createNeo(
-                tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4)
-                        .withPosition(0, 0),
-                swerveConfiguration, Mk4SwerveModuleHelper.GearRatio.L2,
-                RobotMap.CAN.FRONT_LEFT_DRIVE_MOTOR, RobotMap.CAN.FRONT_LEFT_AZIMUTH_MOTOR,
-                RobotMap.CAN.FRONT_LEFT_CANCODER, DrivetrainConstants.FRONT_LEFT_STEER_OFFSET);
+        frontLeftModule = new NeoSwerveModule(RobotMap.CAN.FRONT_LEFT_DRIVE_MOTOR,
+                RobotMap.CAN.FRONT_LEFT_AZIMUTH_MOTOR, RobotMap.CAN.FRONT_LEFT_CANCODER,
+                DrivetrainConstants.FRONT_LEFT_STEER_OFFSET);
 
         // Making front right module
-        frontRightModule = Mk4SwerveModuleHelper.createNeo(
-                tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4)
-                        .withPosition(2, 0),
-                swerveConfiguration, Mk4SwerveModuleHelper.GearRatio.L2,
-                RobotMap.CAN.FRONT_RIGHT_DRIVE_MOTOR, RobotMap.CAN.FRONT_RIGHT_AZIMUTH_MOTOR,
-                RobotMap.CAN.FRONT_RIGHT_CANCODER, DrivetrainConstants.FRONT_RIGHT_STEER_OFFSET);
+        frontRightModule = new NeoSwerveModule(RobotMap.CAN.FRONT_RIGHT_DRIVE_MOTOR,
+                RobotMap.CAN.FRONT_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.FRONT_RIGHT_CANCODER,
+                DrivetrainConstants.FRONT_LEFT_STEER_OFFSET);
 
         // Making backleft module
-        backLeftModule = Mk4SwerveModuleHelper.createNeo(
-                tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(
-                        4, 0),
-                swerveConfiguration, Mk4SwerveModuleHelper.GearRatio.L2,
-                RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR, RobotMap.CAN.BACK_LEFT_AZIMUTH_MOTOR,
-                RobotMap.CAN.BACK_LEFT_CANCODER, DrivetrainConstants.BACK_LEFT_STEER_OFFSET);
+        backLeftModule = new NeoSwerveModule(RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR,
+                RobotMap.CAN.BACK_LEFT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_LEFT_CANCODER,
+                DrivetrainConstants.BACK_LEFT_STEER_OFFSET);
 
         // Making back right module
-        backRightModule = Mk4SwerveModuleHelper.createNeo(
-                tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4)
-                        .withPosition(6, 0),
-                swerveConfiguration, Mk4SwerveModuleHelper.GearRatio.L2,
-                RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
-                RobotMap.CAN.BACK_RIGHT_CANCODER, DrivetrainConstants.BACK_RIGHT_STEER_OFFSET);
+        backRightModule = new NeoSwerveModule(RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR,
+                RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER,
+                DrivetrainConstants.BACK_RIGHT_STEER_OFFSET);
 
-        modulePositions[0] = frontLeftModule.getDrivePosition();
-        modulePositions[1] = frontRightModule.getDrivePosition();
-        modulePositions[2] = backLeftModule.getDrivePosition();
-        modulePositions[3] = backRightModule.getDrivePosition();
+        updateModulePositions();
 
         // Zero our gyro
         zeroYaw();
@@ -181,14 +170,10 @@ public class Drivetrain extends SubsystemBase {
             SwerveDriveKinematics.desaturateWheelSpeeds(states,
                     DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
 
-            frontLeftModule.set(velocityToDriveVolts(frontLeftState.speedMetersPerSecond),
-                    frontLeftState.angle.getRadians());
-            frontRightModule.set(velocityToDriveVolts(frontRightState.speedMetersPerSecond),
-                    frontRightState.angle.getRadians());
-            backLeftModule.set(velocityToDriveVolts(backLeftState.speedMetersPerSecond),
-                    backLeftState.angle.getRadians());
-            backRightModule.set(velocityToDriveVolts(backRightState.speedMetersPerSecond),
-                    backRightState.angle.getRadians());
+            frontLeftModule.setDesiredState(frontLeftState);
+            frontRightModule.setDesiredState(frontRightState);
+            backLeftModule.setDesiredState(backLeftState);
+            backRightModule.setDesiredState(backRightState);
         }
     }
 
@@ -200,10 +185,10 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void updateModulePositions() {
-        modulePositions[0] = frontLeftModule.getDrivePosition();
-        modulePositions[1] = frontRightModule.getDrivePosition();
-        modulePositions[2] = backLeftModule.getDrivePosition();
-        modulePositions[3] = backRightModule.getDrivePosition();
+        modulePositions[0] = frontLeftModule.getPosition();
+        modulePositions[1] = frontRightModule.getPosition();
+        modulePositions[2] = backLeftModule.getPosition();
+        modulePositions[3] = backRightModule.getPosition();
     }
 
     /**
@@ -254,25 +239,12 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Converts a velocity in meters per second to a voltage for the drive motors using feedforward.
-     * 
-     * @param speedMetersPerSecond the velocity to convert
-     * 
-     * @return the clamped voltage to apply to the drive motors
-     */
-    private double velocityToDriveVolts(double speedMetersPerSecond) {
-        double ff = feedForward.calculate(speedMetersPerSecond);
-        return MathUtil.clamp(ff, -DrivetrainConstants.MAX_VOLTAGE,
-                DrivetrainConstants.MAX_VOLTAGE);
-    }
-
-    /**
      * Gets the current pose of the robot.
      * 
      * @return the current pose of the robot in meters
      */
     public Rotation2d getYaw2d() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw(), 0, 360));
     }
 
     /**
@@ -280,9 +252,8 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the current state of the specified module
      */
-    public SwerveModuleState stateFromModule(SwerveModule swerveModule) {
-        return new SwerveModuleState(swerveModule.getDriveVelocity(),
-                new Rotation2d(swerveModule.getSteerAngle()));
+    public SwerveModuleState stateFromModule(NeoSwerveModule swerveModule) {
+        return swerveModule.getState();
     }
 
     /**
@@ -353,7 +324,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the front left module
      */
-    public SwerveModule getFrontLeftModule() {
+    public NeoSwerveModule getFrontLeftModule() {
         return frontLeftModule;
     }
 
@@ -362,7 +333,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the front right module
      */
-    public SwerveModule getFrontRightModule() {
+    public NeoSwerveModule getFrontRightModule() {
         return frontRightModule;
     }
 
@@ -371,7 +342,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the back left module
      */
-    public SwerveModule getBackLeftModule() {
+    public NeoSwerveModule getBackLeftModule() {
         return backLeftModule;
     }
 
@@ -380,7 +351,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the back right module
      */
-    public SwerveModule getBackRightModule() {
+    public NeoSwerveModule getBackRightModule() {
         return backRightModule;
     }
 
@@ -403,9 +374,13 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void stop() {
-        frontLeftModule.set(0, DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE);
-        frontRightModule.set(0, DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE);
-        backLeftModule.set(0, DrivetrainConstants.BACK_LEFT_RESTING_ANGLE);
-        backRightModule.set(0, DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE);
+        frontLeftModule.setDesiredState(new SwerveModuleState(0,
+                new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE)));
+        frontRightModule.setDesiredState(new SwerveModuleState(0,
+                new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE)));
+        backLeftModule.setDesiredState(new SwerveModuleState(0,
+                new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE)));
+        backRightModule.setDesiredState(new SwerveModuleState(0,
+                new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE)));
     }
 }
