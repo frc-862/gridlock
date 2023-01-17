@@ -13,16 +13,16 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class AprilTagTargetting extends SubsystemBase{
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
     private final ShuffleboardTab targetingTab = Shuffleboard.getTab("Targeting Tab");
+    private double botPose;
 
-    private final NetworkTableEntry horizontalOffset = limelightTab.getEntry("tx");
-    private final NetworkTableEntry verticalOffset = limelightTab.getEntry("ty");
-    private final NetworkTableEntry targetArea = limelightTab.getEntry("ta");
 
-    double x = horizontalOffset.getDouble(0.0);
-    double y = verticalOffset.getDouble(0.0);
-    double area = targetArea.getDouble(0.0);
+    @Override
+    public void periodic(){
+        this.botPose = limelightTab.getEntry("botpose").getDouble(0);
+    }
 
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightArea", area);
+    public double getBotPose(){
+        return this.botPose;
+    }
 }
+
