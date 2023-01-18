@@ -11,17 +11,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.NeoSwerveModule;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.RobotMap;
 import frc.thunder.logging.DataLogger;
-import frc.thunder.swervelib.Mk4ModuleConfiguration;
+import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -45,10 +45,9 @@ public class Drivetrain extends SubsystemBase {
 
     // Creating new pose, odometry, and cahssis speeds
     private Pose2d pose = new Pose2d();
-    private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(),
-            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
-    private SwerveDriveOdometry odometry =
-            new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
+    private SwerveModulePosition[] modulePositions = { new SwerveModulePosition(),
+            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition() };
+    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our list of module states
@@ -60,14 +59,12 @@ public class Drivetrain extends SubsystemBase {
     private final NeoSwerveModule backLeftModule;
     private final NeoSwerveModule backRightModule;
 
-    private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
+    private GenericEntry flAngle;
+    private GenericEntry frAngle;
+    private GenericEntry blAngle;
+    private GenericEntry brAngle;
 
     public Drivetrain() {
-
-        // Set our neo module configurations
-        swerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
-        swerveConfiguration.setSteerCurrentLimit(DrivetrainConstants.STEER_CURRENT_LIMIT);
-        swerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
 
         // Making front left module
         frontLeftModule = new NeoSwerveModule(RobotMap.CAN.FRONT_LEFT_DRIVE_MOTOR,
@@ -99,6 +96,11 @@ public class Drivetrain extends SubsystemBase {
         initLogging();
         initDashboard();
 
+        PIDDashboardTuner drivePidDashboardTuner = new PIDDashboardTuner("drive",
+                DrivetrainConstants.DRIVE_PID_CONTROLLER);
+        PIDDashboardTuner azimuthPidDashboardTuner = new PIDDashboardTuner("azimuth",
+                DrivetrainConstants.AZIMUTH_PID_CONTROLLER);
+
         CommandScheduler.getInstance().registerSubsystem(this);
 
     }
@@ -108,11 +110,19 @@ public class Drivetrain extends SubsystemBase {
         // Update our module positions, odometery
         updateModulePositions();
         updateOdomtery();
-        SmartDashboard.putString("pose", pose.getTranslation().toString());
+
+        if (states != null) {
+            getFrontLeftModule().setDesiredState(new SwerveModuleState(0, new Rotation2d(flAngle.getDouble(0))));
+            getFrontRightModule().setDesiredState(new SwerveModuleState(0, new Rotation2d(frAngle.getDouble(0))));
+            getBackLeftModule().setDesiredState(new SwerveModuleState(0, new Rotation2d(blAngle.getDouble(0))));
+            getBackRightModule().setDesiredState(new SwerveModuleState(0, new Rotation2d(brAngle.getDouble(0))));
+
+        }
     }
 
     /**
-     * This takes chassis speeds and converts them to module states and then sets states.
+     * This takes chassis speeds and converts them to module states and then sets
+     * states.
      * 
      * @param chassisSpeeds the chassis speeds to convert to module states
      */
@@ -133,7 +143,7 @@ public class Drivetrain extends SubsystemBase {
         } else {
             states = kinematics.toSwerveModuleStates(chassisSpeeds);
         }
-        setStates(states);
+        updateDriveStates(states);
     }
 
     /**
@@ -142,20 +152,24 @@ public class Drivetrain extends SubsystemBase {
      * @param states the list of module states to set
      */
     public void updateDriveStates(SwerveModuleState[] states) {
-        if (states != null) {
-            SwerveModuleState frontLeftState = states[0];
-            SwerveModuleState frontRightState = states[1];
-            SwerveModuleState backLeftState = states[2];
-            SwerveModuleState backRightState = states[3];
+        // this.states = states;
+        // updateModulePositions();
+        // updateOdomtery();
 
-            SwerveDriveKinematics.desaturateWheelSpeeds(states,
-                    DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
+        // if (states != null) {
+        //     SwerveModuleState frontLeftState = states[0];
+        //     SwerveModuleState frontRightState = states[1];
+        //     SwerveModuleState backLeftState = states[2];
+        //     SwerveModuleState backRightState = states[3];
 
-            frontLeftModule.setDesiredState(frontLeftState);
-            frontRightModule.setDesiredState(frontRightState);
-            backLeftModule.setDesiredState(backLeftState);
-            backRightModule.setDesiredState(backRightState);
-        }
+        //     SwerveDriveKinematics.desaturateWheelSpeeds(states,
+        //             DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+        //     frontLeftModule.setDesiredState(frontLeftState);
+        //     frontRightModule.setDesiredState(frontRightState);
+        //     backLeftModule.setDesiredState(backLeftState);
+        //     backRightModule.setDesiredState(backRightState);
+        // }
     }
 
     /**
@@ -195,46 +209,40 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("poseY", () -> getPose().getY());
     }
 
-
     public void initDashboard() {
         // Creates our drivetrain shuffleboard tab for displaying module data
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-        // ShuffleboardLayout frontLeft = tab.getLayout("Front Left");// .withSize(2, 1).withPosition(0, 0);
-        // frontLeft.add("Current Angle", frontLeftModule.getSteerAngle());
-        // frontLeft.add("Target Angle", states[0].angle.getDegrees());
-        // frontLeft.add("Current Velocity", frontLeftModule.getDriveVelocity());
-        // frontLeft.add("Target Velocity", states[0]);
+        if (this.states != null) {
+            ShuffleboardLayout frontLeft = tab.getLayout("Front Left", BuiltInLayouts.kList).withSize(2, 1)
+                    .withPosition(0, 0);
+            frontLeft.add("Current Angle", frontLeftModule.getSteerAngle());
+            frontLeft.add("Target Angle", states[0].angle.getDegrees());
+            frontLeft.add("Current Velocity", frontLeftModule.getDriveVelocity());
+            frontLeft.add("Target Velocity", states[0]);
 
-        // ShuffleboardLayout frontRight = tab.getLayout("Front Right").withSize(2, 1).withPosition(0, 0);
-        // frontRight.add("Current Angle", frontRightModule.getSteerAngle());
-        // frontRight.add("Target Angle", states[1].angle.getDegrees());
-        // frontRight.add("Current Velocity", frontRightModule.getDriveVelocity());
-        // frontRight.add("Target Velocity", states[1]);
+            ShuffleboardLayout frontRight = tab.getLayout("Front Right", BuiltInLayouts.kList).withSize(2, 1)
+                    .withPosition(0, 0);
+            frontRight.add("Current Angle", frontRightModule.getSteerAngle());
+            frontRight.add("Target Angle", states[1].angle.getDegrees());
+            frontRight.add("Current Velocity", frontRightModule.getDriveVelocity());
+            frontRight.add("Target Velocity", states[1]);
 
-        // ShuffleboardLayout backLeft = tab.getLayout("Back Left").withSize(2, 1).withPosition(0, 0);
-        // backLeft.add("Current Angle", backLeftModule.getSteerAngle());
-        // backLeft.add("Target Angle", states[2].angle.getDegrees());
-        // backLeft.add("Current Velocity", backLeftModule.getDriveVelocity());
-        // backLeft.add("Target Velocity", states[2]);
+            ShuffleboardLayout backLeft = tab.getLayout("Back Left", BuiltInLayouts.kList).withSize(2, 1)
+                    .withPosition(0, 0);
+            backLeft.add("Current Angle", backLeftModule.getSteerAngle());
+            backLeft.add("Target Angle", states[2].angle.getDegrees());
+            backLeft.add("Current Velocity", backLeftModule.getDriveVelocity());
+            backLeft.add("Target Velocity", states[2]);
 
-        // ShuffleboardLayout backRight = tab.getLayout("Back Right").withSize(2, 1).withPosition(0, 0);
-        // backRight.add("Current Angle", backRightModule.getSteerAngle());
-        // backRight.add("Target Angle", states[3].angle.getDegrees());
-        // backRight.add("Current Velocity", backRightModule.getDriveVelocity());
-        // backRight.add("Target Velocity", states[3]);
+            ShuffleboardLayout backRight = tab.getLayout("Back Right", BuiltInLayouts.kList).withSize(2, 1)
+                    .withPosition(0, 0);
+            backRight.add("Current Angle", backRightModule.getSteerAngle());
+            backRight.add("Target Angle", states[3].angle.getDegrees());
+            backRight.add("Current Velocity", backRightModule.getDriveVelocity());
+            backRight.add("Target Velocity", states[3]);
 
-    }
-
-    /**
-     * Method to set states of modules.
-     */
-    public void setStates(SwerveModuleState[] newStates) {
-        states = newStates;
-        updateModulePositions();
-        updateOdomtery();
-        updateDriveStates(states);
-
+        }
     }
 
     /**
@@ -280,7 +288,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Converts percent output of joystick to a rotational velocity in omega radians per second.
+     * Converts percent output of joystick to a rotational velocity in omega radians
+     * per second.
      * 
      * @param percentOutput the percent output of the joystick
      * 

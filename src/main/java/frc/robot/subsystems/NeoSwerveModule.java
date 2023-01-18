@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -7,29 +7,19 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.DrivetrainConstants.Gains;
-import frc.robot.Constants.DrivetrainConstants.ThetaGains;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 
 public class NeoSwerveModule {
-    private static final double kModuleMaxAngularVelocity = DrivetrainConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-    // Radians per second squared
-    private static final double kModuleMaxAngularAcceleration = 2 * Math.PI;
 
-    private double drivePositionConversionFactor = Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+    private final double drivePositionConversionFactor = Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
             * SdsModuleConfigurations.MK4_L2.getDriveReduction();
-
     // TOOD look at this number when testing
-    private double steerPositionConversionFactor = 2.0 * Math.PI * SdsModuleConfigurations.MK4_L2.getSteerReduction();
+    private final double steerPositionConversionFactor = 2.0 * Math.PI
+            * SdsModuleConfigurations.MK4_L2.getSteerReduction();
 
     private final CANSparkMax m_driveMotor;
     private final CANSparkMax m_turningMotor;
@@ -38,15 +28,6 @@ public class NeoSwerveModule {
     private final RelativeEncoder m_turningEncoder;
 
     private final CANCoder m_canCoder;
-
-    private final PIDController m_drivePIDController = new PIDController(Gains.kP, Gains.kI, Gains.kD);
-
-    // TODO see if we want to use a normal pid controller
-    private final PIDController m_turningPIDController = new PIDController(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD);
-
-    // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Gains.kS, Gains.kV, Gains.kA);
-    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Gains.kS, Gains.kV, Gains.kA);
 
     public NeoSwerveModule(int driveMotorID, int azimuthMotorID, int canCoderID,
             double steerOffset) {
@@ -75,8 +56,6 @@ public class NeoSwerveModule {
         m_turningEncoder.setPositionConversionFactor(steerPositionConversionFactor);
         m_driveEncoder.setVelocityConversionFactor(drivePositionConversionFactor / 60);
         m_turningEncoder.setVelocityConversionFactor(steerPositionConversionFactor / 60);
-
-        m_turningPIDController.enableContinuousInput(0, 360);
     }
 
     /**
@@ -124,22 +103,25 @@ public class NeoSwerveModule {
      */
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
-        SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(m_canCoder.getPosition()));
+        SwerveModuleState state = SwerveModuleState.optimize(desiredState,
+                new Rotation2d(m_canCoder.getPosition()));
 
         // Calculate the drive output from the drive PID controller.
-        final double driveOutput = m_drivePIDController.calculate(m_driveEncoder.getVelocity(),
+        final double driveOutput = DrivetrainConstants.DRIVE_PID_CONTROLLER.calculate(
+                m_driveEncoder.getVelocity(),
                 state.speedMetersPerSecond);
 
-        final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
+        final double driveFeedforward = DrivetrainConstants.DRIVE_FEED_FORWARD
+                .calculate(state.speedMetersPerSecond);
 
         // Calculate the turning motor output from the turning PID controller.
-        final double turnOutput = m_turningPIDController.calculate(Math.toRadians(m_canCoder.getPosition()),
+        final double turnOutput = DrivetrainConstants.AZIMUTH_PID_CONTROLLER.calculate(m_canCoder.getPosition(),
                 state.angle.getDegrees());
 
-        // final double turnFeedforward =
-        // m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().);
+        final double turnFeedforward = DrivetrainConstants.AZIMUTH_FEED_FORWARD
+                .calculate(DrivetrainConstants.AZIMUTH_PID_CONTROLLER.getSetpoint().velocity);
 
         // m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-        m_turningMotor.setVoltage(turnOutput);
+        m_turningMotor.setVoltage(turnOutput + turnFeedforward);
     }
 }
