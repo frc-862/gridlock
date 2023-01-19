@@ -28,10 +28,10 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(24d);
 
         // Stopped module constants
-        public static final double FRONT_LEFT_RESTING_ANGLE = 0d;
-        public static final double FRONT_RIGHT_RESTING_ANGLE = 0d;
-        public static final double BACK_LEFT_RESTING_ANGLE = 0d;
-        public static final double BACK_RIGHT_RESTING_ANGLE = 0d;
+        public static final double FRONT_LEFT_RESTING_ANGLE = 49.746;
+        public static final double FRONT_RIGHT_RESTING_ANGLE = 14.677;
+        public static final double BACK_LEFT_RESTING_ANGLE = 18.281;
+        public static final double BACK_RIGHT_RESTING_ANGLE = 62.570d;
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12.0;
@@ -46,7 +46,8 @@ public final class Constants {
 
         // Drivetrain PIDCotrollers
         public static final PIDController DRIVE_PID_CONTROLLER = new PIDController(Gains.kP, Gains.kI, Gains.kD);
-        public static final ProfiledPIDController AZIMUTH_PID_CONTROLLER = new ProfiledPIDController(ThetaGains.kP,
+        public static final ProfiledPIDController AZIMUTH_PID_CONTROLLER = new ProfiledPIDController(
+                ThetaGains.kP,
                 ThetaGains.kI, ThetaGains.kD,
                 new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
                         MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND));
@@ -54,8 +55,9 @@ public final class Constants {
         // Drivetrain feedforwards
         public static final SimpleMotorFeedforward DRIVE_FEED_FORWARD = new SimpleMotorFeedforward(Gains.kS, Gains.kV,
                 Gains.kA);
-        public static final SimpleMotorFeedforward AZIMUTH_FEED_FORWARD = new SimpleMotorFeedforward(Gains.kS, Gains.kV,
-                Gains.kA);
+        public static final SimpleMotorFeedforward AZIMUTH_FEED_FORWARD = new SimpleMotorFeedforward(ThetaGains.kS,
+                ThetaGains.kV,
+                ThetaGains.kA);
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -63,10 +65,10 @@ public final class Constants {
         public static final double NOMINAL_VOLTAGE = 12d;
 
         // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = 0;
-        public static final double FRONT_RIGHT_STEER_OFFSET = 0;
-        public static final double BACK_LEFT_STEER_OFFSET = 0;
-        public static final double BACK_RIGHT_STEER_OFFSET = 0;
+        public static final double FRONT_LEFT_STEER_OFFSET = 49.746;
+        public static final double FRONT_RIGHT_STEER_OFFSET = 14.677;
+        public static final double BACK_LEFT_STEER_OFFSET = 18.281;
+        public static final double BACK_RIGHT_STEER_OFFSET = 62.570d;
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -86,6 +88,10 @@ public final class Constants {
             public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
+
+            public static final double kS = 0d;// 0.59292;
+            public static final double kV = 1d;// 2.7301;
+            public static final double kA = 0d;// 0.19945;
 
         }
     }
