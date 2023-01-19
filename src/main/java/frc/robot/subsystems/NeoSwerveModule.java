@@ -113,6 +113,10 @@ public class NeoSwerveModule {
         return getState().speedMetersPerSecond;
     }
 
+    public double getAngleInDegrees() {
+        return m_canCoder.getAbsolutePosition();
+    }
+
     /**
      * Sets the desired state for the module.
      *
@@ -148,9 +152,5 @@ public class NeoSwerveModule {
 
         // m_driveMotor.setVoltage(driveOutput + driveFeedforward);
         m_turningMotor.setVoltage(turnOutput + turnFeedForward);
-    }
-
-    public CANCoder getCancoder() {
-        return m_canCoder;
     }
 }

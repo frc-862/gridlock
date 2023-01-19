@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,6 +22,7 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.RobotMap;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.tuning.PIDDashboardTuner;
+import frc.thunder.tuning.StaticFFTuner;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -56,9 +59,7 @@ public class Drivetrain extends SubsystemBase {
     private final NeoSwerveModule frontLeftModule;
     private final NeoSwerveModule frontRightModule;
     private final NeoSwerveModule backLeftModule;
-    private final NeoSwerveModule backRightModule;
-
-    private final GenericEntry angle;
+    // private final NeoSwerveModule backRightModule;
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
@@ -80,9 +81,9 @@ public class Drivetrain extends SubsystemBase {
                 DrivetrainConstants.BACK_LEFT_STEER_OFFSET, "c");
 
         // Making back right module
-        backRightModule = new NeoSwerveModule(RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR,
-                RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER,
-                DrivetrainConstants.BACK_RIGHT_STEER_OFFSET, "d");
+        // backRightModule = new NeoSwerveModule(RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR,
+        // RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER,
+        // DrivetrainConstants.BACK_RIGHT_STEER_OFFSET, "d");
 
         // Update our module positions
         updateModulePositions();
@@ -101,8 +102,8 @@ public class Drivetrain extends SubsystemBase {
                 DrivetrainConstants.DRIVE_PID_CONTROLLER);
         PIDDashboardTuner azimuthPidDashboardTuner = new PIDDashboardTuner("azimuth",
                 DrivetrainConstants.AZIMUTH_PID_CONTROLLER);
-
-        this.angle = tab.add("angle set", 0).getEntry();
+        StaticFFTuner azimuthFFDashboardTuner = new StaticFFTuner("azimuth",
+                new CANSparkMax(RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, MotorType.kBrushless));
 
         CommandScheduler.getInstance().registerSubsystem(this);
 
@@ -168,7 +169,7 @@ public class Drivetrain extends SubsystemBase {
             frontLeftModule.setDesiredState(frontLeftState);
             frontRightModule.setDesiredState(frontRightState);
             backLeftModule.setDesiredState(backLeftState);
-            backRightModule.setDesiredState(backRightState);
+            // backRightModule.setDesiredState(backRightState);
         }
     }
 
@@ -183,7 +184,7 @@ public class Drivetrain extends SubsystemBase {
         modulePositions[0] = frontLeftModule.getPosition();
         modulePositions[1] = frontRightModule.getPosition();
         modulePositions[2] = backLeftModule.getPosition();
-        modulePositions[3] = backRightModule.getPosition();
+        // modulePositions[3] = backRightModule.getPosition();
     }
 
     /**
@@ -199,9 +200,9 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("bl steer angle",
                 () -> Math.toDegrees(backLeftModule.getSteerAngle()));
         DataLogger.addDataElement("bl drive velocity", () -> backLeftModule.getDriveVelocity());
-        DataLogger.addDataElement("br steer angle",
-                () -> Math.toDegrees(backRightModule.getSteerAngle()));
-        DataLogger.addDataElement("br drive velocity", () -> backRightModule.getDriveVelocity());
+        // DataLogger.addDataElement("br steer angle",
+        //         () -> Math.toDegrees(backRightModule.getSteerAngle()));
+        // DataLogger.addDataElement("br drive velocity", () -> backRightModule.getDriveVelocity());
 
         DataLogger.addDataElement("Heading", () -> getYaw2d().getDegrees());
 
@@ -211,50 +212,11 @@ public class Drivetrain extends SubsystemBase {
 
     public void initDashboard() {
         // Creates our drivetrain shuffleboard tab for displaying module data
-        // ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-        // ShuffleboardLayout frontLeft = tab.getLayout("Front Left",
-        // BuiltInLayouts.kList).withSize(2, 1)
-        // .withPosition(0, 0);
-
-        // ShuffleboardLayout frontRight = tab.getLayout("Front Right",
-        // BuiltInLayouts.kList).withSize(2, 1)
-        // .withPosition(0, 0);
-
-        // ShuffleboardLayout backLeft = tab.getLayout("Back Left",
-        // BuiltInLayouts.kList).withSize(2, 1)
-        // .withPosition(0, 0);
-
-        // ShuffleboardLayout backRight = tab.getLayout("Back Right",
-        // BuiltInLayouts.kList).withSize(2, 1)
-        // .withPosition(0, 0);
-
-        // if (states != null) {
-        // frontLeft.add("Current Angle", frontLeftModule.getSteerAngle());
-        // frontLeft.add("Target Angle", states[0].angle.getDegrees());
-        // frontLeft.add("Current Velocity", frontLeftModule.getDriveVelocity());
-        // frontLeft.add("Target Velocity", states[0]);
-
-        // frontRight.add("Current Angle", frontRightModule.getSteerAngle());
-        // frontRight.add("Target Angle", states[1].angle.getDegrees());
-        // frontRight.add("Current Velocity", frontRightModule.getDriveVelocity());
-        // frontRight.add("Target Velocity", states[1]);
-
-        // backLeft.add("Current Angle", backLeftModule.getSteerAngle());
-        // backLeft.add("Target Angle", states[2].angle.getDegrees());
-        // backLeft.add("Current Velocity", backLeftModule.getDriveVelocity());
-        // backLeft.add("Target Velocity", states[2]);
-
-        // backRight.add("Current Angle", backRightModule.getSteerAngle());
-        // backRight.add("Target Angle", states[3].angle.getDegrees());
-        // backRight.add("Current Velocity", backRightModule.getDriveVelocity());
-        // backRight.add("Target Velocity", states[3]);
-        // }
-
-        tab.addDouble("fl angle", () -> frontLeftModule.getCancoder().getPosition());
-        tab.addDouble("fr angle", () -> frontRightModule.getCancoder().getPosition());
-        tab.addDouble("bl angle", () -> backLeftModule.getCancoder().getPosition());
-        tab.addDouble("br angle", () -> backRightModule.getCancoder().getPosition());
+        tab.addDouble("fl angle", () -> frontLeftModule.getAngleInDegrees());
+        tab.addDouble("fr angle", () -> frontRightModule.getAngleInDegrees());
+        tab.addDouble("bl angle", () -> backLeftModule.getAngleInDegrees());
+        // tab.addDouble("br angle", () -> backRightModule.getAngleInDegrees());
 
         tab.addDouble("target fl angle", () -> states[0].angle.getDegrees());
         tab.addDouble("target fr angle", () -> states[1].angle.getDegrees());
@@ -391,9 +353,9 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the back right module
      */
-    public NeoSwerveModule getBackRightModule() {
-        return backRightModule;
-    }
+    // public NeoSwerveModule getBackRightModule() {
+    //     return backRightModule;
+    // }
 
     /**
      * Gets the chassis speeds.
@@ -420,7 +382,7 @@ public class Drivetrain extends SubsystemBase {
                 new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE)));
         backLeftModule.setDesiredState(new SwerveModuleState(0,
                 new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE)));
-        backRightModule.setDesiredState(new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE)));
+        // backRightModule.setDesiredState(new SwerveModuleState(0,
+        //         new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE)));
     }
 }
