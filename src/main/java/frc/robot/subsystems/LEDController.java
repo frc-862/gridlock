@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -14,20 +15,19 @@ public class LEDController extends SubsystemBase {
   int ledPort = 9;
   int ledLength = 36;
 
-  AddressableLED led;
-  AddressableLEDBuffer ledBuffer;
+  AddressableLED led = new AddressableLED(ledPort);
+  AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(ledLength);
 
   String prevState = "none";
   String currentState = "none";
 
   public LEDController() {
-    led = new AddressableLED(ledPort);
-    ledBuffer = new AddressableLEDBuffer(ledLength);
     led.setLength(ledBuffer.getLength());
 
     // Set the data
     led.setData(ledBuffer);
     led.start();
+    fullWhite();
   }
 
   public void readyCollect(){

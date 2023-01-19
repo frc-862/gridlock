@@ -24,15 +24,17 @@ public class RobotContainer extends LightningContainer {
   protected void configureButtonBindings() {
     var tab = Shuffleboard.getTab("leds");
 
-    tab.add(new InstantCommand(led::readyCollect, led));
-    tab.add(new InstantCommand(led::hasGamePiece, led));
-    tab.add(new InstantCommand(led::readyScore, led));
-    tab.add(new InstantCommand(led::readyDrop, led));
-    tab.add(new InstantCommand(led::believeScored, led));
-    tab.add(new InstantCommand(led::wantsCone, led));
-    tab.add(new InstantCommand(led::wantsCube, led));
-    tab.add(new InstantCommand(led::fullWhite, led));
-    tab.add(new InstantCommand(led::blink, led));
+    if(led != null) {
+      tab.add(new InstantCommand(led::readyCollect, led));
+      tab.add(new InstantCommand(led::hasGamePiece, led));
+      tab.add(new InstantCommand(led::readyScore, led));
+      tab.add(new InstantCommand(led::readyDrop, led));
+      tab.add(new InstantCommand(led::believeScored, led));
+      tab.add(new InstantCommand(led::wantsCone, led));
+      tab.add(new InstantCommand(led::wantsCube, led));
+      tab.add(new InstantCommand(led::fullWhite, led));
+      tab.add(new InstantCommand(led::blink, led));
+    }
   }
 
   @Override
