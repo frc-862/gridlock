@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.PIDConstants;
 
+import edu.wpi.first.hal.simulation.SpiReadAutoReceiveBufferCallback;
 import edu.wpi.first.math.util.Units;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 
@@ -118,6 +119,17 @@ public final class Constants {
             public static final int BACK_LEFT_DRIVE_MOTOR = 7;
             public static final int BACK_LEFT_AZIMUTH_MOTOR = 8;
             public static final int BACK_LEFT_CANCODER = 34;
+
+            //COLLECTOR
+            public static final int LEFT_COLLECTOR_MOTOR = 0;
+            public static final int RIGHT_COLLECTOR_MOTOR = 0;
+
+            //FOURBAR
+            public static final int FOURBAR_MOTOR = 0;
+
+            //ELEVATOR
+            public static final int LEFT_ELEVATOR_MOTOR = 0;
+            public static final int RIGHT_ELEVATOR_MOTOR = 0;
         }
     }
 }
