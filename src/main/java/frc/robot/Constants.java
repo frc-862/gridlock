@@ -65,10 +65,10 @@ public final class Constants {
         public static final double NOMINAL_VOLTAGE = 12d;
 
         // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = 49.746;
-        public static final double FRONT_RIGHT_STEER_OFFSET = 14.677;
-        public static final double BACK_LEFT_STEER_OFFSET = 18.281;
-        public static final double BACK_RIGHT_STEER_OFFSET = 62.570d;
+        public static final double FRONT_LEFT_STEER_OFFSET = 103.623;
+        public static final double FRONT_RIGHT_STEER_OFFSET = 137.90;
+        public static final double BACK_LEFT_STEER_OFFSET = 160.312;
+        public static final double BACK_RIGHT_STEER_OFFSET = 118.916;
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -85,12 +85,12 @@ public final class Constants {
 
         // Gains vaules for ProfiledPIDControllers
         public static final class ThetaGains {
-            public static final double kP = 0d;
+            public static final double kP = 0.004d;
             public static final double kI = 0d;
             public static final double kD = 0d;
 
             public static final double kS = 0d;// 0.59292;
-            public static final double kV = 1d;// 2.7301;
+            public static final double kV = 0d;// 2.7301;
             public static final double kA = 0d;// 0.19945;
 
         }

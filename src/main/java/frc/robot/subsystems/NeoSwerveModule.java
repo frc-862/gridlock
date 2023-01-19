@@ -4,6 +4,7 @@ import java.util.zip.DeflaterOutputStream;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -60,9 +61,9 @@ public class NeoSwerveModule {
 
         m_canCoder = new CANCoder(canCoderID);
         m_canCoder.configFactoryDefault();
-        m_canCoder.setPositionToAbsolute();
-        m_canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
         m_canCoder.configMagnetOffset(steerOffset);
+        m_canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+        m_canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
         m_driveEncoder.setPositionConversionFactor(drivePositionConversionFactor);
         m_turningEncoder.setPositionConversionFactor(steerPositionConversionFactor);
@@ -121,8 +122,8 @@ public class NeoSwerveModule {
         // Optimize the reference state to avoid spinning further than 90 degrees
 
         // SwerveModuleState state = SwerveModuleState.optimize(desiredState,
-        // new Rotation2d(getAbsolutePosition()));
-
+        //         new Rotation2d(getAbsolutePosition()));
+ 
         SwerveModuleState state = desiredState;
 
         // Calculate the drive output from the drive PID controller.
@@ -147,5 +148,9 @@ public class NeoSwerveModule {
 
         // m_driveMotor.setVoltage(driveOutput + driveFeedforward);
         m_turningMotor.setVoltage(turnOutput + turnFeedForward);
+    }
+
+    public CANCoder getCancoder() {
+        return m_canCoder;
     }
 }

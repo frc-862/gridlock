@@ -12,11 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
@@ -75,7 +72,7 @@ public class Drivetrain extends SubsystemBase {
         // Making front right module
         frontRightModule = new NeoSwerveModule(RobotMap.CAN.FRONT_RIGHT_DRIVE_MOTOR,
                 RobotMap.CAN.FRONT_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.FRONT_RIGHT_CANCODER,
-                DrivetrainConstants.FRONT_LEFT_STEER_OFFSET, "b");
+                DrivetrainConstants.FRONT_RIGHT_STEER_OFFSET, "b");
 
         // Making backleft module
         backLeftModule = new NeoSwerveModule(RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR,
@@ -254,10 +251,10 @@ public class Drivetrain extends SubsystemBase {
         // backRight.add("Target Velocity", states[3]);
         // }
 
-        tab.addDouble("fl angle", () -> frontLeftModule.getSteerAngle());
-        tab.addDouble("fr angle", () -> frontRightModule.getSteerAngle());
-        tab.addDouble("bl angle", () -> backLeftModule.getSteerAngle());
-        tab.addDouble("br angle", () -> backRightModule.getSteerAngle());
+        tab.addDouble("fl angle", () -> frontLeftModule.getCancoder().getPosition());
+        tab.addDouble("fr angle", () -> frontRightModule.getCancoder().getPosition());
+        tab.addDouble("bl angle", () -> backLeftModule.getCancoder().getPosition());
+        tab.addDouble("br angle", () -> backRightModule.getCancoder().getPosition());
 
         tab.addDouble("target fl angle", () -> states[0].angle.getDegrees());
         tab.addDouble("target fr angle", () -> states[1].angle.getDegrees());
@@ -286,7 +283,7 @@ public class Drivetrain extends SubsystemBase {
      * @return the current pose of the robot in meters
      */
     public Rotation2d getYaw2d() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw(), 0, 360));
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
     }
 
     /**
