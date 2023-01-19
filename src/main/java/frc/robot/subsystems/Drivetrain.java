@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-
+import frc.thunder.swervelib.Mk4ModuleConfiguration;
+import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
+import frc.thunder.swervelib.SwerveModule;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,9 +25,6 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.logging.DataLogger;
-import frc.thunder.swervelib.Mk4ModuleConfiguration;
-import frc.thunder.swervelib.Mk4SwerveModuleHelper;
-import frc.thunder.swervelib.SwerveModule;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -86,41 +85,39 @@ public class Drivetrain extends SubsystemBase {
         swerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
 
         // Making front left module
-        frontLeftModule = Mk4SwerveModuleHelper.createNeo(
+        frontLeftModule = Mk4iSwerveModuleHelper.createNeo(
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4)
                         .withPosition(0, 0),
-                swerveConfiguration, Mk4SwerveModuleHelper.GearRatio.L2,
+                swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.FRONT_LEFT_DRIVE_MOTOR, RobotMap.CAN.FRONT_LEFT_AZIMUTH_MOTOR,
                 RobotMap.CAN.FRONT_LEFT_CANCODER, DrivetrainConstants.FRONT_LEFT_STEER_OFFSET);
 
         // Making front right module
-        frontRightModule = Mk4SwerveModuleHelper.createNeo(
+        frontRightModule = Mk4iSwerveModuleHelper.createNeo(
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4)
                         .withPosition(2, 0),
-                swerveConfiguration, Mk4SwerveModuleHelper.GearRatio.L2,
+                swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.FRONT_RIGHT_DRIVE_MOTOR, RobotMap.CAN.FRONT_RIGHT_AZIMUTH_MOTOR,
                 RobotMap.CAN.FRONT_RIGHT_CANCODER, DrivetrainConstants.FRONT_RIGHT_STEER_OFFSET);
 
         // Making backleft module
-        backLeftModule = Mk4SwerveModuleHelper.createNeo(
+        backLeftModule = Mk4iSwerveModuleHelper.createNeo(
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(
                         4, 0),
-                swerveConfiguration, Mk4SwerveModuleHelper.GearRatio.L2,
+                swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR, RobotMap.CAN.BACK_LEFT_AZIMUTH_MOTOR,
                 RobotMap.CAN.BACK_LEFT_CANCODER, DrivetrainConstants.BACK_LEFT_STEER_OFFSET);
 
         // Making back right module
-        backRightModule = Mk4SwerveModuleHelper.createNeo(
+        backRightModule = Mk4iSwerveModuleHelper.createNeo(
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4)
                         .withPosition(6, 0),
-                swerveConfiguration, Mk4SwerveModuleHelper.GearRatio.L2,
+                swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
                 RobotMap.CAN.BACK_RIGHT_CANCODER, DrivetrainConstants.BACK_RIGHT_STEER_OFFSET);
 
-        modulePositions[0] = frontLeftModule.getDrivePosition();
-        modulePositions[1] = frontRightModule.getDrivePosition();
-        modulePositions[2] = backLeftModule.getDrivePosition();
-        modulePositions[3] = backRightModule.getDrivePosition();
+        // Update our module positions
+        updateModulePositions();
 
         // Zero our gyro
         zeroYaw();
@@ -200,10 +197,10 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void updateModulePositions() {
-        modulePositions[0] = frontLeftModule.getDrivePosition();
-        modulePositions[1] = frontRightModule.getDrivePosition();
-        modulePositions[2] = backLeftModule.getDrivePosition();
-        modulePositions[3] = backRightModule.getDrivePosition();
+        modulePositions[0] = frontLeftModule.getPosition();
+        modulePositions[1] = frontRightModule.getPosition();
+        modulePositions[2] = backLeftModule.getPosition();
+        modulePositions[3] = backRightModule.getPosition();
     }
 
     /**
