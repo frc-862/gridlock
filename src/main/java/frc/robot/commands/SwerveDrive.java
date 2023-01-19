@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
@@ -18,10 +19,12 @@ public class SwerveDrive extends CommandBase {
     /**
      * Creates a new SwerveDrive command.
      *
-     * @param drivetrainSubsystem The drivetrain subsystem this command will run on
-     * @param translationXSupplier The control input for the translation in the X direction
-     * @param translationYSupplier The control input for the translation in the Y direction
-     * @param rotationSupplier The control input for rotation
+     * @param drivetrainSubsystem  The drivetrain subsystem this command will run on
+     * @param translationXSupplier The control input for the translation in the X
+     *                             direction
+     * @param translationYSupplier The control input for the translation in the Y
+     *                             direction
+     * @param rotationSupplier     The control input for rotation
      */
     public SwerveDrive(Drivetrain drivetrainSubsystem, DoubleSupplier translationXSupplier,
             DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier) {
@@ -37,12 +40,15 @@ public class SwerveDrive extends CommandBase {
     public void execute() {
         // Call drive method from drivetrain
         drivetrain.drive(
-                // Supply chassie speeds from the translation suppliers using feild relative control
+                // Supply chassie speeds from the translation suppliers using feild
+                // relative control
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                         drivetrain.percentOutputToMetersPerSecond(
-                                m_translationXSupplier.getAsDouble()),
+                                m_translationXSupplier
+                                        .getAsDouble()),
                         drivetrain.percentOutputToMetersPerSecond(
-                                m_translationYSupplier.getAsDouble()),
+                                m_translationYSupplier
+                                        .getAsDouble()),
                         drivetrain.percentOutputToRadiansPerSecond(
                                 m_rotationSupplier.getAsDouble()),
                         drivetrain.getYaw2d()));
