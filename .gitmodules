@@ -1,3 +1,4 @@
-[submodule "src/main/java/frc/thunder"]
-	path = src/main/java/frc/thunder
-	url = ../thunder
+[submodule "thunder"]
+    path = src/main/java/frc/thunder
+    url = ../thunder
+    branch = main
