@@ -27,7 +27,6 @@ public class LEDController extends SubsystemBase {
     // Set the data
     led.setData(ledBuffer);
     led.start();
-    fullWhite();
   }
 
   public void readyCollect(){
