@@ -1,5 +1,10 @@
 {
   "SysId": {
-    "Analysis Type": "General Mechanism"
+    "Analysis Type": "General Mechanism",
+    "NetworkTables Settings": {
+      "serverTeam": "862"
+    },
+    "mode": "Client (NT4)",
+    "serverTeam": "862"
   }
 }
