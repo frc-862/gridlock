@@ -37,7 +37,7 @@ public class AprilTagTargetting extends SubsystemBase{
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
      */
-    private void setPipelineNum(int pipelineNum){
+    public void setPipelineNum(int pipelineNum){
         limelightTab.getEntry("pipeline").setNumber(pipelineNum);
     }
 
@@ -46,7 +46,7 @@ public class AprilTagTargetting extends SubsystemBase{
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
      */
-    private boolean validTarget(){
+    public boolean validTarget(){
         // 29.8d represents the LL2+'s max FOV
         // TODO: Chuck 29.8 into constants file
 
