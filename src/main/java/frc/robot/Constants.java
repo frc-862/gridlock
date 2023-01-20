@@ -104,7 +104,7 @@ public final class Constants {
 
     // Auto Balance constants
     public static final double AB_MAX_AVERAGE_DEVIATION = 3;
-    public static final double AB_KP = 0;
+    public static final double AB_KP = 0.1;
     public static final double AB_KI = 0;
     public static final double AB_KD = 0;
     

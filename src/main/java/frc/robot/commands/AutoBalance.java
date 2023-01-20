@@ -6,12 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class AutoBalance extends CommandBase {
   private Drivetrain drivetrain;
+  //TODO: initialize tanktrain
   private PIDController pid = new PIDController(Constants.AB_KP, Constants.AB_KI, Constants.AB_KD);
   
   public AutoBalance(Drivetrain drivetrain) {
@@ -22,25 +24,37 @@ public class AutoBalance extends CommandBase {
 
   
   @Override
-  public void initialize() {}
-
-  
-  @Override
-  public void execute() {
-    if(Math.abs((drivetrain.getRoll().getDegrees() + drivetrain.getPitch().getDegrees())/2) > Constants.AB_MAX_AVERAGE_DEVIATION) { //maybe add check for theoretical color sensor?
-      drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(pid.calculate(drivetrain.getGravityVector()[0], 0)),
-       												drivetrain.percentOutputToMetersPerSecond(pid.calculate(drivetrain.getGravityVector()[1], 0)), 
-													drivetrain.percentOutputToMetersPerSecond(0)));
-    } else {
-		drivetrain.stop();
-	}
-    
-    
+  public void initialize() {
+    SmartDashboard.putNumber("p gain", Constants.AB_KP);
   }
 
   
   @Override
-  public void end(boolean interrupted) {}
+  public void execute() {
+
+    pid.setP(SmartDashboard.getNumber("P gain", Constants.AB_KP));
+
+    if(Math.abs(drivetrain.getPitch().getDegrees()) > Constants.AB_MAX_AVERAGE_DEVIATION) { //maybe add check for theoretical color sensor?
+      // drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(pid.calculate(drivetrain.getPitch().getDegrees(), 0)),
+      //  												drivetrain.percentOutputToMetersPerSecond(pid.calculate(drivetrain.getPitch().getDegrees(), 0)), 
+			// 										drivetrain.percentOutputToMetersPerSecond(0)));
+
+      
+
+      SmartDashboard.putNumber("motor output", pid.calculate(drivetrain.getPitch().getDegrees(), 0));
+    } else {
+		// drivetrain.stop();
+
+    SmartDashboard.putNumber("motor output", 0);
+	}
+        
+  }
+
+  
+  @Override
+  public void end(boolean interrupted) {
+    drivetrain.stop();
+  }
 
   
   @Override

@@ -1,10 +1,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.thunder.LightningContainer;
@@ -40,10 +42,14 @@ public class RobotContainer extends LightningContainer {
         // Left stick Y axis -> forward and backwards movement
         // Left stick X axis -> left and right movement
         // Right stick X axis -> rotation
-        drivetrain.setDefaultCommand(
-                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
-                        () -> joystickFilter.filter(driver.getLeftY()),
-                        () -> -joystickFilter.filter(driver.getRightX())));
+
+        //TODO:UNDO
+        // drivetrain.setDefaultCommand(
+        //         new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
+        //                 () -> joystickFilter.filter(driver.getLeftY()),
+        //                 () -> -joystickFilter.filter(driver.getRightX())));
+
+        drivetrain.setDefaultCommand(new AutoBalance(drivetrain));
 
     }
 

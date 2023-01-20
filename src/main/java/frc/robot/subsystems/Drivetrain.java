@@ -52,7 +52,7 @@ public class Drivetrain extends SubsystemBase {
     private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(),
             new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
     private SwerveDriveOdometry odometry =
-            new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
+            new SwerveDriveOdometry(kinematics, getHeading(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our feed forward
@@ -144,6 +144,10 @@ public class Drivetrain extends SubsystemBase {
         updateOdomtery();
         field2d.setRobotPose(pose);
         SmartDashboard.putString("pose", pose.getTranslation().toString());
+
+        SmartDashboard.putNumber("pitch", getPitch().getDegrees());
+        SmartDashboard.putNumber("roll", getRoll().getDegrees());
+        SmartDashboard.putNumber("yaw", getHeading().getDegrees());
     }
 
     /**
@@ -254,7 +258,7 @@ public class Drivetrain extends SubsystemBase {
     public void setInitialPose(Pose2d initalPosition, Rotation2d initalRotation) {
         pigeon.setYaw(initalRotation.getDegrees());
         pose = new Pose2d(initalPosition.getTranslation(), initalRotation);
-        odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
+        odometry = new SwerveDriveOdometry(kinematics, getHeading(), modulePositions, pose);
 
     }
 
@@ -286,7 +290,7 @@ public class Drivetrain extends SubsystemBase {
      * @return the current pitch of the robot in meters
      */
     public Rotation2d getPitch() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getPitch() - 90, 0, 360));
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getPitch(), -180, 180));
     }
 
     /**
@@ -295,7 +299,7 @@ public class Drivetrain extends SubsystemBase {
      * @return the current roll of the robot in meters
      */
     public Rotation2d getRoll() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getRoll() - 90, 0, 360));
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getRoll(), -180, 180));
     }
 
     /**
