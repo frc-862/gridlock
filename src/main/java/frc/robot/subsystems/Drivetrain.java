@@ -63,7 +63,8 @@ public class Drivetrain extends SubsystemBase {
     private final Field2d field2d = new Field2d();
 
     // Creating our list of module states
-    private SwerveModuleState[] states;
+    private SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(),
+            new SwerveModuleState(), new SwerveModuleState()};
 
     // Creating our modules
     private final SwerveModule frontLeftModule;
@@ -71,11 +72,12 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule backLeftModule;
     private final SwerveModule backRightModule;
 
+    // Creates our drivetrain shuffleboard tab for displaying module data
+    private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
 
     public Drivetrain() {
-        // Creates our drivetrain shuffleboard tab for displaying module data
-        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
         // Put our field2d on the dashboard
         SmartDashboard.putData("Field", field2d);
@@ -232,10 +234,23 @@ public class Drivetrain extends SubsystemBase {
                 () -> Math.toDegrees(backRightModule.getSteerAngle()));
         DataLogger.addDataElement("br drive velocity", () -> backRightModule.getDriveVelocity());
 
+        DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
+        DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
+        DataLogger.addDataElement("fr target angle", () -> states[1].angle.getDegrees());
+        DataLogger.addDataElement("fr target velocity", () -> states[1].speedMetersPerSecond);
+        DataLogger.addDataElement("bl target angle", () -> states[2].angle.getDegrees());
+        DataLogger.addDataElement("bl target velocity", () -> states[2].speedMetersPerSecond);
+        DataLogger.addDataElement("br target angle", () -> states[3].angle.getDegrees());
+        DataLogger.addDataElement("br target velocity", () -> states[3].speedMetersPerSecond);
+
         DataLogger.addDataElement("Heading", () -> getHeading().getDegrees());
 
         DataLogger.addDataElement("poseX", () -> getPose().getX());
         DataLogger.addDataElement("poseY", () -> getPose().getY());
+    }
+
+    public void initDashboardCommand() {
+
     }
 
     /**

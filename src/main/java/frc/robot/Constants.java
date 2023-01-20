@@ -29,10 +29,10 @@ public final class Constants {
                 new PIDConstants(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD);
 
         // Stopped module constants
-        public static final double FRONT_LEFT_RESTING_ANGLE = -45d;
-        public static final double FRONT_RIGHT_RESTING_ANGLE = 45d;
-        public static final double BACK_LEFT_RESTING_ANGLE = 45d;
-        public static final double BACK_RIGHT_RESTING_ANGLE = -45d;
+        public static final double FRONT_LEFT_RESTING_ANGLE = Math.toRadians(-45d);
+        public static final double FRONT_RIGHT_RESTING_ANGLE = Math.toRadians(45d);
+        public static final double BACK_LEFT_RESTING_ANGLE = Math.toRadians(45d);
+        public static final double BACK_RIGHT_RESTING_ANGLE = Math.toRadians(-45d);
 
         // Our max voltage, velocity, and angular velocity
         public static final double MAX_VOLTAGE = 12.0;
