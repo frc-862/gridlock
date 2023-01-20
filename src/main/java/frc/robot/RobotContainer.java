@@ -18,11 +18,12 @@ import frc.thunder.LightningContainer;
  */
 public class RobotContainer extends LightningContainer {
   XboxController controller = new XboxController(0);
-  LEDController led = new LEDController();
+  LEDController led; //  = new LEDController();
 
   @Override
   protected void configureButtonBindings() {
     var tab = Shuffleboard.getTab("leds");
+    led = new LEDController();
 
     if(led != null) {
       tab.add(new InstantCommand(led::readyCollect, led));
