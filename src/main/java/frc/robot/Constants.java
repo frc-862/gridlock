@@ -41,29 +41,29 @@ public final class Constants {
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12.0;
+        // TODO look at the calculation here
         public static final double MAX_VELOCITY_METERS_PER_SECOND =
-                6380.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
+                5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
                         * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
                 MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                         DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                * 2 * Math.PI;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND =
+                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
 
         // Drivetrain PIDCotrollers
-        public static final PIDController DRIVE_PID_CONTROLLER = new PIDController(Gains.kP, Gains.kI, Gains.kD);
-        public static final ProfiledPIDController AZIMUTH_PID_CONTROLLER = new ProfiledPIDController(
-                ThetaGains.kP,
-                ThetaGains.kI, ThetaGains.kD,
-                new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-                        MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND));
+        public static final PIDController DRIVE_PID_CONTROLLER =
+                new PIDController(Gains.kP, Gains.kI, Gains.kD);
+        public static final ProfiledPIDController AZIMUTH_PID_CONTROLLER =
+                new ProfiledPIDController(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD,
+                        new TrapezoidProfile.Constraints(MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+                                MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND));
 
         // Drivetrain feedforwards
-        public static final SimpleMotorFeedforward DRIVE_FEED_FORWARD = new SimpleMotorFeedforward(Gains.kS, Gains.kV,
-                Gains.kA);
-        public static final SimpleMotorFeedforward AZIMUTH_FEED_FORWARD = new SimpleMotorFeedforward(ThetaGains.kS,
-                ThetaGains.kV,
-                ThetaGains.kA);
+        public static final SimpleMotorFeedforward DRIVE_FEED_FORWARD =
+                new SimpleMotorFeedforward(Gains.kS, Gains.kV, Gains.kA);
+        public static final SimpleMotorFeedforward AZIMUTH_FEED_FORWARD =
+                new SimpleMotorFeedforward(ThetaGains.kS, ThetaGains.kV, ThetaGains.kA);
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -71,10 +71,10 @@ public final class Constants {
         public static final double NOMINAL_VOLTAGE = 12d;
 
         // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(86.660);
-        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(54.668);
-        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(17.842);
-        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(62.490);
+        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
+        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
+        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
+        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -84,9 +84,9 @@ public final class Constants {
             public static final double kD = 0d;
 
             // TODO: get these values in after characterization
-            public static final double kS = 0.59292;
-            public static final double kV = 2.7301;
-            public static final double kA = 0.19945;
+            public static final double kS = 0.13;
+            public static final double kV = 2.64;
+            public static final double kA = 0;
         }
 
         // Gains vaules for ProfiledPIDControllers

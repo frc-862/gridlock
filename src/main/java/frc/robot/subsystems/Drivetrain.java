@@ -1,13 +1,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -24,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.tuning.PIDDashboardTuner;
 
@@ -59,11 +58,16 @@ public class Drivetrain extends SubsystemBase {
     private SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(),
             new SwerveModuleState(), new SwerveModuleState()};
 
+    // Creating our feed forward
+    private final SimpleMotorFeedforward feedForward =
+            new SimpleMotorFeedforward(Gains.kS, Gains.kV, Gains.kA);
+
+
     // Creating our modules
-    private final NeoSwerveModule frontLeftModule;
-    private final NeoSwerveModule frontRightModule;
-    private final NeoSwerveModule backLeftModule;
-    private final NeoSwerveModule backRightModule;
+    private final SwerveModule frontLeftModule;
+    private final SwerveModule frontRightModule;
+    private final SwerveModule backLeftModule;
+    private final SwerveModule backRightModule;
 
     // Creates our drivetrain shuffleboard tab for displaying module data
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -126,8 +130,6 @@ public class Drivetrain extends SubsystemBase {
                 new PIDDashboardTuner("drive", DrivetrainConstants.DRIVE_PID_CONTROLLER);
         PIDDashboardTuner azimuthPidDashboardTuner =
                 new PIDDashboardTuner("azimuth", DrivetrainConstants.AZIMUTH_PID_CONTROLLER);
-        StaticFFTuner azimuthFFDashboardTuner = new StaticFFTuner("azimuth",
-                new CANSparkMax(RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, MotorType.kBrushless));
 
         CommandScheduler.getInstance().registerSubsystem(this);
 
@@ -150,19 +152,14 @@ public class Drivetrain extends SubsystemBase {
         if (states != null && chassisSpeeds.vxMetersPerSecond == 0
                 && chassisSpeeds.vyMetersPerSecond == 0
                 && chassisSpeeds.omegaRadiansPerSecond == 0) {
-            // states[0] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
-            // states[1] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
-            // states[2] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
-            // states[3] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
-
-            states[0].speedMetersPerSecond = 0;
-            states[1].speedMetersPerSecond = 0;
-            states[2].speedMetersPerSecond = 0;
-            states[3].speedMetersPerSecond = 0;
+            states[0] = new SwerveModuleState(0,
+                    new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
+            states[1] = new SwerveModuleState(0,
+                    new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
+            states[2] = new SwerveModuleState(0,
+                    new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
+            states[3] = new SwerveModuleState(0,
+                    new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
 
         } else {
             states = kinematics.toSwerveModuleStates(chassisSpeeds);
@@ -175,11 +172,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @param states the list of module states to set
      */
-    public void setStates(SwerveModuleState[] states) {
-        this.states = states;
-        updateModulePositions();
-        updateOdomtery();
-
+    public void updateDriveStates(SwerveModuleState[] states) {
         if (states != null) {
             SwerveModuleState frontLeftState = states[0];
             SwerveModuleState frontRightState = states[1];
@@ -189,11 +182,41 @@ public class Drivetrain extends SubsystemBase {
             SwerveDriveKinematics.desaturateWheelSpeeds(states,
                     DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
 
-            frontLeftModule.setDesiredState(frontLeftState);
-            frontRightModule.setDesiredState(frontRightState);
-            backLeftModule.setDesiredState(backLeftState);
-            backRightModule.setDesiredState(backRightState);
+            frontLeftModule.set(velocityToDriveVolts(frontLeftState.speedMetersPerSecond),
+                    frontLeftState.angle.getRadians());
+            frontRightModule.set(velocityToDriveVolts(frontRightState.speedMetersPerSecond),
+                    frontRightState.angle.getRadians());
+            backLeftModule.set(velocityToDriveVolts(backLeftState.speedMetersPerSecond),
+                    backLeftState.angle.getRadians());
+            backRightModule.set(velocityToDriveVolts(backRightState.speedMetersPerSecond),
+                    backRightState.angle.getRadians());
         }
+    }
+
+
+    /**
+     * Method to set states of modules.
+     */
+    public void setStates(SwerveModuleState[] newStates) {
+        states = newStates;
+        updateModulePositions();
+        updateOdomtery();
+        updateDriveStates(states);
+
+    }
+
+
+    /**
+     * Converts a velocity in meters per second to a voltage for the drive motors using feedforward.
+     * 
+     * @param speedMetersPerSecond the velocity to convert
+     * 
+     * @return the clamped voltage to apply to the drive motors
+     */
+    private double velocityToDriveVolts(double speedMetersPerSecond) {
+        double ff = feedForward.calculate(speedMetersPerSecond);
+        return MathUtil.clamp(ff, -DrivetrainConstants.MAX_VOLTAGE,
+                DrivetrainConstants.MAX_VOLTAGE);
     }
 
     /**
@@ -241,27 +264,29 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("poseX", () -> getPose().getX());
         DataLogger.addDataElement("poseY", () -> getPose().getY());
     }
+
     /**
      * Method to set states of modules.
      */
-    public void setStates(SwerveModuleState[] newStates) {
-        states = newStates;
-        updateModulePositions();
-        updateOdomtery();
-        updateDriveStates(states);
 
-        tab.addDouble("fl angle", () -> frontLeftModule.getAngleInDegrees());
-        tab.addDouble("fr angle", () -> frontRightModule.getAngleInDegrees());
-        tab.addDouble("bl angle", () -> backLeftModule.getAngleInDegrees());
-        tab.addDouble("br angle", () -> backRightModule.getAngleInDegrees());
+    private void initDashboard() {
+        tab.addDouble("fl angle", () -> frontLeftModule.getSteerAngle());
+        tab.addDouble("fr angle", () -> frontRightModule.getSteerAngle());
+        tab.addDouble("bl angle", () -> backLeftModule.getSteerAngle());
+        tab.addDouble("br angle", () -> backRightModule.getSteerAngle());
 
         tab.addDouble("target fl angle", () -> states[0].angle.getDegrees());
         tab.addDouble("target fr angle", () -> states[1].angle.getDegrees());
         tab.addDouble("target bl angle", () -> states[2].angle.getDegrees());
         tab.addDouble("target br angle", () -> states[3].angle.getDegrees());
 
-        tab.addDouble("pid offset",
-                () -> DrivetrainConstants.DRIVE_PID_CONTROLLER.getPositionError());
+        tab.addDouble("fl drive vel", () -> frontLeftModule.getDriveVelocity());
+        tab.addDouble("bl drive vel", () -> frontLeftModule.getDriveVelocity());
+        tab.addDouble("fr drive vel", () -> frontLeftModule.getDriveVelocity());
+        tab.addDouble("br drive vel", () -> frontLeftModule.getDriveVelocity());
+
+        tab.addDouble("heading", () -> getYaw2d().getDegrees());
+
     }
 
     /**
@@ -291,8 +316,9 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the current state of the specified module
      */
-    public SwerveModuleState stateFromModule(NeoSwerveModule swerveModule) {
-        return swerveModule.getState();
+    public SwerveModuleState stateFromModule(SwerveModule swerveModule) {
+        return new SwerveModuleState(swerveModule.getDriveVelocity(),
+                new Rotation2d(swerveModule.getSteerAngle()));
     }
 
     /**
@@ -363,7 +389,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the front left module
      */
-    public NeoSwerveModule getFrontLeftModule() {
+    public SwerveModule getFrontLeftModule() {
         return frontLeftModule;
     }
 
@@ -372,7 +398,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the front right module
      */
-    public NeoSwerveModule getFrontRightModule() {
+    public SwerveModule getFrontRightModule() {
         return frontRightModule;
     }
 
@@ -381,7 +407,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the back left module
      */
-    public NeoSwerveModule getBackLeftModule() {
+    public SwerveModule getBackLeftModule() {
         return backLeftModule;
     }
 
@@ -390,7 +416,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the back right module
      */
-    public NeoSwerveModule getBackRightModule() {
+    public SwerveModule getBackRightModule() {
         return backRightModule;
     }
 
@@ -413,13 +439,13 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void stop() {
-        frontLeftModule.setDesiredState(new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE)));
-        frontRightModule.setDesiredState(new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE)));
-        backLeftModule.setDesiredState(new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE)));
-        backRightModule.setDesiredState(new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE)));
+        states[0] = new SwerveModuleState(0,
+                new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
+        states[1] = new SwerveModuleState(0,
+                new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
+        states[2] = new SwerveModuleState(0,
+                new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
+        states[3] = new SwerveModuleState(0,
+                new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
     }
 }
