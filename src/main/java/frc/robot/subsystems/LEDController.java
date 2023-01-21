@@ -4,15 +4,8 @@
 
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.util.Currency;
-
-// import java.util.Map;
-// import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class LEDController extends SubsystemBase {
 
@@ -30,12 +23,6 @@ public class LEDController extends SubsystemBase {
 
   String prevState = "none";
   String currentState = "none";
-  String currentSubstate = "none";
-
-  // private GenericEntry redControl;
-  // private GenericEntry greenControl;
-  // private GenericEntry blueControl;
-
 
   public LEDController() {
     led.setLength(ledBuffer.getLength());
@@ -108,11 +95,10 @@ public class LEDController extends SubsystemBase {
     if ((System.currentTimeMillis() % 1000) < 500){
       setFullStripColor(0, 0, 255, 0.75f);
     } else {
-      setFullStripColor(255, 0, 0, 0.75f);
+      setFullStripColor(255, 125, 15, 0.75f);
     }
 
     currentState = "blink";
-    currentSubstate = "flash";
     led.setData(ledBuffer);
   }
 
@@ -143,7 +129,6 @@ public class LEDController extends SubsystemBase {
     }
 
     currentState = "orangeAndBlue";
-    currentSubstate = "flash";
     led.setData(ledBuffer);
   }
 
@@ -156,11 +141,6 @@ public class LEDController extends SubsystemBase {
   public void start(){
     led.start();
   }
-
-  // future code here to decide what state to use - for now just use shuffleboard
-  //public void chooseState(){
-  //  blink();
-  //}
 
   @Override
   public void periodic() {
