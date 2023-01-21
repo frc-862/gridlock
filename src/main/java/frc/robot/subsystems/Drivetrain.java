@@ -24,8 +24,10 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.logging.DataLogger;
-import frc.thunder.tuning.PIDDashboardTuner;
 
+/**
+ * Our drivetrain subsystem
+ */
 public class Drivetrain extends SubsystemBase {
 
     // Creates our swerve kinematics using the robots track width and wheel base
@@ -46,22 +48,22 @@ public class Drivetrain extends SubsystemBase {
     // Creating new pigeon2 gyro
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
-    // Creating new pose, odometry, and cahssis speeds
-    private Pose2d pose = new Pose2d();
-    private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(),
-            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
-    private SwerveDriveOdometry odometry =
-            new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
-    private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
-    // Creating our list of module states
+    // Creating our list of module states and module positions
     private SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(),
             new SwerveModuleState(), new SwerveModuleState()};
+    private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(),
+            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
+
+    // Creating new pose, odometry, cahssis speeds
+    private Pose2d pose = new Pose2d();
+    private SwerveDriveOdometry odometry =
+            new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
+    private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our feed forward
     private final SimpleMotorFeedforward feedForward =
             new SimpleMotorFeedforward(Gains.kS, Gains.kV, Gains.kA);
-
 
     // Creating our modules
     private final SwerveModule frontLeftModule;
@@ -76,7 +78,7 @@ public class Drivetrain extends SubsystemBase {
 
     public Drivetrain() {
 
-        // Set our neo module configurations
+        // Set our neo module configurations using drive current, steer current, and voltage
         swerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
         swerveConfiguration.setSteerCurrentLimit(DrivetrainConstants.STEER_CURRENT_LIMIT);
         swerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
@@ -113,23 +115,17 @@ public class Drivetrain extends SubsystemBase {
                 RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
                 RobotMap.CAN.BACK_RIGHT_CANCODER, DrivetrainConstants.BACK_RIGHT_STEER_OFFSET);
 
-        // Update our module positions
+        // Update our module positions, odometery, and states
         updateModulePositions();
+        updateOdomtery();
+        updateDriveStates(states);
 
         // Zero our gyro
-        zeroYaw();
+        zeroHeading();
 
-        // Start logging data
+        // Start logging data and adding data to the dashboard
         initLogging();
         initDashboard();
-
-        DrivetrainConstants.AZIMUTH_PID_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
-        DrivetrainConstants.AZIMUTH_PID_CONTROLLER.setTolerance(0.09);
-
-        PIDDashboardTuner drivePidDashboardTuner =
-                new PIDDashboardTuner("drive", DrivetrainConstants.DRIVE_PID_CONTROLLER);
-        PIDDashboardTuner azimuthPidDashboardTuner =
-                new PIDDashboardTuner("azimuth", DrivetrainConstants.AZIMUTH_PID_CONTROLLER);
 
         CommandScheduler.getInstance().registerSubsystem(this);
 
@@ -205,7 +201,6 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
-
     /**
      * Converts a velocity in meters per second to a voltage for the drive motors using feedforward.
      * 
@@ -223,9 +218,12 @@ public class Drivetrain extends SubsystemBase {
      * Updates odometry using the current yaw and module states.
      */
     public void updateOdomtery() {
-        pose = odometry.update(getYaw2d(), modulePositions);
+        pose = odometry.update(getHeading2d(), modulePositions);
     }
 
+    /**
+     * Updates the module positions array to the current positions of each module
+     */
     public void updateModulePositions() {
         modulePositions[0] = frontLeftModule.getPosition();
         modulePositions[1] = frontRightModule.getPosition();
@@ -259,16 +257,15 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br target angle", () -> states[3].angle.getDegrees());
         DataLogger.addDataElement("br target velocity", () -> states[3].speedMetersPerSecond);
 
-        DataLogger.addDataElement("Heading", () -> getYaw2d().getDegrees());
+        DataLogger.addDataElement("Heading", () -> getHeading2d().getDegrees());
 
         DataLogger.addDataElement("poseX", () -> getPose().getX());
         DataLogger.addDataElement("poseY", () -> getPose().getY());
     }
 
     /**
-     * Method to set states of modules.
+     * Method to start sending values to the dashboard
      */
-
     private void initDashboard() {
         tab.addDouble("fl angle", () -> frontLeftModule.getSteerAngle());
         tab.addDouble("fr angle", () -> frontRightModule.getSteerAngle());
@@ -285,7 +282,7 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("fr drive vel", () -> frontLeftModule.getDriveVelocity());
         tab.addDouble("br drive vel", () -> frontLeftModule.getDriveVelocity());
 
-        tab.addDouble("heading", () -> getYaw2d().getDegrees());
+        tab.addDouble("heading", () -> getHeading2d().getDegrees());
 
     }
 
@@ -298,7 +295,7 @@ public class Drivetrain extends SubsystemBase {
     public void setInitialPose(Pose2d initalPosition, Rotation2d initalRotation) {
         pigeon.setYaw(initalRotation.getDegrees());
         pose = new Pose2d(initalPosition.getTranslation(), initalRotation);
-        odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
+        odometry = new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
 
     }
 
@@ -307,7 +304,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the current pose of the robot in meters
      */
-    public Rotation2d getYaw2d() {
+    public Rotation2d getHeading2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
     }
 
@@ -346,7 +343,7 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Zeroes the yaw of the pigeon.
      */
-    public void zeroYaw() {
+    public void zeroHeading() {
         pigeon.setYaw(0);
     }
 
@@ -363,7 +360,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(getYaw2d(), modulePositions, pose);
+        odometry.resetPosition(getHeading2d(), modulePositions, pose);
     }
 
     /**
@@ -438,6 +435,9 @@ public class Drivetrain extends SubsystemBase {
         this.chassisSpeeds = chassisSpeeds;
     }
 
+    /**
+     * Sets all motor speeds to 0 and sets the modules to their respective resting angles
+     */
     public void stop() {
         states[0] = new SwerveModuleState(0,
                 new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
