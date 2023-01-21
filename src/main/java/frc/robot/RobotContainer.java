@@ -1,13 +1,19 @@
 package frc.robot;
 
+import java.util.HashMap;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.auto.PIDConstants;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.XboxControllerConstants;
+import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.thunder.LightningContainer;
+import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
 
@@ -21,6 +27,11 @@ public class RobotContainer extends LightningContainer {
             new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
                     XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
+    private static final AutonomousCommandFactory autoFactory =
+            new AutonomousCommandFactory(drivetrain::getPose, drivetrain::resetOdometry,
+                    drivetrain.getDriveKinematics(), DrivetrainConstants.DRIVE_PID_CONSTANTS,
+                    DrivetrainConstants.THETA_PID_CONSTANTS, drivetrain::setStates, drivetrain);
+
     // Configure the button bindings
     @Override
     protected void configureButtonBindings() {
@@ -31,7 +42,10 @@ public class RobotContainer extends LightningContainer {
 
     // Creates the autonomous commands
     @Override
-    protected void configureAutonomousCommands() {}
+    protected void configureAutonomousCommands() {
+
+
+    }
 
     @Override
     protected void configureDefaultCommands() {
@@ -44,6 +58,8 @@ public class RobotContainer extends LightningContainer {
                 new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
                         () -> joystickFilter.filter(driver.getLeftY()),
                         () -> -joystickFilter.filter(driver.getRightX())));
+
+        autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(0.1, 0.1));
 
     }
 
