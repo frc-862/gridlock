@@ -39,7 +39,7 @@ public class LEDController extends SubsystemBase {
         start();
 
         orangeAndBlue();
-    \initDashboard();
+        initDashboard();
     }
 
     public void readyCollect() {
