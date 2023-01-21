@@ -31,6 +31,7 @@ public class RobotContainer extends LightningContainer {
     var tab = Shuffleboard.getTab("leds");
     led = new LEDController();
 
+    //ShuffleBoard button setup
     if(led != null) {
       tab.add("readyCollect", new InstantCommand(led::readyCollect, led));
       tab.add("hasGamePiece", new InstantCommand(led::hasGamePiece, led));

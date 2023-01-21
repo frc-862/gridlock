@@ -17,13 +17,13 @@ public class LEDController extends SubsystemBase {
   long nextEventTime = System.currentTimeMillis();
   long timeCounter;
 
-
+  //create LEDs
   AddressableLED led = new AddressableLED(ledPort);
   AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(ledLength);
-
   String prevState = "none";
   String currentState = "none";
 
+  //set up an LED set
   public LEDController() {
     led.setLength(ledBuffer.getLength());
 
@@ -91,7 +91,7 @@ public class LEDController extends SubsystemBase {
   }
 
   public void blink(){
-    //flashes between blue and red
+    //flashes between blue and orange
     if ((System.currentTimeMillis() % 1000) < 500){
       setFullStripColor(0, 0, 255, 0.75f);
     } else {
@@ -103,7 +103,7 @@ public class LEDController extends SubsystemBase {
   }
 
   public void orangeAndBlue(){
-    //flashes between blue and orange
+    //switches between blue and orange
     if ((System.currentTimeMillis() % 1000) < 500){
       for(int i = 0; i < ledLength; i += 2){
         ledBuffer.setRGB(i, (int) (255 * .75), 
