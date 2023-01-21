@@ -1,7 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
@@ -33,7 +34,7 @@ public class RobotContainer extends LightningContainer {
     protected void configureButtonBindings() {
         // Back button to reset feild centeric driving to current heading of the robot
         new Trigger(driver::getBackButton)
-                .onTrue(new InstantCommand(drivetrain::zeroYaw, drivetrain));
+                .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
     }
 
     // Creates the autonomous commands
@@ -64,7 +65,9 @@ public class RobotContainer extends LightningContainer {
     protected void releaseDefaultCommands() {}
 
     @Override
-    protected void initializeDashboardCommands() {}
+    protected void initializeDashboardCommands() {
+        ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
+    }
 
     @Override
     protected void configureFaultCodes() {}
