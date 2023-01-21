@@ -19,8 +19,8 @@ public final class Constants {
         // TODO set the track width and wheel base
 
         // Our drivetrain and track width
-        public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(24d);
-        public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(24d);
+        public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.6875d);
+        public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.6875d);
 
         // Drivetrain PIDConstants
         public static final PIDConstants DRIVE_PID_CONSTANTS =
@@ -52,10 +52,10 @@ public final class Constants {
         // TODO add all the submodule IDs
 
         // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.727);
-        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(57.920);
-        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(16.348);
-        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(66.445);
+        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(86.660);
+        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(54.668);
+        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(17.842);
+        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(62.490);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
