@@ -6,6 +6,9 @@ import frc.robot.subsystems.Drivetrain;
 
 import java.util.function.DoubleSupplier;
 
+/**
+ * Our servedrive command to control the drivetrain
+ */
 public class SwerveDrive extends CommandBase {
     // Decleare our drivetrain subsystems
     private final Drivetrain drivetrain;
@@ -37,7 +40,8 @@ public class SwerveDrive extends CommandBase {
     public void execute() {
         // Call drive method from drivetrain
         drivetrain.drive(
-                // Supply chassie speeds from the translation suppliers using feild relative control
+                // Supply chassie speeds from the translation suppliers using feild
+                // relative control
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                         drivetrain.percentOutputToMetersPerSecond(
                                 m_translationXSupplier.getAsDouble()),
@@ -45,7 +49,7 @@ public class SwerveDrive extends CommandBase {
                                 m_translationYSupplier.getAsDouble()),
                         drivetrain.percentOutputToRadiansPerSecond(
                                 m_rotationSupplier.getAsDouble()),
-                        drivetrain.getYaw2d()));
+                        drivetrain.getHeading2d()));
     }
 
     @Override
