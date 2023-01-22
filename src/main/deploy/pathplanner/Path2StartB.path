@@ -2,7 +2,6 @@
   "waypoints": [
     {
       "anchorPoint": {
-<<<<<<< HEAD:src/main/deploy/pathplanner/New Path.path
         "x": 2.0019059587030266,
         "y": 3.85
       },
@@ -12,7 +11,6 @@
         "y": 5.344170688341377
       },
       "holonomicAngle": 180.0,
-=======
         "x": 1.75,
         "y": 2.75
       },
@@ -49,7 +47,6 @@
         "y": 2.75
       },
       "holonomicAngle": 180.0,
->>>>>>> main:src/main/deploy/pathplanner/Path2StartB.path
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -63,7 +60,6 @@
     },
     {
       "anchorPoint": {
-<<<<<<< HEAD:src/main/deploy/pathplanner/New Path.path
         "x": 7.05475907192805,
         "y": 4.600808600113785
       },
@@ -98,7 +94,6 @@
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
-=======
         "x": 7.258589613333074,
         "y": 2.75
       },
@@ -108,7 +103,6 @@
       },
       "nextControl": null,
       "holonomicAngle": 0.0,
->>>>>>> main:src/main/deploy/pathplanner/Path2StartB.path
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
