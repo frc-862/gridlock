@@ -1,9 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
-
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -16,7 +11,6 @@ public class LEDController extends SubsystemBase {
     // initialize variables
     private int ledPort = 9;
     private final int ledLength = 37;
-    private int waitTime = 10;
     private long currentTime = System.currentTimeMillis();
     private long nextEventTime = System.currentTimeMillis();
     private long timeCounter;
@@ -26,8 +20,6 @@ public class LEDController extends SubsystemBase {
     private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(ledLength);
     private String prevState = "none";
     private String currentState = "none";
-
-    private ShuffleboardTab tab = Shuffleboard.getTab("LEDs");
 
 
     // set up an LED set
