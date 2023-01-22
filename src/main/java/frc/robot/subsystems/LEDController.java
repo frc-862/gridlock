@@ -27,7 +27,7 @@ public class LEDController extends SubsystemBase {
     private String prevState = "none";
     private String currentState = "none";
 
-    private ShuffleboardTab tab = Shuffleboard.getTab("Leds");
+    private ShuffleboardTab tab = Shuffleboard.getTab("LEDs");
 
 
     // set up an LED set
@@ -48,65 +48,11 @@ public class LEDController extends SubsystemBase {
         currentState = "readyCollect";
         led.setData(ledBuffer);
     }
-
-    public void hasGamePiece() {
-        // blue
-        setFullStripColor(0, 0, 255, 0.75f);
-        currentState = "hasGamePiece";
-        led.setData(ledBuffer);
-    }
-
-    public void readyScore() {
-        // pink
-        setFullStripColor(230, 50, 200, 0.75f);
-        currentState = "readyScore";
-        led.setData(ledBuffer);
-    }
-
-    public void readyDrop() {
-        // cyan
-        setFullStripColor(96, 209, 149, 0.75f);
-        currentState = "readyDrop";
-        led.setData(ledBuffer);
-    }
-
-    public void believeScored() {
-        // red
-        setFullStripColor(255, 0, 0, 0.75f);
-        currentState = "believeScored";
-        led.setData(ledBuffer);
-    }
-
-    public void wantsCone() {
-        // yellow
-        setFullStripColor(255, 230, 20, 0.75f);
-        currentState = "wantsCone";
-        led.setData(ledBuffer);
-    }
-
-    public void wantsCube() {
-        // purple
-        setFullStripColor(220, 30, 240, 0.75f);
-        currentState = "wantsCube";
-        led.setData(ledBuffer);
-    }
-
+    
     public void fullWhite() {
         // white
         setFullStripColor(255, 255, 255, 0.75f);
         currentState = "fullWhite";
-        led.setData(ledBuffer);
-    }
-
-    public void blink() {
-        // flashes between blue and orange
-        if ((System.currentTimeMillis() % 1000) < 500) {
-            setFullStripColor(0, 0, 255, 0.75f);
-        } else {
-            setFullStripColor(255, 125, 15, 0.75f);
-        }
-
-        currentState = "blink";
         led.setData(ledBuffer);
     }
 
@@ -131,6 +77,57 @@ public class LEDController extends SubsystemBase {
         currentState = "orangeAndBlue";
         led.setData(ledBuffer);
     }
+    
+    public void readyDrop() {
+        // cyan
+        setFullStripColor(96, 209, 149, 0.75f);
+        currentState = "readyDrop";
+        led.setData(ledBuffer);
+    }
+
+    public void believeScored() {
+        // red
+        setFullStripColor(255, 0, 0, 0.75f);
+        currentState = "believeScored";
+        led.setData(ledBuffer);
+    }
+
+    public void hasGamePiece() {
+        // flashes green
+        if ((System.currentTimeMillis() % 1000) < 500) {
+            setFullStripColor(0, 255, 0, 0.75f);
+        } else {
+            setFullStripColor(0, 0, 0, 0.75f);
+        }
+        currentState = "hasGamePiece";
+        led.setData(ledBuffer);
+    }
+
+    public void wantsCone() {
+        // yellow
+        setFullStripColor(255, 230, 20, 0.75f);
+        currentState = "wantsCone";
+        led.setData(ledBuffer);
+    }
+
+    public void wantsCube() {
+        // purple
+        setFullStripColor(220, 30, 240, 0.75f);
+        currentState = "wantsCube";
+        led.setData(ledBuffer);
+    }
+    
+    public void readyScore() {
+        // flashes between blue and orange
+        if ((System.currentTimeMillis() % 1000) < 500) {
+            setFullStripColor(0, 0, 255, 0.75f);
+        } else {
+            setFullStripColor(255, 125, 15, 0.75f);
+        }
+
+        currentState = "readyScore";
+        led.setData(ledBuffer);
+    }
 
     // turn off LEDs
     public void stop() {
@@ -149,12 +146,14 @@ public class LEDController extends SubsystemBase {
 
         // compare current time to the next event time to take action and set next event
         if (nextEventTime - currentTime <= 0) {
-            if (currentState == "blink") {
-                blink();
-            }
-            if (currentState == "orangeAndBlue") {
+            if (currentState == "readyScore") {
+                readyScore();
+            } else if (currentState == "orangeAndBlue") {
                 orangeAndBlue();
+            } else if (currentState == "hasGamePiece") {
+                hasGamePiece();
             }
+
             led.setData(ledBuffer);
             nextEventTime = currentTime + 100;
         }
@@ -178,19 +177,21 @@ public class LEDController extends SubsystemBase {
 
     private void initDashboard() {
         // ShuffleBoard button setup
-        var ledTab = Shuffleboard.getTab("leds");
+        var ledTab = Shuffleboard.getTab("LEDs");
         if (led != null) {
-            ledTab.add("readyCollect", new InstantCommand(this::readyCollect, this));
+            //strategy chosen methods
             ledTab.add("hasGamePiece", new InstantCommand(this::hasGamePiece, this));
-            ledTab.add("readyScore", new InstantCommand(this::readyScore, this));
-            ledTab.add("readyDrop", new InstantCommand(this::readyDrop, this));
-            ledTab.add("believeScored", new InstantCommand(this::believeScored, this));
             ledTab.add("wantsCone", new InstantCommand(this::wantsCone, this));
             ledTab.add("wantsCube", new InstantCommand(this::wantsCube, this));
-            ledTab.add("fullWhite", new InstantCommand(this::fullWhite, this));
-            ledTab.add("blink", new InstantCommand(this::blink, this));
+            ledTab.add("readyScore", new InstantCommand(this::readyScore, this));
+
+            //others
             ledTab.add("stop", new InstantCommand(this::stop, this));
             ledTab.add("start", new InstantCommand(this::start, this));
+            ledTab.add("readyCollect", new InstantCommand(this::readyCollect, this));
+            ledTab.add("readyDrop", new InstantCommand(this::readyDrop, this));
+            ledTab.add("believeScored", new InstantCommand(this::believeScored, this));
+            ledTab.add("fullWhite", new InstantCommand(this::fullWhite, this));
             ledTab.add("orangeAndBlue", new InstantCommand(this::orangeAndBlue, this));
         }
     }
