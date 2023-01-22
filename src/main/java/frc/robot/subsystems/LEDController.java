@@ -121,6 +121,45 @@ public class LEDController extends SubsystemBase {
         led.setData(ledBuffer);
     }
 
+    //rainbow
+    public void autoAligned(){
+        if ((System.currentTimeMillis() % 1000) < 500) {
+            //red
+            for (int i = 0; i < ledLength; i += 7) {
+                ledBuffer.setRGB(i, 255, 0, 0);
+            }
+            //orange
+            for (int i = 1; i < ledLength; i += 7) {
+                ledBuffer.setRGB(i, (int) (255 * .75), (int) (153 * .75), 0);
+            }
+            //yellow
+            for (int i = 2; i < ledLength; i += 7) {
+                ledBuffer.setRGB(i, (int) (255 * .75), (int) (230 * .75), (int) (20 * .75));
+            }
+            //green
+            for (int i = 3; i < ledLength; i += 7) {
+                ledBuffer.setRGB(i, 0, (int) (255 * .75), 0);
+            }
+            //blue
+            for (int i = 4; i < ledLength; i += 7) {
+                ledBuffer.setRGB(i, 0, 0, (int) (255 * .75));
+            }
+            //indigo
+            for (int i = 5; i < ledLength; i += 7) {
+                ledBuffer.setRGB(i, (int) (75 * .75), 0, (int) (130 * .75));
+            }
+            //violet
+            for (int i = 6; i < ledLength; i += 7) {
+                ledBuffer.setRGB(i, (int) (143 * .75), 0, (int) (255 * .75));
+            }
+        } else {
+            setFullStripColor(0, 0, 0, 0f);
+        }
+        
+        currentState = "autoAligned";
+        led.setData(ledBuffer);
+    }
+
     // turn off LEDs
     public void stop() {
         led.stop();
@@ -144,6 +183,8 @@ public class LEDController extends SubsystemBase {
                 orangeAndBlue();
             } else if (currentState == "hasGamePiece") {
                 hasGamePiece();
+            } else if (currentState == "autoAligned") {
+                autoAligned();
             }
 
             led.setData(ledBuffer);
@@ -176,6 +217,7 @@ public class LEDController extends SubsystemBase {
             ledTab.add("wantsCone", new InstantCommand(this::wantsCone, this));
             ledTab.add("wantsCube", new InstantCommand(this::wantsCube, this));
             ledTab.add("readyScore", new InstantCommand(this::readyScore, this));
+            ledTab.add("autoAligned", new InstantCommand(this::autoAligned, this));
 
             //others
             ledTab.add("stop", new InstantCommand(this::stop, this));
