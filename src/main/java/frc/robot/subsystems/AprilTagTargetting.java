@@ -1,18 +1,12 @@
 package frc.robot.subsystems;
 
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.Constants.VisionConstants;
 
 public class AprilTagTargetting extends SubsystemBase{
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
-    private final ShuffleboardTab targetingTab = Shuffleboard.getTab("Targeting Tab");
      
     private double horizAngleToTarget = -1;
     private double botPose = -1;
@@ -47,10 +41,8 @@ public class AprilTagTargetting extends SubsystemBase{
      * @return Whether or not target offset is more than 29.8 degrees.
      */
     public boolean validTarget(){
-        // 29.8d represents the LL2+'s max FOV
-        // TODO: Chuck 29.8 into constants file
-
-        return Math.abs(this.horizAngleToTarget) < 29.8d;
+        // 29.8d represents the LL2+'s max FOV, from center of camera to edge of frame.
+        return Math.abs(this.horizAngleToTarget) < VisionConstants.HORIZ_CAMERA_FOV;
     }
 
     /**
@@ -59,6 +51,7 @@ public class AprilTagTargetting extends SubsystemBase{
      * @return degree offset from target.
      */
     public double autoAlign(){
+        // Set pipeline num to 2, should be retroreflective tape pipeline.
         setPipelineNum(2);
         
         var hasTarget = limelightTab.getEntry("tv").getDouble(0);
@@ -80,12 +73,9 @@ public class AprilTagTargetting extends SubsystemBase{
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle){
-        // 4 is arbitrary angle in degrees that we should be within.
         // Should put consideration into how accurate we want to be later on.
 
-        // TODO: Chuck deg tolerance in constants file later on
-        double degTolerance = 4;
-        return expectedAngle < degTolerance;
+        return expectedAngle < VisionConstants.DEGREE_TOLERANCE;
     }
 
 }
