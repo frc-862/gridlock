@@ -1,19 +1,10 @@
 package frc.robot;
 
-import java.util.Map;
-
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.LEDController;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.SwerveDrive;
@@ -26,7 +17,7 @@ import frc.thunder.filter.JoystickFilter.Mode;
 
 public class RobotContainer extends LightningContainer {
 
-  // Creates new LED contorller
+  // Creates new LED controller
   private static final LEDController led = new LEDController();
   
     // Creates our drivetrain subsystem
@@ -81,7 +72,7 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void initializeDashboardCommands() {
         ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
-        ShuffleboardTab ledTab = Shuffleboard.getTab("leds");
+        ShuffleboardTab ledTab = Shuffleboard.getTab("LEDs");
 
     }
 
