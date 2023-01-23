@@ -3,17 +3,20 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
 
 public class AprilTagTargetting extends SubsystemBase{
+
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
+    DoubleArraySubscriber botposeSub = limelightTab.getDoubleArrayTopic("botpose").subscribe(new double[] {});
      
-    private double horizAngleToTarget = -1;
-    private double botPose = -1;
+    private double horizAngleToTarget;
+    private double[] botPose = this.botposeSub.get();
 
     @Override
     public void periodic() {
-        this.botPose = limelightTab.getEntry("botpose").getDouble(0);
+        this.botPose = this.botposeSub.get();
     }
 
     /**
@@ -21,7 +24,7 @@ public class AprilTagTargetting extends SubsystemBase{
      * 
      * @return 3d bot pose
      */
-    public double getBotPose(){
+    public double[] getBotPose(){
         return this.botPose;
     }
 
@@ -42,7 +45,7 @@ public class AprilTagTargetting extends SubsystemBase{
      */
     public boolean validTarget(){
         // 29.8d represents the LL2+'s max FOV, from center of camera to edge of frame.
-        return Math.abs(this.horizAngleToTarget) < VisionConstants.HORIZ_CAMERA_FOV;
+        return Math.abs(this.horizAngleToTarget) < Constants.Vision.HORIZ_CAMERA_FOV;
     }
 
     /**
@@ -75,7 +78,7 @@ public class AprilTagTargetting extends SubsystemBase{
     public boolean isOnTarget(double expectedAngle){
         // Should put consideration into how accurate we want to be later on.
 
-        return expectedAngle < VisionConstants.DEGREE_TOLERANCE;
+        return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
     }
 
 }

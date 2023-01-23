@@ -107,12 +107,12 @@ public final class Constants {
         }
     }
 
-    public static final class VisionConstants {
+    public static final class Vision {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;
 
         // Arbitrary value for how close the robot needs to be to the target (in angles)
-        public static final double DEGREE_TOLERANCE = 3d;
+        public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
     }
 }
