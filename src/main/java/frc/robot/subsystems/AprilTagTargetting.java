@@ -12,7 +12,7 @@ public class AprilTagTargetting extends SubsystemBase{
     private double botPose = -1;
 
     @Override
-    public void periodic(){
+    public void periodic() {
         this.botPose = limelightTab.getEntry("botpose").getDouble(0);
     }
 
