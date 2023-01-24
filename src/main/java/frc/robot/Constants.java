@@ -14,6 +14,10 @@ public final class Constants {
         public static final double MAX_POWER = 1d;
 
     }
+    public static final class SystemTestConstants {
+        // Drive Test Variables
+        public static final int DEGREES_INTERVAL_INCREASE = 30;
+    }
 
     public static final class DrivetrainConstants {
 
