@@ -448,4 +448,12 @@ public class Drivetrain extends SubsystemBase {
         states[3] = new SwerveModuleState(0,
                 new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
     }
+
+
+    public void resetNeoAngle() {
+        frontLeftModule.setEncoderAngle();
+        frontRightModule.setEncoderAngle();
+        backLeftModule.setEncoderAngle();
+        backRightModule.setEncoderAngle();
+    }
 }

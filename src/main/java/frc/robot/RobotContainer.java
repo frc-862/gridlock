@@ -17,68 +17,71 @@ import frc.thunder.filter.JoystickFilter.Mode;
 
 public class RobotContainer extends LightningContainer {
 
-  // Creates new LED controller
-  private static final LEDController led = new LEDController();
-  
-    // Creates our drivetrain subsystem
-    private static final Drivetrain drivetrain = new Drivetrain();
+        // Creates new LED controller
+        private static final LEDController led = new LEDController();
 
-    // Creates our driver controller and deadzone
-    private static final XboxController driver = new XboxController(0);
-    private static final JoystickFilter joystickFilter =
-            new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
-                    XboxControllerConstants.MAX_POWER, Mode.CUBED);
+        // Creates our drivetrain subsystem
+        private static final Drivetrain drivetrain = new Drivetrain();
 
-    private static final AutonomousCommandFactory autoFactory =
-            new AutonomousCommandFactory(drivetrain::getPose, drivetrain::resetOdometry,
-                    drivetrain.getDriveKinematics(), DrivetrainConstants.DRIVE_PID_CONSTANTS,
-                    DrivetrainConstants.THETA_PID_CONSTANTS, drivetrain::setStates, drivetrain);
+        // Creates our driver controller and deadzone
+        private static final XboxController driver = new XboxController(0);
+        private static final JoystickFilter joystickFilter = new JoystickFilter(
+                        XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
+                        XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
-    // Configure the button bindings
-    @Override
-    protected void configureButtonBindings() {
-        // Back button to reset feild centeric driving to current heading of the robot
-        new Trigger(driver::getBackButton)
-                .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-    }
+        private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(
+                        drivetrain::getPose, drivetrain::resetOdometry,
+                        drivetrain.getDriveKinematics(), DrivetrainConstants.DRIVE_PID_CONSTANTS,
+                        DrivetrainConstants.THETA_PID_CONSTANTS, drivetrain::setStates, drivetrain);
 
-    // Creates the autonomous commands
-    @Override
-    protected void configureAutonomousCommands() {
+        // Configure the button bindings
+        @Override
+        protected void configureButtonBindings() {
+                // Back button to reset feild centeric driving to current heading of the robot
+                new Trigger(driver::getBackButton)
+                                .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+
+                new Trigger(driver::getAButton)
+                                .onTrue(new InstantCommand(drivetrain::resetNeoAngle));
+        }
+
+        // Creates the autonomous commands
+        @Override
+        protected void configureAutonomousCommands() {
 
 
-    }
+        }
 
-    @Override
-    protected void configureDefaultCommands() {
-        // Set up the default command for the drivetrain.
-        // The controls are for field-oriented driving:
-        // Left stick Y axis -> forward and backwards movement
-        // Left stick X axis -> left and right movement
-        // Right stick X axis -> rotation
-        drivetrain.setDefaultCommand(
-                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
-                        () -> joystickFilter.filter(driver.getLeftY()),
-                        () -> -joystickFilter.filter(driver.getRightX())));
+        @Override
+        protected void configureDefaultCommands() {
+                // Set up the default command for the drivetrain.
+                // The controls are for field-oriented driving:
+                // Left stick Y axis -> forward and backwards movement
+                // Left stick X axis -> left and right movement
+                // Right stick X axis -> rotation
+                drivetrain.setDefaultCommand(new SwerveDrive(drivetrain,
+                                () -> -joystickFilter.filter(driver.getLeftX()),
+                                () -> joystickFilter.filter(driver.getLeftY()),
+                                () -> -joystickFilter.filter(driver.getRightX())));
 
-    }
+        }
 
-    @Override
-    protected void configureSystemTests() {}
+        @Override
+        protected void configureSystemTests() {}
 
-    @Override
-    protected void releaseDefaultCommands() {}
+        @Override
+        protected void releaseDefaultCommands() {}
 
-    @Override
-    protected void initializeDashboardCommands() {
-        ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
-        ShuffleboardTab ledTab = Shuffleboard.getTab("LEDs");
+        @Override
+        protected void initializeDashboardCommands() {
+                ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
+                ShuffleboardTab ledTab = Shuffleboard.getTab("LEDs");
 
-    }
+        }
 
-    @Override
-    protected void configureFaultCodes() {}
+        @Override
+        protected void configureFaultCodes() {}
 
-    @Override
-    protected void configureFaultMonitors() {}
+        @Override
+        protected void configureFaultMonitors() {}
 }
