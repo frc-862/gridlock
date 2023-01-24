@@ -11,7 +11,7 @@ import frc.robot.Constants.Colors;
 public class LEDController extends SubsystemBase {
 
     // initialize variables
-    private int ledPort = 9;
+    private final int ledPort = 9;
     private final int ledLength = 37;
     private long currentTime = System.currentTimeMillis();
     private long nextEventTime = System.currentTimeMillis();
@@ -19,7 +19,6 @@ public class LEDController extends SubsystemBase {
     // create LEDs
     private AddressableLED led = new AddressableLED(ledPort);
     private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(ledLength);
-    private String prevState = "none";
     private String currentState = "none";
 
     // set up an LED set
@@ -152,7 +151,6 @@ public class LEDController extends SubsystemBase {
 
     @Override
     public void periodic() {
-        prevState = currentState;
         currentTime = System.currentTimeMillis();
 
         // compare current time to the next event time to take action and set next event
