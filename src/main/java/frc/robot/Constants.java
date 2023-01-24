@@ -106,4 +106,15 @@ public final class Constants {
             public static final int BACK_LEFT_CANCODER = 34;
         }
     }
+
+    public static final class Colors {
+        //lightning colors
+        public static final int[] lightningOrange = {255, 125, 15};
+        public static final int[] lightningBlue = {15, 70, 255};
+
+        //misc colors
+        public static final int[] cyan = {96, 209, 149};
+        public static final int[] yellow = {255, 230, 20};
+        public static final int[] purple = {220, 30, 240};
+    }
 }
