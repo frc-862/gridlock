@@ -17,6 +17,8 @@ public final class Constants {
     public static final class SystemTestConstants {
         // Drive Test Variables
         public static final int DEGREES_INTERVAL_INCREASE = 30;
+        public static final int ANGLE_DEAD_ZONE = 3;
+        public static final int MAX_ROTATIONS_PER_DIRECTION = 2;
     }
 
     public static final class DrivetrainConstants {

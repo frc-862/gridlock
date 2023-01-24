@@ -38,7 +38,9 @@ public class TurnTest extends CommandBase {
     System.out.println("Angle: " + driveAngle);
     module.set(drivetrain.velocityToDriveVolts(driveSpeed), driveAngle);
     // Checks if the module made it to the angle and has gone around less than 2 times
-    if ((module.getSteerAngle() == driveAngle) && (revolutions < 2)) {
+    if ((module.getSteerAngle() >= (driveAngle - SystemTestConstants.ANGLE_DEAD_ZONE))
+        && (module.getSteerAngle() <= (driveAngle + SystemTestConstants.ANGLE_DEAD_ZONE))
+        && (revolutions < SystemTestConstants.MAX_ROTATIONS_PER_DIRECTION)) {
       if (direction) {// If true clockwise
         driveAngle += SystemTestConstants.DEGREES_INTERVAL_INCREASE;
         // Loops around
