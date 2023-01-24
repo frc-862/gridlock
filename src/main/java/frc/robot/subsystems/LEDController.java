@@ -122,36 +122,15 @@ public class LEDController extends SubsystemBase {
         led.setData(ledBuffer);
     }
 
-    //rainbow
     public void autoAligned(){
+        //flash a rainbow pattern on and off
         if ((System.currentTimeMillis() % 1000) < 500) {
-            //red
-            for (int i = 0; i < ledLength; i += 7) {
-                ledBuffer.setRGB(i, 255, 0, 0);
-            }
-            //orange
-            for (int i = 1; i < ledLength; i += 7) {
-                ledBuffer.setRGB(i, (int) (255 * .75), (int) (153 * .75), 0);
-            }
-            //yellow
-            for (int i = 2; i < ledLength; i += 7) {
-                ledBuffer.setRGB(i, (int) (255 * .75), (int) (230 * .75), (int) (20 * .75));
-            }
-            //green
-            for (int i = 3; i < ledLength; i += 7) {
-                ledBuffer.setRGB(i, 0, (int) (255 * .75), 0);
-            }
-            //blue
-            for (int i = 4; i < ledLength; i += 7) {
-                ledBuffer.setRGB(i, 0, 0, (int) (255 * .75));
-            }
-            //indigo
-            for (int i = 5; i < ledLength; i += 7) {
-                ledBuffer.setRGB(i, (int) (75 * .75), 0, (int) (130 * .75));
-            }
-            //violet
-            for (int i = 6; i < ledLength; i += 7) {
-                ledBuffer.setRGB(i, (int) (143 * .75), 0, (int) (255 * .75));
+            //how many times the rainbow will repeat across the strip
+            float rainbowRepetitions  = 3f;
+
+            for (int i = 0; i < ledLength; i += 1) {
+                int hValue = (int) ((((float) i / (float) (ledLength / rainbowRepetitions)) % 1) * 180);
+                ledBuffer.setHSV(i, hValue, 255, 255);
             }
         } else {
             setFullStripColor(0, 0, 0, 0f);
