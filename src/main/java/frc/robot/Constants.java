@@ -2,6 +2,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.PIDConstants;
 
+import java.nio.file.*;
+
 import edu.wpi.first.math.util.Units;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 
@@ -16,6 +18,28 @@ public final class Constants {
     }
 
     public static final class DrivetrainConstants {
+
+        public static double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(0);
+        public static double BACK_LEFT_STEER_OFFSET = -Math.toRadians(0);
+        public static double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(0);
+        public static double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(0);
+
+        public DrivetrainConstants() {
+            Path blackoutFile = Paths.get(null);
+            Path gridlockFile = Paths.get(null);
+
+            if (Files.exists(gridlockFile)) {
+                double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(87.715);
+                double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(278.701);
+                double BACK_LEFT_STEER_OFFSET = -Math.toRadians(351.738);
+                double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(45.352);
+            } else if (Files.exists(blackoutFile)) {
+                double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
+                double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
+                double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
+                double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
+            }
+        }
 
         // Our drivetrain and track width
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.8125d);
@@ -50,11 +74,9 @@ public final class Constants {
         public static final int STEER_CURRENT_LIMIT = 30;
         public static final double NOMINAL_VOLTAGE = 12d;
 
+
         // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(87.715); // -Math.toRadians(84.832);
-        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(278.701); // -Math.toRadians(192.7441);
-        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(351.738); // -Math.toRadians(19.5996);
-        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(45.352); // -Math.toRadians(63.457);
+        
 
         // Gains vaules for PIDControllers
         public static final class Gains {
