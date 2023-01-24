@@ -1,0 +1,72 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK MAX [1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [2]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [3]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [4]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [5]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [6]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [7]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [8]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/Pigeon 2 [23]": "Gyro",
+      "/Shuffleboard/Autonomous/Auto Mode": "String Chooser",
+      "/Shuffleboard/LEDs/autoAligned": "Command",
+      "/Shuffleboard/LEDs/believeScored": "Command",
+      "/Shuffleboard/LEDs/fullWhite": "Command",
+      "/Shuffleboard/LEDs/hasGamePiece": "Command",
+      "/Shuffleboard/LEDs/orangeAndBlue": "Command",
+      "/Shuffleboard/LEDs/readyCollect": "Command",
+      "/Shuffleboard/LEDs/readyDrop": "Command",
+      "/Shuffleboard/LEDs/readyScore": "Command",
+      "/Shuffleboard/LEDs/start": "Command",
+      "/Shuffleboard/LEDs/stop": "Command",
+      "/Shuffleboard/LEDs/wantsCone": "Command",
+      "/Shuffleboard/LEDs/wantsCube": "Command",
+      "/Shuffleboard/SystemTest/bl drive test": "Command",
+      "/Shuffleboard/SystemTest/br drive test": "Command",
+      "/Shuffleboard/SystemTest/fl drive test": "Command",
+      "/Shuffleboard/SystemTest/fr drive test": "Command"
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
+  }
+}

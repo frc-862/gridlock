@@ -51,10 +51,10 @@ public final class Constants {
         public static final double NOMINAL_VOLTAGE = 12d;
 
         // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(87.715); // -Math.toRadians(84.832);
-        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(278.701); // -Math.toRadians(192.7441);
-        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(351.738); // -Math.toRadians(19.5996);
-        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(45.352); // -Math.toRadians(63.457);
+        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.334); // -Math.toRadians(84.832);
+        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(123.047); // -Math.toRadians(192.7441);
+        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(312.451); // -Math.toRadians(19.5996);
+        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(13.008); // -Math.toRadians(63.457);
 
         // Gains vaules for PIDControllers
         public static final class Gains {

@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -40,7 +41,7 @@ public class LEDController extends SubsystemBase {
         currentState = "readyCollect";
         led.setData(ledBuffer);
     }
-    
+
     public void fullWhite() {
         // white
         setFullStripColor(255, 255, 255, 0.75f);
@@ -69,7 +70,7 @@ public class LEDController extends SubsystemBase {
         currentState = "orangeAndBlue";
         led.setData(ledBuffer);
     }
-    
+
     public void readyDrop() {
         // cyan
         setFullStripColor(96, 209, 149, 0.75f);
@@ -108,7 +109,7 @@ public class LEDController extends SubsystemBase {
         currentState = "wantsCube";
         led.setData(ledBuffer);
     }
-    
+
     public void readyScore() {
         // flashes between blue and orange
         if ((System.currentTimeMillis() % 1000) < 500) {
@@ -121,41 +122,41 @@ public class LEDController extends SubsystemBase {
         led.setData(ledBuffer);
     }
 
-    //rainbow
-    public void autoAligned(){
+    // rainbow
+    public void autoAligned() {
         if ((System.currentTimeMillis() % 1000) < 500) {
-            //red
+            // red
             for (int i = 0; i < ledLength; i += 7) {
                 ledBuffer.setRGB(i, 255, 0, 0);
             }
-            //orange
+            // orange
             for (int i = 1; i < ledLength; i += 7) {
                 ledBuffer.setRGB(i, (int) (255 * .75), (int) (153 * .75), 0);
             }
-            //yellow
+            // yellow
             for (int i = 2; i < ledLength; i += 7) {
                 ledBuffer.setRGB(i, (int) (255 * .75), (int) (230 * .75), (int) (20 * .75));
             }
-            //green
+            // green
             for (int i = 3; i < ledLength; i += 7) {
                 ledBuffer.setRGB(i, 0, (int) (255 * .75), 0);
             }
-            //blue
+            // blue
             for (int i = 4; i < ledLength; i += 7) {
                 ledBuffer.setRGB(i, 0, 0, (int) (255 * .75));
             }
-            //indigo
+            // indigo
             for (int i = 5; i < ledLength; i += 7) {
                 ledBuffer.setRGB(i, (int) (75 * .75), 0, (int) (130 * .75));
             }
-            //violet
+            // violet
             for (int i = 6; i < ledLength; i += 7) {
                 ledBuffer.setRGB(i, (int) (143 * .75), 0, (int) (255 * .75));
             }
         } else {
             setFullStripColor(0, 0, 0, 0f);
         }
-        
+
         currentState = "autoAligned";
         led.setData(ledBuffer);
     }
@@ -212,14 +213,14 @@ public class LEDController extends SubsystemBase {
         // ShuffleBoard button setup
         var ledTab = Shuffleboard.getTab("LEDs");
         if (led != null) {
-            //strategy chosen methods
+            // strategy chosen methods
             ledTab.add("hasGamePiece", new InstantCommand(this::hasGamePiece, this));
             ledTab.add("wantsCone", new InstantCommand(this::wantsCone, this));
             ledTab.add("wantsCube", new InstantCommand(this::wantsCube, this));
             ledTab.add("readyScore", new InstantCommand(this::readyScore, this));
             ledTab.add("autoAligned", new InstantCommand(this::autoAligned, this));
 
-            //others
+            // others
             ledTab.add("stop", new InstantCommand(this::stop, this));
             ledTab.add("start", new InstantCommand(this::start, this));
             ledTab.add("readyCollect", new InstantCommand(this::readyCollect, this));
