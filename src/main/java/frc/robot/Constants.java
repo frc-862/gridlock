@@ -2,8 +2,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.PIDConstants;
 
-import java.nio.file.*;
-
 import edu.wpi.first.math.util.Units;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 
