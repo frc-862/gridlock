@@ -15,6 +15,13 @@ public final class Constants {
 
     }
 
+    public static final class SystemTestConstants {
+        // Drive Test Variables
+        public static final int DEGREES_INTERVAL_INCREASE = 30;
+        public static final int ANGLE_DEAD_ZONE = 3;
+        public static final int MAX_ROTATIONS_PER_DIRECTION = 2;
+    }
+
     public static final class DrivetrainConstants {
 
         // Our drivetrain and track width
@@ -51,10 +58,10 @@ public final class Constants {
         public static final double NOMINAL_VOLTAGE = 12d;
 
         // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(87.715); // -Math.toRadians(84.832);
-        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(278.701); // -Math.toRadians(192.7441);
-        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(351.738); // -Math.toRadians(19.5996);
-        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(45.352); // -Math.toRadians(63.457);
+        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.246); // -Math.toRadians(84.832);
+        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(122.959); // -Math.toRadians(192.7441);
+        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(311.660); // -Math.toRadians(19.5996);
+        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(12.744); // -Math.toRadians(63.457);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
