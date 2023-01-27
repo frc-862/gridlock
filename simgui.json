@@ -64,6 +64,13 @@
       "/Shuffleboard/SystemTest/br drive test": "Command",
       "/Shuffleboard/SystemTest/fl drive test": "Command",
       "/Shuffleboard/SystemTest/fr drive test": "Command"
+    },
+    "windows": {
+      "/Shuffleboard/SystemTest/fr drive test": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables View": {

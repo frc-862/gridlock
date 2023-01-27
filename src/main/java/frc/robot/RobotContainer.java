@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.LEDController;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -71,45 +72,55 @@ public class RobotContainer extends LightningContainer {
         @Override
         protected void configureSystemTests() {
                 SystemTest.registerTest("fl drive test", new SequentialCommandGroup(
+                                new WaitCommand(2),
                                 new TimedCommand(new DriveTest(drivetrain,
-                                                drivetrain.getFrontLeftModule(), 1), 2),
+                                                drivetrain.getFrontLeftModule(), .5), 2),
+                                new WaitCommand(1),
                                 new TimedCommand(new DriveTest(drivetrain,
-                                                drivetrain.getFrontLeftModule(), -1), 2),
+                                                drivetrain.getFrontLeftModule(), -.5), 2),
+                                new WaitCommand(1),
                                 new TimedCommand(new TurnTest(drivetrain,
                                                 drivetrain.getFrontLeftModule(), true), 2),
-                                new TimedCommand(new TurnTest(drivetrain,
+                                new WaitCommand(1), new TimedCommand(new TurnTest(drivetrain,
                                                 drivetrain.getFrontLeftModule(), false), 2)));
 
                 SystemTest.registerTest("fr drive test", new SequentialCommandGroup(
+                                new WaitCommand(2),
                                 new TimedCommand(new DriveTest(drivetrain,
-                                                drivetrain.getFrontRightModule(), 1), 2),
+                                                drivetrain.getFrontRightModule(), .5), 2),
+                                new WaitCommand(1),
                                 new TimedCommand(new DriveTest(drivetrain,
-                                                drivetrain.getFrontRightModule(), -1), 2),
+                                                drivetrain.getFrontRightModule(), -.5), 2),
+                                new WaitCommand(1),
                                 new TimedCommand(new TurnTest(drivetrain,
                                                 drivetrain.getFrontRightModule(), true), 2),
-                                new TimedCommand(new TurnTest(drivetrain,
+                                new WaitCommand(1), new TimedCommand(new TurnTest(drivetrain,
                                                 drivetrain.getFrontRightModule(), false), 2)));
 
                 SystemTest.registerTest("bl drive test", new SequentialCommandGroup(
+                                new WaitCommand(2),
                                 new TimedCommand(new DriveTest(drivetrain,
-                                                drivetrain.getBackLeftModule(), 1), 2),
-                                new TimedCommand(
-                                                new DriveTest(drivetrain,
-                                                                drivetrain.getBackLeftModule(), -1),
-                                                2),
+                                                drivetrain.getBackLeftModule(), .5), 2),
+                                new WaitCommand(1),
+                                new TimedCommand(new DriveTest(drivetrain,
+                                                drivetrain.getBackLeftModule(), -.5), 2),
+                                new WaitCommand(1),
                                 new TimedCommand(new TurnTest(drivetrain,
                                                 drivetrain.getBackLeftModule(), true), 2),
-                                new TimedCommand(new TurnTest(drivetrain,
+                                new WaitCommand(1), new TimedCommand(new TurnTest(drivetrain,
                                                 drivetrain.getBackLeftModule(), false), 2)));
 
                 SystemTest.registerTest("br drive test", new SequentialCommandGroup(
+                                new WaitCommand(2),
                                 new TimedCommand(new DriveTest(drivetrain,
-                                                drivetrain.getBackRightModule(), 1), 2),
+                                                drivetrain.getBackRightModule(), .5), 2),
+                                new WaitCommand(1),
                                 new TimedCommand(new DriveTest(drivetrain,
-                                                drivetrain.getBackRightModule(), -1), 2),
+                                                drivetrain.getBackRightModule(), -.5), 2),
+                                new WaitCommand(1),
                                 new TimedCommand(new TurnTest(drivetrain,
                                                 drivetrain.getBackRightModule(), true), 5),
-                                new TimedCommand(new TurnTest(drivetrain,
+                                new WaitCommand(1), new TimedCommand(new TurnTest(drivetrain,
                                                 drivetrain.getBackRightModule(), false), 5)));
 
         }

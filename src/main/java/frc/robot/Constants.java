@@ -14,6 +14,7 @@ public final class Constants {
         public static final double MAX_POWER = 1d;
 
     }
+
     public static final class SystemTestConstants {
         // Drive Test Variables
         public static final int DEGREES_INTERVAL_INCREASE = 30;
@@ -57,10 +58,10 @@ public final class Constants {
         public static final double NOMINAL_VOLTAGE = 12d;
 
         // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.334); // -Math.toRadians(84.832);
-        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(123.047); // -Math.toRadians(192.7441);
-        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(312.451); // -Math.toRadians(19.5996);
-        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(13.008); // -Math.toRadians(63.457);
+        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.246); // -Math.toRadians(84.832);
+        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(122.959); // -Math.toRadians(192.7441);
+        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(311.660); // -Math.toRadians(19.5996);
+        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(12.744); // -Math.toRadians(63.457);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
