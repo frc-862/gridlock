@@ -18,11 +18,8 @@ public class TurnTest extends CommandBase {
     private double driveAngle = 0;
     private boolean direction = false;
     private int revolutions = 0;
-    private double topAngle = 0;
-    private double bottomAngle = 0;
 
     public TurnTest(Drivetrain drivetrain, SwerveModule module, boolean direction) {
-        // Use addRequirements() here to declare subsystem dependencies.
         this.module = module;
         this.drivetrain = drivetrain;
         this.direction = direction;
@@ -40,12 +37,10 @@ public class TurnTest extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        bottomAngle = 0;
-        topAngle = 0;
-
         // Set power
         module.set(drivetrain.velocityToDriveVolts(driveSpeed), Math.toRadians(driveAngle));
-        // Checks if the module made it to the angle and has gone around less than 2 times
+        // Checks if the module made it to the angle with in 3 degrees and has gone around less than
+        // 2 times
         if ((Math.abs(getBearingdifference(
                 Math.toDegrees(module.getSteerAngle()))) < SystemTestConstants.ANGLE_DEAD_ZONE)
                 && (revolutions < SystemTestConstants.MAX_ROTATIONS_PER_DIRECTION)) {
@@ -71,16 +66,17 @@ public class TurnTest extends CommandBase {
         return false;
     }
 
-    private double getBearingdifference(double cur) {
-        // if (Math.signum(((tar - cur + 540) % 360) - 180) > 0) {
-        return (((driveAngle - cur + 540) % 360) - 180);
+    /** Calculate the diference between target angle and curent angle */
+    private double getBearingdifference(double current) {
+        return (((driveAngle - current + 540) % 360) - 180);
     }
 
+    /** Checks and keeps angle within 0 - 360 */
     private void wrapAround() {
-        if ((driveAngle > 360)) {
+        if ((driveAngle > 360)) { // Below 360
             driveAngle -= 360;
             revolutions++;
-        } else if ((driveAngle < 0)) {
+        } else if ((driveAngle < 0)) {// Above 0
             driveAngle += 360;
             revolutions++;
         }
