@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
@@ -69,14 +72,39 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
     private final SwerveModule backLeftModule;
-    private final SwerveModule backRightModule;
+    private final SwerveModule 
+    
+    d
+    d
+    
+    
+    d
+    
+    d
+    backRightModule;
+    
+    public double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.246);
+    public double BACK_LEFT_STEER_OFFSET = -Math.toRadians(122.959);
+    public double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(311.660);
+    public double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(12.744);
 
-    // Creates our drivetrain shuffleboard tab for displaying module data
-    private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-    private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
+        Path gridlockFile = Paths.get("home/lvuser/gridlock");
+        Path blackoutFile = Paths.get("home/lvuser/blackout");
 
-    public Drivetrain() {
+// Creates our drivetrain shuffleboard tab for displaying module data
+private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+
+private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
+
+public Drivetrain() {
+    
+        if (Files.exists(blackoutFile)) {
+            FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
+            FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
+            BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
+            BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
+        }
 
         // Set our neo module configurations using drive current, steer current, and voltage
         swerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
@@ -89,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
                         .withPosition(0, 0),
                 swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.FRONT_LEFT_DRIVE_MOTOR, RobotMap.CAN.FRONT_LEFT_AZIMUTH_MOTOR,
-                RobotMap.CAN.FRONT_LEFT_CANCODER, DrivetrainConstants.FRONT_LEFT_STEER_OFFSET);
+                RobotMap.CAN.FRONT_LEFT_CANCODER, FRONT_LEFT_STEER_OFFSET);
 
         // Making front right module
         frontRightModule = Mk4iSwerveModuleHelper.createNeo(
@@ -97,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
                         .withPosition(2, 0),
                 swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.FRONT_RIGHT_DRIVE_MOTOR, RobotMap.CAN.FRONT_RIGHT_AZIMUTH_MOTOR,
-                RobotMap.CAN.FRONT_RIGHT_CANCODER, DrivetrainConstants.FRONT_RIGHT_STEER_OFFSET);
+                RobotMap.CAN.FRONT_RIGHT_CANCODER, FRONT_RIGHT_STEER_OFFSET);
 
         // Making backleft module
         backLeftModule = Mk4iSwerveModuleHelper.createNeo(
@@ -105,7 +133,7 @@ public class Drivetrain extends SubsystemBase {
                         4, 0),
                 swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR, RobotMap.CAN.BACK_LEFT_AZIMUTH_MOTOR,
-                RobotMap.CAN.BACK_LEFT_CANCODER, DrivetrainConstants.BACK_LEFT_STEER_OFFSET);
+                RobotMap.CAN.BACK_LEFT_CANCODER, BACK_LEFT_STEER_OFFSET);
 
         // Making back right module
         backRightModule = Mk4iSwerveModuleHelper.createNeo(
@@ -113,7 +141,7 @@ public class Drivetrain extends SubsystemBase {
                         .withPosition(6, 0),
                 swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
-                RobotMap.CAN.BACK_RIGHT_CANCODER, DrivetrainConstants.BACK_RIGHT_STEER_OFFSET);
+                RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
         // Update our module positions, odometery, and states
         updateModulePositions();
