@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.RobotMap;
@@ -208,7 +209,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the clamped voltage to apply to the drive motors
      */
-    private double velocityToDriveVolts(double speedMetersPerSecond) {
+    public double velocityToDriveVolts(double speedMetersPerSecond) {
         double ff = feedForward.calculate(speedMetersPerSecond);
         return MathUtil.clamp(ff, -DrivetrainConstants.MAX_VOLTAGE,
                 DrivetrainConstants.MAX_VOLTAGE);
@@ -283,7 +284,6 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("br drive vel", () -> frontLeftModule.getDriveVelocity());
 
         tab.addDouble("heading", () -> getHeading2d().getDegrees());
-
     }
 
     /**
