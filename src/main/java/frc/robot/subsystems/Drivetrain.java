@@ -72,16 +72,7 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
     private final SwerveModule backLeftModule;
-    private final SwerveModule 
-    
-    d
-    d
-    
-    
-    d
-    
-    d
-    backRightModule;
+    private final SwerveModule backRightModule;
     
     public double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.246);
     public double BACK_LEFT_STEER_OFFSET = -Math.toRadians(122.959);
