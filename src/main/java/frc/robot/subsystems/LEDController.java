@@ -195,12 +195,11 @@ public class LEDController extends SubsystemBase {
     /**
      * lets you set the full strip color and brightness
      * 
-     * @param r          value 0-255
-     * @param g          value 0-255
-     * @param b          value 0-255
-     * @param brightness decimal value for brightness where 1.0 is full brightness,
-     *                   0.5 is half,
-     *                   etc.
+     * @param r value 0-255
+     * @param g value 0-255
+     * @param b value 0-255
+     * @param brightness decimal value for brightness where 1.0 is full brightness, 0.5 is half,
+     *        etc.
      */
     private void setFullStripColor(int r, int g, int b, float brightness) {
         for (int i = 0; i < ledLength; i++) {
