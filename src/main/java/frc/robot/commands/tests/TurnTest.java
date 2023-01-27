@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.tests;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -11,7 +7,6 @@ import frc.thunder.logging.DataLogger;
 import frc.thunder.swervelib.SwerveModule;
 
 public class TurnTest extends CommandBase {
-    /** Creates a new FRDriveTest. */
     private final SwerveModule module;
     private final Drivetrain drivetrain;
     private double driveSpeed = 0;
@@ -30,11 +25,6 @@ public class TurnTest extends CommandBase {
         addRequirements(drivetrain);
     }
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {}
-
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         // Set power
@@ -56,15 +46,13 @@ public class TurnTest extends CommandBase {
         }
     }
 
-    // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {}
-
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
+    public void end(boolean interrupted) {
+        drivetrain.stop();
     }
+
+    @Override
+    public boolean isFinished() { return false; }
 
     /** Calculate the diference between target angle and curent angle */
     private double getBearingdifference(double current) {
