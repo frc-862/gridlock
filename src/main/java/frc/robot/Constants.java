@@ -17,19 +17,23 @@ public final class Constants {
 
     }
 
-    public static final class DrivetrainConstants {
+    public static final class SystemTestConstants {
+        // Drive Test Variables
+        public static final int DEGREES_INTERVAL_INCREASE = 30;
+        public static final int ANGLE_DEAD_ZONE = 3;
+        public static final int MAX_ROTATIONS_PER_DIRECTION = 2;
+    }
 
-        
+    public static final class DrivetrainConstants {
 
         // Our drivetrain and track width
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.8125d);
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
         // Drivetrain PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS =
-                new PIDConstants(Gains.kP, Gains.kI, Gains.kD);
-        public static final PIDConstants THETA_PID_CONSTANTS =
-                new PIDConstants(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD);
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(Gains.kP, Gains.kI, Gains.kD);
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(ThetaGains.kP, ThetaGains.kI,
+                ThetaGains.kD);
 
         // Module resting/default angles
         public static final double FRONT_LEFT_RESTING_ANGLE = Math.toRadians(-45d);
@@ -40,23 +44,19 @@ public final class Constants {
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12.0;
         // TODO look at the calculation here
-        public static final double MAX_VELOCITY_METERS_PER_SECOND =
-                5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
-                        * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
-        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-                MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0
+                * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
+                * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
+                / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                         DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND =
-                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                * 2 * Math.PI;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
         public static final int STEER_CURRENT_LIMIT = 30;
         public static final double NOMINAL_VOLTAGE = 12d;
-
-
-        // Module steer offsets
-        
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -107,5 +107,14 @@ public final class Constants {
             public static final int BACK_LEFT_AZIMUTH_MOTOR = 8;
             public static final int BACK_LEFT_CANCODER = 34;
         }
+    }
+
+    public static final class Vision {
+        // Represents camera FOV from center to edge
+        public static final double HORIZ_CAMERA_FOV = 29.8d;
+
+        // Arbitrary value for how close the robot needs to be to the target (in angles)
+        public static final double HORIZ_DEGREE_TOLERANCE = 3d;
+
     }
 }
