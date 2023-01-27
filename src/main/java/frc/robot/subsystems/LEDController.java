@@ -4,29 +4,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.Constants.Colors;
+import frc.robot.Constants.LedConstants;
+import frc.robot.Constants.LedConstants.Colors;
 
 public class LEDController extends SubsystemBase {
 
-    // initialize variables
-    private final int ledPort = 9;
-    private final int ledLength = 37;
     private long currentTime = System.currentTimeMillis();
     private long nextEventTime = System.currentTimeMillis();
 
     // create LEDs
-    private AddressableLED led = new AddressableLED(ledPort);
-    private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(ledLength);
+    private AddressableLED led = new AddressableLED(LedConstants.port);
+    private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.length);
     private String currentState = "none";
 
     // set up an LED set
     public LEDController() {
         led.setLength(ledBuffer.getLength());
-
         // turn the strip off on initalization
-        setFullStripColor(0, 0, 0, 0.75f);
+        setFullStripColor(Colors.off, LedConstants.brightness);
         led.setData(ledBuffer);
         start();
 
@@ -36,14 +31,14 @@ public class LEDController extends SubsystemBase {
 
     public void readyCollect() {
         // green
-        setFullStripColor(0, 255, 0, 0.75f);
+        setFullStripColor(Colors.green, LedConstants.brightness);
         currentState = "readyCollect";
         led.setData(ledBuffer);
     }
     
     public void fullWhite() {
         // white
-        setFullStripColor(255, 255, 255, 0.75f);
+        setFullStripColor(Colors.white, LedConstants.brightness);
         currentState = "fullWhite";
         led.setData(ledBuffer);
     }
@@ -51,18 +46,18 @@ public class LEDController extends SubsystemBase {
     //sets every other LED to orange or blue, and switches them every 0.5 seconds
     public void orangeAndBlue() {
         if ((System.currentTimeMillis() % 1000) < 500) {
-            for (int i = 0; i < ledLength; i += 2) {
-                setRGBFromArray(i, Colors.lightningOrange, 0.75f);
+            for (int i = 0; i < LedConstants.length; i += 2) {
+                setRGBFromArray(i, Colors.lightningOrange, LedConstants.brightness);
             }
-            for (int i = 1; i < ledLength; i += 2) {
-                setRGBFromArray(i, Colors.lightningBlue, 0.75f);
+            for (int i = 1; i < LedConstants.length; i += 2) {
+                setRGBFromArray(i, Colors.lightningBlue, LedConstants.brightness);
             }
         } else {
-            for (int i = 1; i < ledLength; i += 2) {
-                setRGBFromArray(i, Colors.lightningOrange, 0.75f);
+            for (int i = 1; i < LedConstants.length; i += 2) {
+                setRGBFromArray(i, Colors.lightningOrange, LedConstants.brightness);
             }
-            for (int i = 0; i < ledLength; i += 2) {
-                setRGBFromArray(i, Colors.lightningBlue, 0.75f);
+            for (int i = 0; i < LedConstants.length; i += 2) {
+                setRGBFromArray(i, Colors.lightningBlue, LedConstants.brightness);
             }
         }
 
@@ -72,14 +67,14 @@ public class LEDController extends SubsystemBase {
     
     public void readyDrop() {
         // cyan
-        setFullStripColor(Colors.cyan, 0.75f);
+        setFullStripColor(Colors.cyan, LedConstants.brightness);
         currentState = "readyDrop";
         led.setData(ledBuffer);
     }
 
     public void believeScored() {
         // red
-        setFullStripColor(255, 0, 0, 0.75f);
+        setFullStripColor(Colors.red, LedConstants.brightness);
         currentState = "believeScored";
         led.setData(ledBuffer);
     }
@@ -87,9 +82,9 @@ public class LEDController extends SubsystemBase {
     public void hasGamePiece() {
         // flashes green
         if ((System.currentTimeMillis() % 1000) < 500) {
-            setFullStripColor(0, 255, 0, 0.75f);
+            setFullStripColor(Colors.green, LedConstants.brightness);
         } else {
-            setFullStripColor(0, 0, 0, 0.75f);
+            setFullStripColor(Colors.off, LedConstants.brightness);
         }
         currentState = "hasGamePiece";
         led.setData(ledBuffer);
@@ -97,14 +92,14 @@ public class LEDController extends SubsystemBase {
 
     public void wantsCone() {
         // yellow
-        setFullStripColor(Colors.yellow, 0.75f);
+        setFullStripColor(Colors.yellow, LedConstants.brightness);
         currentState = "wantsCone";
         led.setData(ledBuffer);
     }
 
     public void wantsCube() {
         // purple
-        setFullStripColor(Colors.purple, 0.75f);
+        setFullStripColor(Colors.purple, LedConstants.brightness);
         currentState = "wantsCube";
         led.setData(ledBuffer);
     }
@@ -112,9 +107,9 @@ public class LEDController extends SubsystemBase {
     public void readyScore() {
         // flashes between blue and orange
         if ((System.currentTimeMillis() % 1000) < 500) {
-            setFullStripColor(Colors.lightningBlue, 0.75f);
+            setFullStripColor(Colors.lightningBlue, LedConstants.brightness);
         } else {
-            setFullStripColor(Colors.lightningOrange, 0.75f);
+            setFullStripColor(Colors.lightningOrange, LedConstants.brightness);
         }
 
         currentState = "readyScore";
@@ -125,14 +120,14 @@ public class LEDController extends SubsystemBase {
         //flash a rainbow pattern on and off
         if ((System.currentTimeMillis() % 1000) < 500) {
             //how many times the rainbow will repeat across the strip
-            float rainbowRepetitions  = 3f;
+            double rainbowRepetitions  = 3f;
 
-            for (int i = 0; i < ledLength; i += 1) {
-                int hValue = (int) ((((float) i / (float) (ledLength / rainbowRepetitions)) % 1) * 180);
+            for (int i = 0; i < LedConstants.length; i += 1) {
+                int hValue = (int) ((((double) i / (double) (LedConstants.length / rainbowRepetitions)) % 1) * 180);
                 ledBuffer.setHSV(i, hValue, 255, 255);
             }
         } else {
-            setFullStripColor(0, 0, 0, 0f);
+            setFullStripColor(Colors.off, 0f);
         }
         
         currentState = "autoAligned";
@@ -173,28 +168,12 @@ public class LEDController extends SubsystemBase {
     /**
      * lets you set the full strip color and brightness
      * 
-     * @param r value 0-255
-     * @param g value 0-255
-     * @param b value 0-255
-     * @param brightness decimal value for brightness where 1.0 is full brightness, 0.5 is half,
-     *        etc.
-     */
-    private void setFullStripColor(int r, int g, int b, float brightness) {
-        for (int i = 0; i < ledLength; i++) {
-            ledBuffer.setRGB(i, (int) (r * brightness), (int) (g * brightness),
-                    (int) (b * brightness));
-        }
-    }
-
-    /**
-     * lets you set the full strip color and brightness
-     * 
      * @param rgbArray array of an r, g, and b value (integers 0-255)
      * @param brightness decimal value for brightness where 1.0 is full brightness, 0.5 is half,
      *        etc.
      */
-    private void setFullStripColor(int [] rgbArray, float brightness) {
-        for (int i = 0; i < ledLength; i++) {
+    private void setFullStripColor(int [] rgbArray, double brightness) {
+        for (int i = 0; i < LedConstants.length; i++) {
             ledBuffer.setRGB(i, (int) (rgbArray[0] * brightness), (int) (rgbArray[1] * brightness),
                     (int) (rgbArray[2] * brightness));
         }
@@ -208,7 +187,7 @@ public class LEDController extends SubsystemBase {
      * @param brightness decimal value for brightness where 1.0 is full brightness, 0.5 is half,
      *        etc.
      */
-    private void setRGBFromArray(int index, int [] rgbArray, float brightness) {
+    private void setRGBFromArray(int index, int [] rgbArray, double brightness) {
         ledBuffer.setRGB(index, (int) (rgbArray[0] * brightness), (int) (rgbArray[1] * brightness),
              (int) (rgbArray[2] * brightness));
     }
