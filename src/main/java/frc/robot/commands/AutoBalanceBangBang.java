@@ -29,11 +29,11 @@ public class AutoBalanceBangBang extends CommandBase {
     public void execute() {                     
         // TODO: tune the value of 0.05 to probably something a lot smaller
         if (drivetrain.getPitch2d().getDegrees() - lastAngle > 0.05 && drivetrain.getPitch2d().getDegrees() > DrivetrainConstants.OPTIMAL_PITCH) { 
-            drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(5), 
+            drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(0.1), 
                                                 drivetrain.percentOutputToMetersPerSecond(0), 
                                                 drivetrain.percentOutputToMetersPerSecond(0)));
         } else if (drivetrain.getPitch2d().getDegrees() - lastAngle > 0.05 && drivetrain.getPitch2d().getDegrees() < DrivetrainConstants.OPTIMAL_PITCH) {
-            drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-5), 
+            drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-0.1), 
                                                 drivetrain.percentOutputToMetersPerSecond(0), 
                                                 drivetrain.percentOutputToMetersPerSecond(0)));
         } 

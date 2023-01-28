@@ -73,10 +73,10 @@ public class RobotContainer extends LightningContainer {
         //                 () -> -joystickFilter.filter(driver.getRightX())));
 
         drivetrain.setDefaultCommand(new AutoBalance(drivetrain));
-        drivetrain.setDefaultCommand(
-                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
-                        () -> joystickFilter.filter(driver.getLeftY()),
-                        () -> -joystickFilter.filter(driver.getRightX())));
+        // drivetrain.setDefaultCommand(
+        //         new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
+        //                 () -> joystickFilter.filter(driver.getLeftY()),
+        //                 () -> -joystickFilter.filter(driver.getRightX())));
 
     }
 
