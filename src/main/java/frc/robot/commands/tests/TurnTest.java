@@ -13,7 +13,6 @@ public class TurnTest extends CommandBase {
     private double driveAngle = 0;
     private boolean direction = false;
     private int revolutions = 0;
-    private boolean toFar = false;
 
     public TurnTest(Drivetrain drivetrain, SwerveModule module, boolean direction) {
         this.module = module;
@@ -34,7 +33,7 @@ public class TurnTest extends CommandBase {
         // 2 times
         if ((Math.abs(getBearingdifference(
                 Math.toDegrees(module.getSteerAngle()))) < SystemTestConstants.ANGLE_DEAD_ZONE)
-                && (revolutions < SystemTestConstants.MAX_ROTATIONS_PER_DIRECTION) && !toFar) {
+                && (revolutions < SystemTestConstants.MAX_ROTATIONS_PER_DIRECTION)) {
             if (direction) {// If true clockwise
                 driveAngle += SystemTestConstants.DEGREES_INTERVAL_INCREASE;
                 // Loops around
