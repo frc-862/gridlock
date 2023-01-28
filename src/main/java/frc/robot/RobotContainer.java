@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.LEDController;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.AutoBalance;
@@ -50,6 +51,8 @@ public class RobotContainer extends LightningContainer {
                 .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
+
+        new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
     }
 
     // Creates the autonomous commands
@@ -67,16 +70,10 @@ public class RobotContainer extends LightningContainer {
         // Right stick X axis -> rotation
 
         //TODO: UNDO
-        // drivetrain.setDefaultCommand(
-        //         new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
-        //                 () -> joystickFilter.filter(driver.getLeftY()),
-        //                 () -> -joystickFilter.filter(driver.getRightX())));
-
-        drivetrain.setDefaultCommand(new AutoBalance(drivetrain));
-        // drivetrain.setDefaultCommand(
-        //         new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
-        //                 () -> joystickFilter.filter(driver.getLeftY()),
-        //                 () -> -joystickFilter.filter(driver.getRightX())));
+        drivetrain.setDefaultCommand(
+                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
+                        () -> joystickFilter.filter(driver.getLeftY()),
+                        () -> -joystickFilter.filter(driver.getRightX())));
 
     }
 
