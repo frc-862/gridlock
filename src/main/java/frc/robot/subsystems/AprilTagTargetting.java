@@ -8,8 +8,10 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 
 public class AprilTagTargetting extends SubsystemBase {
 
-    private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
-    DoubleArraySubscriber botposeSub = limelightTab.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    private final NetworkTable limelightTab =
+            NetworkTableInstance.getDefault().getTable("limelight");
+    DoubleArraySubscriber botposeSub =
+            limelightTab.getDoubleArrayTopic("botpose").subscribe(new double[] {});
 
     private double horizAngleToTarget;
     private double[] botPose = this.botposeSub.get();
@@ -29,9 +31,8 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     /**
-     * Sets the pipeline we're using on the limelight. The first is for april tag
-     * targetting
-     * The second is for retroreflective tape.
+     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The
+     * second is for retroreflective tape.
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
      */
@@ -40,8 +41,8 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     /**
-     * Ensures that what we're receiving is actually a valid target (if it's outside
-     * of FOV, it can't be)
+     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it
+     * can't be)
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
      */
@@ -74,8 +75,8 @@ public class AprilTagTargetting extends SubsystemBase {
     /**
      * Function to tell us whether or not we're on target (centered on vision tape)
      * 
-     * @param expectedAngle Angle we're supposed to be at according to offset of
-     *                      target supplied by Limelight
+     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
+     *        Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle) {
