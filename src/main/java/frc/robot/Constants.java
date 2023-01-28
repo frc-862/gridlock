@@ -95,6 +95,7 @@ public final class Constants {
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
             }
         }
+        public static final double OPTIMAL_PITCH = 10d; // TODO: test to find the optimal value
     }
 
     public static final class RobotMap {
