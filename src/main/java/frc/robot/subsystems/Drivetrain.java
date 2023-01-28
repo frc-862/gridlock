@@ -96,8 +96,6 @@ public class Drivetrain extends SubsystemBase {
             BACK_LEFT_STEER_OFFSET = Offsets.Blackout.BACK_LEFT_STEER_OFFSET;
             BACK_RIGHT_STEER_OFFSET = Offsets.Blackout.BACK_RIGHT_STEER_OFFSET;
         }
-        
-        setStates(states);
 
         // Set our neo module configurations using drive current, steer current, and
         // voltage
@@ -136,6 +134,10 @@ public class Drivetrain extends SubsystemBase {
                 swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
                 RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
+
+        
+        // Setting states of the modules
+        setStates(states);
 
         // Update our module positions, odometery, and states
         updateModulePositions();
