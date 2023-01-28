@@ -22,9 +22,9 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.DrivetrainConstants.Offsets;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.logging.DataLogger;
@@ -72,10 +72,10 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule backLeftModule;
     private final SwerveModule backRightModule;
 
-    public double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.246);
-    public double BACK_LEFT_STEER_OFFSET = -Math.toRadians(122.959);
-    public double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(311.660);
-    public double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(12.744);
+    public double FRONT_LEFT_STEER_OFFSET;
+    public double BACK_LEFT_STEER_OFFSET;
+    public double FRONT_RIGHT_STEER_OFFSET;
+    public double BACK_RIGHT_STEER_OFFSET;
 
     Path gridlockFile = Paths.get("home/lvuser/gridlock");
     Path blackoutFile = Paths.get("home/lvuser/blackout");
@@ -87,11 +87,17 @@ public class Drivetrain extends SubsystemBase {
 
     public Drivetrain() {
 
+        //TODO: make this better
         if (Files.exists(blackoutFile)) {
-            FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
-            FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
-            BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
-            BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
+            FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;
+            FRONT_RIGHT_STEER_OFFSET = Offsets.Blackout.FRONT_RIGHT_STEER_OFFSET;
+            BACK_LEFT_STEER_OFFSET = Offsets.Blackout.BACK_LEFT_STEER_OFFSET;
+            BACK_RIGHT_STEER_OFFSET = Offsets.Blackout.BACK_RIGHT_STEER_OFFSET;
+        } else {
+            FRONT_LEFT_STEER_OFFSET = Offsets.Gridlock.FRONT_LEFT_STEER_OFFSET;
+            BACK_LEFT_STEER_OFFSET = Offsets.Gridlock.BACK_LEFT_STEER_OFFSET;
+            FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
+            BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
         }
 
         // Set our neo module configurations using drive current, steer current, and
