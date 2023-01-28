@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import frc.robot.Constants;
 import frc.robot.Constants.LedConstants;
 import frc.robot.Constants.LedConstants.Colors;
 
@@ -16,6 +17,8 @@ public class LEDController extends SubsystemBase {
     private AddressableLED led = new AddressableLED(LedConstants.port);
     private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.length);
     private String currentState = "none";
+
+    private int swirlPosition = 0;
 
     // set up an LED set
     public LEDController() {
@@ -40,6 +43,21 @@ public class LEDController extends SubsystemBase {
         // white
         setFullStripColor(Colors.white, LedConstants.brightness);
         currentState = "fullWhite";
+        led.setData(ledBuffer);
+    }
+
+    public void swirl() {
+        //swirl pattern wooooooo (swirls orange and blue)
+        int swirlLength = (LedConstants.length/2);
+        setFullStripColor(Colors.lightningBlue, LedConstants.brightness);
+
+        for (int i = 0; i < swirlLength; i++){
+            setRGBFromArray((i + swirlPosition) % LedConstants.length, Colors.lightningOrange, LedConstants.brightness);
+        }
+
+        swirlPosition += 1;
+
+        currentState = "swirl";
         led.setData(ledBuffer);
     }
 
@@ -158,6 +176,8 @@ public class LEDController extends SubsystemBase {
                 hasGamePiece();
             } else if (currentState == "autoAligned") {
                 autoAligned();
+            } else if (currentState == "swirl"){
+                swirl();
             }
 
             led.setData(ledBuffer);
