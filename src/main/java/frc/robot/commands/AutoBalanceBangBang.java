@@ -7,6 +7,8 @@ import frc.robot.subsystems.Drivetrain;
 
 public class AutoBalanceBangBang extends CommandBase {
     private Drivetrain drivetrain;
+    private double lastAngle;
+
     // add gyroscope
     //TODO: initialize tanktrain
     
@@ -19,28 +21,28 @@ public class AutoBalanceBangBang extends CommandBase {
     
     @Override
     public void initialize() {
+        lastAngle = drivetrain.getPitch().getDegrees();
     }
 
     
     @Override
-    public void execute() {
-        double previousAngle = drivetrain.getPitch().getDegrees();
-                                                
+    public void execute() {                     
         // TODO: tune the value of 0.05 to probably something a lot smaller
-        if (drivetrain.getPitch().getDegrees() - previousAngle > 0.05 && drivetrain.getPitch().getDegrees() > DrivetrainConstants.OPTIMAL_ROLL) { 
+        if (drivetrain.getPitch().getDegrees() - lastAngle > 0.05 && drivetrain.getPitch().getDegrees() > DrivetrainConstants.OPTIMAL_PITCH) { 
             drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(5), 
                                                 drivetrain.percentOutputToMetersPerSecond(0), 
                                                 drivetrain.percentOutputToMetersPerSecond(0)));
-        } else if (drivetrain.getPitch().getDegrees() - previousAngle > 0.05 && drivetrain.getPitch().getDegrees() < DrivetrainConstants.OPTIMAL_ROLL) {
+        } else if (drivetrain.getPitch().getDegrees() - lastAngle > 0.05 && drivetrain.getPitch().getDegrees() < DrivetrainConstants.OPTIMAL_PITCH) {
             drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-5), 
                                                 drivetrain.percentOutputToMetersPerSecond(0), 
                                                 drivetrain.percentOutputToMetersPerSecond(0)));
         } 
-
-        // this measures the change in angle and if the robot is actually on a slope
-        // if it is, it will move forward until it is level and then it will move back
+        /*
+        * this measures the change in angle and if the robot is actually on a slope
+        * if it is, it will move forward until it is level and then it will move back
+        */
         
-        previousAngle = drivetrain.getPitch().getDegrees();
+        lastAngle = drivetrain.getPitch().getDegrees();
 	}
                 
 

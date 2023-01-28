@@ -77,7 +77,7 @@ public final class Constants {
 
         }
 
-        public static final double OPTIMAL_ROLL = 10d; // TODO: test to find the optimal value
+        public static final double OPTIMAL_PITCH = 10d; // TODO: test to find the optimal value
     }
 
     public static final class RobotMap {
