@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.tests.DriveTest;
+import frc.robot.commands.tests.DriveTrainSystemTest;
 import frc.robot.commands.tests.TurnTest;
 import frc.robot.subsystems.Drivetrain;
 import frc.thunder.LightningContainer;
@@ -72,52 +73,17 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureSystemTests() {
-        SystemTest.registerTest("fl drive test", new SequentialCommandGroup(new WaitCommand(2),
-                new TimedCommand(
-                        new DriveTest(drivetrain, drivetrain.getFrontLeftModule(), .25), 2),
-                new WaitCommand(1),
-                new TimedCommand(
-                        new DriveTest(drivetrain, drivetrain.getFrontLeftModule(), -.25), 2),
-                new WaitCommand(1),
-                new TimedCommand(new TurnTest(drivetrain, drivetrain.getFrontLeftModule(), true),
-                        2),
-                new WaitCommand(1), new TimedCommand(
-                        new TurnTest(drivetrain, drivetrain.getFrontLeftModule(), false), 2)));
+        SystemTest.registerTest("fl drive test",
+                new DriveTrainSystemTest(drivetrain, drivetrain.getFrontLeftModule(), 0.25));
 
-        SystemTest.registerTest("fr drive test", new SequentialCommandGroup(new WaitCommand(2),
-                new TimedCommand(
-                        new DriveTest(drivetrain, drivetrain.getFrontRightModule(), .25), 2),
-                new WaitCommand(1),
-                new TimedCommand(
-                        new DriveTest(drivetrain, drivetrain.getFrontRightModule(), -.25), 2),
-                new WaitCommand(1),
-                new TimedCommand(new TurnTest(drivetrain, drivetrain.getFrontRightModule(), true),
-                        2),
-                new WaitCommand(1), new TimedCommand(
-                        new TurnTest(drivetrain, drivetrain.getFrontRightModule(), false), 2)));
+        SystemTest.registerTest("fr drive test",
+                new DriveTrainSystemTest(drivetrain, drivetrain.getFrontRightModule(), 0.25));
 
-        SystemTest.registerTest("bl drive test", new SequentialCommandGroup(new WaitCommand(2),
-                new TimedCommand(new DriveTest(drivetrain, drivetrain.getBackLeftModule(), .25), 2),
-                new WaitCommand(1),
-                new TimedCommand(new DriveTest(drivetrain, drivetrain.getBackLeftModule(), -.25),
-                        2),
-                new WaitCommand(1),
-                new TimedCommand(new TurnTest(drivetrain, drivetrain.getBackLeftModule(), true), 2),
-                new WaitCommand(1), new TimedCommand(
-                        new TurnTest(drivetrain, drivetrain.getBackLeftModule(), false), 2)));
+        SystemTest.registerTest("bl drive test",
+                new DriveTrainSystemTest(drivetrain, drivetrain.getBackLeftModule(), 0.25));
 
-        SystemTest.registerTest("br drive test", new SequentialCommandGroup(new WaitCommand(2),
-                new TimedCommand(
-                        new DriveTest(drivetrain, drivetrain.getBackRightModule(), .25), 2),
-                new WaitCommand(1),
-                new TimedCommand(
-                        new DriveTest(drivetrain, drivetrain.getBackRightModule(), -.25), 2),
-                new WaitCommand(1),
-                new TimedCommand(new TurnTest(drivetrain, drivetrain.getBackRightModule(), true),
-                        5),
-                new WaitCommand(1), new TimedCommand(
-                        new TurnTest(drivetrain, drivetrain.getBackRightModule(), false), 5)));
-
+        SystemTest.registerTest("br drive test",
+                new DriveTrainSystemTest(drivetrain, drivetrain.getBackRightModule(), 0.25));
     }
 
     @Override
