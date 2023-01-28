@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
@@ -166,12 +167,12 @@ public class Drivetrain extends SubsystemBase {
         // Update our module positions, odometery
         updateModulePositions();
         updateOdomtery();
-        field2d.setRobotPose(pose);
+        // field2d.setRobotPose(pose);
         SmartDashboard.putString("pose", pose.getTranslation().toString());
 
-        SmartDashboard.putNumber("pitch", getPitch().getDegrees());
-        SmartDashboard.putNumber("roll", getRoll().getDegrees());
-        SmartDashboard.putNumber("yaw", getHeading().getDegrees());
+        SmartDashboard.putNumber("pitch", getPitch2d().getDegrees());
+        SmartDashboard.putNumber("roll", getRoll2d().getDegrees());
+        SmartDashboard.putNumber("yaw", getHeading2d().getDegrees());
     }
 
     /**
@@ -362,7 +363,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the current pitch of the robot in meters
      */
-    public Rotation2d getPitch() {
+    public Rotation2d getPitch2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getPitch(), -180, 180));
     }
 
@@ -371,21 +372,8 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the current roll of the robot in meters
      */
-    public Rotation2d getRoll() {
+    public Rotation2d getRoll2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getRoll(), -180, 180));
-    }
-
-    /**
-     * Gets the current heading of the robot.
-     * 
-     * @return the gravity vector as a double array (x, y, z)
-     */
-    public double[] getGravityVector() {
-        var vector = new double[3];
-        if(pigeon.getGravityVector(vector) == ErrorCode.OK)
-            return vector;
-        else 
-            return new double[-1];
     }
 
     /**

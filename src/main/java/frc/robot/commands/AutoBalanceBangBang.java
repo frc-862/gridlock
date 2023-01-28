@@ -32,14 +32,14 @@ public class AutoBalanceBangBang extends CommandBase {
   
   @Override
   public void execute() {
-    double previousAngle = drivetrain.getPitch().getDegrees();
+    double previousAngle = drivetrain.getPitch2d().getDegrees();
                         
     // TODO: tune the value of 0.05 to probably something a lot smaller
-    if (drivetrain.getPitch().getDegrees() - previousAngle > 0.05 && drivetrain.getPitch().getDegrees() > DrivetrainConstants.OPTIMAL_ROLL) { 
+    if (drivetrain.getPitch2d().getDegrees() - previousAngle > 0.05 && drivetrain.getPitch2d().getDegrees() > DrivetrainConstants.OPTIMAL_ROLL) { 
       drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(5), 
                                                     drivetrain.percentOutputToMetersPerSecond(0), 
                                                     drivetrain.percentOutputToMetersPerSecond(0)));
-    } else if (drivetrain.getPitch().getDegrees() - previousAngle > 0.05 && drivetrain.getPitch().getDegrees() < DrivetrainConstants.OPTIMAL_ROLL) {
+    } else if (drivetrain.getPitch2d().getDegrees() - previousAngle > 0.05 && drivetrain.getPitch2d().getDegrees() < DrivetrainConstants.OPTIMAL_ROLL) {
       drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-5), 
                                                     drivetrain.percentOutputToMetersPerSecond(0), 
                                                     drivetrain.percentOutputToMetersPerSecond(0)));
@@ -48,7 +48,7 @@ public class AutoBalanceBangBang extends CommandBase {
     // this measures the change in angle and if the robot is actually on a slope
     // if it is, it will move forward until it is level and then it will move back
     
-    previousAngle = drivetrain.getPitch().getDegrees();
+    previousAngle = drivetrain.getPitch2d().getDegrees();
 	}
         
 

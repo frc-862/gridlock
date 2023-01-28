@@ -125,6 +125,12 @@ public final class Constants {
         }
     }
 
+    // Auto Balance constants
+    public static final double AB_MAX_AVERAGE_DEVIATION = 3;
+    public static final double AB_KP = 0.1;
+    public static final double AB_KI = 0;
+    public static final double AB_KD = 0;
+    
     public static final class Vision {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;
