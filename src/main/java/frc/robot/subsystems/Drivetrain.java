@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
@@ -21,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.DrivetrainConstants.Offsets;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.logging.DataLogger;
@@ -48,7 +52,6 @@ public class Drivetrain extends SubsystemBase {
     // Creating new pigeon2 gyro
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
-
     // Creating our list of module states and module positions
     private SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(),
             new SwerveModuleState(), new SwerveModuleState()};
@@ -71,6 +74,14 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule backLeftModule;
     private final SwerveModule backRightModule;
 
+    public double FRONT_LEFT_STEER_OFFSET = Offsets.Gridlock.FRONT_LEFT_STEER_OFFSET;
+    public double BACK_LEFT_STEER_OFFSET = Offsets.Gridlock.BACK_LEFT_STEER_OFFSET;
+    public double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
+    public double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
+
+    Path gridlockFile = Paths.get("home/lvuser/gridlock");
+    Path blackoutFile = Paths.get("home/lvuser/blackout");
+
     // Creates our drivetrain shuffleboard tab for displaying module data
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
@@ -78,7 +89,16 @@ public class Drivetrain extends SubsystemBase {
 
     public Drivetrain() {
 
-        // Set our neo module configurations using drive current, steer current, and voltage
+        //TODO: make this better
+        if (Files.exists(blackoutFile)) {
+            FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;
+            FRONT_RIGHT_STEER_OFFSET = Offsets.Blackout.FRONT_RIGHT_STEER_OFFSET;
+            BACK_LEFT_STEER_OFFSET = Offsets.Blackout.BACK_LEFT_STEER_OFFSET;
+            BACK_RIGHT_STEER_OFFSET = Offsets.Blackout.BACK_RIGHT_STEER_OFFSET;
+        }
+
+        // Set our neo module configurations using drive current, steer current, and
+        // voltage
         swerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
         swerveConfiguration.setSteerCurrentLimit(DrivetrainConstants.STEER_CURRENT_LIMIT);
         swerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
@@ -89,7 +109,7 @@ public class Drivetrain extends SubsystemBase {
                         .withPosition(0, 0),
                 swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.FRONT_LEFT_DRIVE_MOTOR, RobotMap.CAN.FRONT_LEFT_AZIMUTH_MOTOR,
-                RobotMap.CAN.FRONT_LEFT_CANCODER, DrivetrainConstants.FRONT_LEFT_STEER_OFFSET);
+                RobotMap.CAN.FRONT_LEFT_CANCODER, FRONT_LEFT_STEER_OFFSET);
 
         // Making front right module
         frontRightModule = Mk4iSwerveModuleHelper.createNeo(
@@ -97,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
                         .withPosition(2, 0),
                 swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.FRONT_RIGHT_DRIVE_MOTOR, RobotMap.CAN.FRONT_RIGHT_AZIMUTH_MOTOR,
-                RobotMap.CAN.FRONT_RIGHT_CANCODER, DrivetrainConstants.FRONT_RIGHT_STEER_OFFSET);
+                RobotMap.CAN.FRONT_RIGHT_CANCODER, FRONT_RIGHT_STEER_OFFSET);
 
         // Making backleft module
         backLeftModule = Mk4iSwerveModuleHelper.createNeo(
@@ -105,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
                         4, 0),
                 swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR, RobotMap.CAN.BACK_LEFT_AZIMUTH_MOTOR,
-                RobotMap.CAN.BACK_LEFT_CANCODER, DrivetrainConstants.BACK_LEFT_STEER_OFFSET);
+                RobotMap.CAN.BACK_LEFT_CANCODER, BACK_LEFT_STEER_OFFSET);
 
         // Making back right module
         backRightModule = Mk4iSwerveModuleHelper.createNeo(
@@ -113,7 +133,11 @@ public class Drivetrain extends SubsystemBase {
                         .withPosition(6, 0),
                 swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
-                RobotMap.CAN.BACK_RIGHT_CANCODER, DrivetrainConstants.BACK_RIGHT_STEER_OFFSET);
+                RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
+
+        
+        // Setting states of the modules
+        setStates(states);
 
         // Update our module positions, odometery, and states
         updateModulePositions();
@@ -189,6 +213,12 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
+    /**
+     * Updates odometry using the current yaw and module states.
+     */
+    public void updateOdomtery() {
+        pose = odometry.update(getHeading2d(), modulePositions);
+    }
 
     /**
      * Method to set states of modules.
@@ -208,17 +238,10 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the clamped voltage to apply to the drive motors
      */
-    private double velocityToDriveVolts(double speedMetersPerSecond) {
+    public double velocityToDriveVolts(double speedMetersPerSecond) {
         double ff = feedForward.calculate(speedMetersPerSecond);
         return MathUtil.clamp(ff, -DrivetrainConstants.MAX_VOLTAGE,
                 DrivetrainConstants.MAX_VOLTAGE);
-    }
-
-    /**
-     * Updates odometry using the current yaw and module states.
-     */
-    public void updateOdomtery() {
-        pose = odometry.update(getHeading2d(), modulePositions);
     }
 
     /**
@@ -283,7 +306,6 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("br drive vel", () -> frontLeftModule.getDriveVelocity());
 
         tab.addDouble("heading", () -> getHeading2d().getDegrees());
-
     }
 
     /**
@@ -447,5 +469,12 @@ public class Drivetrain extends SubsystemBase {
                 new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
         states[3] = new SwerveModuleState(0,
                 new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
+    }
+
+    public void resetNeoAngle() {
+        frontLeftModule.setEncoderAngle();
+        frontRightModule.setEncoderAngle();
+        backLeftModule.setEncoderAngle();
+        backRightModule.setEncoderAngle();
     }
 }

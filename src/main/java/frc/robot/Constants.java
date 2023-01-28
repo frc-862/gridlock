@@ -15,11 +15,18 @@ public final class Constants {
 
     }
 
+    public static final class SystemTestConstants {
+        // Drive Test Variables
+        public static final int DEGREES_INTERVAL_INCREASE = 30;
+        public static final int ANGLE_DEAD_ZONE = 3;
+        public static final int MAX_ROTATIONS_PER_DIRECTION = 2;
+    }
+
     public static final class DrivetrainConstants {
 
         // Our drivetrain and track width
-        public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.6875d);
-        public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.6875d);
+        public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.8125d);
+        public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
         // Drivetrain PIDConstants
         public static final PIDConstants DRIVE_PID_CONSTANTS =
@@ -50,12 +57,6 @@ public final class Constants {
         public static final int STEER_CURRENT_LIMIT = 30;
         public static final double NOMINAL_VOLTAGE = 12d;
 
-        // Module steer offsets
-        public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
-        public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
-        public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
-        public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
-
         // Gains vaules for PIDControllers
         public static final class Gains {
 
@@ -78,6 +79,22 @@ public final class Constants {
             public static final double kV = 0d;
             public static final double kA = 0d;
 
+        }
+
+        public static final class Offsets {
+            public static final class Gridlock {
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.246);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(302.959);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(131.660);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(12.744);
+            }
+
+            public static final class Blackout {
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
+            }
         }
     }
 
@@ -126,5 +143,14 @@ public final class Constants {
             public static final int[] white = {255, 255, 255};
             public static final int[] off = {0, 0, 0};
         }
+    }
+    
+    public static final class Vision {
+        // Represents camera FOV from center to edge
+        public static final double HORIZ_CAMERA_FOV = 29.8d;
+
+        // Arbitrary value for how close the robot needs to be to the target (in angles)
+        public static final double HORIZ_DEGREE_TOLERANCE = 3d;
+
     }
 }

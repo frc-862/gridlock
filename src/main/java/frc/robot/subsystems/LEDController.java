@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -16,7 +17,6 @@ public class LEDController extends SubsystemBase {
     private AddressableLED led = new AddressableLED(LedConstants.port);
     private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.length);
     private String currentState = "none";
-
     private int swirlPosition = 0;
 
     // set up an LED set
@@ -37,7 +37,7 @@ public class LEDController extends SubsystemBase {
         currentState = "readyCollect";
         led.setData(ledBuffer);
     }
-    
+
     public void fullWhite() {
         // white
         setFullStripColor(Colors.white, LedConstants.brightness);
@@ -81,7 +81,7 @@ public class LEDController extends SubsystemBase {
         currentState = "orangeAndBlue";
         led.setData(ledBuffer);
     }
-    
+
     public void readyDrop() {
         // cyan
         setFullStripColor(Colors.cyan, LedConstants.brightness);
@@ -120,7 +120,7 @@ public class LEDController extends SubsystemBase {
         currentState = "wantsCube";
         led.setData(ledBuffer);
     }
-    
+
     public void readyScore() {
         // flashes between blue and orange
         if ((System.currentTimeMillis() % 1000) < 500) {
@@ -146,7 +146,7 @@ public class LEDController extends SubsystemBase {
         } else {
             setFullStripColor(Colors.off, 0f);
         }
-        
+
         currentState = "autoAligned";
         led.setData(ledBuffer);
     }
@@ -217,7 +217,7 @@ public class LEDController extends SubsystemBase {
     private void initDashboard() {
         var ledTab = Shuffleboard.getTab("LEDs");
         if (led != null) {
-            //strategy chosen methods
+            // strategy chosen methods
             ledTab.add("hasGamePiece", new InstantCommand(this::hasGamePiece, this));
             ledTab.add("wantsCone", new InstantCommand(this::wantsCone, this));
             ledTab.add("wantsCube", new InstantCommand(this::wantsCube, this));
@@ -225,7 +225,7 @@ public class LEDController extends SubsystemBase {
             ledTab.add("autoAligned", new InstantCommand(this::autoAligned, this));
             ledTab.add("swirl", new InstantCommand(this::swirl, this));
 
-            //others
+            // others
             ledTab.add("stop", new InstantCommand(this::stop, this));
             ledTab.add("start", new InstantCommand(this::start, this));
             ledTab.add("readyCollect", new InstantCommand(this::readyCollect, this));
