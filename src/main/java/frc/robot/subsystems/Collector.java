@@ -26,7 +26,10 @@ public class Collector extends SubsystemBase {
     rightMotor.set(speed);
   }
 
-  // when detect thingy, call runCollector()
+  public void stop() {
+    leftMotor.set(0);
+    rightMotor.set(0);;
+  }
 
   @Override
   public void periodic() {

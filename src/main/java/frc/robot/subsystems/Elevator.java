@@ -10,23 +10,26 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DrivetrainConstants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
+import frc.thunder.math.LightningMath;
 
 public class Elevator extends SubsystemBase {
-  private CANSparkMax leftMotor;
-  private CANSparkMax rightMotor;
+  private CANSparkMax motor;
 
-  private PIDController elevatorController = new PIDController(0, 0, 0);
+  private PIDController elevatorController = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD);
   public Elevator() {
-    leftMotor = NeoConfig.createMotor(CAN.LEFT_ELEVATOR_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
-    rightMotor = NeoConfig.createMotor(CAN.RIGHT_ELEVATOR_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kBrake);    
+    motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kBrake);    
     
-    leftMotor.follow(rightMotor);
   }
 
-  public void setPosition(double target) {
-    rightMotor.set(elevatorController.calculate(rightMotor.getEncoder().getPosition(), target));
+  public double getHeight() {
+    return motor.getEncoder().getPosition() / ElevatorConstants.TICKS * ElevatorConstants.INCHES_PER_REV * ElevatorConstants.GEAR_RATIO;
+  }
+
+  public void setHeight(double target) {
+    setPower(elevatorController.calculate(getHeight(), LightningMath.inputModulus(target, ElevatorConstants.MIN_HEIGHT, ElevatorConstants.MAX_HEIGHT)));
   }
 
   public void setGains(double kP, double kI, double kD) {
@@ -34,8 +37,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setPower(double speed){
-    leftMotor.set(speed);
-    rightMotor.set(speed);
+    motor.set(speed);
   }
 
   public void stop(){
