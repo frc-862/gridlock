@@ -95,8 +95,6 @@ public final class Constants {
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
             }
         }
-
-        public static final double OPTIMAL_ROLL = 10d; // TODO: test to find the optimal value
     }
 
     public static final class RobotMap {
@@ -126,7 +124,7 @@ public final class Constants {
     }
 
     // Auto Balance constants
-    public static final double AB_MAX_AVERAGE_DEVIATION = 3;
+    public static final double OPTIMAL_ROLL = 3;
     public static final double AB_KP = 0.1;
     public static final double AB_KI = 0;
     public static final double AB_KD = 0;

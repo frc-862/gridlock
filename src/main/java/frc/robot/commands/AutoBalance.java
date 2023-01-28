@@ -34,16 +34,16 @@ public class AutoBalance extends CommandBase {
 
     pid.setP(SmartDashboard.getNumber("P gain", Constants.AB_KP));
 
-    if(Math.abs(drivetrain.getPitch2d().getDegrees()) > Constants.AB_MAX_AVERAGE_DEVIATION) { //maybe add check for theoretical color sensor?
-      // drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(pid.calculate(drivetrain.getPitch().getDegrees(), 0)),
-      //  												drivetrain.percentOutputToMetersPerSecond(pid.calculate(drivetrain.getPitch().getDegrees(), 0)), 
-			// 										drivetrain.percentOutputToMetersPerSecond(0)));
+    if(Math.abs(drivetrain.getPitch2d().getDegrees()) > Constants.OPTIMAL_ROLL) { //maybe add check for theoretical color sensor?
+      drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(0),
+                                                    drivetrain.percentOutputToMetersPerSecond(pid.calculate(drivetrain.getPitch2d().getDegrees(), 0)), 
+                                                    drivetrain.percentOutputToMetersPerSecond(0)));
 
       
 
       SmartDashboard.putNumber("motor output", pid.calculate(drivetrain.getPitch2d().getDegrees(), 0));
     } else {
-		// drivetrain.stop();
+		drivetrain.stop();
 
     SmartDashboard.putNumber("motor output", 0);
 	}

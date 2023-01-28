@@ -35,16 +35,17 @@ public class AutoBalanceBangBang extends CommandBase {
     double previousAngle = drivetrain.getPitch2d().getDegrees();
                         
     // TODO: tune the value of 0.05 to probably something a lot smaller
-    if (drivetrain.getPitch2d().getDegrees() - previousAngle > 0.05 && drivetrain.getPitch2d().getDegrees() > DrivetrainConstants.OPTIMAL_ROLL) { 
-      drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(5), 
+    if (Math.abs(drivetrain.getPitch2d().getDegrees() - previousAngle) > 0.05 && drivetrain.getPitch2d().getDegrees() > Constants.OPTIMAL_ROLL) { 
+      drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(1), 
                                                     drivetrain.percentOutputToMetersPerSecond(0), 
                                                     drivetrain.percentOutputToMetersPerSecond(0)));
-    } else if (drivetrain.getPitch2d().getDegrees() - previousAngle > 0.05 && drivetrain.getPitch2d().getDegrees() < DrivetrainConstants.OPTIMAL_ROLL) {
-      drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-5), 
+    } else if (Math.abs(drivetrain.getPitch2d().getDegrees() - previousAngle) > 0.05 && drivetrain.getPitch2d().getDegrees() < -Constants.OPTIMAL_ROLL) {
+      drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-1), 
                                                     drivetrain.percentOutputToMetersPerSecond(0), 
                                                     drivetrain.percentOutputToMetersPerSecond(0)));
-    } 
-
+    } else {
+      drivetrain.stop();
+    }
     // this measures the change in angle and if the robot is actually on a slope
     // if it is, it will move forward until it is level and then it will move back
     
