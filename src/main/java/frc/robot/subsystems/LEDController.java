@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.Constants;
 import frc.robot.Constants.LedConstants;
 import frc.robot.Constants.LedConstants.Colors;
 
@@ -224,6 +223,7 @@ public class LEDController extends SubsystemBase {
             ledTab.add("wantsCube", new InstantCommand(this::wantsCube, this));
             ledTab.add("readyScore", new InstantCommand(this::readyScore, this));
             ledTab.add("autoAligned", new InstantCommand(this::autoAligned, this));
+            ledTab.add("swirl", new InstantCommand(this::swirl, this));
 
             //others
             ledTab.add("stop", new InstantCommand(this::stop, this));
