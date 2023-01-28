@@ -29,9 +29,10 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
         // Drivetrain PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(Gains.kP, Gains.kI, Gains.kD);
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(ThetaGains.kP, ThetaGains.kI,
-                ThetaGains.kD);
+        public static final PIDConstants DRIVE_PID_CONSTANTS =
+                new PIDConstants(Gains.kP, Gains.kI, Gains.kD);
+        public static final PIDConstants THETA_PID_CONSTANTS =
+                new PIDConstants(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD);
 
         // Module resting/default angles
         public static final double FRONT_LEFT_RESTING_ANGLE = Math.toRadians(-45d);
@@ -42,14 +43,14 @@ public final class Constants {
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12.0;
         // TODO look at the calculation here
-        public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0
-                * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
-                * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
-        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
-                / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+        public static final double MAX_VELOCITY_METERS_PER_SECOND =
+                5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
+                        * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
+                MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                         DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                * 2 * Math.PI;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND =
+                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -83,8 +84,8 @@ public final class Constants {
         public static final class Offsets {
             public static final class Gridlock {
                 public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.246);
-                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(122.959);
-                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(311.660);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(302.959);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(131.660);
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(12.744);
             }
 

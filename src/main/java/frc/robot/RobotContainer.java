@@ -33,14 +33,14 @@ public class RobotContainer extends LightningContainer {
 
     // Creates our driver controller and deadzone
     private static final XboxController driver = new XboxController(0);
-    private static final JoystickFilter joystickFilter = new JoystickFilter(
-            XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
-            XboxControllerConstants.MAX_POWER, Mode.CUBED);
+    private static final JoystickFilter joystickFilter =
+            new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
+                    XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
-    private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(
-            drivetrain::getPose, drivetrain::resetOdometry,
-            drivetrain.getDriveKinematics(), DrivetrainConstants.DRIVE_PID_CONSTANTS,
-            DrivetrainConstants.THETA_PID_CONSTANTS, drivetrain::setStates, drivetrain);
+    private static final AutonomousCommandFactory autoFactory =
+            new AutonomousCommandFactory(drivetrain::getPose, drivetrain::resetOdometry,
+                    drivetrain.getDriveKinematics(), DrivetrainConstants.DRIVE_PID_CONSTANTS,
+                    DrivetrainConstants.THETA_PID_CONSTANTS, drivetrain::setStates, drivetrain);
 
     // Configure the button bindings
     @Override
@@ -48,6 +48,8 @@ public class RobotContainer extends LightningContainer {
         // Back button to reset feild centeric driving to current heading of the robot
         new Trigger(driver::getBackButton)
                 .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+
+        new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
     }
 
     // Creates the autonomous commands
@@ -71,68 +73,65 @@ public class RobotContainer extends LightningContainer {
         //                 () -> -joystickFilter.filter(driver.getRightX())));
 
         drivetrain.setDefaultCommand(new AutoBalance(drivetrain));
+        drivetrain.setDefaultCommand(
+                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
+                        () -> joystickFilter.filter(driver.getLeftY()),
+                        () -> -joystickFilter.filter(driver.getRightX())));
 
     }
 
     @Override
     protected void configureSystemTests() {
-        SystemTest.registerTest("fl drive test", new SequentialCommandGroup(
-                new WaitCommand(2),
-                new TimedCommand(new DriveTest(drivetrain,
-                        drivetrain.getFrontLeftModule(), .25), 2),
+        SystemTest.registerTest("fl drive test", new SequentialCommandGroup(new WaitCommand(2),
+                new TimedCommand(
+                        new DriveTest(drivetrain, drivetrain.getFrontLeftModule(), .25), 2),
                 new WaitCommand(1),
-                new TimedCommand(new DriveTest(drivetrain,
-                        drivetrain.getFrontLeftModule(), -.25), 2),
+                new TimedCommand(
+                        new DriveTest(drivetrain, drivetrain.getFrontLeftModule(), -.25), 2),
                 new WaitCommand(1),
-                new TimedCommand(new TurnTest(drivetrain,
-                        drivetrain.getFrontLeftModule(), true), 2),
-                new WaitCommand(1), new TimedCommand(new TurnTest(drivetrain,
-                        drivetrain.getFrontLeftModule(), false), 2)));
+                new TimedCommand(new TurnTest(drivetrain, drivetrain.getFrontLeftModule(), true),
+                        2),
+                new WaitCommand(1), new TimedCommand(
+                        new TurnTest(drivetrain, drivetrain.getFrontLeftModule(), false), 2)));
 
-        SystemTest.registerTest("fr drive test", new SequentialCommandGroup(
-                new WaitCommand(2),
-                new TimedCommand(new DriveTest(drivetrain,
-                        drivetrain.getFrontRightModule(), .25), 2),
+        SystemTest.registerTest("fr drive test", new SequentialCommandGroup(new WaitCommand(2),
+                new TimedCommand(
+                        new DriveTest(drivetrain, drivetrain.getFrontRightModule(), .25), 2),
                 new WaitCommand(1),
-                new TimedCommand(new DriveTest(drivetrain,
-                        drivetrain.getFrontRightModule(), -.25), 2),
+                new TimedCommand(
+                        new DriveTest(drivetrain, drivetrain.getFrontRightModule(), -.25), 2),
                 new WaitCommand(1),
-                new TimedCommand(new TurnTest(drivetrain,
-                        drivetrain.getFrontRightModule(), true), 2),
-                new WaitCommand(1), new TimedCommand(new TurnTest(drivetrain,
-                        drivetrain.getFrontRightModule(), false), 2)));
+                new TimedCommand(new TurnTest(drivetrain, drivetrain.getFrontRightModule(), true),
+                        2),
+                new WaitCommand(1), new TimedCommand(
+                        new TurnTest(drivetrain, drivetrain.getFrontRightModule(), false), 2)));
 
-        SystemTest.registerTest("bl drive test", new SequentialCommandGroup(
-                new WaitCommand(2),
-                new TimedCommand(new DriveTest(drivetrain,
-                        drivetrain.getBackLeftModule(), .25), 2),
+        SystemTest.registerTest("bl drive test", new SequentialCommandGroup(new WaitCommand(2),
+                new TimedCommand(new DriveTest(drivetrain, drivetrain.getBackLeftModule(), .25), 2),
                 new WaitCommand(1),
-                new TimedCommand(new DriveTest(drivetrain,
-                        drivetrain.getBackLeftModule(), -.25), 2),
+                new TimedCommand(new DriveTest(drivetrain, drivetrain.getBackLeftModule(), -.25),
+                        2),
                 new WaitCommand(1),
-                new TimedCommand(new TurnTest(drivetrain,
-                        drivetrain.getBackLeftModule(), true), 2),
-                new WaitCommand(1), new TimedCommand(new TurnTest(drivetrain,
-                        drivetrain.getBackLeftModule(), false), 2)));
+                new TimedCommand(new TurnTest(drivetrain, drivetrain.getBackLeftModule(), true), 2),
+                new WaitCommand(1), new TimedCommand(
+                        new TurnTest(drivetrain, drivetrain.getBackLeftModule(), false), 2)));
 
-        SystemTest.registerTest("br drive test", new SequentialCommandGroup(
-                new WaitCommand(2),
-                new TimedCommand(new DriveTest(drivetrain,
-                        drivetrain.getBackRightModule(), .25), 2),
+        SystemTest.registerTest("br drive test", new SequentialCommandGroup(new WaitCommand(2),
+                new TimedCommand(
+                        new DriveTest(drivetrain, drivetrain.getBackRightModule(), .25), 2),
                 new WaitCommand(1),
-                new TimedCommand(new DriveTest(drivetrain,
-                        drivetrain.getBackRightModule(), -.25), 2),
+                new TimedCommand(
+                        new DriveTest(drivetrain, drivetrain.getBackRightModule(), -.25), 2),
                 new WaitCommand(1),
-                new TimedCommand(new TurnTest(drivetrain,
-                        drivetrain.getBackRightModule(), true), 5),
-                new WaitCommand(1), new TimedCommand(new TurnTest(drivetrain,
-                        drivetrain.getBackRightModule(), false), 5)));
+                new TimedCommand(new TurnTest(drivetrain, drivetrain.getBackRightModule(), true),
+                        5),
+                new WaitCommand(1), new TimedCommand(
+                        new TurnTest(drivetrain, drivetrain.getBackRightModule(), false), 5)));
 
     }
 
     @Override
-    protected void releaseDefaultCommands() {
-    }
+    protected void releaseDefaultCommands() {}
 
     @Override
     protected void initializeDashboardCommands() {
@@ -142,10 +141,8 @@ public class RobotContainer extends LightningContainer {
     }
 
     @Override
-    protected void configureFaultCodes() {
-    }
+    protected void configureFaultCodes() {}
 
     @Override
-    protected void configureFaultMonitors() {
-    }
+    protected void configureFaultMonitors() {}
 }
