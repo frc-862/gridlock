@@ -109,13 +109,13 @@ public final class Constants {
 
     public static final class LedConstants {
         public static final int port = 9;
-        public static final int length = 37;
+        public static final int length = 162;
         public static final double brightness = 0.75;
 
         public static final class Colors {
             //lightning colors
-            public static final int[] lightningOrange = {255, 125, 15};
-            public static final int[] lightningBlue = {15, 70, 255};
+            public static final int[] lightningOrange = {255, 71, 15};
+            public static final int[] lightningBlue = {0, 0, 255};
 
             //misc colors
             public static final int[] cyan = {96, 209, 149};

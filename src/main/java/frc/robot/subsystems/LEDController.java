@@ -27,7 +27,7 @@ public class LEDController extends SubsystemBase {
         led.setData(ledBuffer);
         start();
 
-        orangeAndBlue();
+        swirl();
         initDashboard();
     }
 
