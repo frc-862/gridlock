@@ -80,6 +80,22 @@ public final class Constants {
             public static final double kA = 0d;
 
         }
+
+        public static final class Offsets {
+            public static final class Gridlock {
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(342.246);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(122.959);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(311.660);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(12.744);
+            }
+
+            public static final class Blackout {
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
+            }
+        }
     }
 
     public static final class RobotMap {
