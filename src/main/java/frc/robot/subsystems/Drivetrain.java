@@ -74,10 +74,10 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule backLeftModule;
     private final SwerveModule backRightModule;
 
-    public double FRONT_LEFT_STEER_OFFSET;
-    public double BACK_LEFT_STEER_OFFSET;
-    public double FRONT_RIGHT_STEER_OFFSET;
-    public double BACK_RIGHT_STEER_OFFSET;
+    public double FRONT_LEFT_STEER_OFFSET = Offsets.Gridlock.FRONT_LEFT_STEER_OFFSET;
+    public double BACK_LEFT_STEER_OFFSET = Offsets.Gridlock.BACK_LEFT_STEER_OFFSET;
+    public double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
+    public double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     Path gridlockFile = Paths.get("home/lvuser/gridlock");
     Path blackoutFile = Paths.get("home/lvuser/blackout");
@@ -95,12 +95,8 @@ public class Drivetrain extends SubsystemBase {
             FRONT_RIGHT_STEER_OFFSET = Offsets.Blackout.FRONT_RIGHT_STEER_OFFSET;
             BACK_LEFT_STEER_OFFSET = Offsets.Blackout.BACK_LEFT_STEER_OFFSET;
             BACK_RIGHT_STEER_OFFSET = Offsets.Blackout.BACK_RIGHT_STEER_OFFSET;
-        } else {
-            FRONT_LEFT_STEER_OFFSET = Offsets.Gridlock.FRONT_LEFT_STEER_OFFSET;
-            BACK_LEFT_STEER_OFFSET = Offsets.Gridlock.BACK_LEFT_STEER_OFFSET;
-            FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
-            BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
         }
+        
         setStates(states);
 
         // Set our neo module configurations using drive current, steer current, and
