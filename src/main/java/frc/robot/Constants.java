@@ -124,6 +124,27 @@ public final class Constants {
         }
     }
 
+    public static final class LedConstants {
+        public static final int port = 9;
+        public static final int length = 162;
+        public static final double brightness = 0.75;
+
+        public static final class Colors {
+            //lightning colors
+            public static final int[] lightningOrange = {255, 71, 15};
+            public static final int[] lightningBlue = {0, 0, 255};
+
+            //misc colors
+            public static final int[] cyan = {96, 209, 149};
+            public static final int[] yellow = {255, 230, 20};
+            public static final int[] purple = {220, 30, 240};
+            public static final int[] green = {0, 255, 0};
+            public static final int[] red = {255, 0, 0};
+            public static final int[] white = {255, 255, 255};
+            public static final int[] off = {0, 0, 0};
+        }
+    }
+    
     public static final class Vision {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;
