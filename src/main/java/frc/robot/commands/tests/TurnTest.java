@@ -52,7 +52,9 @@ public class TurnTest extends CommandBase {
     }
 
     @Override
-    public boolean isFinished() { return false; }
+    public boolean isFinished() {
+        return false;
+    }
 
     /** Calculate the diference between target angle and curent angle */
     private double getBearingdifference(double current) {
