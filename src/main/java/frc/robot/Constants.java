@@ -179,6 +179,18 @@ public final class Constants {
         }
     }
 
+    public static final class AutoBalanceConstants {
+        public static final double OPTIMAL_PITCH = 2d;
+        public static final double OPTIMAL_ROLL = 2d;
+        public static final double kP = 0.02;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        public static final double THRESHOLD_TIME = 0.075;
+        public static final double THRESHOLD_ANGLE = 1;
+        public static final double BB_SPEED = 0.2;
+    }
+    
     public static final class LedConstants {
         public static final int port = 9;
         public static final int length = 162;
@@ -199,7 +211,6 @@ public final class Constants {
             public static final int[] off = {0, 0, 0};
         }
     }
-
     public static final class Vision {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;

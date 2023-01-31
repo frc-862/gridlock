@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
@@ -75,8 +76,8 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule backRightModule;
 
     public double FRONT_LEFT_STEER_OFFSET = Offsets.Gridlock.FRONT_LEFT_STEER_OFFSET;
-    public double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
     public double BACK_LEFT_STEER_OFFSET = Offsets.Gridlock.BACK_LEFT_STEER_OFFSET;
+    public double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
     public double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     Path gridlockFile = Paths.get("home/lvuser/gridlock");
@@ -151,6 +152,13 @@ public class Drivetrain extends SubsystemBase {
         initLogging();
         initDashboard();
 
+        /*
+        //display gravity vector for PID tuning - leave commented out until tuning neccessary
+        tab.addDouble("gravityX", () -> getGravityVector()[0]);
+        tab.addDouble("gravityY", () -> getGravityVector()[1]);
+        tab.addDouble("gravityZ", () -> getGravityVector()[2]);
+        */
+
         CommandScheduler.getInstance().registerSubsystem(this);
 
     }
@@ -160,6 +168,8 @@ public class Drivetrain extends SubsystemBase {
         // Update our module positions, odometery
         updateModulePositions();
         updateOdomtery();
+        // field2d.setRobotPose(pose);
+        SmartDashboard.putString("pose", pose.getTranslation().toString());
     }
 
     /**
@@ -306,6 +316,8 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("br drive vel", () -> frontLeftModule.getDriveVelocity());
 
         tab.addDouble("heading", () -> getHeading2d().getDegrees());
+        tab.addDouble("roll", () -> getRoll2d().getDegrees());
+        tab.addDouble("pitch", () -> getPitch2d().getDegrees());
     }
 
     /**
@@ -324,10 +336,28 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Gets the current pose of the robot.
      * 
-     * @return the current pose of the robot in meters
+     * @return the current heading of the robot in meters
      */
     public Rotation2d getHeading2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
+    }
+
+    /**
+     * Gets the current pitch of the robot.
+     * 
+     * @return the current pitch of the robot in meters
+     */
+    public Rotation2d getPitch2d() {
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getPitch(), -180, 180));
+    }
+
+    /**
+     * Gets the current roll of the robot.
+     * 
+     * @return the current roll of the robot in meters
+     */
+    public Rotation2d getRoll2d() {
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getRoll(), -180, 180));
     }
 
     /**

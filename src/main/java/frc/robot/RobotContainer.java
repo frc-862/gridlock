@@ -1,14 +1,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.LEDController;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.tests.DriveTest;
 import frc.robot.commands.tests.DriveTrainSystemTest;
@@ -49,6 +52,8 @@ public class RobotContainer extends LightningContainer {
                 .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
+
+        new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
     }
 
     // Creates the autonomous commands
@@ -64,6 +69,7 @@ public class RobotContainer extends LightningContainer {
         // Left stick Y axis -> forward and backwards movement
         // Left stick X axis -> left and right movement
         // Right stick X axis -> rotation
+
         drivetrain.setDefaultCommand(
                 new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
                         () -> joystickFilter.filter(driver.getLeftY()),
