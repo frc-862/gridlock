@@ -1,16 +1,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.AutoBalanceConstants;
 import frc.robot.subsystems.Drivetrain;
 
 public class AutoBalanceBangBang extends CommandBase {
     private Drivetrain drivetrain;
     private double lastAngle;
-
-    // add gyroscope
-    //TODO: initialize tanktrain
+    private double delta;
+    private double lastTime = 0;
     
     public AutoBalanceBangBang(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
@@ -26,23 +26,28 @@ public class AutoBalanceBangBang extends CommandBase {
 
     
     @Override
-    public void execute() {                     
-        // TODO: tune the value of 0.05 to probably something a lot smaller
-        if (drivetrain.getPitch2d().getDegrees() - lastAngle > 0.05 && drivetrain.getPitch2d().getDegrees() > DrivetrainConstants.OPTIMAL_PITCH) { 
-            drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(0.1), 
-                                                drivetrain.percentOutputToMetersPerSecond(0), 
-                                                drivetrain.percentOutputToMetersPerSecond(0)));
-        } else if (drivetrain.getPitch2d().getDegrees() - lastAngle > 0.05 && drivetrain.getPitch2d().getDegrees() < DrivetrainConstants.OPTIMAL_PITCH) {
-            drivetrain.setChassisSpeeds(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-0.1), 
-                                                drivetrain.percentOutputToMetersPerSecond(0), 
-                                                drivetrain.percentOutputToMetersPerSecond(0)));
+    public void execute() {
+
+        if(Timer.getFPGATimestamp() - lastTime > AutoBalanceConstants.THRESHOLD_TIME) {
+            delta = Math.abs(drivetrain.getPitch2d().getDegrees() - lastAngle);
+            lastTime = Timer.getFPGATimestamp();
+            lastAngle = drivetrain.getPitch2d().getDegrees();
+        }
+
+        if (delta < AutoBalanceConstants.THRESHOLD_ANGLE && Math.abs(drivetrain.getPitch2d().getDegrees()) > AutoBalanceConstants.OPTIMAL_PITCH) { 
+            drivetrain.drive(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-Math.signum(drivetrain.getPitch2d().getDegrees()) * 0.2), 
+                                                          drivetrain.percentOutputToMetersPerSecond(0), 
+                                                          drivetrain.percentOutputToMetersPerSecond(0)));
+        } else {
+            drivetrain.drive(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(0),
+                drivetrain.percentOutputToMetersPerSecond(0), 
+                drivetrain.percentOutputToMetersPerSecond(0)));
         } 
         /*
         * this measures the change in angle and if the robot is actually on a slope
         * if it is, it will move forward until it is level and then it will move back
         */
         
-        lastAngle = drivetrain.getPitch2d().getDegrees();
 	}
                 
 

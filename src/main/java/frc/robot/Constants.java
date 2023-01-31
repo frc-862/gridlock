@@ -138,7 +138,6 @@ public final class Constants {
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
             }
         }
-        public static final double OPTIMAL_PITCH = 10d; // TODO: test to find the optimal value
     }
 
     public static final class RobotMap {
@@ -180,11 +179,17 @@ public final class Constants {
         }
     }
 
-    // Auto Balance constants
-    public static final double OPTIMAL_ROLL = 2;
-    public static final double AB_KP = 0.012;
-    public static final double AB_KI = 0;
-    public static final double AB_KD = 0;
+    public static final class AutoBalanceConstants {
+        public static final double OPTIMAL_PITCH = 2d;
+        public static final double OPTIMAL_ROLL = 2d;
+        public static final double kP = 0.012;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        public static final double THRESHOLD_TIME = 0.075;
+        public static final double THRESHOLD_ANGLE = 0.5;
+        public static final double BB_SPEED = 0.2;
+    }
     
     public static final class LedConstants {
         public static final int port = 9;

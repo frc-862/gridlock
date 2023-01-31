@@ -76,8 +76,8 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule backRightModule;
 
     public double FRONT_LEFT_STEER_OFFSET = Offsets.Gridlock.FRONT_LEFT_STEER_OFFSET;
-    public double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
     public double BACK_LEFT_STEER_OFFSET = Offsets.Gridlock.BACK_LEFT_STEER_OFFSET;
+    public double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
     public double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     Path gridlockFile = Paths.get("home/lvuser/gridlock");
@@ -170,10 +170,6 @@ public class Drivetrain extends SubsystemBase {
         updateOdomtery();
         // field2d.setRobotPose(pose);
         SmartDashboard.putString("pose", pose.getTranslation().toString());
-
-        SmartDashboard.putNumber("pitch", getPitch2d().getDegrees());
-        SmartDashboard.putNumber("roll", getRoll2d().getDegrees());
-        SmartDashboard.putNumber("yaw", getHeading2d().getDegrees());
     }
 
     /**
@@ -320,6 +316,8 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("br drive vel", () -> frontLeftModule.getDriveVelocity());
 
         tab.addDouble("heading", () -> getHeading2d().getDegrees());
+        tab.addDouble("roll", () -> getRoll2d().getDegrees());
+        tab.addDouble("pitch", () -> getPitch2d().getDegrees());
     }
 
     /**
