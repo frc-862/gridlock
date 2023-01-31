@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.AutoBalance;
-import frc.robot.commands.AutoBalanceBangBang;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.tests.DriveTest;
 import frc.robot.commands.tests.DriveTrainSystemTest;
@@ -54,7 +53,7 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
-        new Trigger(driver::getBButton).whileTrue(new AutoBalanceBangBang(drivetrain));
+        new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
     }
 
     // Creates the autonomous commands
