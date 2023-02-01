@@ -8,7 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
@@ -45,8 +45,11 @@ public class Elevator extends SubsystemBase {
     setPower(0);
   }
 
-  @Override
-  public void periodic() {
-   
-  }
+  public boolean onTarget() {
+    return false; //TODO figure out how to do this properly
+}
+
+  public Translation2d getElevatorXY() {
+    return new Translation2d(getHeight(), ElevatorConstants.ANGLE);
+}
 }

@@ -86,7 +86,7 @@ public final class Constants {
 
             public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in degrees
 
-            public static final Translation2d OFFSET = new Translation2d(0, 0); // horiz/vert
+            public static final Translation2d POSE_OFFSET = new Translation2d(0, 0); // horiz/vert
                                                                                      // offset from
                                                                                      // ground (See
                                                                                      // below)
@@ -103,6 +103,9 @@ public final class Constants {
             public static final double MIN_ANGLE = -90d;
 
             public static final double LENGTH = 0; // arm length in inches
+
+            public static final int ENCODER_OFFSET_GRIDLOCK = 0;
+            public static final int ENCODER_OFFSET_BLACKOUT = 0;
         }
 
         public static final class WristConstants {
@@ -116,6 +119,8 @@ public final class Constants {
 
             public static final double MAX_ANGLE = 90d;
             public static final double MIN_ANGLE = -90d;
+
+            public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
         }
 
         // Gains vaules for theta PIDControllers
@@ -228,12 +233,27 @@ public final class Constants {
     }
 
     public static final class LiftConstants {
-        public static final Translation2d GROUND_COLLECT = new Translation2d(0d, 0d);
-        public static final Translation2d DOUBLE_SUBSTATION_COLLECT = new Translation2d(0d, 0d);
-        public static final Translation2d LOW_SCORE = new Translation2d(0d, 0d);
-        public static final Translation2d MEDIUM_SCORE = new Translation2d(0d, 0d);
-        public static final Translation2d HIGH_SCORE = new Translation2d(0d, 0d);
-        public static final Translation2d STOWED = new Translation2d(0d, 0d);
+        public enum LiftState {
+            groundCollect(new Translation2d(0d, 0d)),
+            doubleSubstationCollect(new Translation2d(0d, 0d)),
+            lowScore(new Translation2d(0d, 0d)),
+            mediumScore(new Translation2d(0d, 0d)),
+            highScore(new Translation2d(0d, 0d)),
+            stowed(new Translation2d(0d, 0d));
+
+            private Translation2d pose;
+
+            LiftState(Translation2d pose) {
+                this.pose = pose;
+            }
+
+            public Translation2d pose() {
+                return pose;
+            }
+        }
+
+        public static final Polygon BOUNDING_BOX = new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
+    }
 
     public static final class XYConstants {
         public static final double ARM_RADIUS = 0; // arm length in inches
