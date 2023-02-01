@@ -254,8 +254,4 @@ public final class Constants {
 
         public static final Polygon BOUNDING_BOX = new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
     }
-
-        public static final Polygon BOUNDING_BOX =
-                new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
-    }
 }
