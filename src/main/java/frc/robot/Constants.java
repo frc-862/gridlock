@@ -255,18 +255,6 @@ public final class Constants {
         public static final Polygon BOUNDING_BOX = new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
     }
 
-    public static final class XYConstants {
-        public static final double ARM_RADIUS = 0; // arm length in inches
-        public static final Rotation2d ELEVATOR_ANGLE = new Rotation2d(0); // Acute Elevator mount
-                                                                           // angle in degrees
-        public static final Translation2d ELEVATOR_OFFSET = new Translation2d(0, 0); // horiz/vert
-                                                                                     // offset from
-                                                                                     // ground (See
-                                                                                     // below)
-        // X = distance from arm pivot point to front of bot at bottom limit (negative)
-        // Y = height of arm pivot point from ground at bottom limit
-        public static final Translation2d COLLECTOR_OFFSET =
-                new Translation2d(0, new Rotation2d(0));
         public static final Polygon BOUNDING_BOX =
                 new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
     }
