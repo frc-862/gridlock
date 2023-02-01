@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -18,20 +21,31 @@ public class Arm extends SubsystemBase {
     private CANSparkMax motor;
     private SparkMaxPIDController controller;
     private SparkMaxAbsoluteEncoder encoder;
+    private double OFFSET;
+
+    Path gridlockFile = Paths.get("home/lvuser/gridlock");
+    Path blackoutFile = Paths.get("home/lvuser/blackout");
 
     public Arm() {
         motor = NeoConfig.createMotor(CAN.ARM_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
         controller = NeoConfig.createPIDController(motor.getPIDController(), ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
-        encoder = motor.getAbsoluteEncoder(Type.kDutyCycle); //TODO: add this to thunder's neoconfig
+        encoder = motor.getAbsoluteEncoder(Type.kDutyCycle); //TODO: add this to thunder's neoconfig (with inverts etc.)
+
+        if (Files.exists(blackoutFile)) {
+            OFFSET = ArmConstants.ENCODER_OFFSET_BLACKOUT;
+        } else {
+            OFFSET = ArmConstants.ENCODER_OFFSET_GRIDLOCK;
+        }
     }
 
     public void setAngle(Rotation2d angle) {
+        angle = angle.minus(Rotation2d.fromDegrees(OFFSET));
         double target = LightningMath.inputModulus(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
         controller.setReference(target, CANSparkMax.ControlType.kPosition);
     }
 
-    public double getAngle() {
-        return encoder.getPosition()*360;
+    public Rotation2d getAngle() {
+        return Rotation2d.fromRotations(encoder.getPosition()).plus(Rotation2d.fromDegrees(OFFSET));
     }
     public void setGains(double kP, double kI, double kD) {
         controller = NeoConfig.createPIDController(controller, kP, kI, kD);
@@ -50,6 +64,6 @@ public class Arm extends SubsystemBase {
     }
 
     public Translation2d getArmXY() {
-        return new Translation2d(ArmConstants.LENGTH, new Rotation2d(Math.toRadians(getAngle())));
+        return new Translation2d(ArmConstants.LENGTH, getAngle());
     }
 }

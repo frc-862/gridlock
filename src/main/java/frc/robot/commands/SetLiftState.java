@@ -41,16 +41,20 @@ public class SetLiftState extends CommandBase {
 
     @Override
     public void initialize() {
-        Translation2d currentPose = getOverallXY();
-        Translation2d desiredPose = this.pose.get();
+        //TODO: decide if we want this to be called once and stop
+        //TODO: or if we want it to be more like a default command
+        if (isReachable(pose.get())) {
+            Translation2d currentPose = getOverallXY();
+            Translation2d desiredPose = this.pose.get();
 
-        Translation2d delta = desiredPose.minus(currentPose);
+            Translation2d delta = desiredPose.minus(currentPose);
 
-        Rotation2d barAngle = delta.getAngle().minus(ElevatorConstants.ANGLE);
-        double elevatorHeight = delta.getNorm() * Math.cos(barAngle.getRadians());
+            Rotation2d barAngle = delta.getAngle().minus(ElevatorConstants.ANGLE);
+            double elevatorHeight = delta.getNorm() * Math.cos(barAngle.getRadians());
 
-        elevator.setHeight(elevatorHeight);
-        arm.setAngle(barAngle);
+            elevator.setHeight(elevatorHeight);
+            arm.setAngle(barAngle);
+        }
     }
 
     @Override

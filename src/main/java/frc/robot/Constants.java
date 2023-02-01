@@ -104,8 +104,9 @@ public final class Constants {
 
             public static final double LENGTH = 0; // arm length in inches
 
-            public static final int ENCODER_OFFSET_GRIDLOCK = 0;
-            public static final int ENCODER_OFFSET_BLACKOUT = 0;
+            //Offsets in degrees
+            public static final double ENCODER_OFFSET_GRIDLOCK = 0;
+            public static final double ENCODER_OFFSET_BLACKOUT = 0;
         }
 
         public static final class WristConstants {
@@ -113,14 +114,16 @@ public final class Constants {
             public static final double kI = 0d;
             public static final double kD = 0d;
 
-
-            public static final int TICKS = 42;
-            public static final double GEAR_RATIO = 1.0 / 1.0;
-
             public static final double MAX_ANGLE = 90d;
             public static final double MIN_ANGLE = -90d;
 
             public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
+
+            public static final double LENGTH = 0; // wrist length in inches
+
+            //Offsets in degrees
+            public static final double ENCODER_OFFSET_GRIDLOCK = 0;
+            public static final double ENCODER_OFFSET_BLACKOUT = 0;
         }
 
         // Gains vaules for theta PIDControllers
