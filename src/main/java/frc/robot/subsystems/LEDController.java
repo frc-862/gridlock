@@ -153,7 +153,9 @@ public class LEDController extends SubsystemBase {
 
     // turn off LEDs
     public void stop() {
-        led.stop();
+        setFullStripColor(Colors.off, 0f);
+        currentState = "off";
+        led.setData(ledBuffer);
     }
 
     // turn on LEDs
