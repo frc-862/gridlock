@@ -83,6 +83,15 @@ public final class Constants {
 
             public static final double MAX_HEIGHT = 0d;
             public static final double MIN_HEIGHT = 100d;
+
+            public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in degrees
+
+            public static final Translation2d OFFSET = new Translation2d(0, 0); // horiz/vert
+                                                                                     // offset from
+                                                                                     // ground (See
+                                                                                     // below)
+        // X = distance from arm pivot point to front of bot at bottom limit (negative)
+        // Y = height of arm pivot point from ground at bottom limit
         }
 
         public static final class ArmConstants {
@@ -90,12 +99,10 @@ public final class Constants {
             public static final double kI = 0d;
             public static final double kD = 0d;
 
-
-            public static final int TICKS = 42;
-            public static final double GEAR_RATIO = 1.0 / 1.0;
-
             public static final double MAX_ANGLE = 90d;
             public static final double MIN_ANGLE = -90d;
+
+            public static final double LENGTH = 0; // arm length in inches
         }
 
         public static final class WristConstants {
@@ -220,14 +227,13 @@ public final class Constants {
 
     }
 
-    public static final class LiftStates {
+    public static final class LiftConstants {
         public static final Translation2d GROUND_COLLECT = new Translation2d(0d, 0d);
         public static final Translation2d DOUBLE_SUBSTATION_COLLECT = new Translation2d(0d, 0d);
         public static final Translation2d LOW_SCORE = new Translation2d(0d, 0d);
         public static final Translation2d MEDIUM_SCORE = new Translation2d(0d, 0d);
         public static final Translation2d HIGH_SCORE = new Translation2d(0d, 0d);
         public static final Translation2d STOWED = new Translation2d(0d, 0d);
-    }
 
     public static final class XYConstants {
         public static final double ARM_RADIUS = 0; // arm length in inches
