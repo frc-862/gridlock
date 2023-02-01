@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.AprilTagTargetting;
 import frc.thunder.LightningContainer;
 
 /**
@@ -13,6 +14,8 @@ import frc.thunder.LightningContainer;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer extends LightningContainer {
+
+  private AprilTagTargetting targetting = new AprilTagTargetting();
 
   @Override
   protected void configureButtonBindings() {

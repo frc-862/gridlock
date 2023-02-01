@@ -13,13 +13,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.DataLogManager;
 
 public class AprilTagTargetting extends SubsystemBase{
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
     private final ShuffleboardTab targetingTab = Shuffleboard.getTab("Targeting Tab");
+    
     private double botPose;
+    private final double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+    private final NetworkTableEntry visionDistanceEntry = targetingTab.add("Vision Distance", 0).getEntry();
+    //TODO: make this actually display a value
+    
 
+    //Constructor
+    public AprilTagTargetting() {
+
+    }
 
     @Override
     public void periodic(){
@@ -29,6 +39,8 @@ public class AprilTagTargetting extends SubsystemBase{
         } catch (IOException e) {
             System.out.println(e);
         }
+        System.out.println(botPoseBlue[0]);     
+        targetingTab.add("", 0).getEntry();
     }
 
     public double getBotPose(){
@@ -38,7 +50,6 @@ public class AprilTagTargetting extends SubsystemBase{
     public void estimatePose() throws IOException{
         InetAddress address;
         address = InetAddress.getByName("10.8.62.101");
-        
         
         while(!address.isReachable(10000));
             
