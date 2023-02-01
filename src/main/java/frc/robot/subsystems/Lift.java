@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.LiftStates;
-import frc.robot.Constants.XYConstants;
+import frc.robot.Constants.LiftConstants;
+import frc.robot.Constants.DrivetrainConstants.ArmConstants;
+import frc.robot.Constants.DrivetrainConstants.ElevatorConstants;
+import frc.robot.Constants.DrivetrainConstants.WristConstants;
 
 public class Lift extends SubsystemBase {
 
@@ -35,19 +37,19 @@ public class Lift extends SubsystemBase {
     }
 
     public Translation2d getElevatorXY() {
-        return new Translation2d(elevator.getHeight(), XYConstants.ELEVATOR_ANGLE);
+        return new Translation2d(elevator.getHeight(), ElevatorConstants.ANGLE);
     }
 
     public Translation2d getBarXY() {
-        return new Translation2d(XYConstants.ARM_RADIUS, new Rotation2d(Math.toRadians(arm.getAngle())));
+        return new Translation2d(ArmConstants.LENGTH, new Rotation2d(Math.toRadians(arm.getAngle())));
     }
 
     public Translation2d getOverallXY() {
-        return XYConstants.ELEVATOR_OFFSET.plus(getElevatorXY()).plus(getBarXY().plus(XYConstants.COLLECTOR_OFFSET));
+        return ElevatorConstants.OFFSET.plus(getElevatorXY()).plus(getBarXY().plus(WristConstants.COLLECTOR_OFFSET));
     }
 
     public Boolean isReachable(Translation2d pose) {
-        return XYConstants.BOUNDING_BOX.contains(pose.getX(), pose.getY());
+        return LiftConstants.BOUNDING_BOX.contains(pose.getX(), pose.getY());
     }
 
 
@@ -56,27 +58,27 @@ public class Lift extends SubsystemBase {
     public void periodic() {
         switch(state) {
             case groundCollect:
-                position = LiftStates.GROUND_COLLECT;
+                position = LiftConstants.GROUND_COLLECT;
             break;
 
             case doubleSubstationCollect:
-                position = LiftStates.DOUBLE_SUBSTATION_COLLECT;
+                position = LiftConstants.DOUBLE_SUBSTATION_COLLECT;
             break;
 
             case lowScore:
-                position = LiftStates.LOW_SCORE;
+                position = LiftConstants.LOW_SCORE;
             break;
 
             case mediumScore:
-                position = LiftStates.MEDIUM_SCORE;
+                position = LiftConstants.MEDIUM_SCORE;
             break;
 
             case highScore:
-                position = LiftStates.HIGH_SCORE;
+                position = LiftConstants.HIGH_SCORE;
             break;
 
             case stowed:
-                position = LiftStates.STOWED;
+                position = LiftConstants.STOWED;
             break;
         }
 
@@ -86,7 +88,7 @@ public class Lift extends SubsystemBase {
 
             Translation2d delta = desiredPose.minus(currentPose);
 
-            Rotation2d armAngle = delta.getAngle().minus(XYConstants.ELEVATOR_ANGLE);
+            Rotation2d armAngle = delta.getAngle().minus(ElevatorConstants.ANGLE);
             double elevatorHeight = delta.getNorm() * Math.cos(armAngle.getDegrees());
 
             elevator.setHeight(elevatorHeight);
