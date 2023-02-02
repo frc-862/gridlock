@@ -39,10 +39,10 @@ public class RobotContainer extends LightningContainer {
             new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
                     XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
-    private static final AutonomousCommandFactory autoFactory =
-            new AutonomousCommandFactory(drivetrain::getPose, drivetrain::resetOdometry,
-                    drivetrain.getDriveKinematics(), DrivetrainConstants.DRIVE_PID_CONSTANTS,
-                    DrivetrainConstants.THETA_PID_CONSTANTS, drivetrain::setStates, drivetrain);
+    private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(
+            drivetrain::getPose, drivetrain::resetOdometry, drivetrain.getDriveKinematics(),
+            DrivetrainConstants.DRIVE_PID_CONSTANTS, DrivetrainConstants.THETA_PID_CONSTANTS,
+            drivetrain::setStates, drivetrain::resetNeoAngle, drivetrain);
 
     // Configure the button bindings
     @Override
@@ -107,4 +107,9 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureFaultMonitors() {}
+
+    @Override
+    protected AutonomousCommandFactory getCommandFactory() {
+        return autoFactory;
+    }
 }
