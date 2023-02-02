@@ -31,6 +31,8 @@ public class AprilTagTargetting extends SubsystemBase{
 
     //NetworkTable Values
     private final double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+    private final double latency = limelightTab.getEntry("tl").getDouble(0);
+    private final GenericEntry latencyEntry = targetingTab.add("latency", 0).getEntry();
     private final GenericEntry botPoseXEntry = targetingTab.add("botPoseX", 0).getEntry();
     private final GenericEntry botPoseYEntry = targetingTab.add("botPoseY", 0).getEntry();
     private final GenericEntry botPoseHeadingEntry = targetingTab.add("botPoseHeading", 0).getEntry();
@@ -60,6 +62,7 @@ public class AprilTagTargetting extends SubsystemBase{
     private void updateDashboard() {
 
 		// Vision Dashboard Data
+        latencyEntry.setDouble(latency);
 	    botPoseXEntry.setDouble(botPoseBlue[0]);
         botPoseYEntry.setDouble(botPoseBlue[1]);
         botPoseHeadingEntry.setDouble(botPoseBlue[3]);
