@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -21,11 +23,18 @@ public class AprilTagTargetting extends SubsystemBase{
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
     private final   ShuffleboardTab targetingTab = Shuffleboard.getTab("Targeting Tab");
     
+    //Rest API Values
     private double botPose;
+    public double botPosX;
+    public double botPosY;
+    public double botHeading;
+
+    //NetworkTable Values
     private final double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
     private final GenericEntry botPoseXEntry = targetingTab.add("botPoseX", 0).getEntry();
     private final GenericEntry botPoseYEntry = targetingTab.add("botPoseY", 0).getEntry();
     private final GenericEntry botPoseHeadingEntry = targetingTab.add("botPoseHeading", 0).getEntry();
+    
     
 
     //Constructor
@@ -44,7 +53,10 @@ public class AprilTagTargetting extends SubsystemBase{
         System.out.println(botPoseBlue[0]);    
         updateDashboard();
     }
-
+    
+    /*
+     * Updates shuffleboard values using NetworkTables absolute position values
+     */
     private void updateDashboard() {
 
 		// Vision Dashboard Data
@@ -58,7 +70,11 @@ public class AprilTagTargetting extends SubsystemBase{
         return this.botPose;
     }
 
-    public void estimatePose() throws IOException{
+    /*
+     * Estimates pose using Rest API (For logging purposes)
+     */
+    public void estimatePose() throws IOException
+    {
         InetAddress address;
         address = InetAddress.getByName("10.8.62.101");
         
@@ -70,7 +86,23 @@ public class AprilTagTargetting extends SubsystemBase{
 
         while (sc.hasNext()) {
             String line = sc.next();
-            System.out.println(line);
+            // System.out.println(line);
+
+            try{
+                String FID = line.substring(line.indexOf("fID"));
+                FID = FID.substring(5, FID.indexOf(",", 5));
+
+                String botPos = line.substring(line.indexOf("\"botpose\":["));
+                botPos = botPos.substring(11, botPos.indexOf("]"));
+
+                List<String> allBotVal = Arrays.asList(botPos.split(","));
+
+                botPosX = Double.parseDouble(allBotVal.get(0));
+                botPosY = Double.parseDouble(allBotVal.get(1));
+                botHeading = Double.parseDouble(allBotVal.get(4));
+            } catch(Exception e){
+                System.out.println("No Data");
+            }
         }
     }
 }
