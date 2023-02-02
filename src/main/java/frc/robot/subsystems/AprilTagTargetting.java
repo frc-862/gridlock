@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,12 +19,13 @@ import edu.wpi.first.wpilibj.DataLogManager;
 
 public class AprilTagTargetting extends SubsystemBase{
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
-    private final ShuffleboardTab targetingTab = Shuffleboard.getTab("Targeting Tab");
+    private final   ShuffleboardTab targetingTab = Shuffleboard.getTab("Targeting Tab");
     
     private double botPose;
     private final double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-    private final NetworkTableEntry visionDistanceEntry = targetingTab.add("Vision Distance", 0).getEntry();
-    //TODO: make this actually display a value
+    private final GenericEntry botPoseXEntry = targetingTab.add("botPoseX", 0).getEntry();
+    private final GenericEntry botPoseYEntry = targetingTab.add("botPoseY", 0).getEntry();
+    private final GenericEntry botPoseHeadingEntry = targetingTab.add("botPoseHeading", 0).getEntry();
     
 
     //Constructor
@@ -39,9 +41,18 @@ public class AprilTagTargetting extends SubsystemBase{
         } catch (IOException e) {
             System.out.println(e);
         }
-        System.out.println(botPoseBlue[0]);     
-        targetingTab.add("", 0).getEntry();
+        System.out.println(botPoseBlue[0]);    
+        updateDashboard();
     }
+
+    private void updateDashboard() {
+
+		// Vision Dashboard Data
+	    botPoseXEntry.setDouble(botPoseBlue[0]);
+        botPoseYEntry.setDouble(botPoseBlue[1]);
+        botPoseHeadingEntry.setDouble(botPoseBlue[3]);
+		
+	}
 
     public double getBotPose(){
         return this.botPose;
