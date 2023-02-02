@@ -201,7 +201,8 @@ public final class Constants {
         public static final double kD = 0;
 
         public static final double THRESHOLD_TIME = 0.075;
-        public static final double THRESHOLD_ANGLE = 1;
+        public static final double THRESHOLD_PITCH_ANGLE = 1;
+        public static final double THRESHOLD_ROLL_ANGLE = 1;
         public static final double BB_SPEED = 0.2;
     }
     

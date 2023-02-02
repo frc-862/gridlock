@@ -1,7 +1,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -18,8 +20,12 @@ public class AutoBalance extends CommandBase {
     private double pitchDelta;
     private double rollDelta;
     private double lastTime = 0;
-    private double pitchAngle, rollAngle, finalCosAngle, finalSinAngle;
-    private double finalAngle = 0;
+    private double pitchAngle;
+    private double rollAngle;
+    private double totalAngle;
+    private double offset = 0;
+    private double finalAngle;
+    private SwerveModuleState[] moduleStates;
 
 
     public AutoBalance(Drivetrain drivetrain) {
@@ -45,54 +51,47 @@ public class AutoBalance extends CommandBase {
             lastTime = Timer.getFPGATimestamp();
             lastPitch = drivetrain.getPitch2d().getDegrees();
             lastRoll = drivetrain.getRoll2d().getDegrees();
+            pitchAngle = drivetrain.getPitch2d().getDegrees();
+            rollAngle = drivetrain.getRoll2d().getDegrees();
+            totalAngle = Math.abs(pitchAngle) + Math.abs(rollAngle);
+            if (pitchAngle >= 0){
+                if (rollAngle >= 0){
+                    offset = 315;
+                } else {
+                    offset = 45;
+                }
+            } else {
+                if (rollAngle >= 0){
+                    offset = 225;
+                } else {
+                    offset = 135;
+                }
+            }
+            finalAngle = offset + 45*(pitchAngle/totalAngle - rollAngle/totalAngle);
+
+            
+            SmartDashboard.putNumber("final Angle", finalAngle);
         }
-        pitchAngle = drivetrain.getPitch2d().getDegrees();
-        rollAngle = drivetrain.getRoll2d().getDegrees();
-        SmartDashboard.putNumber("final Angle", (pitchAngle + rollAngle));
+
 
 
         // things commented out allow for roll conterol, but there are a couple issues that need to
         // be ironed out
-        if ((/*
-              * Math.abs(drivetrain.getRoll2d().getDegrees()) > AutoBalanceConstants.OPTIMAL_ROLL ||
-              */ Math
-                .abs(drivetrain.getPitch2d().getDegrees()) > AutoBalanceConstants.OPTIMAL_PITCH)
-                && pitchDelta < AutoBalanceConstants.THRESHOLD_ANGLE) { // maybe add check for
+        if ((
+               Math.abs(drivetrain.getRoll2d().getDegrees()) > AutoBalanceConstants.OPTIMAL_ROLL && rollDelta < AutoBalanceConstants.THRESHOLD_ROLL_ANGLE) ||
+               (Math.abs(drivetrain.getPitch2d().getDegrees()) > AutoBalanceConstants.OPTIMAL_PITCH && pitchDelta < AutoBalanceConstants.THRESHOLD_PITCH_ANGLE)) { // maybe add check for
                                                                         // theoretical color sensor?
-
-            finalCosAngle = Math.acos(Math.cos(pitchAngle) + Math.cos(rollAngle));
-            finalSinAngle = Math.asin(Math.sin(pitchAngle) + Math.sin(rollAngle));
-            finalCosAngle = Math.toDegrees(finalCosAngle);
-            finalSinAngle = Math.toDegrees(finalSinAngle);
-
-            if (finalCosAngle >= 90 && finalSinAngle >= 0) {
-                finalAngle = finalCosAngle;
-            } else if (finalCosAngle >= 90 && finalSinAngle <= 0) {
-                finalAngle = finalCosAngle + 90;
-            } else if (finalCosAngle <= 90 && finalSinAngle >= 0) {
-                finalAngle = finalCosAngle;
-            } else if (finalCosAngle <= 90 && finalSinAngle <= 0) {
-                finalAngle = finalSinAngle;
+            //this code should make the robot autobalance using the final angle that is beng printed to smartdashboard
+            // make sure someone reads over it though, because I'm not sure if I'm using the right drivetrain functions stuff - Alok
+            //don't uncomment this until final angle has been checked to make sense
+            /* 
+            moduleStates = drivetrain.getStates();
+            for (int m = 0; m < 4; m++){
+                moduleStates[m].angle = Rotation2d.fromDegrees(finalAngle);
+                moduleStates[m].speedMetersPerSecond = drivetrain.percentOutputToMetersPerSecond(pid.calculate(finalAngle));
             }
+            */
 
-            // if (finalCosAngle > 90) {
-            // if (finalSinAngle > 0) {
-            // finalAngle = finalCosAngle;
-            // } else if (finalSinAngle < 0) {
-            // finalAngle = finalCosAngle + 90;
-            // }
-            // } else {
-            // finalAngle = finalSinAngle;
-            // }
-
-            drivetrain.drive(new ChassisSpeeds(
-                    drivetrain.percentOutputToMetersPerSecond(
-                            pid.calculate((pitchAngle + rollAngle) / 2, 0)),
-                    drivetrain.percentOutputToMetersPerSecond(0), // -pid.calculate(drivetrain.getRoll2d().getDegrees(),
-                                                                  // 0)),
-                    drivetrain.percentOutputToMetersPerSecond(0)));
-            SmartDashboard.putNumber("motor output",
-                    pid.calculate(drivetrain.getPitch2d().getDegrees(), 0));
         } else {
             // drivetrain.stop();
             drivetrain.drive(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(0),
