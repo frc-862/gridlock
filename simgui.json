@@ -1,4 +1,56 @@
 {
+<<<<<<< HEAD
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Autonomous/Auto Mode": "String Chooser"
+    }
+  },
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "transitory": {
+      "Shuffleboard": {
+        "Fault Codes": {
+          "open": true
+        },
+        "Targeting Tab": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
+    "NT3@10.8.62.102:57862": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+    "NT3@10.8.62.104:38136": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
+      "open": true
+    },
+    "Server": {
+      "open": true
+    }
+=======
   "HALProvider": {
     "Other Devices": {
       "SPARK MAX [1]": {
@@ -75,5 +127,6 @@
   },
   "NetworkTables View": {
     "visible": false
+>>>>>>> main
   }
 }
