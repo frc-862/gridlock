@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.subsystems.AprilTagTargetting;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -27,6 +28,7 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
+  private AprilTagTargetting targetting = new AprilTagTargetting();
     // Creates new LED controller
     private static final LEDController led = new LEDController();
 
