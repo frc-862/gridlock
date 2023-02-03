@@ -30,10 +30,10 @@ public class AprilTagTargetting extends SubsystemBase{
     public double botHeading;
 
     //NetworkTable Values
-    private final double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-    private final double latency = limelightTab.getEntry("tl").getDouble(0);
+    private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+    private double latency = limelightTab.getEntry("tl").getDouble(0);
     private final GenericEntry latencyEntry = targetingTab.add("latency", 0).getEntry();
-    private final GenericEntry botPoseXEntry = targetingTab.add("botPoseX", 0).getEntry();
+    private final GenericEntry botPoseXEntry = targetingTab.add("botPoseX", 33).getEntry();
     private final GenericEntry botPoseYEntry = targetingTab.add("botPoseY", 0).getEntry();
     private final GenericEntry botPoseHeadingEntry = targetingTab.add("botPoseHeading", 0).getEntry();
     
@@ -41,18 +41,21 @@ public class AprilTagTargetting extends SubsystemBase{
 
     //Constructor
     public AprilTagTargetting() {
-
+        botPoseBlue[0] = 45;
     }
 
     @Override
     public void periodic(){
-        this.botPose = limelightTab.getEntry("botpose").getDouble(0);
-        try {
-            estimatePose();
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-        System.out.println(botPoseBlue[0]);    
+        // this.botPose = limelightTab.getEntry("botpose").getDouble(0);
+
+        // try {
+        //     estimatePose();
+        // } catch (IOException e) {
+        //     System.out.println(e);
+        // }
+
+        //System.out.println(botPoseBlue[0]);    
+        updateBotPoseBlue();
         updateDashboard();
     }
     
@@ -73,6 +76,12 @@ public class AprilTagTargetting extends SubsystemBase{
         return this.botPose;
     }
 
+    
+    public void updateBotPoseBlue(){
+        botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+        latency = limelightTab.getEntry("botpose_wpiblue").getDouble(0);
+    }
+    
     /*
      * Estimates pose using Rest API (For logging purposes)
      */
