@@ -200,7 +200,7 @@ public final class Constants {
         public static final double MAGNITUDE_RATE_OF_CHANGE_THRESHOLD = 0.05;
         public static final double MIN_MAGNITUDE_THRESHOLD = -0.6;
         public static final double MAX_MAGNITUDE_THRESHOLD = 0.6;
-        public static final double THRESHOLD_TIME = 0.075;
+        public static final double DELAY_TIME = 2;
     }
 
     public static final class LedConstants {

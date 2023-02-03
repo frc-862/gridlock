@@ -1,17 +1,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoBalanceConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.thunder.LightningRobot;
 import frc.thunder.filter.MovingAverageFilter;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.math.LightningMath;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class AutoBalance extends CommandBase {
     private Drivetrain drivetrain;
@@ -24,6 +24,8 @@ public class AutoBalance extends CommandBase {
     private double magnitudeRateOfChange;
     private double filteredMagnitudeRateOfChange;
     private double lastMagnitude;
+    
+    private Debouncer delay = new Debouncer(AutoBalanceConstants.DELAY_TIME, DebounceType.kFalling);
 
     private MovingAverageFilter filter;
 
@@ -73,8 +75,8 @@ public class AutoBalance extends CommandBase {
 
         }
 
-        if (magnitude > AutoBalanceConstants.MAGNITUDE_THRESHOLD
-                && filteredMagnitudeRateOfChange < AutoBalanceConstants.MAGNITUDE_RATE_OF_CHANGE_THRESHOLD) {
+        if (delay.calculate(magnitude > AutoBalanceConstants.MAGNITUDE_THRESHOLD
+                && filteredMagnitudeRateOfChange < AutoBalanceConstants.MAGNITUDE_RATE_OF_CHANGE_THRESHOLD)) {
             drivetrain.setStates(moduleStates);
         } else {
             drivetrain.stop();
