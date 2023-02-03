@@ -13,109 +13,89 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
-import edu.wpi.first.wpilibj.DataLogManager;
+import frc.robot.Constants;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
 
-public class AprilTagTargetting extends SubsystemBase{
-    private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
-    private final   ShuffleboardTab targetingTab = Shuffleboard.getTab("Targeting Tab");
-    
-    //Rest API Values
-    private double botPose;
-    public double botPoseX;
-    public double botPoseY;
-    public double botHeading;
+public class AprilTagTargetting extends SubsystemBase {
 
-    //NetworkTable Values
-    private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-    private double latency = limelightTab.getEntry("tl").getDouble(0);
-    private final GenericEntry latencyEntry = targetingTab.add("latency", 0).getEntry();
-    private final GenericEntry botPoseXEntry = targetingTab.add("botPoseX", 0).getEntry();
-    private final GenericEntry botPoseYEntry = targetingTab.add("botPoseY", 0).getEntry();
-    private final GenericEntry botPoseHeadingEntry = targetingTab.add("botPoseHeading", 0).getEntry();
-    
-    
+    private final NetworkTable limelightTab =
+            NetworkTableInstance.getDefault().getTable("limelight");
+    DoubleArraySubscriber botposeSub =
+            limelightTab.getDoubleArrayTopic("botpose").subscribe(new double[] {});
 
-    //Constructor
-    public AprilTagTargetting() {
-        
-    }
+    private double horizAngleToTarget;
+    private double[] botPose = this.botposeSub.get();
 
     @Override
-    public void periodic(){
-        //For Rest API
-        // this.botPose = limelightTab.getEntry("botpose").getDouble(0);
-        // try {
-        //     estimatePose();
-        // } catch (IOException e) {
-        //     System.out.println(e);
-        // }
-
-        botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-        botPoseX = botPoseBlue[0];
-        botPoseY = botPoseBlue[1];
-        botHeading = botPoseBlue[3];
-        latency = limelightTab.getEntry("botpose_wpiblue").getDouble(0); //TODO: make this value update (identify problem)
-        updateDashboard();
+    public void periodic() {
+        this.botPose = this.botposeSub.get();
     }
-    
-    /**
-     * Updates shuffleboard values using NetworkTables absolute position values
-     */
-    private void updateDashboard() {
-
-		// Vision Dashboard Data
-        latencyEntry.setDouble(latency);
-	    botPoseXEntry.setDouble(botPoseX);
-        botPoseYEntry.setDouble(botPoseY);
-        botPoseHeadingEntry.setDouble(botHeading);
-		
-	}
 
     /**
-     * Gives botpose
+     * Gets botpose on field (x,y,z,rx,ry,rz)
+     * 
+     * @return 3d bot pose
      */
-    public double getBotPose(){
+    public double[] getBotPose() {
         return this.botPose;
     }
 
     /**
-     * Estimates pose using Rest API (For logging purposes)
+     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The
+     * second is for retroreflective tape.
+     * 
+     * @param pipelineNum The pipeline number being used on the limelight.
      */
-    public void estimatePose() throws IOException
-    {
-        InetAddress address;
-        address = InetAddress.getByName("10.8.62.101");
-        
-        while(!address.isReachable(10000));
-            
-        URL url = new URL("http://10.8.62.101:5807/results"); 
-            
-        Scanner sc = new Scanner(url.openStream());
+    public void setPipelineNum(int pipelineNum) {
+        limelightTab.getEntry("pipeline").setNumber(pipelineNum);
+    }
 
-        while (sc.hasNext()) {
-            String line = sc.next();
-            // System.out.println(line);
+    /**
+     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it
+     * can't be)
+     * 
+     * @return Whether or not target offset is more than 29.8 degrees.
+     */
+    public boolean validTarget() {
+        // 29.8d represents the LL2+'s max FOV, from center of camera to edge of frame.
+        return Math.abs(this.horizAngleToTarget) < Constants.Vision.HORIZ_CAMERA_FOV;
+    }
 
-            try{
-                String FID = line.substring(line.indexOf("fID"));
-                FID = FID.substring(5, FID.indexOf(",", 5));
+    /**
+     * Gives us degree offset to adjust our rotation by.
+     * 
+     * @return degree offset from target.
+     */
+    public double autoAlign() {
+        // Set pipeline num to 2, should be retroreflective tape pipeline.
+        setPipelineNum(2);
 
-                String botPos = line.substring(line.indexOf("\"botpose\":["));
-                botPos = botPos.substring(11, botPos.indexOf("]"));
+        var hasTarget = limelightTab.getEntry("tv").getDouble(0);
+        this.horizAngleToTarget = limelightTab.getEntry("tx").getDouble(0);
 
-                List<String> allBotVal = Arrays.asList(botPos.split(","));
+        boolean isOnTarget = isOnTarget(this.horizAngleToTarget);
 
-                botPoseX = Double.parseDouble(allBotVal.get(0));
-                botPoseY = Double.parseDouble(allBotVal.get(1));
-                botHeading = Double.parseDouble(allBotVal.get(4));
-            } catch(Exception e){
-                System.out.println("No Data");
-            }
+        if (hasTarget == 1 && !isOnTarget && validTarget()) {
+            return horizAngleToTarget;
+        } else {
+            return 0d;
         }
     }
-}
 
+    /**
+     * Function to tell us whether or not we're on target (centered on vision tape)
+     * 
+     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
+     *        Limelight
+     * @return Whether we're within acceptable tolerance of the target.
+     */
+    public boolean isOnTarget(double expectedAngle) {
+        // Should put consideration into how accurate we want to be later on.
+
+        return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
+    }
+
+}

@@ -14,8 +14,8 @@ import frc.thunder.LightningRobot;
  */
 public class Robot extends LightningRobot {
 
-  public Robot() {
-    super(new RobotContainer());
-  }
+    public Robot() {
+        super(new RobotContainer());
+    }
 
 }
