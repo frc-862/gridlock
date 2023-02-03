@@ -24,11 +24,14 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AutoBalanceConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.Offsets;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.logging.DataLogger;
+import frc.thunder.math.LightningMath;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
  * Our drivetrain subsystem
@@ -90,7 +93,7 @@ public class Drivetrain extends SubsystemBase {
 
     public Drivetrain() {
 
-        //TODO: make this better
+        // TODO: make this better
         if (Files.exists(blackoutFile)) {
             FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;
             FRONT_RIGHT_STEER_OFFSET = Offsets.Blackout.FRONT_RIGHT_STEER_OFFSET;
@@ -136,7 +139,7 @@ public class Drivetrain extends SubsystemBase {
                 RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
                 RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
-        
+
         // Setting states of the modules
         setStates(states);
 
@@ -153,11 +156,10 @@ public class Drivetrain extends SubsystemBase {
         initDashboard();
 
         /*
-        //display gravity vector for PID tuning - leave commented out until tuning neccessary
-        tab.addDouble("gravityX", () -> getGravityVector()[0]);
-        tab.addDouble("gravityY", () -> getGravityVector()[1]);
-        tab.addDouble("gravityZ", () -> getGravityVector()[2]);
-        */
+         * //display gravity vector for PID tuning - leave commented out until tuning neccessary
+         * tab.addDouble("gravityX", () -> getGravityVector()[0]); tab.addDouble("gravityY", () ->
+         * getGravityVector()[1]); tab.addDouble("gravityZ", () -> getGravityVector()[2]);
+         */
 
         CommandScheduler.getInstance().registerSubsystem(this);
 
@@ -170,6 +172,16 @@ public class Drivetrain extends SubsystemBase {
         updateOdomtery();
         // field2d.setRobotPose(pose);
         SmartDashboard.putString("pose", pose.getTranslation().toString());
+        double pitchAngle = getPitch2d().getDegrees();
+        double rollAngle = getRoll2d().getDegrees();
+        double theta = Math.atan2(rollAngle, pitchAngle);
+        double magnitude = AutoBalanceConstants.MAGNITUDE_SCALER
+                * Math.sqrt((pitchAngle * pitchAngle) + (rollAngle * rollAngle));
+        LightningShuffleboard.setDouble("autobalance", "pitch angle", pitchAngle);
+        LightningShuffleboard.setDouble("autobalance", "roll angle", rollAngle);
+        LightningShuffleboard.setDouble("autobalance", "theta",
+                LightningMath.inputModulus((theta + Math.PI), -Math.PI, Math.PI));
+        LightningShuffleboard.setDouble("autobalance", "magnitude", magnitude);
     }
 
     /**
@@ -491,14 +503,10 @@ public class Drivetrain extends SubsystemBase {
      * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */
     public void stop() {
-        states[0] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
-        states[1] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
-        states[2] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
-        states[3] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
+        frontLeftModule.set(0, DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE);
+        frontRightModule.set(0, DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE);
+        backLeftModule.set(0, DrivetrainConstants.BACK_LEFT_RESTING_ANGLE);
+        backRightModule.set(0, DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE);
     }
 
     public void resetNeoAngle() {
