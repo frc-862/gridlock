@@ -25,15 +25,15 @@ public class AprilTagTargetting extends SubsystemBase{
     
     //Rest API Values
     private double botPose;
-    public double botPosX;
-    public double botPosY;
+    public double botPoseX;
+    public double botPoseY;
     public double botHeading;
 
     //NetworkTable Values
     private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
     private double latency = limelightTab.getEntry("tl").getDouble(0);
     private final GenericEntry latencyEntry = targetingTab.add("latency", 0).getEntry();
-    private final GenericEntry botPoseXEntry = targetingTab.add("botPoseX", 33).getEntry();
+    private final GenericEntry botPoseXEntry = targetingTab.add("botPoseX", 0).getEntry();
     private final GenericEntry botPoseYEntry = targetingTab.add("botPoseY", 0).getEntry();
     private final GenericEntry botPoseHeadingEntry = targetingTab.add("botPoseHeading", 0).getEntry();
     
@@ -41,48 +41,48 @@ public class AprilTagTargetting extends SubsystemBase{
 
     //Constructor
     public AprilTagTargetting() {
-        botPoseBlue[0] = 45;
+        
     }
 
     @Override
     public void periodic(){
+        //For Rest API
         // this.botPose = limelightTab.getEntry("botpose").getDouble(0);
-
         // try {
         //     estimatePose();
         // } catch (IOException e) {
         //     System.out.println(e);
         // }
 
-        //System.out.println(botPoseBlue[0]);    
-        updateBotPoseBlue();
+        botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+        botPoseX = botPoseBlue[0];
+        botPoseY = botPoseBlue[1];
+        botHeading = botPoseBlue[3];
+        latency = limelightTab.getEntry("botpose_wpiblue").getDouble(0); //TODO: make this value update (identify problem)
         updateDashboard();
     }
     
-    /*
+    /**
      * Updates shuffleboard values using NetworkTables absolute position values
      */
     private void updateDashboard() {
 
 		// Vision Dashboard Data
         latencyEntry.setDouble(latency);
-	    botPoseXEntry.setDouble(botPoseBlue[0]);
-        botPoseYEntry.setDouble(botPoseBlue[1]);
-        botPoseHeadingEntry.setDouble(botPoseBlue[3]);
+	    botPoseXEntry.setDouble(botPoseX);
+        botPoseYEntry.setDouble(botPoseY);
+        botPoseHeadingEntry.setDouble(botHeading);
 		
 	}
 
+    /**
+     * Gives botpose
+     */
     public double getBotPose(){
         return this.botPose;
     }
 
-    
-    public void updateBotPoseBlue(){
-        botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-        latency = limelightTab.getEntry("botpose_wpiblue").getDouble(0);
-    }
-    
-    /*
+    /**
      * Estimates pose using Rest API (For logging purposes)
      */
     public void estimatePose() throws IOException
@@ -109,8 +109,8 @@ public class AprilTagTargetting extends SubsystemBase{
 
                 List<String> allBotVal = Arrays.asList(botPos.split(","));
 
-                botPosX = Double.parseDouble(allBotVal.get(0));
-                botPosY = Double.parseDouble(allBotVal.get(1));
+                botPoseX = Double.parseDouble(allBotVal.get(0));
+                botPoseY = Double.parseDouble(allBotVal.get(1));
                 botHeading = Double.parseDouble(allBotVal.get(4));
             } catch(Exception e){
                 System.out.println("No Data");
