@@ -80,6 +80,8 @@ public final class Constants {
             public static final double kI = 0d;
             public static final double kD = 0d;
 
+            public static final double TOLERANCE = 0d;
+
             public static final int TICKS = 42;
             public static final double GEAR_RATIO = 1d / 1d;
             public static final double INCHES_PER_REV = 1d;
@@ -105,6 +107,8 @@ public final class Constants {
             public static final double kI = 0d;
             public static final double kD = 0d;
 
+            public static final double TOLERANCE = 0d;
+
             public static final double MAX_ANGLE = 90d;
             public static final double MIN_ANGLE = -90d;
 
@@ -122,6 +126,8 @@ public final class Constants {
             public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
+
+            public static final double TOLERANCE = 0d;
 
             public static final double MAX_ANGLE = 90d;
             public static final double MIN_ANGLE = -90d;

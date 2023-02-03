@@ -21,6 +21,7 @@ public class Arm extends SubsystemBase {
     private SparkMaxPIDController controller;
     private SparkMaxAbsoluteEncoder encoder;
     private double OFFSET;
+    private double targetAngle;
 
     Path gridlockFile = Paths.get("home/lvuser/gridlock");
     Path blackoutFile = Paths.get("home/lvuser/blackout");
@@ -39,8 +40,8 @@ public class Arm extends SubsystemBase {
 
     public void setAngle(Rotation2d angle) {
         angle = angle.minus(Rotation2d.fromDegrees(OFFSET));
-        double target = LightningMath.inputModulus(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
-        controller.setReference(target, CANSparkMax.ControlType.kPosition);
+        targetAngle = LightningMath.inputModulus(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
+        controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
     public Rotation2d getAngle() {
@@ -59,7 +60,7 @@ public class Arm extends SubsystemBase {
     }     
 
     public boolean onTarget() {
-        return false; //TODO figure out how to do this properly
+        return Math.abs(getAngle().getDegrees() - targetAngle) < ArmConstants.TOLERANCE;
     }
 
     public Translation2d getArmXY() {

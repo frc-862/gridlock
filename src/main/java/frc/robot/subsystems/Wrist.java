@@ -20,6 +20,7 @@ public class Wrist extends SubsystemBase {
     private SparkMaxPIDController wristController;
     private SparkMaxAbsoluteEncoder encoder;
     private double OFFSET;
+    private double targetAngle;
 
     Path gridlockFile = Paths.get("home/lvuser/gridlock");
     Path blackoutFile = Paths.get("home/lvuser/blackout");
@@ -42,8 +43,8 @@ public class Wrist extends SubsystemBase {
 
     public void setAngle(Rotation2d angle) { 
         angle = angle.minus(Rotation2d.fromDegrees(OFFSET));
-        double target = LightningMath.inputModulus(angle.getRotations(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
-        wristController.setReference(target, CANSparkMax.ControlType.kPosition);
+        targetAngle = LightningMath.inputModulus(angle.getRotations(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
+        wristController.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
     public void setGains(double kP, double kI, double kD) {
@@ -58,8 +59,7 @@ public class Wrist extends SubsystemBase {
         motor.set(0d);
     } 
 
-    @Override
-    public void periodic() {
-     
+    public boolean onTarget() {
+        return Math.abs(encoder.getPosition() - targetAngle) < WristConstants.TOLERANCE;
     }
 }

@@ -16,6 +16,7 @@ public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
     private SparkMaxPIDController elevatorController;
     private RelativeEncoder encoder;
+    private double targetHeight;
 
     public Elevator() {
         motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);        
@@ -28,8 +29,8 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setHeight(double target) {
-        target = LightningMath.inputModulus(target / ElevatorConstants.INCHES_PER_REV / ElevatorConstants.GEAR_RATIO * ElevatorConstants.TICKS, ElevatorConstants.MIN_HEIGHT, ElevatorConstants.MAX_HEIGHT);
-        elevatorController.setReference(target, CANSparkMax.ControlType.kPosition);
+        targetHeight = LightningMath.inputModulus(target / ElevatorConstants.INCHES_PER_REV / ElevatorConstants.GEAR_RATIO * ElevatorConstants.TICKS, ElevatorConstants.MIN_HEIGHT, ElevatorConstants.MAX_HEIGHT);
+        elevatorController.setReference(targetHeight, CANSparkMax.ControlType.kPosition);
     }
 
     public void setGains(double kP, double kI, double kD) {
@@ -45,7 +46,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean onTarget() {
-        return false; //TODO figure out how to do this properly
+        return Math.abs(targetHeight - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
     }
 
     public Translation2d getElevatorXY() {
