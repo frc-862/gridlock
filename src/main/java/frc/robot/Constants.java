@@ -195,8 +195,11 @@ public final class Constants {
     }
 
     public static final class AutoBalanceConstants {
-        public static final double MAGNITUDE_SCALER = 0.01;
+        public static final double MAGNITUDE_SCALER = 0.03;
         public static final double MAGNITUDE_THRESHOLD = 5;
+        public static final double MAGNITUDE_RATE_OF_CHANGE_THRESHOLD = 0.05;
+        public static final double MIN_MAGNITUDE_THRESHOLD = -0.6;
+        public static final double MAX_MAGNITUDE_THRESHOLD = 0.6;
         public static final double THRESHOLD_TIME = 0.075;
     }
 
