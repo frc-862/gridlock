@@ -8,7 +8,6 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants.WristConstants;
@@ -26,9 +25,9 @@ public class Wrist extends SubsystemBase {
     Path blackoutFile = Paths.get("home/lvuser/blackout");
 
     public Wrist() {
-        motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
+        motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, WristConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
         wristController = NeoConfig.createPIDController(motor.getPIDController(), WristConstants.kP, WristConstants.kI, WristConstants.kD);
-        encoder = motor.getAbsoluteEncoder(Type.kDutyCycle); //TODO: add this to thunder's neoconfig (with inverts etc.)
+        encoder = NeoConfig.createAbsoluteEncoder(motor, WristConstants.ENCODER_INVERT, OFFSET);
 
         if (Files.exists(blackoutFile)) {
             OFFSET = WristConstants.ENCODER_OFFSET_BLACKOUT;

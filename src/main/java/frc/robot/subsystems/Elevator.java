@@ -18,9 +18,9 @@ public class Elevator extends SubsystemBase {
     private RelativeEncoder encoder;
 
     public Elevator() {
-        motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kBrake);        
+        motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);        
         elevatorController = NeoConfig.createPIDController(motor.getPIDController(), ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD); 
-        encoder = motor.getEncoder(); //TODO: add this to thunder's neoconfig (with inverts etc.)
+        encoder = NeoConfig.createBuiltinEncoder(motor, ElevatorConstants.ENCODER_INVERT);
     }
 
     public double getHeight() {

@@ -8,7 +8,6 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,9 +26,9 @@ public class Arm extends SubsystemBase {
     Path blackoutFile = Paths.get("home/lvuser/blackout");
 
     public Arm() {
-        motor = NeoConfig.createMotor(CAN.ARM_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
+        motor = NeoConfig.createMotor(CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
         controller = NeoConfig.createPIDController(motor.getPIDController(), ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
-        encoder = motor.getAbsoluteEncoder(Type.kDutyCycle); //TODO: add this to thunder's neoconfig (with inverts etc.)
+        encoder = NeoConfig.createAbsoluteEncoder(motor, ArmConstants.ENCODER_INVERT, OFFSET);
 
         if (Files.exists(blackoutFile)) {
             OFFSET = ArmConstants.ENCODER_OFFSET_BLACKOUT;

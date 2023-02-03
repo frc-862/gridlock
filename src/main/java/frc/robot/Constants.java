@@ -73,6 +73,9 @@ public final class Constants {
         }
 
         public static final class ElevatorConstants {
+            public static final boolean MOTOR_INVERT = false;
+            public static final boolean ENCODER_INVERT = false;
+
             public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
@@ -95,6 +98,9 @@ public final class Constants {
         }
 
         public static final class ArmConstants {
+            public static final boolean MOTOR_INVERT = false;
+            public static final boolean ENCODER_INVERT = false;
+
             public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
@@ -110,6 +116,9 @@ public final class Constants {
         }
 
         public static final class WristConstants {
+            public static final boolean MOTOR_INVERT = false;
+            public static final boolean ENCODER_INVERT = false;
+
             public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
