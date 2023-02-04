@@ -22,25 +22,24 @@ public class Arm extends SubsystemBase {
     private double targetAngle;
 
     public Arm() {
-        motor = NeoConfig.createMotor(CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
-        controller = NeoConfig.createPIDController(motor.getPIDController(), ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
-        encoder = NeoConfig.createAbsoluteEncoder(motor, ArmConstants.ENCODER_INVERT, OFFSET);
-
         if (Constants.isBlackout()) {
             OFFSET = ArmConstants.ENCODER_OFFSET_BLACKOUT;
         } else {
             OFFSET = ArmConstants.ENCODER_OFFSET_GRIDLOCK;
         }
+
+        motor = NeoConfig.createMotor(CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
+        controller = NeoConfig.createPIDController(motor.getPIDController(), ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
+        encoder = NeoConfig.createAbsoluteEncoder(motor, ArmConstants.ENCODER_INVERT, OFFSET);
     }
 
     public void setAngle(Rotation2d angle) {
-        angle = angle.minus(Rotation2d.fromDegrees(OFFSET));
         targetAngle = LightningMath.inputModulus(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
         controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromRotations(encoder.getPosition()).plus(Rotation2d.fromDegrees(OFFSET));
+        return Rotation2d.fromRotations(encoder.getPosition());
     }
     public void setGains(double kP, double kI, double kD) {
         controller = NeoConfig.createPIDController(controller, kP, kI, kD);
@@ -53,6 +52,12 @@ public class Arm extends SubsystemBase {
     public void stop(){
         setPower(0);
     }     
+
+    public void setOffset(double offset) {
+        //Theory is to use offset to account for arm movement
+        OFFSET = offset;
+        encoder.setZeroOffset(offset);
+    }
 
     public boolean onTarget() {
         return Math.abs(getAngle().getDegrees() - targetAngle) < ArmConstants.TOLERANCE;

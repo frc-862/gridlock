@@ -169,6 +169,7 @@ public final class Constants {
 
         public static final double TOLERANCE = 0d;
 
+        //min/max angles in degrees
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
 
