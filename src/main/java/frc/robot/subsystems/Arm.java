@@ -1,8 +1,5 @@
 package frc.robot.subsystems;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -11,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
@@ -23,15 +21,12 @@ public class Arm extends SubsystemBase {
     private double OFFSET;
     private double targetAngle;
 
-    Path gridlockFile = Paths.get("home/lvuser/gridlock");
-    Path blackoutFile = Paths.get("home/lvuser/blackout");
-
     public Arm() {
         motor = NeoConfig.createMotor(CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
         controller = NeoConfig.createPIDController(motor.getPIDController(), ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
         encoder = NeoConfig.createAbsoluteEncoder(motor, ArmConstants.ENCODER_INVERT, OFFSET);
 
-        if (Files.exists(blackoutFile)) {
+        if (Constants.isBlackout()) {
             OFFSET = ArmConstants.ENCODER_OFFSET_BLACKOUT;
         } else {
             OFFSET = ArmConstants.ENCODER_OFFSET_GRIDLOCK;

@@ -7,8 +7,19 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 import java.awt.Polygon;
+import java.nio.file.*;
 
 public final class Constants {
+
+    public static final Path BLACKOUT_FILE = Paths.get("home/lvuser/blackout");
+
+    public static final boolean isBlackout() {
+        return BLACKOUT_FILE.toFile().exists();
+    }
+
+    public static final boolean isGridlock() {
+        return !isBlackout();
+    }
 
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
