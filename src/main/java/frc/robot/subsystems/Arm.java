@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,8 +27,20 @@ public class Arm extends SubsystemBase {
             OFFSET = ArmConstants.ENCODER_OFFSET_GRIDLOCK;
         }
 
-        motor = NeoConfig.createMotor(CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
-        controller = NeoConfig.createPIDController(motor.getPIDController(), ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
+        motor = NeoConfig.createMotor(
+            CAN.ARM_MOTOR,
+            ArmConstants.MOTOR_INVERT,
+            ArmConstants.CURRENT_LIMIT,
+            Constants.VOLTAGE_COMP_VOLTAGE,
+            ArmConstants.MOTOR_TYPE,
+            IdleMode.kBrake
+        );
+        controller = NeoConfig.createPIDController(
+            motor.getPIDController(),
+            ArmConstants.kP,
+            ArmConstants.kI,
+            ArmConstants.kD
+        );
         encoder = NeoConfig.createAbsoluteEncoder(motor, ArmConstants.ENCODER_INVERT, OFFSET);
     }
 
@@ -50,7 +61,7 @@ public class Arm extends SubsystemBase {
     }
     
     public void stop(){
-        setPower(0);
+        setPower(0d);
     }     
 
     public void setOffset(double offset) {

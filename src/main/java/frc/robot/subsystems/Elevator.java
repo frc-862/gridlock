@@ -3,10 +3,9 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
@@ -19,8 +18,20 @@ public class Elevator extends SubsystemBase {
     private double targetHeight;
 
     public Elevator() {
-        motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);        
-        elevatorController = NeoConfig.createPIDController(motor.getPIDController(), ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD); 
+        motor = NeoConfig.createMotor(
+            CAN.ELEVATOR_MOTOR,
+            ElevatorConstants.MOTOR_INVERT,
+            ElevatorConstants.CURRENT_LIMIT,
+            Constants.VOLTAGE_COMP_VOLTAGE,
+            ElevatorConstants.MOTOR_TYPE,
+            ElevatorConstants.NEUTRAL_MODE
+        );
+        elevatorController = NeoConfig.createPIDController(
+            motor.getPIDController(),
+            ElevatorConstants.kP,
+            ElevatorConstants.kI,
+            ElevatorConstants.kD
+        );
         encoder = NeoConfig.createBuiltinEncoder(motor, ElevatorConstants.ENCODER_INVERT);
     }
 

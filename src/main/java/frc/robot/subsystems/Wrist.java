@@ -3,8 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -27,8 +25,20 @@ public class Wrist extends SubsystemBase {
             OFFSET = WristConstants.ENCODER_OFFSET_GRIDLOCK;
         }
 
-        motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, WristConstants.MOTOR_INVERT, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
-        wristController = NeoConfig.createPIDController(motor.getPIDController(), WristConstants.kP, WristConstants.kI, WristConstants.kD);
+        motor = NeoConfig.createMotor(
+            CAN.WRIST_MOTOR,
+            WristConstants.MOTOR_INVERT,
+            WristConstants.CURRENT_LIMIT,
+            Constants.VOLTAGE_COMP_VOLTAGE,
+            WristConstants.MOTOR_TYPE,
+            WristConstants.NEUTRAL_MODE
+        );
+        wristController = NeoConfig.createPIDController(
+            motor.getPIDController(),
+            WristConstants.kP,
+            WristConstants.kI,
+            WristConstants.kD
+        );
         encoder = NeoConfig.createAbsoluteEncoder(motor, WristConstants.ENCODER_INVERT, OFFSET);
     }
     

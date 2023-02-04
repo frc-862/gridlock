@@ -1,7 +1,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.PIDConstants;
-
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -10,6 +11,8 @@ import java.awt.Polygon;
 import java.nio.file.*;
 
 public final class Constants {
+
+    public static final double VOLTAGE_COMP_VOLTAGE = 12d;
 
     public static final Path BLACKOUT_FILE = Paths.get("home/lvuser/blackout");
 
@@ -116,6 +119,10 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final boolean ENCODER_INVERT = false;
 
+        public static final int CURRENT_LIMIT = 40;
+        public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
+
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
@@ -143,6 +150,9 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final boolean ENCODER_INVERT = false;
 
+        public static final int CURRENT_LIMIT = 40;
+        public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
@@ -162,6 +172,10 @@ public final class Constants {
     public static final class WristConstants {
         public static final boolean MOTOR_INVERT = false;
         public static final boolean ENCODER_INVERT = false;
+
+        public static final int CURRENT_LIMIT = 20;
+        public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         public static final double kP = 0d;
         public static final double kI = 0d;
