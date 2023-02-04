@@ -7,7 +7,6 @@ package frc.robot.commands.Auto;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class LEDLightUp extends CommandBase {
-    private LEDC
   /** Creates a new LEDLightUp. */
   public LEDLightUp() {
     // Use addRequirements() here to declare subsystem dependencies.

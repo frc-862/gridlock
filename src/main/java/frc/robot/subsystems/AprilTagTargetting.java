@@ -29,21 +29,36 @@ public class AprilTagTargetting extends SubsystemBase {
             NetworkTableInstance.getDefault().getTable("limelight");
     DoubleArraySubscriber botposeSub =
             limelightTab.getDoubleArrayTopic("botpose").subscribe(new double[] {});
-    DoubleArraySubscriber botPoseBlue = limelightTab.getDoubleArrayTopic("BotPoseBlue").subscribe(new double[] {});
-    DoubleArraySubscriber botPoseRed = limelightTab.getDoubleArrayTopic("BotPoseRed").subscribe(new double[] {});
+    DoubleArraySubscriber botPoseBlueSub = limelightTab.getDoubleArrayTopic("BotPoseBlue").subscribe(new double[] {});
+    DoubleArraySubscriber botPoseRedSub = limelightTab.getDoubleArrayTopic("BotPoseRed").subscribe(new double[] {});
 
     private double horizAngleToTarget;
     private double[] botPose = this.botposeSub.get();
+    private double[] botPoseBlue = this.botPoseBlueSub.get();
+    private double[] botPoseRed = this.botPoseRedSub.get();
+    
+
+    public AprilTagTargetting() {
+        initLogging();
+    }
 
     @Override
     public void periodic() {
         this.botPose = this.botposeSub.get();
-
-            System.out.println(botPose);
+        this.botPoseBlue = this.botPoseBlueSub.get();
+        this.botPoseRed = this.botPoseRedSub.get();
     }
 
     public void initLogging() {
-        DataLogger.addDataElement("Vision bot pose TX", );
+        DataLogger.addDataElement("Vision bot pose TX", () -> botPose[0]);
+        DataLogger.addDataElement("Vision bot pose TY", () -> botPose[1]);
+        DataLogger.addDataElement("Vision bot pose RZ", () -> botPose[5]);
+        DataLogger.addDataElement("Vision bot pose Blue TX", () -> botPoseBlue[0]);
+        DataLogger.addDataElement("Vision bot pose Blue TY", () -> botPoseBlue[1]);
+        DataLogger.addDataElement("Vision bot pose Blue RZ", () -> botPoseBlue[5]);
+        DataLogger.addDataElement("Vision bot pose Red TX", () -> botPoseRed[0]);
+        DataLogger.addDataElement("Vision bot pose Red TY", () -> botPoseRed[1]);
+        DataLogger.addDataElement("Vision bot pose Red RZ", () -> botPoseRed[5]);
     }
 
     public Pose2d getRobotPose() {
