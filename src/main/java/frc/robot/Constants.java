@@ -72,75 +72,6 @@ public final class Constants {
             public static final double kA = 0;
         }
 
-        public static final class ElevatorConstants {
-            public static final boolean MOTOR_INVERT = false;
-            public static final boolean ENCODER_INVERT = false;
-
-            public static final double kP = 0d;
-            public static final double kI = 0d;
-            public static final double kD = 0d;
-
-            public static final double TOLERANCE = 0d;
-
-            public static final int TICKS = 42;
-            public static final double GEAR_RATIO = 1d / 1d;
-            public static final double INCHES_PER_REV = 1d;
-
-            public static final double MAX_HEIGHT = 0d;
-            public static final double MIN_HEIGHT = 100d;
-
-            public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in degrees
-
-            public static final Translation2d POSE_OFFSET = new Translation2d(0, 0); // horiz/vert
-                                                                                     // offset from
-                                                                                     // ground (See
-                                                                                     // below)
-        // X = distance from arm pivot point to front of bot at bottom limit (negative)
-        // Y = height of arm pivot point from ground at bottom limit
-        }
-
-        public static final class ArmConstants {
-            public static final boolean MOTOR_INVERT = false;
-            public static final boolean ENCODER_INVERT = false;
-
-            public static final double kP = 0d;
-            public static final double kI = 0d;
-            public static final double kD = 0d;
-
-            public static final double TOLERANCE = 0d;
-
-            public static final double MAX_ANGLE = 90d;
-            public static final double MIN_ANGLE = -90d;
-
-            public static final double LENGTH = 0; // arm length in inches
-
-            //Offsets in degrees
-            public static final double ENCODER_OFFSET_GRIDLOCK = 0;
-            public static final double ENCODER_OFFSET_BLACKOUT = 0;
-        }
-
-        public static final class WristConstants {
-            public static final boolean MOTOR_INVERT = false;
-            public static final boolean ENCODER_INVERT = false;
-
-            public static final double kP = 0d;
-            public static final double kI = 0d;
-            public static final double kD = 0d;
-
-            public static final double TOLERANCE = 0d;
-
-            public static final double MAX_ANGLE = 90d;
-            public static final double MIN_ANGLE = -90d;
-
-            public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
-
-            public static final double LENGTH = 0; // wrist length in inches
-
-            //Offsets in degrees
-            public static final double ENCODER_OFFSET_GRIDLOCK = 0;
-            public static final double ENCODER_OFFSET_BLACKOUT = 0;
-        }
-
         // Gains vaules for theta PIDControllers
         public static final class ThetaGains {
             public static final double kP = 0.004d;
@@ -168,6 +99,75 @@ public final class Constants {
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
             }
         }
+    }
+
+    public static final class ElevatorConstants {
+        public static final boolean MOTOR_INVERT = false;
+        public static final boolean ENCODER_INVERT = false;
+
+        public static final double kP = 0d;
+        public static final double kI = 0d;
+        public static final double kD = 0d;
+
+        public static final double TOLERANCE = 0d;
+
+        public static final int TICKS = 42;
+        public static final double GEAR_RATIO = 1d / 1d;
+        public static final double INCHES_PER_REV = 1d;
+
+        public static final double MAX_HEIGHT = 0d;
+        public static final double MIN_HEIGHT = 100d;
+
+        public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in degrees
+
+        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0); // horiz/vert
+                                                                                    // offset from
+                                                                                    // ground (See
+                                                                                    // below)
+    // X = distance from arm pivot point to front of bot at bottom limit (negative)
+    // Y = height of arm pivot point from ground at bottom limit
+    }
+
+    public static final class ArmConstants {
+        public static final boolean MOTOR_INVERT = false;
+        public static final boolean ENCODER_INVERT = false;
+
+        public static final double kP = 0d;
+        public static final double kI = 0d;
+        public static final double kD = 0d;
+
+        public static final double TOLERANCE = 0d;
+
+        public static final double MAX_ANGLE = 90d;
+        public static final double MIN_ANGLE = -90d;
+
+        public static final double LENGTH = 0; // arm length in inches
+
+        //Offsets in degrees
+        public static final double ENCODER_OFFSET_GRIDLOCK = 0;
+        public static final double ENCODER_OFFSET_BLACKOUT = 0;
+    }
+
+    public static final class WristConstants {
+        public static final boolean MOTOR_INVERT = false;
+        public static final boolean ENCODER_INVERT = false;
+
+        public static final double kP = 0d;
+        public static final double kI = 0d;
+        public static final double kD = 0d;
+
+        public static final double TOLERANCE = 0d;
+
+        public static final double MAX_ANGLE = 90d;
+        public static final double MIN_ANGLE = -90d;
+
+        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
+
+        public static final double LENGTH = 0; // wrist length in inches
+
+        //Offsets in degrees
+        public static final double ENCODER_OFFSET_GRIDLOCK = 0;
+        public static final double ENCODER_OFFSET_BLACKOUT = 0;
     }
 
     public static final class RobotMap {

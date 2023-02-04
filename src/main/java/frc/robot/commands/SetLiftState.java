@@ -6,8 +6,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.LiftConstants;
-import frc.robot.Constants.DrivetrainConstants.ElevatorConstants;
-import frc.robot.Constants.DrivetrainConstants.WristConstants;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.subsystems.*;
 
