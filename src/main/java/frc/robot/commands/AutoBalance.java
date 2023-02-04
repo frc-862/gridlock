@@ -34,7 +34,7 @@ public class AutoBalance extends CommandBase {
             new SwerveModuleState(), new SwerveModuleState()};
 
     private enum climbStates {
-        CLIMBING_START, CLIMB, FALLING, STOP
+        CLIMB_FAST, CLIMB_SLOW, CHECK_FALLING, FALLING, STOP
     }
 
     private climbStates climbState;
@@ -54,7 +54,7 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public void initialize() {
-        climbState = climbStates.CLIMBING_START;
+        climbState = climbStates.CLIMB_FAST;
     }
 
     @Override
@@ -72,8 +72,16 @@ public class AutoBalance extends CommandBase {
                 Math.PI);
         magnitude = Math.sqrt((pitchAngle * pitchAngle) + (rollAngle * rollAngle));
 
-        speedMetersPerSecond = MathUtil.clamp(magnitude * AutoBalanceConstants.MAGNITUDE_SCALER,
-                AutoBalanceConstants.MIN_SPEED_THRESHOLD, AutoBalanceConstants.MAX_SPEED_THRESHOLD);
+        if (climbState == climbStates.CLIMB_FAST) {
+            speedMetersPerSecond = 0.5;
+        } else if (climbState == climbStates.CLIMB_SLOW) {
+            speedMetersPerSecond = 0.1;
+        } else {
+            speedMetersPerSecond = MathUtil.clamp(magnitude * AutoBalanceConstants.MAGNITUDE_SCALER,
+                    AutoBalanceConstants.MIN_SPEED_THRESHOLD,
+                    AutoBalanceConstants.MAX_SPEED_THRESHOLD);
+
+        }
 
         for (int i = 0; i < moduleStates.length; i++) {
             moduleStates[i] = new SwerveModuleState(speedMetersPerSecond, new Rotation2d(theta));
@@ -82,16 +90,24 @@ public class AutoBalance extends CommandBase {
 
 
         switch (climbState) {
-            case CLIMBING_START:
+            case CLIMB_FAST:
                 if (magnitude > AutoBalanceConstants.LOWER_MAGNITUDE_THRESHOLD) {
                     drivetrain.setStates(moduleStates);
                 }
                 if (magnitude > AutoBalanceConstants.UPPER_MAGNITUDE_THRESHOLD) {
-                    climbState = climbStates.CLIMB;
+                    climbState = climbStates.CHECK_FALLING;
                 }
 
                 break;
-            case CLIMB:
+
+            case CLIMB_SLOW:
+                drivetrain.setStates(moduleStates);
+                if (magnitude < AutoBalanceConstants.BALANCED_MAGNITUDE) {
+                    climbState = climbStates.STOP;
+                }
+
+                break;
+            case CHECK_FALLING:
                 drivetrain.setStates(moduleStates);
 
                 if (magnitude < AutoBalanceConstants.UPPER_MAGNITUDE_THRESHOLD) {
@@ -107,7 +123,7 @@ public class AutoBalance extends CommandBase {
             case FALLING:
                 drivetrain.stop();
                 if (Timer.getFPGATimestamp() - timer > AutoBalanceConstants.DELAY_TIME) {
-                    climbState = climbStates.CLIMBING_START;
+                    climbState = climbStates.CLIMB_SLOW;
                 }
 
                 break;
