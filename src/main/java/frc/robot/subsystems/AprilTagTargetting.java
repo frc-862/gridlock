@@ -17,6 +17,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
+import frc.thunder.logging.DataLogger;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 
 public class AprilTagTargetting extends SubsystemBase {
@@ -25,6 +29,8 @@ public class AprilTagTargetting extends SubsystemBase {
             NetworkTableInstance.getDefault().getTable("limelight");
     DoubleArraySubscriber botposeSub =
             limelightTab.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    DoubleArraySubscriber botPoseBlue = limelightTab.getDoubleArrayTopic("BotPoseBlue").subscribe(new double[] {});
+    DoubleArraySubscriber botPoseRed = limelightTab.getDoubleArrayTopic("BotPoseRed").subscribe(new double[] {});
 
     private double horizAngleToTarget;
     private double[] botPose = this.botposeSub.get();
@@ -32,6 +38,19 @@ public class AprilTagTargetting extends SubsystemBase {
     @Override
     public void periodic() {
         this.botPose = this.botposeSub.get();
+
+            System.out.println(botPose);
+    }
+
+    public void initLogging() {
+        DataLogger.addDataElement("Vision bot pose TX", );
+    }
+
+    public Pose2d getRobotPose() {
+        this.botPose = this.botposeSub.get();
+            
+            return new Pose2d(new Translation2d(botPose[0],botPose[1]), Rotation2d.fromDegrees(botPose[5]));
+        
     }
 
     /**

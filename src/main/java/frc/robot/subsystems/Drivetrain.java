@@ -228,6 +228,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void updateOdomtery() {
         pose = odometry.update(getHeading2d(), modulePositions);
+        System.out.println(pose);
     }
 
     /**
