@@ -175,8 +175,7 @@ public class Drivetrain extends SubsystemBase {
         double pitchAngle = getPitch2d().getDegrees();
         double rollAngle = getRoll2d().getDegrees();
         double theta = Math.atan2(rollAngle, pitchAngle);
-        double magnitude = AutoBalanceConstants.MAGNITUDE_SCALER
-                * Math.sqrt((pitchAngle * pitchAngle) + (rollAngle * rollAngle));
+        double magnitude = Math.sqrt((pitchAngle * pitchAngle) + (rollAngle * rollAngle));
         LightningShuffleboard.setDouble("autobalance", "pitch angle", pitchAngle);
         LightningShuffleboard.setDouble("autobalance", "roll angle", rollAngle);
         LightningShuffleboard.setDouble("autobalance", "theta",

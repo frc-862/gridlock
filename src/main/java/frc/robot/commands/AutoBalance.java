@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoBalanceConstants;
@@ -12,6 +13,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.thunder.filter.MovingAverageFilter;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.math.LightningMath;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class AutoBalance extends CommandBase {
     private Drivetrain drivetrain;
@@ -24,14 +26,18 @@ public class AutoBalance extends CommandBase {
     private double magnitudeRateOfChange;
     private double filteredMagnitudeRateOfChange;
     private double lastMagnitude;
-    
-    private Debouncer delay = new Debouncer(AutoBalanceConstants.DELAY_TIME, DebounceType.kFalling);
+    private double timer;
 
     private MovingAverageFilter filter;
 
     private SwerveModuleState[] moduleStates = {new SwerveModuleState(), new SwerveModuleState(),
             new SwerveModuleState(), new SwerveModuleState()};
 
+    private enum climbStates {
+        CLIMBING_START, CLIMB, FALLING, STOP
+    }
+
+    private climbStates climbState;
 
     public AutoBalance(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
@@ -46,10 +52,10 @@ public class AutoBalance extends CommandBase {
         addRequirements(drivetrain);
     }
 
-
     @Override
-    public void initialize() {}
-
+    public void initialize() {
+        climbState = climbStates.CLIMBING_START;
+    }
 
     @Override
     public void execute() {
@@ -67,29 +73,57 @@ public class AutoBalance extends CommandBase {
         magnitude = Math.sqrt((pitchAngle * pitchAngle) + (rollAngle * rollAngle));
 
         speedMetersPerSecond = MathUtil.clamp(magnitude * AutoBalanceConstants.MAGNITUDE_SCALER,
-                AutoBalanceConstants.MIN_MAGNITUDE_THRESHOLD,
-                AutoBalanceConstants.MAX_MAGNITUDE_THRESHOLD);
+                AutoBalanceConstants.MIN_SPEED_THRESHOLD, AutoBalanceConstants.MAX_SPEED_THRESHOLD);
 
         for (int i = 0; i < moduleStates.length; i++) {
             moduleStates[i] = new SwerveModuleState(speedMetersPerSecond, new Rotation2d(theta));
 
         }
 
-        if (delay.calculate(magnitude > AutoBalanceConstants.MAGNITUDE_THRESHOLD
-                && filteredMagnitudeRateOfChange < AutoBalanceConstants.MAGNITUDE_RATE_OF_CHANGE_THRESHOLD)) {
-            drivetrain.setStates(moduleStates);
-        } else {
-            drivetrain.stop();
+
+        switch (climbState) {
+            case CLIMBING_START:
+                if (magnitude > AutoBalanceConstants.LOWER_MAGNITUDE_THRESHOLD) {
+                    drivetrain.setStates(moduleStates);
+                }
+                if (magnitude > AutoBalanceConstants.UPPER_MAGNITUDE_THRESHOLD) {
+                    climbState = climbStates.CLIMB;
+                }
+
+                break;
+            case CLIMB:
+                drivetrain.setStates(moduleStates);
+
+                if (magnitude < AutoBalanceConstants.UPPER_MAGNITUDE_THRESHOLD) {
+                    climbState = climbStates.FALLING;
+                    timer = Timer.getFPGATimestamp();
+                }
+
+                if (magnitude < AutoBalanceConstants.BALANCED_MAGNITUDE) {
+                    climbState = climbStates.STOP;
+                }
+
+                break;
+            case FALLING:
+                drivetrain.stop();
+                if (Timer.getFPGATimestamp() - timer > AutoBalanceConstants.DELAY_TIME) {
+                    climbState = climbStates.CLIMBING_START;
+                }
+
+                break;
+            case STOP:
+                drivetrain.stop();
+                break;
         }
 
         SmartDashboard.putNumber("magROC", filteredMagnitudeRateOfChange);
+        LightningShuffleboard.setString("autobalance", "state", climbState.toString());
     }
 
     @Override
     public void end(boolean interrupted) {
         drivetrain.stop();
     }
-
 
     @Override
     public boolean isFinished() {

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -12,6 +13,9 @@ public class AprilTagTargetting extends SubsystemBase {
             NetworkTableInstance.getDefault().getTable("limelight");
     DoubleArraySubscriber botposeSub =
             limelightTab.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+
+
+    // NetworkTableEntry 
 
     private double horizAngleToTarget;
     private double[] botPose = this.botposeSub.get();

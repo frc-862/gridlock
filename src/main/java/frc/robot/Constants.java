@@ -100,7 +100,6 @@ public final class Constants {
             public static final double kI = 0d;
             public static final double kD = 0d;
 
-
             public static final int TICKS = 42;
             public static final double GEAR_RATIO = 1.0 / 1.0;
 
@@ -114,7 +113,6 @@ public final class Constants {
             public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
-
 
             public static final int TICKS = 42;
             public static final double GEAR_RATIO = 1.0 / 1.0;
@@ -195,11 +193,13 @@ public final class Constants {
     }
 
     public static final class AutoBalanceConstants {
-        public static final double MAGNITUDE_SCALER = 0.03;
-        public static final double MAGNITUDE_THRESHOLD = 5;
+        public static final double MAGNITUDE_SCALER = 0.09;
+        public static final double BALANCED_MAGNITUDE = 2.5;
+        public static final double UPPER_MAGNITUDE_THRESHOLD = 11;
+        public static final double LOWER_MAGNITUDE_THRESHOLD = 3;
         public static final double MAGNITUDE_RATE_OF_CHANGE_THRESHOLD = 0.05;
-        public static final double MIN_MAGNITUDE_THRESHOLD = -0.6;
-        public static final double MAX_MAGNITUDE_THRESHOLD = 0.6;
+        public static final double MIN_SPEED_THRESHOLD = -0.9;
+        public static final double MAX_SPEED_THRESHOLD = 0.9;
         public static final double DELAY_TIME = 2;
     }
 
@@ -223,6 +223,7 @@ public final class Constants {
             public static final int[] off = {0, 0, 0};
         }
     }
+
     public static final class Vision {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;
