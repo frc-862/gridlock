@@ -1,6 +1,13 @@
 package frc.robot;
 
 import frc.robot.subsystems.AprilTagTargetting;
+
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathConstraints;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -28,7 +35,7 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-  private AprilTagTargetting targetting = new AprilTagTargetting();
+    private AprilTagTargetting targetting = new AprilTagTargetting();
     // Creates new LED controller
     private static final LEDController led = new LEDController();
 
@@ -37,9 +44,9 @@ public class RobotContainer extends LightningContainer {
 
     // Creates our driver controller and deadzone
     private static final XboxController driver = new XboxController(0);
-    private static final JoystickFilter joystickFilter =
-            new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
-                    XboxControllerConstants.MAX_POWER, Mode.CUBED);
+    private static final JoystickFilter joystickFilter = new JoystickFilter(XboxControllerConstants.DEADBAND,
+            XboxControllerConstants.MIN_POWER,
+            XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
     private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(
             drivetrain::getPose, drivetrain::resetOdometry, drivetrain.getDriveKinematics(),
@@ -61,7 +68,9 @@ public class RobotContainer extends LightningContainer {
     // Creates the autonomous commands
     @Override
     protected void configureAutonomousCommands() {
-
+        autoFactory.makeTrajectory("Tune", new HashMap<>(),
+                new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
     }
 
     @Override
@@ -95,7 +104,8 @@ public class RobotContainer extends LightningContainer {
     }
 
     @Override
-    protected void releaseDefaultCommands() {}
+    protected void releaseDefaultCommands() {
+    }
 
     @Override
     protected void initializeDashboardCommands() {
@@ -105,10 +115,12 @@ public class RobotContainer extends LightningContainer {
     }
 
     @Override
-    protected void configureFaultCodes() {}
+    protected void configureFaultCodes() {
+    }
 
     @Override
-    protected void configureFaultMonitors() {}
+    protected void configureFaultMonitors() {
+    }
 
     @Override
     protected AutonomousCommandFactory getCommandFactory() {

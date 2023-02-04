@@ -20,7 +20,7 @@ public class DriveTest extends CommandBase {
 
     @Override
     public void execute() {
-        module.set(drivetrain.velocityToDriveVolts(driveSpeed), driveAngle);
+        module.set(driveSpeed, driveAngle);
     }
 
     @Override
