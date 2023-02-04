@@ -10,9 +10,6 @@ import frc.robot.Constants.LedConstants.Colors;
 
 public class LEDController extends SubsystemBase {
 
-    private long currentTime = System.currentTimeMillis();
-    private long nextEventTime = System.currentTimeMillis();
-
     // create LEDs
     private AddressableLED led = new AddressableLED(LedConstants.port);
     private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.length);
@@ -165,25 +162,20 @@ public class LEDController extends SubsystemBase {
 
     @Override
     public void periodic() {
-        currentTime = System.currentTimeMillis();
-
         // compare current time to the next event time to take action and set next event
-        if (nextEventTime - currentTime <= 0) {
-            if (currentState == "readyScore") {
-                readyScore();
-            } else if (currentState == "orangeAndBlue") {
-                orangeAndBlue();
-            } else if (currentState == "hasGamePiece") {
-                hasGamePiece();
-            } else if (currentState == "autoAligned") {
-                autoAligned();
-            } else if (currentState == "swirl"){
-                swirl();
-            }
-
-            led.setData(ledBuffer);
-            nextEventTime = currentTime + 100;
+        if (currentState == "readyScore") {
+            readyScore();
+        } else if (currentState == "orangeAndBlue") {
+            orangeAndBlue();
+        } else if (currentState == "hasGamePiece") {
+            hasGamePiece();
+        } else if (currentState == "autoAligned") {
+            autoAligned();
+        } else if (currentState == "swirl"){
+            swirl();
         }
+
+        led.setData(ledBuffer);
     }
 
     /**
@@ -226,15 +218,15 @@ public class LEDController extends SubsystemBase {
             ledTab.add("readyScore", new InstantCommand(this::readyScore, this));
             ledTab.add("autoAligned", new InstantCommand(this::autoAligned, this));
             ledTab.add("swirl", new InstantCommand(this::swirl, this));
-
-            // others
             ledTab.add("stop", new InstantCommand(this::stop, this));
             ledTab.add("start", new InstantCommand(this::start, this));
+            ledTab.add("fullWhite", new InstantCommand(this::fullWhite, this));
+            ledTab.add("orangeAndBlue", new InstantCommand(this::orangeAndBlue, this));
+
+            // others
             ledTab.add("readyCollect", new InstantCommand(this::readyCollect, this));
             ledTab.add("readyDrop", new InstantCommand(this::readyDrop, this));
             ledTab.add("believeScored", new InstantCommand(this::believeScored, this));
-            ledTab.add("fullWhite", new InstantCommand(this::fullWhite, this));
-            ledTab.add("orangeAndBlue", new InstantCommand(this::orangeAndBlue, this));
         }
     }
 }
