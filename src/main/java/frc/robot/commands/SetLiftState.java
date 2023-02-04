@@ -44,16 +44,7 @@ public class SetLiftState extends CommandBase {
         //TODO: decide if we want this to be called once and stop
         //TODO: or if we want it to be more like a default command
         if (isReachable(pose.get())) {
-            Translation2d currentPose = getOverallXY();
-            Translation2d desiredPose = this.pose.get();
-
-            Translation2d delta = desiredPose.minus(currentPose);
-
-            Rotation2d barAngle = delta.getAngle().minus(ElevatorConstants.ANGLE);
-            double elevatorHeight = delta.getNorm() * Math.cos(barAngle.getRadians());
-
-            elevator.setHeight(elevatorHeight);
-            arm.setAngle(barAngle);
+            //Do math here to find the angle of the arm and the height of the elevator
         }
     }
 
