@@ -9,8 +9,6 @@ import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -65,11 +63,6 @@ public class Drivetrain extends SubsystemBase {
     private Pose2d pose = new Pose2d();
     private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-
-    // Creating our feed forward
-    // private final SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(Gains.kS, Gains.kV, Gains.kA);
-
-    private final PIDController pidController = new PIDController(Gains.kP, Gains.kI, Gains.kD);
 
     // Creating our modules
     private final SwerveModule frontLeftModule;
@@ -285,6 +278,11 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("bl target velocity", () -> states[2].speedMetersPerSecond);
         DataLogger.addDataElement("br target angle", () -> states[3].angle.getDegrees());
         DataLogger.addDataElement("br target velocity", () -> states[3].speedMetersPerSecond);
+
+        DataLogger.addDataElement("fl drive voltage", () -> frontLeftModule.getDriveVoltage());
+        DataLogger.addDataElement("fr drive voltage", () -> frontRightModule.getDriveVoltage());
+        DataLogger.addDataElement("bl drive voltage", () -> backLeftModule.getDriveVoltage());
+        DataLogger.addDataElement("br drive voltage", () -> backRightModule.getDriveVoltage());
 
         DataLogger.addDataElement("Heading", () -> getHeading2d().getDegrees());
 
