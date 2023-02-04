@@ -84,14 +84,15 @@ public final class Constants {
             public static final double MAX_HEIGHT = 0d;
             public static final double MIN_HEIGHT = 100d;
 
-            public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in degrees
+            public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle
+                                                                      // in degrees
 
             public static final Translation2d OFFSET = new Translation2d(0, 0); // horiz/vert
-                                                                                     // offset from
-                                                                                     // ground (See
-                                                                                     // below)
-        // X = distance from arm pivot point to front of bot at bottom limit (negative)
-        // Y = height of arm pivot point from ground at bottom limit
+                                                                                // offset from
+                                                                                // ground (See
+                                                                                // below)
+            // X = distance from arm pivot point to front of bot at bottom limit (negative)
+            // Y = height of arm pivot point from ground at bottom limit
         }
 
         public static final class ArmConstants {
@@ -106,7 +107,9 @@ public final class Constants {
             public static final double MAX_ANGLE = 90d;
             public static final double MIN_ANGLE = -90d;
 
-            public static final double LENGTH = 0; // arm length in inches
+            public static final double LENGTH = 30; // arm length in inches
+            public static final double ELEVATOR_ANGLE = 0.959931;
+            public static final double MAX_X = 100;
         }
 
         public static final class WristConstants {
@@ -122,7 +125,7 @@ public final class Constants {
             public static final double MIN_ANGLE = -90d;
 
             public static final Translation2d COLLECTOR_OFFSET =
-                new Translation2d(0, new Rotation2d(0));
+                    new Translation2d(0, new Rotation2d(0));
         }
 
         // Gains vaules for theta PIDControllers
@@ -204,7 +207,7 @@ public final class Constants {
         public static final double THRESHOLD_ANGLE = 1;
         public static final double BB_SPEED = 0.2;
     }
-    
+
     public static final class LedConstants {
         public static final int port = 9;
         public static final int length = 162;
