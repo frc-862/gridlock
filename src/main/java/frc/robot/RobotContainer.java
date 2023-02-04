@@ -99,6 +99,7 @@ public class RobotContainer extends LightningContainer {
     protected void initializeDashboardCommands() {
         ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
         ShuffleboardTab ledTab = Shuffleboard.getTab("LEDs");
+        ShuffleboardTab underGlowTab = Shuffleboard.getTab("UnderGlow");
 
     }
 

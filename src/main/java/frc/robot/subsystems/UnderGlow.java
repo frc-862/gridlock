@@ -152,7 +152,7 @@ public class UnderGlow extends SubsystemBase {
      * initializes the commands and buttons on ShuffleBoard
      */
     private void initDashboard() {
-      var underGlowTab = Shuffleboard.getTab("LEDs");
+      var underGlowTab = Shuffleboard.getTab("UnderGlow");
       // strategy chosen methods
       underGlowTab.add("hasGamePiece", new InstantCommand(this::hasGamePiece, this));
       underGlowTab.add("wantsCone", new InstantCommand(this::wantsCone, this));
