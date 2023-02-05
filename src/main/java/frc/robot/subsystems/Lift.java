@@ -53,6 +53,9 @@ public class Lift extends SubsystemBase {
 
         double angle;
 
+        double xPose;
+        double yPose;
+
         double desiredXPose = desiredPose.getX();
         double desiredYPose = desiredPose.getY();
 
@@ -72,22 +75,21 @@ public class Lift extends SubsystemBase {
         double possibleYPose2 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose2;
 
         if (possibleXPose1 < 0 || possibleXPose1 > ArmConstants.MAX_X) {
-            desiredXPose = possibleXPose2;
-            desiredYPose = possibleYPose2;
+            xPose = possibleXPose2;
+            yPose = possibleYPose2;
         } else if (possibleXPose2 < 0 || possibleXPose2 > ArmConstants.MAX_X) {
-            desiredXPose = possibleXPose1;
-            desiredYPose = possibleYPose1;
+            xPose = possibleXPose1;
+            yPose = possibleYPose1;
         } else {
-            desiredXPose = Math.min(possibleXPose1, possibleXPose2);
-            desiredYPose = Math.min(possibleYPose1, possibleYPose2);
+            xPose = Math.min(possibleXPose1, possibleXPose2);
+            yPose = Math.min(possibleYPose1, possibleYPose2);
         }
 
         angle = 180 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
-        if (desiredYPose == desiredYPose) {
+        if (desiredYPose == yPose) {
 
-        } else if (desiredYPose > desiredYPose) {
-            angle += Math.toDegrees(
-                    Math.atan((desiredYPose - desiredYPose) / (desiredXPose - desiredXPose)));
+        } else if (desiredYPose > yPose) {
+            angle += Math.toDegrees(Math.atan((desiredYPose - yPose) / (desiredXPose - xPose)));
         } else if (desiredXPose > desiredXPose) {
             angle = 90 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
             angle += Math.toDegrees(
