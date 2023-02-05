@@ -27,18 +27,16 @@ public class Lift extends SubsystemBase {
         this.arm = arm;
     }
 
-    ic void setState(States state) {
-      
-
-     this.state = state;
+    public void setState(States state) {
+        this.state = state;
     }
 
     public Translation2d getElevatorXY() {
         return new Translation2d(elevator.getHeight(), ElevatorConstants.ANGLE);
     }
 
-
-
+    public Translation2d getBarXY() {
+        return new Translation2d(ArmConstants.LENGTH,
                 new Rotation2d(Math.toRadians(arm.getAngle())));
     }
 
@@ -47,20 +45,22 @@ public class Lift extends SubsystemBase {
                 .plus(getBarXY().plus(WristConstants.COLLECTOR_OFFSET));
     }
 
+    public Boolean isReachable(Translation2d pose) {
+        return LiftConstants.BOUNDING_BOX.contains(pose.getX(), pose.getY());
+    }
 
-
-    
-
+    public double[] elevatorMath(Translation2d desiredPose) {
 
         double angle;
 
-        double targetX = desiredPose.getX();
-        double targetY = desiredPose.getY();
+        double desiredXPose = desiredPose.getX();
+        double desiredYPose = desiredPose.getY();
 
         double aQuadraticValue = 1 + Math.pow(Math.tan(ArmConstants.ELEVATOR_ANGLE), 2);
-        double bQuadraticValue = -2 * (targetX + targetY * Math.tan(ArmConstants.ELEVATOR_ANGLE));
-        double cQuadraticValue =
-                Math.pow(targetX, 2) + Math.pow(targetY, 2) - Math.pow(ArmConstants.LENGTH, 2);
+        double bQuadraticValue =
+                -2 * (desiredXPose + desiredYPose * Math.tan(ArmConstants.ELEVATOR_ANGLE));
+        double cQuadraticValue = Math.pow(desiredXPose, 2) + Math.pow(desiredYPose, 2)
+                - Math.pow(ArmConstants.LENGTH, 2);
 
         double possibleXPose1 = (-bQuadraticValue + Math
                 .sqrt(bQuadraticValue * bQuadraticValue - 4 * aQuadraticValue * cQuadraticValue))
@@ -83,16 +83,20 @@ public class Lift extends SubsystemBase {
         }
 
         angle = 180 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
-        if (targetY == desiredYPose) {
+        if (desiredYPose == desiredYPose) {
 
-        } else if (targetY > desiredYPose) {
-            angle += Math.toDegrees(Math.atan((targetY - desiredYPose) / (targetX - desiredXPose)));
-        } else if (targetX > desiredXPose) {
+        } else if (desiredYPose > desiredYPose) {
+            angle += Math.toDegrees(
+                    Math.atan((desiredYPose - desiredYPose) / (desiredXPose - desiredXPose)));
+        } else if (desiredXPose > desiredXPose) {
             angle = 90 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
-            angle += Math.toDegrees(Math.atan((targetX - desiredXPose) / (desiredYPose - targetY)));
+            angle += Math.toDegrees(
+                    Math.atan((desiredXPose - desiredXPose) / (desiredYPose - desiredXPose)));
+
         } else {
             angle = 90 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
-            angle -= Math.toDegrees(Math.atan((desiredXPose - targetX) / (desiredYPose - targetY)));
+            angle -= Math.toDegrees(
+                    Math.atan((desiredXPose - desiredXPose) / (desiredYPose - desiredYPose)));
         }
 
         double[] returnValue = {angle, desiredYPose};
@@ -102,10 +106,10 @@ public class Lift extends SubsystemBase {
     @Override
     public void periodic() {
         switch (state) {
-            case groundColl
+            case groundCollect:
+                position = LiftConstants.GROUND_COLLECT;
+                break;
 
-
-    
             case doubleSubstationCollect:
                 position = LiftConstants.DOUBLE_SUBSTATION_COLLECT;
                 break;
@@ -137,7 +141,5 @@ public class Lift extends SubsystemBase {
         }
     }
 }
-
-
 
 
