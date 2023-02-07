@@ -10,7 +10,6 @@ import frc.thunder.shuffleboard.LightningShuffleboard;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.DoubleArraySubscriber;
 
 public class AprilTagTargetting extends SubsystemBase {
 
@@ -23,11 +22,8 @@ public class AprilTagTargetting extends SubsystemBase {
     private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
 
     public AprilTagTargetting() {
-        initLogging();
-    }
-
-    public AprilTagTargetting() {
         CommandScheduler.getInstance().registerSubsystem(this);
+        initLogging();
     }
     
     @Override
