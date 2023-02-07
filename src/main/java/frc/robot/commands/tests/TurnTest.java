@@ -29,8 +29,7 @@ public class TurnTest extends CommandBase {
     @Override
     public void execute() {
         // Set power
-        module.set(drivetrain.velocityToDriveVolts(driveSpeed), Math.toRadians(driveAngle));
-
+        module.set(driveSpeed, Math.toRadians(driveAngle));
         // Checks if the module made it to the angle with in 3 degrees and has gone around less than
         // 2 times
         if ((Math.abs(getBearingDifference()) < SystemTestConstants.ANGLE_DEAD_ZONE)

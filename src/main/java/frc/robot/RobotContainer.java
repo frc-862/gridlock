@@ -1,6 +1,13 @@
 package frc.robot;
 
 import frc.robot.subsystems.AprilTagTargetting;
+
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathConstraints;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,16 +31,16 @@ import frc.thunder.testing.SystemTest;
 public class RobotContainer extends LightningContainer {
 
     private AprilTagTargetting targetting = new AprilTagTargetting();
-    
+    // Creates new LED controller
     private static final LEDController led = new LEDController();
 
     private static final Drivetrain drivetrain = new Drivetrain();
 
     // Creates our driver controller and deadzone
     private static final XboxController driver = new XboxController(0);
-    private static final JoystickFilter joystickFilter =
-            new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
-                    XboxControllerConstants.MAX_POWER, Mode.CUBED);
+    private static final JoystickFilter joystickFilter = new JoystickFilter(XboxControllerConstants.DEADBAND,
+            XboxControllerConstants.MIN_POWER,
+            XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
     //creates Autonomous Command
     private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(
@@ -50,6 +57,14 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
         new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
+    }
+
+    // Creates the autonomous commands
+    @Override
+    protected void configureAutonomousCommands() {
+        autoFactory.makeTrajectory("Tune", new HashMap<>(),
+                new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
     }
 
     @Override
@@ -83,22 +98,22 @@ public class RobotContainer extends LightningContainer {
     }
 
     @Override
+    protected void releaseDefaultCommands() {
+    }
+
+    @Override
     protected void initializeDashboardCommands() {
         ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
         ShuffleboardTab ledTab = Shuffleboard.getTab("LEDs");
     }
 
     @Override
-    protected void releaseDefaultCommands() {}
+    protected void configureFaultCodes() {
+    }
 
     @Override
-    protected void configureAutonomousCommands() {}
-
-    @Override
-    protected void configureFaultCodes() {}
-
-    @Override
-    protected void configureFaultMonitors() {}
+    protected void configureFaultMonitors() {
+    }
 
     @Override
     protected AutonomousCommandFactory getCommandFactory() {
