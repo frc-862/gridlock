@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.DrivetrainConstants.ArmConstants;
@@ -19,9 +20,9 @@ public class Lift extends SubsystemBase {
         stowed
     }
 
-    Elevator elevator;
-    Wrist wrist;
-    Arm arm;
+    private Elevator elevator;
+    private Wrist wrist;
+    private Arm arm;
 
     public States state = States.stowed; 
     private Translation2d position = new Translation2d();
@@ -30,6 +31,8 @@ public class Lift extends SubsystemBase {
         this.elevator = elevator; 
         this.wrist = wrist;
         this.arm = arm;
+
+        CommandScheduler.getInstance().registerSubsystem(this);
     }
 
     public void setState(States state){
@@ -51,8 +54,6 @@ public class Lift extends SubsystemBase {
     public Boolean isReachable(Translation2d pose) {
         return LiftConstants.BOUNDING_BOX.contains(pose.getX(), pose.getY());
     }
-
-
 
     @Override
     public void periodic() {
@@ -93,7 +94,7 @@ public class Lift extends SubsystemBase {
 
             elevator.setHeight(elevatorHeight);
             arm.setAngle(armAngle.getDegrees());
-            wrist.setAngle(armAngle.getDegrees() + 90); //math
+            wrist.setAngle(armAngle.getDegrees() + 90); //keeps the wrist parallel to the ground
         }
     }
 }

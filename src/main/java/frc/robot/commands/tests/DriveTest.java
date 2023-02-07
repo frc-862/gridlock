@@ -29,5 +29,7 @@ public class DriveTest extends CommandBase {
     }
 
     @Override
-    public boolean isFinished() { return false; }
+    public boolean isFinished() {
+        return false;
+    }
 }

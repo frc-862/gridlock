@@ -294,7 +294,6 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br drive voltage", () -> backRightModule.getDriveVoltage());
 
         DataLogger.addDataElement("Heading", () -> getHeading2d().getDegrees());
-
         DataLogger.addDataElement("poseX", () -> getPose().getX());
         DataLogger.addDataElement("poseY", () -> getPose().getY());
     }
