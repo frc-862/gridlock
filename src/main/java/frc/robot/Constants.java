@@ -83,7 +83,6 @@ public final class Constants {
             public static final double kF = 0.229;
         }
 
-
         // Gains vaules for theta PIDControllers
         public static final class ThetaGains {
             public static final double kP = 0d;
@@ -152,6 +151,9 @@ public final class Constants {
         public static final double kD = 0d;
 
         public static final double TOLERANCE = 0d;
+
+        public static final double ELEVATOR_ANGLE = 0.959931;
+        public static final double MAX_X = 100;
 
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
