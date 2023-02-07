@@ -1,18 +1,6 @@
 package frc.robot.subsystems;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -26,6 +14,7 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 
 public class AprilTagTargetting extends SubsystemBase {
 
+
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
     private double horizAngleToTarget;
@@ -37,6 +26,10 @@ public class AprilTagTargetting extends SubsystemBase {
         initLogging();
     }
 
+    public AprilTagTargetting() {
+        CommandScheduler.getInstance().registerSubsystem(this);
+    }
+    
     @Override
     public void periodic() {
         botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
@@ -142,7 +135,6 @@ public class AprilTagTargetting extends SubsystemBase {
      */
     public boolean isOnTarget(double expectedAngle) {
         // Should put consideration into how accurate we want to be later on.
-
         return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
     }
 

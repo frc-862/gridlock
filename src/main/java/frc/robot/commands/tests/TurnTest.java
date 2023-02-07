@@ -18,10 +18,11 @@ public class TurnTest extends CommandBase {
         this.module = module;
         this.drivetrain = drivetrain;
         this.direction = direction;
+
         DataLogger.addDataElement("Current angle", () -> Math.toDegrees(module.getSteerAngle()));
         DataLogger.addDataElement("Target angle", () -> driveAngle);
-        DataLogger.addDataElement("Bearing Difference",
-                () -> getBearingdifference(Math.toDegrees(module.getSteerAngle())));
+        DataLogger.addDataElement("Bearing Difference", () -> getBearingDifference());
+
         addRequirements(drivetrain);
     }
 
@@ -29,18 +30,17 @@ public class TurnTest extends CommandBase {
     public void execute() {
         // Set power
         module.set(drivetrain.velocityToDriveVolts(driveSpeed), Math.toRadians(driveAngle));
+
         // Checks if the module made it to the angle with in 3 degrees and has gone around less than
         // 2 times
-        if ((Math.abs(getBearingdifference(
-                Math.toDegrees(module.getSteerAngle()))) < SystemTestConstants.ANGLE_DEAD_ZONE)
-                && (revolutions < SystemTestConstants.MAX_ROTATIONS_PER_DIRECTION)) {
-            if (direction) {// If true clockwise
+        if ((Math.abs(getBearingDifference()) < SystemTestConstants.ANGLE_DEAD_ZONE)
+                  && (revolutions < SystemTestConstants.MAX_ROTATIONS_PER_DIRECTION)) {
+            // If true clockwise, if false counterclockwise
+            if (direction) {
                 driveAngle += SystemTestConstants.DEGREES_INTERVAL_INCREASE;
-                // Loops around
                 wrapAround();
-            } else if (!direction) {// If false counter Clockwise
+            } else {
                 driveAngle -= SystemTestConstants.DEGREES_INTERVAL_INCREASE;
-                // Loops around
                 wrapAround();
             }
         }
@@ -57,16 +57,17 @@ public class TurnTest extends CommandBase {
     }
 
     /** Calculate the diference between target angle and curent angle */
-    private double getBearingdifference(double current) {
+    private double getBearingDifference() {
+        double current = Math.toDegrees(module.getSteerAngle());
         return (((driveAngle - current + 540) % 360) - 180);
     }
 
     /** Checks and keeps angle within 0 - 360 */
     private void wrapAround() {
-        if ((driveAngle > 360)) { // Below 360
+        if ((driveAngle > 360)) {
             driveAngle -= 360;
             revolutions++;
-        } else if ((driveAngle < 0)) {// Above 0
+        } else if ((driveAngle < 0)) {
             driveAngle += 360;
             revolutions++;
         }
