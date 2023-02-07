@@ -21,7 +21,11 @@ public class AprilTagTargetting extends SubsystemBase {
     private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
     private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
 
+    private boolean pipelineSwitched = false;
+
     public AprilTagTargetting() {
+        limelightTab.getEntry("pipeline").setNumber(0);
+
         CommandScheduler.getInstance().registerSubsystem(this);
         initLogging();
     }
@@ -132,6 +136,21 @@ public class AprilTagTargetting extends SubsystemBase {
     public boolean isOnTarget(double expectedAngle) {
         // Should put consideration into how accurate we want to be later on.
         return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
+    }
+
+    private void switchPipelines(){
+        if (pipelineSwitched == false){
+            limelightTab.getEntry("pipeline").setNumber(1);
+            pipelineSwitched = true;
+
+        }
+        else if (pipelineSwitched == true){
+            limelightTab.getEntry("pipeline").setNumber(0);
+            pipelineSwitched = false;
+
+        }
+
+
     }
 
 }
