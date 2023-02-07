@@ -26,7 +26,7 @@ public final class Constants {
 
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
-        public static final double DEADBAND = 0.15;
+        public static final double DEADBAND = 0.1;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 1d;
 
@@ -58,7 +58,7 @@ public final class Constants {
         public static final double BACK_RIGHT_RESTING_ANGLE = Math.toRadians(-45d);
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
-        public static final double MAX_VOLTAGE = 6;
+        public static final double MAX_VOLTAGE = 12;
         // TODO look at the calculation here
         public static final double MAX_VELOCITY_METERS_PER_SECOND =
                 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
@@ -76,34 +76,28 @@ public final class Constants {
 
         // Gains vaules for PIDControllers
         public static final class Gains {
-
-            public static final double kP = 0d;
+            public static final double kP = 0.116d;
             public static final double kI = 0d;
             public static final double kD = 0d;
 
-            public static final double kS = 0.13;
-            public static final double kV = 2.64;
-            public static final double kA = 0;
+            public static final double kF = 0.229;
         }
+
 
         // Gains vaules for theta PIDControllers
         public static final class ThetaGains {
-            public static final double kP = 0.004d;
+            public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
-
-            public static final double kS = 0d;
-            public static final double kV = 0d;
-            public static final double kA = 0d;
 
         }
 
         public static final class Offsets {
             public static final class Gridlock {
-                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(286.962);
-                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(119.707);
-                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(325.019);
-                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(12.744);
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(287.402);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(119.795);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(325.811);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(13.271);
             }
 
             public static final class Blackout {
@@ -246,7 +240,7 @@ public final class Constants {
         public static final double THRESHOLD_ANGLE = 1;
         public static final double BB_SPEED = 0.2;
     }
-    
+
     public static final class LedConstants {
         public static final int port = 9;
         public static final int length = 162;
@@ -267,6 +261,7 @@ public final class Constants {
             public static final int[] off = {0, 0, 0};
         }
     }
+
     public static final class Vision {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;
