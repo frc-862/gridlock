@@ -57,12 +57,15 @@ public class Lift extends SubsystemBase {
         double desiredXPose = desiredPose.getX();
         double desiredYPose = desiredPose.getY();
 
+        // Find quadratic formula values
         double aQuadraticValue = 1 + Math.pow(Math.tan(ArmConstants.ELEVATOR_ANGLE), 2);
         double bQuadraticValue =
                 -2 * (desiredXPose + desiredYPose * Math.tan(ArmConstants.ELEVATOR_ANGLE));
         double cQuadraticValue = Math.pow(desiredXPose, 2) + Math.pow(desiredYPose, 2)
                 - Math.pow(ArmConstants.LENGTH, 2);
 
+
+        // Find possible x and y poses using quadratic formula
         double possibleXPose1 = (-bQuadraticValue + Math
                 .sqrt(bQuadraticValue * bQuadraticValue - 4 * aQuadraticValue * cQuadraticValue))
                 / (2 * aQuadraticValue);
@@ -72,6 +75,7 @@ public class Lift extends SubsystemBase {
         double possibleYPose1 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose1;
         double possibleYPose2 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose2;
 
+        // Find the x and y poses that are within the bounds of the robot or find the closer one
         if (possibleXPose1 < 0 || possibleXPose1 > ArmConstants.MAX_X) {
             xPose = possibleXPose2;
             yPose = possibleYPose2;
@@ -83,6 +87,7 @@ public class Lift extends SubsystemBase {
             yPose = Math.min(possibleYPose1, possibleYPose2);
         }
 
+        // Find the angle of the arm pivot 
         angle = 180 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
         if (desiredYPose == yPose) {
 
