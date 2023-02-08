@@ -16,7 +16,8 @@ public class UnderGlow extends SubsystemBase {
   private static final int ledPort = 22;
   private static final int ledLength = 170;
   private static final double ledSpeed = .5;
-  private static int swirlPosition = 0;
+  private static int orangeSwirlPosition = 0;
+  private static int blueSwirlPosition = (ledLength/2) + 1;
   private static int swirlLength = (ledLength/2);
   
   // Use them variables!
@@ -37,9 +38,13 @@ public class UnderGlow extends SubsystemBase {
     //swirl pattern wooooooo (swirls orange and blue)
     wunderGlowLeds.setLEDs(0, 0, 255);
     for (int i = 0; i < swirlLength; i++){
-        wunderGlowLeds.setLEDs(255, 75, 0, 0, ((i + swirlPosition) % ledLength), swirlLength);
+        wunderGlowLeds.setLEDs(255, 75, 0, 0, ((i + orangeSwirlPosition) % ledLength), 1);
     }
-    swirlPosition += 1;
+    for (int i = 0; i < swirlLength; i++){
+        wunderGlowLeds.setLEDs(0, 0, 255, 0, ((i + blueSwirlPosition) % ledLength), 1);
+    }
+    orangeSwirlPosition += 1;
+    blueSwirlPosition += 1;
     currentState = "swirl";
   }
 
