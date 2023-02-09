@@ -119,6 +119,7 @@ public final class Constants {
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
+        public static final double kF = 0d;
 
         public static final double TOLERANCE = 0d;
 
@@ -149,6 +150,7 @@ public final class Constants {
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
+        public static final double kF = 0d;
 
         public static final double TOLERANCE = 0d;
 
@@ -176,6 +178,7 @@ public final class Constants {
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
+        public static final double kF = 0d;
 
         public static final double TOLERANCE = 0d;
 

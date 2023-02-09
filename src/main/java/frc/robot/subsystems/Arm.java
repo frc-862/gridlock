@@ -14,6 +14,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
+import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.math.LightningMath;
 
 public class Arm extends SubsystemBase {
@@ -40,10 +41,7 @@ public class Arm extends SubsystemBase {
         );
         controller = NeoConfig.createPIDController(
             motor.getPIDController(),
-            ArmConstants.kP,
-            ArmConstants.kI,
-            ArmConstants.kD
-        );
+            new SparkMaxPIDGains(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF));
         encoder = NeoConfig.createAbsoluteEncoder(motor, ArmConstants.ENCODER_INVERT, OFFSET);
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -57,8 +55,8 @@ public class Arm extends SubsystemBase {
     public Rotation2d getAngle() {
         return Rotation2d.fromRotations(encoder.getPosition());
     }
-    public void setGains(double kP, double kI, double kD) {
-        controller = NeoConfig.createPIDController(controller, kP, kI, kD);
+    public void setGains(double kP, double kI, double kD, double kF) {
+        controller = NeoConfig.createPIDController(controller, new SparkMaxPIDGains(kP, kI, kD, kF));
     }
 
     public void setPower(double speed){
