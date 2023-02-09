@@ -20,7 +20,7 @@ public class DriveTest extends CommandBase {
 
     @Override
     public void execute() {
-        module.set(drivetrain.velocityToDriveVolts(driveSpeed), driveAngle);
+        module.set(driveSpeed, driveAngle);
     }
 
     @Override
@@ -29,5 +29,7 @@ public class DriveTest extends CommandBase {
     }
 
     @Override
-    public boolean isFinished() { return false; }
+    public boolean isFinished() {
+        return false;
+    }
 }
