@@ -275,12 +275,20 @@ public final class Constants {
 
     public static final class LiftConstants {
         public enum LiftState {
-            groundCollect(new Translation2d(0d, 0d)),
+            ground(new Translation2d(0d, 0d)),
             doubleSubstationCollect(new Translation2d(0d, 0d)),
-            lowScore(new Translation2d(0d, 0d)),
-            mediumScore(new Translation2d(0d, 0d)),
-            highScore(new Translation2d(0d, 0d)),
-            stowed(new Translation2d(0d, 0d));
+            reverseSubstationCollect(new Translation2d(0d, 0d)),
+
+            mediumCubeScore(new Translation2d(0d, 0d)),
+            highCubeScore(new Translation2d(0d, 0d)),
+            mediumConeScore(new Translation2d(0d, 0d)),
+            highConeScore(new Translation2d(0d, 0d)),
+            
+            elevatorDeployed(new Translation2d(0d, 0d)),
+            armDeployed(new Translation2d(0d, 0d)),
+
+            stowed(new Translation2d(0d, 0d));            
+
 
             private Translation2d pose;
 
