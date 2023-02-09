@@ -1,105 +1,11 @@
 {
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
 <<<<<<< HEAD
-  "NTProvider": {
-    "types": {
-      "/FMSInfo": "FMSInfo",
-      "/Shuffleboard/Autonomous/Auto Mode": "String Chooser"
-    }
-  },
-  "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
-    "transitory": {
-      "Shuffleboard": {
-        "Fault Codes": {
-          "open": true
-        },
-        "Targeting Tab": {
-          "open": true
-        },
-        "open": true
-      }
-    }
-  },
-  "NetworkTables Info": {
-    "Clients": {
-      "open": true
-    },
-    "Connections": {
-      "open": true
-    },
-    "NT3@10.8.62.102:57862": {
-      "Publishers": {
-        "open": true
-      },
-      "Subscribers": {
-        "open": true
-      },
-      "open": true
-    },
-    "NT3@10.8.62.104:38136": {
-      "Publishers": {
-        "open": true
-      },
-      "Subscribers": {
-        "open": true
-      },
-      "open": true
-    },
-    "Server": {
-      "open": true
-    }
 =======
-  "HALProvider": {
-    "Other Devices": {
-      "SPARK MAX [1]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [2]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [3]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [4]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [5]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [6]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [7]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [8]": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
-  "NTProvider": {
-    "types": {
-      "/FMSInfo": "FMSInfo",
-      "/LiveWindow/Ungrouped/Pigeon 2 [23]": "Gyro",
       "/Shuffleboard/Autonomous/Auto Mode": "String Chooser",
+>>>>>>> 89-find-elevator-pos-and-arm-angle-math
       "/Shuffleboard/LEDs/autoAligned": "Command",
       "/Shuffleboard/LEDs/believeScored": "Command",
       "/Shuffleboard/LEDs/fullWhite": "Command",
@@ -110,23 +16,17 @@
       "/Shuffleboard/LEDs/readyScore": "Command",
       "/Shuffleboard/LEDs/start": "Command",
       "/Shuffleboard/LEDs/stop": "Command",
+      "/Shuffleboard/LEDs/swirl": "Command",
       "/Shuffleboard/LEDs/wantsCone": "Command",
+<<<<<<< HEAD
+      "/Shuffleboard/LEDs/wantsCube": "Command"
+=======
       "/Shuffleboard/LEDs/wantsCube": "Command",
       "/Shuffleboard/SystemTest/bl drive test": "Command",
       "/Shuffleboard/SystemTest/br drive test": "Command",
       "/Shuffleboard/SystemTest/fl drive test": "Command",
       "/Shuffleboard/SystemTest/fr drive test": "Command"
-    },
-    "windows": {
-      "/Shuffleboard/SystemTest/fr drive test": {
-        "window": {
-          "visible": true
-        }
-      }
+>>>>>>> 89-find-elevator-pos-and-arm-angle-math
     }
-  },
-  "NetworkTables View": {
-    "visible": false
->>>>>>> main
   }
 }

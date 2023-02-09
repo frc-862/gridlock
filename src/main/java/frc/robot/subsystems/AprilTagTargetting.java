@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class AprilTagTargetting extends SubsystemBase {
 
-
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
     private double horizAngleToTarget;
@@ -82,7 +81,6 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     public Pose2d getRobotPose() {
-
         return new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
 
     }
