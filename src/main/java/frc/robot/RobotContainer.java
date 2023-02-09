@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.subsystems.LEDController;
+import frc.robot.subsystems.LEDs;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -32,7 +32,7 @@ public class RobotContainer extends LightningContainer {
 
     private static final AprilTagTargetting targetting = new AprilTagTargetting();
     // Creates new LED controller
-    private static final LEDController led = new LEDController();
+    private static final LEDs underglow = new LEDs();
 
     private static final Drivetrain drivetrain = new Drivetrain(targetting);
 
