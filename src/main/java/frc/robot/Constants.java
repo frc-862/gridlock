@@ -1,14 +1,28 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.PIDConstants;
-
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 import java.awt.Polygon;
+import java.nio.file.*;
 
 public final class Constants {
+
+    public static final double VOLTAGE_COMP_VOLTAGE = 12d;
+
+    public static final Path BLACKOUT_FILE = Paths.get("home/lvuser/blackout");
+
+    public static final boolean isBlackout() {
+        return BLACKOUT_FILE.toFile().exists();
+    }
+
+    public static final boolean isGridlock() {
+        return !isBlackout();
+    }
 
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
@@ -69,58 +83,6 @@ public final class Constants {
             public static final double kF = 0.229;
         }
 
-        public static final class ElevatorConstants {
-            public static final double kP = 0d;
-            public static final double kI = 0d;
-            public static final double kD = 0d;
-
-            public static final int TICKS = 42;
-            public static final double GEAR_RATIO = 1d / 1d;
-            public static final double INCHES_PER_REV = 1d;
-
-            public static final double MAX_HEIGHT = 0d;
-            public static final double MIN_HEIGHT = 100d;
-
-            public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle
-                                                                      // in degrees
-
-            public static final Translation2d OFFSET = new Translation2d(0, 0); // horiz/vert
-                                                                                // offset from
-                                                                                // ground (See
-                                                                                // below)
-            // X = distance from arm pivot point to front of bot at bottom limit (negative)
-            // Y = height of arm pivot point from ground at bottom limit
-        }
-
-        public static final class ArmConstants {
-            public static final double kP = 0d;
-            public static final double kI = 0d;
-            public static final double kD = 0d;
-
-            public static final int TICKS = 42;
-            public static final double GEAR_RATIO = 1.0 / 1.0;
-
-            public static final double MAX_ANGLE = 90d;
-            public static final double MIN_ANGLE = -90d;
-
-            public static final double LENGTH = 0; // arm length in inches
-        }
-
-        public static final class WristConstants {
-            public static final double kP = 0d;
-            public static final double kI = 0d;
-            public static final double kD = 0d;
-
-            public static final int TICKS = 42;
-            public static final double GEAR_RATIO = 1.0 / 1.0;
-
-            public static final double MAX_ANGLE = 90d;
-            public static final double MIN_ANGLE = -90d;
-
-            public static final Translation2d COLLECTOR_OFFSET =
-                    new Translation2d(0, new Rotation2d(0));
-        }
-
         // Gains vaules for theta PIDControllers
         public static final class ThetaGains {
             public static final double kP = 0d;
@@ -144,6 +106,90 @@ public final class Constants {
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
             }
         }
+    }
+
+    public static final class ElevatorConstants {
+        public static final boolean MOTOR_INVERT = false;
+        public static final boolean ENCODER_INVERT = false;
+
+        public static final int CURRENT_LIMIT = 40;
+        public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
+
+        public static final double kP = 0d;
+        public static final double kI = 0d;
+        public static final double kD = 0d;
+
+        public static final double TOLERANCE = 0d;
+
+        public static final int TICKS = 42;
+        public static final double GEAR_RATIO = 1d / 1d;
+        public static final double INCHES_PER_REV = 1d;
+
+        public static final double MAX_HEIGHT = 0d;
+        public static final double MIN_HEIGHT = 100d;
+
+        public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in degrees
+
+        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0); // horiz/vert
+                                                                                    // offset from
+                                                                                    // ground (See
+                                                                                    // below)
+    // X = distance from arm pivot point to front of bot at bottom limit (negative)
+    // Y = height of arm pivot point from ground at bottom limit
+    }
+
+    public static final class ArmConstants {
+        public static final boolean MOTOR_INVERT = false;
+        public static final boolean ENCODER_INVERT = false;
+
+        public static final int CURRENT_LIMIT = 40;
+        public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+
+        public static final double kP = 0d;
+        public static final double kI = 0d;
+        public static final double kD = 0d;
+
+        public static final double TOLERANCE = 0d;
+
+        public static final double ELEVATOR_ANGLE = 0.959931;
+        public static final double MAX_X = 100;
+
+        public static final double MAX_ANGLE = 90d;
+        public static final double MIN_ANGLE = -90d;
+
+        public static final double LENGTH = 0; // arm length in inches
+
+        //Offsets in degrees
+        public static final double ENCODER_OFFSET_GRIDLOCK = 0;
+        public static final double ENCODER_OFFSET_BLACKOUT = 0;
+    }
+
+    public static final class WristConstants {
+        public static final boolean MOTOR_INVERT = false;
+        public static final boolean ENCODER_INVERT = false;
+
+        public static final int CURRENT_LIMIT = 20;
+        public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
+
+        public static final double kP = 0d;
+        public static final double kI = 0d;
+        public static final double kD = 0d;
+
+        public static final double TOLERANCE = 0d;
+
+        //min/max angles in degrees
+        public static final double MAX_ANGLE = 90d;
+        public static final double MIN_ANGLE = -90d;
+
+        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
+
+        public static final double LENGTH = 0; // wrist length in inches
+
+        //Offsets in degrees
+        public static final double ENCODER_OFFSET_GRIDLOCK = 0;
+        public static final double ENCODER_OFFSET_BLACKOUT = 0;
     }
 
     public static final class RobotMap {
@@ -228,14 +274,25 @@ public final class Constants {
     }
 
     public static final class LiftConstants {
-        public static final Translation2d GROUND_COLLECT = new Translation2d(0d, 0d);
-        public static final Translation2d DOUBLE_SUBSTATION_COLLECT = new Translation2d(0d, 0d);
-        public static final Translation2d LOW_SCORE = new Translation2d(0d, 0d);
-        public static final Translation2d MEDIUM_SCORE = new Translation2d(0d, 0d);
-        public static final Translation2d HIGH_SCORE = new Translation2d(0d, 0d);
-        public static final Translation2d STOWED = new Translation2d(0d, 0d);
+        public enum LiftState {
+            groundCollect(new Translation2d(0d, 0d)),
+            doubleSubstationCollect(new Translation2d(0d, 0d)),
+            lowScore(new Translation2d(0d, 0d)),
+            mediumScore(new Translation2d(0d, 0d)),
+            highScore(new Translation2d(0d, 0d)),
+            stowed(new Translation2d(0d, 0d));
 
-        public static final Polygon BOUNDING_BOX =
-                new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
+            private Translation2d pose;
+
+            LiftState(Translation2d pose) {
+                this.pose = pose;
+            }
+
+            public Translation2d pose() {
+                return pose;
+            }
+        }
+
+        public static final Polygon BOUNDING_BOX = new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
     }
 }
