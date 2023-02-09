@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.subsystems.UnderGlow;
+import frc.robot.subsystems.LEDs;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -32,7 +32,7 @@ public class RobotContainer extends LightningContainer {
 
     private AprilTagTargetting targetting = new AprilTagTargetting();
     // Creates new LED controller
-    private static final UnderGlow underglow = new UnderGlow();
+    private static final LEDs underglow = new LEDs();
 
     private static final Drivetrain drivetrain = new Drivetrain();
 
@@ -104,7 +104,7 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void initializeDashboardCommands() {
         ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
-        ShuffleboardTab underGlowTab = Shuffleboard.getTab("UnderGlow");
+        ShuffleboardTab ledTab = Shuffleboard.getTab("LEDs");
     }
 
     @Override
