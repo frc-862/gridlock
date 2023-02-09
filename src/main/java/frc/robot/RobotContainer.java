@@ -1,7 +1,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.AprilTagTargetting;
-
+import frc.robot.subsystems.Arm;
 import java.util.HashMap;
 
 import com.pathplanner.lib.PathConstraints;
@@ -13,14 +13,17 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.subsystems.LEDController;
+import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.manualLift;
 import frc.robot.commands.tests.DriveTrainSystemTest;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
 import frc.thunder.LightningContainer;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.thunder.auto.AutonomousCommandFactory;
@@ -35,6 +38,10 @@ public class RobotContainer extends LightningContainer {
     private static final LEDController led = new LEDController();
 
     private static final Drivetrain drivetrain = new Drivetrain();
+    private static final Arm arm = new Arm();
+    private static final Wrist wrist = new Wrist();
+    private static final Elevator elevator = new Elevator();
+     
 
     // Creates our driver controller and deadzones
     private static final XboxController driver = new XboxController(0);
@@ -79,6 +86,13 @@ public class RobotContainer extends LightningContainer {
                 new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
                         () -> joystickFilter.filter(driver.getLeftY()),
                         () -> -joystickFilter.filter(driver.getRightX())));
+        
+        elevator.setDefaultCommand(
+            new manualLift(() -> joystickFilter.filter(liftTest.getRightY()), 
+            () -> joystickFilter.filter(liftTest.getLeftY()), 
+            () -> (liftTest.getRightTriggerAxis()-liftTest.getLeftTriggerAxis()),
+            arm, wrist, elevator)
+        );
     }
 
     @Override

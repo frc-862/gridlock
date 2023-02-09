@@ -238,4 +238,9 @@ public final class Constants {
         public static final Polygon BOUNDING_BOX =
                 new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
     }
+    public static final class manualLiftConstants {
+        public static final double ELEVATOR_SPEED_REDUCTION = 0.01;
+        public static final double ARM_SPEED_REDUCTION = 0.01;
+        public static final double WRIST_SPEED_REDUCTION = 0.01;
+    }
 }

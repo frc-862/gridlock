@@ -1,30 +1,57 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.manualLiftConstants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Wrist;
 
 public class manualLift extends CommandBase {
   /** Creates a new manualLift. */
-  public manualLift() {
-    // Use addRequirements() here to declare subsystem dependencies.
+    DoubleSupplier elevatorSpeed;
+    DoubleSupplier armSpeed;
+    DoubleSupplier wristSpeed;
+    private Elevator elevator;
+    private Wrist wrist;
+    private Arm arm;
+    double armReductionConstant = 0.01;
+    double elevatorReductionConstant = 0.01;
+    double wristReductionConstant = 0.01;
+
+
+  public manualLift(DoubleSupplier elevatorSpeed, DoubleSupplier armSpeed, DoubleSupplier wristSpeed, Arm arm, Wrist wrist, Elevator elevator ) {
+    this.arm = arm;
+    this.elevator = elevator;
+    this.wrist = wrist;
+    this.elevatorSpeed = elevatorSpeed;
+    this.armSpeed = armSpeed;
+    this.wristSpeed = wristSpeed;
+
+    addRequirements(wrist,arm,elevator);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    elevator.setPower(manualLiftConstants.ELEVATOR_SPEED_REDUCTION*elevatorSpeed.getAsDouble());
+    arm.setPower(manualLiftConstants.ARM_SPEED_REDUCTION*armSpeed.getAsDouble());
+    wrist.setPower(manualLiftConstants.WRIST_SPEED_REDUCTION*wristSpeed.getAsDouble());
 
-  // Called once the command ends or is interrupted.
+
+  }
+
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    elevator.stop();
+    arm.stop();
+    wrist.stop();
+  }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
