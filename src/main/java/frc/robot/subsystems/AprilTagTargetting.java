@@ -1,24 +1,71 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
-import edu.wpi.first.networktables.DoubleArraySubscriber;
+import frc.thunder.logging.DataLogger;
+import frc.thunder.shuffleboard.LightningShuffleboard;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class AprilTagTargetting extends SubsystemBase {
 
-    private final NetworkTable limelightTab =
-            NetworkTableInstance.getDefault().getTable("limelight");
-    DoubleArraySubscriber botposeSub =
-            limelightTab.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+
+    private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
     private double horizAngleToTarget;
-    private double[] botPose = this.botposeSub.get();
+    private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
+    private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+    private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
 
+    public AprilTagTargetting() {
+        CommandScheduler.getInstance().registerSubsystem(this);
+        initLogging();
+    }
+    
     @Override
     public void periodic() {
-        this.botPose = this.botposeSub.get();
+        botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
+        botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+        botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+
+        if (botPose.length != 0) {
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TY", botPose[1]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose RZ", botPose[5]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TX", botPoseBlue[0]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TY", botPoseBlue[1]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue RZ", botPoseBlue[5]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TX", botPoseRed[0]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
+
+        }
+
+    }
+
+    public void initLogging() {
+        if (botPose.length != 0) {
+            DataLogger.addDataElement("Vision bot pose TX", () -> botPose[0]);
+            DataLogger.addDataElement("Vision bot pose TY", () -> botPose[1]);
+            DataLogger.addDataElement("Vision bot pose RZ", () -> botPose[5]);
+            DataLogger.addDataElement("Vision bot pose Blue TX", () -> botPoseBlue[0]);
+            DataLogger.addDataElement("Vision bot pose Blue TY", () -> botPoseBlue[1]);
+            DataLogger.addDataElement("Vision bot pose Blue RZ", () -> botPoseBlue[5]);
+            DataLogger.addDataElement("Vision bot pose Red TX", () -> botPoseRed[0]);
+            DataLogger.addDataElement("Vision bot pose Red TY", () -> botPoseRed[1]);
+            DataLogger.addDataElement("Vision bot pose Red RZ", () -> botPoseRed[5]);
+
+        }
+    }
+
+    public Pose2d getRobotPose() {
+
+        return new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
+
     }
 
     /**
@@ -31,7 +78,8 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     /**
-     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The
+     * Sets the pipeline we're using on the limelight. The first is for april tag
+     * targetting The
      * second is for retroreflective tape.
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
@@ -41,7 +89,8 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     /**
-     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it
+     * Ensures that what we're receiving is actually a valid target (if it's outside
+     * of FOV, it
      * can't be)
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
@@ -75,13 +124,13 @@ public class AprilTagTargetting extends SubsystemBase {
     /**
      * Function to tell us whether or not we're on target (centered on vision tape)
      * 
-     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
-     *        Limelight
+     * @param expectedAngle Angle we're supposed to be at according to offset of
+     *                      target supplied by
+     *                      Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle) {
         // Should put consideration into how accurate we want to be later on.
-
         return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
     }
 

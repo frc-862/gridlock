@@ -1,47 +1,74 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DrivetrainConstants.WristConstants;
+import frc.robot.Constants;
+import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.math.LightningMath;
 
 public class Wrist extends SubsystemBase {
-  private CANSparkMax motor;
+    private CANSparkMax motor;
+    private SparkMaxPIDController wristController;
+    private SparkMaxAbsoluteEncoder encoder;
+    private double OFFSET;
+    private double targetAngle;
 
-  private SparkMaxPIDController wristController;
-  public Wrist() {
-    motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kBrake);
-    wristController = NeoConfig.createPIDController(motor.getPIDController(), WristConstants.kP, WristConstants.kI, WristConstants.kD);
-  }
-  public double getDegrees() {
-    return motor.getEncoder().getPosition() / WristConstants.TICKS * WristConstants.GEAR_RATIO * 360;
-  }
+    public Wrist() {
+        if (Constants.isBlackout()) {
+            OFFSET = WristConstants.ENCODER_OFFSET_BLACKOUT;
+        } else {
+            OFFSET = WristConstants.ENCODER_OFFSET_GRIDLOCK;
+        }
 
-  public void setAngle(double target) { 
-    target = LightningMath.inputModulus(target / 360 / WristConstants.GEAR_RATIO * WristConstants.TICKS, WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
-    wristController.setReference(target, CANSparkMax.ControlType.kPosition);
-  }
+        motor = NeoConfig.createMotor(
+            CAN.WRIST_MOTOR,
+            WristConstants.MOTOR_INVERT,
+            WristConstants.CURRENT_LIMIT,
+            Constants.VOLTAGE_COMP_VOLTAGE,
+            WristConstants.MOTOR_TYPE,
+            WristConstants.NEUTRAL_MODE
+        );
+        wristController = NeoConfig.createPIDController(
+            motor.getPIDController(),
+            WristConstants.kP,
+            WristConstants.kI,
+            WristConstants.kD
+        );
+        encoder = NeoConfig.createAbsoluteEncoder(motor, WristConstants.ENCODER_INVERT, OFFSET);
 
-  public void setGains(double kP, double kI, double kD) {
-    wristController = NeoConfig.createPIDController(wristController, kP, kI, kD);
-  }
+        CommandScheduler.getInstance().registerSubsystem(this);
+    }
+    
+    public Rotation2d getAngle() {
+        return Rotation2d.fromRotations(encoder.getPosition());
+    }
 
-  public void setPower(double speed){
-    motor.set(speed);
-  }
-  
-  public void stop(){
-    motor.set(0);
-  } 
+    public void setAngle(Rotation2d angle) { 
+        targetAngle = LightningMath.inputModulus(angle.getRotations(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
+        wristController.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
+    }
 
-  @Override
-  public void periodic() {
-   
-  }
+    public void setGains(double kP, double kI, double kD) {
+        wristController = NeoConfig.createPIDController(wristController, kP, kI, kD);
+    }
+
+    public void setPower(double speed){
+        motor.set(speed);
+    }
+    
+    public void stop(){
+        motor.set(0d);
+    } 
+
+    public boolean onTarget() {
+        return Math.abs(encoder.getPosition() - targetAngle) < WristConstants.TOLERANCE;
+    }
 }
