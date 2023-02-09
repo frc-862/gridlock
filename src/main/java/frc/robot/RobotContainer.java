@@ -1,9 +1,9 @@
 package frc.robot;
 
 import frc.robot.subsystems.AprilTagTargetting;
-
+import java.lang.annotation.Target;
 import java.util.HashMap;
-
+import javax.sound.sampled.TargetDataLine;
 import com.pathplanner.lib.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,11 +30,11 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private AprilTagTargetting targetting = new AprilTagTargetting();
+    private static final AprilTagTargetting targetting = new AprilTagTargetting();
     // Creates new LED controller
     private static final LEDController led = new LEDController();
 
-    private static final Drivetrain drivetrain = new Drivetrain();
+    private static final Drivetrain drivetrain = new Drivetrain(targetting);
 
     // Creates our driver controller and deadzone
     private static final XboxController driver = new XboxController(0);
