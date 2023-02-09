@@ -36,13 +36,14 @@ public class RobotContainer extends LightningContainer {
 
     private static final Drivetrain drivetrain = new Drivetrain();
 
-    // Creates our driver controller and deadzone
+    // Creates our driver controller and deadzones
     private static final XboxController driver = new XboxController(0);
-    private static final JoystickFilter joystickFilter = new JoystickFilter(XboxControllerConstants.DEADBAND,
-            XboxControllerConstants.MIN_POWER,
-            XboxControllerConstants.MAX_POWER, Mode.CUBED);
+    private static final XboxController liftTest = new XboxController(1);
+    private static final JoystickFilter joystickFilter =
+            new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
+                    XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
-    //creates Autonomous Command
+    // creates Autonomous Command
     private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(
             drivetrain::getPose, drivetrain::resetOdometry, drivetrain.getDriveKinematics(),
             DrivetrainConstants.DRIVE_PID_CONSTANTS, DrivetrainConstants.THETA_PID_CONSTANTS,
@@ -69,13 +70,11 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureDefaultCommands() {
-        /* 
-         * Set up the default command for the drivetrain.
-         * The controls are for field-oriented driving:
-         * Left stick Y axis -> forward and backwards movement
-         * Left stick X axis -> left and right movement
-         * Right stick X axis -> rotation
-        */
+        /*
+         * Set up the default command for the drivetrain. The controls are for field-oriented
+         * driving: Left stick Y axis -> forward and backwards movement Left stick X axis -> left
+         * and right movement Right stick X axis -> rotation
+         */
         drivetrain.setDefaultCommand(
                 new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
                         () -> joystickFilter.filter(driver.getLeftY()),
@@ -98,8 +97,7 @@ public class RobotContainer extends LightningContainer {
     }
 
     @Override
-    protected void releaseDefaultCommands() {
-    }
+    protected void releaseDefaultCommands() {}
 
     @Override
     protected void initializeDashboardCommands() {
@@ -108,12 +106,10 @@ public class RobotContainer extends LightningContainer {
     }
 
     @Override
-    protected void configureFaultCodes() {
-    }
+    protected void configureFaultCodes() {}
 
     @Override
-    protected void configureFaultMonitors() {
-    }
+    protected void configureFaultMonitors() {}
 
     @Override
     protected AutonomousCommandFactory getCommandFactory() {
