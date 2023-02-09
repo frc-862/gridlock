@@ -21,6 +21,8 @@ public class AprilTagTargetting extends SubsystemBase {
     private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
     private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
 
+    private int count = 0;
+
     private boolean pipelineSwitched = false;
 
     public AprilTagTargetting() {
@@ -28,6 +30,7 @@ public class AprilTagTargetting extends SubsystemBase {
 
         CommandScheduler.getInstance().registerSubsystem(this);
         initLogging();
+        switchPipelines();
     }
     
     @Override
@@ -47,8 +50,10 @@ public class AprilTagTargetting extends SubsystemBase {
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
 
-        }
+           
 
+        }
+        checkPeriodicCount();
     }
 
     public void initLogging() {
@@ -63,6 +68,16 @@ public class AprilTagTargetting extends SubsystemBase {
             DataLogger.addDataElement("Vision bot pose Red TY", () -> botPoseRed[1]);
             DataLogger.addDataElement("Vision bot pose Red RZ", () -> botPoseRed[5]);
 
+        }
+    }
+
+    public void checkPeriodicCount(){
+        count ++;
+        System.out.println("The function is running.");
+        if (count == 30){
+            switchPipelines();
+            System.out.println("fortnite");
+            count = 0;
         }
     }
 
@@ -140,12 +155,12 @@ public class AprilTagTargetting extends SubsystemBase {
 
     private void switchPipelines(){
         if (pipelineSwitched == false){
-            limelightTab.getEntry("pipeline").setNumber(1);
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
             pipelineSwitched = true;
 
         }
         else if (pipelineSwitched == true){
-            limelightTab.getEntry("pipeline").setNumber(0);
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
             pipelineSwitched = false;
 
         }
