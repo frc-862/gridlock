@@ -16,7 +16,10 @@ public class Lift extends SubsystemBase {
     private Wrist wrist;
     private Arm arm;
 
-    public LiftState state = LiftState.stowed; 
+    public LiftState lastState = LiftState.stowed;
+    public LiftState currentState = LiftState.stowed;
+    public LiftState nextState = LiftState.stowed;
+
     private Translation2d position = new Translation2d();
 
     public Lift(Elevator elevator, Wrist wrist, Arm arm) {
@@ -27,8 +30,8 @@ public class Lift extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void setState(LiftState state){
-        this.state = state;
+    public void setNextState(LiftState state){
+        this.nextState = state;
     }
 
     public Translation2d getElevatorXY() {
@@ -108,28 +111,67 @@ public class Lift extends SubsystemBase {
         return returnValue;
     }
 
+    public boolean isFinished() {
+        return getElevatorXY() == currentState.pose(); //TODO: add some kind of tolerance
+    }
+
     @Override
     public void periodic() {
-        switch (state) {
-            case groundCollect:
-                position = LiftState.groundCollect.pose();
+        if(lastState != nextState && lastState == LiftState.stowed || currentState == LiftState.elevatorDeployed) {
+            currentState = LiftState.elevatorDeployed;
+
+            if(isFinished()) {
+                currentState = nextState;
+            }
+
+        } else {
+            currentState = nextState;
+        }
+
+
+        switch (currentState) {
+            //collect states
+            case ground: 
+                position = LiftState.ground.pose();
             break;
 
             case doubleSubstationCollect:
                 position = LiftState.doubleSubstationCollect.pose();
             break;
 
-            case lowScore:
-                position = LiftState.lowScore.pose();
+            case reverseSubstationCollect:
+                position = LiftState.reverseSubstationCollect.pose();
             break;
 
-            case mediumScore:
-                position = LiftState.mediumScore.pose();
+
+            //scoring states
+            case mediumCubeScore:
+                position = LiftState.mediumCubeScore.pose();
             break;
 
-            case highScore:
-                position = LiftState.highScore.pose();
+            case highCubeScore:
+                position = LiftState.highCubeScore.pose();
             break;
+
+            case mediumConeScore:
+                position = LiftState.mediumConeScore.pose();
+            break;
+
+            case highConeScore:
+                position = LiftState.highConeScore.pose();
+            break;
+
+
+            //substates
+            case elevatorDeployed:
+                position = LiftState.elevatorDeployed.pose();
+            break;
+
+            case armDeployed:
+                position = LiftState.armDeployed.pose();
+            break;
+
+
 
             case stowed:
                 position = LiftState.stowed.pose();
