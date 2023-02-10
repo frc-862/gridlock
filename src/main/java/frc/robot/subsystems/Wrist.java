@@ -27,20 +27,17 @@ public class Wrist extends SubsystemBase {
             OFFSET = WristConstants.ENCODER_OFFSET_GRIDLOCK;
         }
 
-        motor = NeoConfig.createMotor(
-            CAN.WRIST_MOTOR,
-            WristConstants.MOTOR_INVERT,
-            WristConstants.CURRENT_LIMIT,
-            Constants.VOLTAGE_COMP_VOLTAGE,
-            WristConstants.MOTOR_TYPE,
-            WristConstants.NEUTRAL_MODE
-        );
-        wristController = NeoConfig.createPIDController(
-            motor.getPIDController(), new SparkMaxPIDGains(WristConstants.kP, WristConstants.kI, WristConstants.kD, WristConstants.kF));
+        motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, WristConstants.MOTOR_INVERT,
+                WristConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
+                WristConstants.MOTOR_TYPE, WristConstants.NEUTRAL_MODE);
+        wristController = NeoConfig.createPIDController(motor.getPIDController(),
+                new SparkMaxPIDGains(WristConstants.kP, WristConstants.kI, WristConstants.kD,
+                        WristConstants.kF));
         encoder = NeoConfig.createAbsoluteEncoder(motor, WristConstants.ENCODER_INVERT, OFFSET);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
+
     /**
      * 
      * @return Rotation2d of the wrist from encoder
@@ -51,24 +48,27 @@ public class Wrist extends SubsystemBase {
 
     /**
      * Takes a rotation2d and sets the wrist to that angle bounded by the min and max angles
+     * 
      * @param angle Rotation2d to set the wrist to
      */
-    public void setAngle(Rotation2d angle) { 
-        targetAngle = LightningMath.inputModulus(angle.getRotations(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
+    public void setAngle(Rotation2d angle) {
+        targetAngle = LightningMath.inputModulus(angle.getRotations(), WristConstants.MIN_ANGLE,
+                WristConstants.MAX_ANGLE);
         wristController.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
     public void setGains(double kP, double kI, double kD, double kF) {
-        wristController = NeoConfig.createPIDController(wristController, new SparkMaxPIDGains(kP, kI, kD, kF));
+        wristController = NeoConfig.createPIDController(wristController,
+                new SparkMaxPIDGains(kP, kI, kD, kF));
     }
 
-    public void setPower(double speed){
+    public void setPower(double speed) {
         motor.set(speed);
     }
-    
-    public void stop(){
+
+    public void stop() {
         motor.set(0d);
-    } 
+    }
 
     public boolean onTarget() {
         return Math.abs(encoder.getPosition() - targetAngle) < WristConstants.TOLERANCE;

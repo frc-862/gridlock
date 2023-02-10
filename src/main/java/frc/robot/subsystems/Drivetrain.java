@@ -421,8 +421,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Takes pose2d from vision and resets odometry to that pose. 
-     * Sets module positions to the current module positions.
+     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the
+     * current module positions.
      * 
      * @param gyroAngle the current yaw of the robot
      * @param pose the pose from Vision of the robot

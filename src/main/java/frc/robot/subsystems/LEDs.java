@@ -19,9 +19,10 @@ public class LEDs extends SubsystemBase {
     private static int swirlLength = (LedConstants.ledLength / 2);
 
     // Create LEDs
-    private CANdle leds = new CANdle(LedConstants.ledPort, "Canivore"); // 
+    private CANdle leds = new CANdle(LedConstants.ledPort, "Canivore"); //
     private CANdleConfiguration ledConfig = new CANdleConfiguration();
-    RainbowAnimation rainbowAnim = new RainbowAnimation(1, LedConstants.ledSpeed, LedConstants.ledLength);
+    RainbowAnimation rainbowAnim =
+            new RainbowAnimation(1, LedConstants.ledSpeed, LedConstants.ledLength);
     String currentState = "none";
 
     public LEDs() {
@@ -117,7 +118,8 @@ public class LEDs extends SubsystemBase {
     }
 
     public void autoAligned() {
-        RainbowAnimation rainbowAnim = new RainbowAnimation(0, LedConstants.ledSpeed, LedConstants.ledLength);
+        RainbowAnimation rainbowAnim =
+                new RainbowAnimation(0, LedConstants.ledSpeed, LedConstants.ledLength);
         leds.animate(rainbowAnim);
         currentState = "autoAligned";
     }

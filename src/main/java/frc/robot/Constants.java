@@ -128,13 +128,15 @@ public final class Constants {
         public static final double GEAR_RATIO = 16d / 1d;
         public static final double INCHES_PER_REV = 1d;
 
-        //min/max height in inches
-        //TODO: sanity check these values
+        // min/max height in inches
+        // TODO: sanity check these values
         public static final double MAX_HEIGHT = 0d;
         public static final double MIN_HEIGHT = 50d;
 
-        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
-        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
 
         public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in
                                                                   // degrees
