@@ -36,16 +36,16 @@ public class Lift extends SubsystemBase {
     }
 
     public Translation2d getElevatorXY() {
-        return new Translation2d(elevator.getHeight(), ElevatorConstants.ANGLE);
+        return new Translation2d(elevator.getExtension(), ElevatorConstants.ANGLE);
     }
 
-    public Translation2d getBarXY() {
+    public Translation2d getArmXY() {
         return new Translation2d(ArmConstants.LENGTH, new Rotation2d(arm.getAngle().getRadians()));
     }
 
     public Translation2d getOverallXY() {
         return ElevatorConstants.POSE_OFFSET.plus(getElevatorXY())
-                .plus(getBarXY().plus(WristConstants.POSE_OFFSET));
+                .plus(getArmXY().plus(WristConstants.POSE_OFFSET));
     }
 
     public Boolean isReachable(Translation2d pose) {
@@ -241,7 +241,7 @@ public class Lift extends SubsystemBase {
 
             double[] liftInfo = elevatorMath(position);
 
-            elevator.setHeight(liftInfo[1]);
+            elevator.setDistance(liftInfo[1]);
             arm.setAngle(new Rotation2d(liftInfo[0]));
             wrist.setAngle(new Rotation2d(liftInfo[0] + 90)); // math
         }

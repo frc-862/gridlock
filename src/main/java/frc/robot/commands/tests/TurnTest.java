@@ -33,7 +33,7 @@ public class TurnTest extends CommandBase {
         // Checks if the module made it to the angle with in 3 degrees and has gone around less than
         // 2 times
         if ((Math.abs(getBearingDifference()) < SystemTestConstants.ANGLE_DEAD_ZONE)
-                  && (revolutions < SystemTestConstants.MAX_ROTATIONS_PER_DIRECTION)) {
+                && (revolutions < SystemTestConstants.MAX_ROTATIONS_PER_DIRECTION)) {
             // If true clockwise, if false counterclockwise
             if (direction) {
                 driveAngle += SystemTestConstants.DEGREES_INTERVAL_INCREASE;
