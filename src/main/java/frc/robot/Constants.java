@@ -167,6 +167,7 @@ public final class Constants {
 
         public static final double ELEVATOR_ANGLE = 0.959931;
         public static final double MAX_X = 100;
+        public static final double MIN_X = 0;
 
         // Min and Max arm angles in rotations
         public static final double MAX_ANGLE = 90d;
@@ -177,6 +178,10 @@ public final class Constants {
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
+
+        // robot lengths
+        // TODO: get accurate measurements
+        public static final double ROBOT_BODY_LENGTH = 27.7;
 
         // TODO: replace with actual values
         public static final double GEAR_RATIO = 1d;
