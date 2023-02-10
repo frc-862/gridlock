@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.thunder.swervelib.SdsModuleConfigurations;
+import frc.thunder.swervelib.Mk3SwerveModuleHelper.GearRatio;
 import java.awt.Polygon;
 import java.nio.file.*;
 
@@ -124,14 +125,16 @@ public final class Constants {
 
         public static final double TOLERANCE = 0d;
 
+        // TOOD: replace with actual values 
         public static final int TICKS = 42;
         public static final double GEAR_RATIO = 16d / 1d;
         public static final double INCHES_PER_REV = 1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * INCHES_PER_REV;
 
         // min/max height in inches
         // TODO: sanity check these values
-        public static final double MAX_HEIGHT = 0d;
-        public static final double MIN_HEIGHT = 50d;
+        public static final double MAX_HEIGHT = 50d;
+        public static final double MIN_HEIGHT = 0d;
 
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
                 SparkMaxLimitSwitch.Type.kNormallyOpen;
@@ -141,10 +144,8 @@ public final class Constants {
         public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in
                                                                   // degrees
 
-        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0); // horiz/vert
-                                                                                 // offset from
-                                                                                 // ground (See
-                                                                                 // below)
+        // horiz/vert offset from ground (See below)
+        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
         // X = distance from arm pivot point to front of bot at bottom limit (negative)
         // Y = height of arm pivot point from ground at bottom limit
     }
@@ -176,6 +177,11 @@ public final class Constants {
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
+
+        // TODO: replace with actual values
+        public static final double GEAR_RATIO = 1d;
+        public static final double DEGREES_PER_REV = 1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
     }
 
     public static final class WristConstants {
@@ -204,6 +210,11 @@ public final class Constants {
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
+
+        // TODO: replace with actual values
+        public static final double GEAR_RATIO = 1d;
+        public static final double DEGREES_PER_REV = 1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
     }
 
     public static final class RobotMap {

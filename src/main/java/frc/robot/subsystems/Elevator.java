@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -10,7 +11,6 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.math.LightningMath;
 
 public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
@@ -26,6 +26,7 @@ public class Elevator extends SubsystemBase {
                 new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI,
                         ElevatorConstants.kD, ElevatorConstants.kF));
         encoder = NeoConfig.createBuiltinEncoder(motor, ElevatorConstants.ENCODER_INVERT);
+        encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -36,8 +37,7 @@ public class Elevator extends SubsystemBase {
      * @return the extension distance of the elevator in inches
      */
     public double getExtension() {
-        return encoder.getPosition() / ElevatorConstants.TICKS * ElevatorConstants.INCHES_PER_REV
-                * ElevatorConstants.GEAR_RATIO;
+        return encoder.getPosition();
     }
 
     /**
@@ -46,10 +46,11 @@ public class Elevator extends SubsystemBase {
      * @param target the target distance in inches
      */
     public void setDistance(double target) {
-        targetHeight = LightningMath.inputModulus(target, ElevatorConstants.MIN_HEIGHT,
+        // TODO: looks at this, since the elevator is a relative encoder we might not be able to re-zero at the top if its outside of the range
+        targetHeight = MathUtil.clamp(target, ElevatorConstants.MIN_HEIGHT,
                 ElevatorConstants.MAX_HEIGHT);
         elevatorController.setReference(
-                (targetHeight / ElevatorConstants.INCHES_PER_REV / ElevatorConstants.GEAR_RATIO),
+                (targetHeight),
                 CANSparkMax.ControlType.kPosition);
     }
 
