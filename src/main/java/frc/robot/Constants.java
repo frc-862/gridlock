@@ -169,8 +169,8 @@ public final class Constants {
         public static final double MAX_X = 100;
 
         // Min and Max arm angles in rotations
-        public static final double MAX_ANGLE = 0.5d;
-        public static final double MIN_ANGLE = -0.5d;
+        public static final double MAX_ANGLE = 90d;
+        public static final double MIN_ANGLE = -90d;
 
         public static final double LENGTH = 0; // arm length in inches
 
