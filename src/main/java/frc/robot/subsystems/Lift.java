@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -93,10 +94,13 @@ public class Lift extends SubsystemBase {
                 xPose = possibleXPose1;
                 yPose = possibleYPose1;
             } else {
-                double dist1 = Math.sqrt(Math.pow(desiredXPose - possibleXPose1, 2)
-                        + Math.pow(desiredYPose - possibleYPose1, 2));
-                double dist2 = Math.sqrt(Math.pow(desiredXPose - possibleXPose2, 2)
-                        + Math.pow(desiredYPose - possibleYPose2, 2));
+                double elevatorHeight = elevator.getHeight();
+                double elevatorX = elevatorHeight * Math.cos(ArmConstants.ELEVATOR_ANGLE);
+                double elevatorY = elevatorHeight * Math.sin(ArmConstants.ELEVATOR_ANGLE);
+                double dist1 = Math.sqrt(Math.pow(elevatorX - possibleXPose1, 2)
+                        + Math.pow(elevatorY - possibleYPose1, 2));
+                double dist2 = Math.sqrt(Math.pow(elevatorX - possibleXPose2, 2)
+                        + Math.pow(elevatorY - possibleYPose2, 2));
 
                 if (dist1 < dist2) {
                     xPose = possibleXPose1;
@@ -120,10 +124,13 @@ public class Lift extends SubsystemBase {
                 xPose = possibleXPose1;
                 yPose = possibleYPose1;
             } else {
-                double dist1 = Math.sqrt(Math.pow(desiredXPose - possibleXPose1, 2)
-                        + Math.pow(desiredYPose - possibleYPose1, 2));
-                double dist2 = Math.sqrt(Math.pow(desiredXPose - possibleXPose2, 2)
-                        + Math.pow(desiredYPose - possibleYPose2, 2));
+                double elevatorHeight = elevator.getHeight();
+                double elevatorX = elevatorHeight * Math.cos(ArmConstants.ELEVATOR_ANGLE);
+                double elevatorY = elevatorHeight * Math.sin(ArmConstants.ELEVATOR_ANGLE);
+                double dist1 = Math.sqrt(Math.pow(elevatorX - possibleXPose1, 2)
+                        + Math.pow(elevatorY - possibleYPose1, 2));
+                double dist2 = Math.sqrt(Math.pow(elevatorX - possibleXPose2, 2)
+                        + Math.pow(elevatorY - possibleYPose2, 2));
 
                 if (dist1 < dist2) {
                     xPose = possibleXPose1;
@@ -151,9 +158,9 @@ public class Lift extends SubsystemBase {
             angle = 90 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
             angle -= Math.toDegrees(Math.atan((desiredXPose - xPose) / (desiredYPose - yPose)));
         }
-        double distance = Math.sqrt(Math.pow(xPose, 2) + Math.pow(yPose, 2));
+        double elevatorLength = Math.sqrt(Math.pow(xPose, 2) + Math.pow(yPose, 2));
 
-        double[] returnValue = {angle, distance};
+        double[] returnValue = {MathUtil.clamp(angle,ArmConstants.MIN_ANGLE,ArmConstants.MAX_ANGLE), elevatorLength};
         return returnValue;
     }
 
