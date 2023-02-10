@@ -12,6 +12,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
+import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.math.LightningMath;
 
 public class Wrist extends SubsystemBase {
@@ -37,11 +38,7 @@ public class Wrist extends SubsystemBase {
             WristConstants.NEUTRAL_MODE
         );
         wristController = NeoConfig.createPIDController(
-            motor.getPIDController(),
-            WristConstants.kP,
-            WristConstants.kI,
-            WristConstants.kD
-        );
+            motor.getPIDController(), new SparkMaxPIDGains(WristConstants.kP, WristConstants.kI, WristConstants.kD, WristConstants.kF));
         encoder = NeoConfig.createAbsoluteEncoder(motor, WristConstants.ENCODER_INVERT, OFFSET);
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -56,8 +53,8 @@ public class Wrist extends SubsystemBase {
         wristController.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
-    public void setGains(double kP, double kI, double kD) {
-        wristController = NeoConfig.createPIDController(wristController, kP, kI, kD);
+    public void setGains(double kP, double kI, double kD, double kF) {
+        wristController = NeoConfig.createPIDController(wristController, new SparkMaxPIDGains(kP, kI, kD, kF));
     }
 
     public void setPower(double speed){

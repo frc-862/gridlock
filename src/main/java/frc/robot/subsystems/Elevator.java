@@ -12,6 +12,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
+import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.math.LightningMath;
 
 public class Elevator extends SubsystemBase {
@@ -30,11 +31,7 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.NEUTRAL_MODE
         );
         elevatorController = NeoConfig.createPIDController(
-            motor.getPIDController(),
-            ElevatorConstants.kP,
-            ElevatorConstants.kI,
-            ElevatorConstants.kD
-        );
+            motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF));
         encoder = NeoConfig.createBuiltinEncoder(motor, ElevatorConstants.ENCODER_INVERT);
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -49,8 +46,8 @@ public class Elevator extends SubsystemBase {
         elevatorController.setReference(targetHeight, CANSparkMax.ControlType.kPosition);
     }
 
-    public void setGains(double kP, double kI, double kD) {
-        elevatorController = NeoConfig.createPIDController(elevatorController, kP, kI, kD);
+    public void setGains(double kP, double kI, double kD, double kF) {
+        elevatorController = NeoConfig.createPIDController(elevatorController, new SparkMaxPIDGains(kP, kI, kD, kF));
     }
 
     public void setPower(double speed){
