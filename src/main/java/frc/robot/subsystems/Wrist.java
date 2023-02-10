@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,7 +54,7 @@ public class Wrist extends SubsystemBase {
      * @param angle Rotation2d to set the wrist to
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle = LightningMath.inputModulus(angle.getDegrees(), WristConstants.MIN_ANGLE,
+        targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE,
                 WristConstants.MAX_ANGLE);
         wristController.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }

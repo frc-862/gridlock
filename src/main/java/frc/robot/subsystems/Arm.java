@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -47,7 +48,7 @@ public class Arm extends SubsystemBase {
      * 
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle = LightningMath.inputModulus(angle.getDegrees(), ArmConstants.MIN_ANGLE,
+        targetAngle = MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE,
                 ArmConstants.MAX_ANGLE);
         controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
