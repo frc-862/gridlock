@@ -180,8 +180,9 @@ public final class Constants {
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
 
         // robot lengths
-        public static final double ROBOT_BODY_LENGTH = 36;
-        
+        // TODO: get accurate measurements
+        public static final double ROBOT_BODY_LENGTH = 27.7;
+
         // TODO: replace with actual values
         public static final double GEAR_RATIO = 1d;
         public static final double DEGREES_PER_REV = 1d;
