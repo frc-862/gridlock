@@ -4,8 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -43,11 +41,18 @@ public class Wrist extends SubsystemBase {
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
-    
+    /**
+     * 
+     * @return Rotation2d of the wrist from encoder
+     */
     public Rotation2d getAngle() {
         return Rotation2d.fromRotations(encoder.getPosition());
     }
 
+    /**
+     * Takes a rotation2d and sets the wrist to that angle bounded by the min and max angles
+     * @param angle Rotation2d to set the wrist to
+     */
     public void setAngle(Rotation2d angle) { 
         targetAngle = LightningMath.inputModulus(angle.getRotations(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
         wristController.setReference(targetAngle, CANSparkMax.ControlType.kPosition);

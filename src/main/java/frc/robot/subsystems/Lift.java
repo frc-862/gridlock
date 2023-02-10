@@ -30,20 +30,21 @@ public class Lift extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void setNextState(LiftState state){
+    public void setNextState(LiftState state) {
         this.nextState = state;
     }
 
     public Translation2d getElevatorXY() {
-        return new Translation2d(elevator.getHeight(), ElevatorConstants.ANGLE);
+        return new Translation2d(elevator.getExtension(), ElevatorConstants.ANGLE);
     }
 
-    public Translation2d getBarXY() {
+    public Translation2d getArmXY() {
         return new Translation2d(ArmConstants.LENGTH, new Rotation2d(arm.getAngle().getRadians()));
     }
 
     public Translation2d getOverallXY() {
-        return ElevatorConstants.POSE_OFFSET.plus(getElevatorXY()).plus(getBarXY().plus(WristConstants.POSE_OFFSET));
+        return ElevatorConstants.POSE_OFFSET.plus(getElevatorXY())
+                .plus(getArmXY().plus(WristConstants.POSE_OFFSET));
     }
 
     public Boolean isReachable(Translation2d pose) {
@@ -90,7 +91,7 @@ public class Lift extends SubsystemBase {
             yPose = Math.min(possibleYPose1, possibleYPose2);
         }
 
-        // Find the angle of the arm pivot 
+        // Find the angle of the arm pivot
         angle = 180 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
         if (desiredYPose == yPose) {
 
@@ -112,15 +113,16 @@ public class Lift extends SubsystemBase {
     }
 
     public boolean isFinished() {
-        return getElevatorXY() == currentState.pose(); //TODO: add some kind of tolerance
+        return getElevatorXY() == currentState.pose(); // TODO: add some kind of tolerance
     }
 
     @Override
     public void periodic() {
-        if(lastState != nextState && lastState == LiftState.stowed || currentState == LiftState.elevatorDeployed) {
+        if (lastState != nextState && lastState == LiftState.stowed
+                || currentState == LiftState.elevatorDeployed) {
             currentState = LiftState.elevatorDeployed;
 
-            if(isFinished()) {
+            if (isFinished()) {
                 currentState = nextState;
             }
 
@@ -130,59 +132,59 @@ public class Lift extends SubsystemBase {
 
 
         switch (currentState) {
-            //collect states
-            case ground: 
+            // collect states
+            case ground:
                 position = LiftState.ground.pose();
-            break;
+                break;
 
             case doubleSubstationCollect:
                 position = LiftState.doubleSubstationCollect.pose();
-            break;
+                break;
 
             case reverseSubstationCollect:
                 position = LiftState.reverseSubstationCollect.pose();
-            break;
+                break;
 
 
-            //scoring states
+            // scoring states
             case mediumCubeScore:
                 position = LiftState.mediumCubeScore.pose();
-            break;
+                break;
 
             case highCubeScore:
                 position = LiftState.highCubeScore.pose();
-            break;
+                break;
 
             case mediumConeScore:
                 position = LiftState.mediumConeScore.pose();
-            break;
+                break;
 
             case highConeScore:
                 position = LiftState.highConeScore.pose();
-            break;
+                break;
 
 
-            //substates
+            // substates
             case elevatorDeployed:
                 position = LiftState.elevatorDeployed.pose();
-            break;
+                break;
 
             case armDeployed:
                 position = LiftState.armDeployed.pose();
-            break;
+                break;
 
 
 
             case stowed:
                 position = LiftState.stowed.pose();
-            break;
+                break;
         }
 
         if (isReachable(position)) {
 
             double[] liftInfo = elevatorMath(position);
 
-            elevator.setHeight(liftInfo[1]);
+            elevator.setDistance(liftInfo[1]);
             arm.setAngle(new Rotation2d(liftInfo[0]));
             wrist.setAngle(new Rotation2d(liftInfo[0] + 90)); // math
         }

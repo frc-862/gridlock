@@ -7,13 +7,13 @@ import frc.robot.subsystems.Lift;
 public class GroundCollect extends InstantCommand {
     private Lift lift;
 
-  public GroundCollect(Lift lift) {
-    this.lift = lift;
-    addRequirements(lift);
-  }
+    public GroundCollect(Lift lift) {
+        this.lift = lift;
+        addRequirements(lift);
+    }
 
-  @Override
-  public void initialize() {
-    lift.setNextState(LiftState.ground);
-  }
+    @Override
+    public void initialize() {
+        lift.setNextState(LiftState.ground);
+    }
 }

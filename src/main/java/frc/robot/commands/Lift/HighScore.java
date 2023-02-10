@@ -11,13 +11,13 @@ public class HighScore extends InstantCommand {
     public HighScore(Lift lift, boolean isCone) {
         this.lift = lift;
         this.isCone = isCone;
-    
+
         addRequirements(lift);
     }
 
     @Override
     public void initialize() {
-        if(isCone) {
+        if (isCone) {
             lift.setNextState(LiftState.highConeScore);
         } else {
             lift.setNextState(LiftState.highCubeScore);
