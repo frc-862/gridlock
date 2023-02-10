@@ -57,9 +57,12 @@ public class RobotContainer extends LightningContainer {
     // Creates the autonomous commands
     @Override
     protected void configureAutonomousCommands() {
-        autoFactory.makeTrajectory("Tune", new HashMap<>(),
+        autoFactory.makeTrajectory("Path8StartC", new HashMap<>(),
                 new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
+        autoFactory.makeTrajectory("Tune", new HashMap<>(),
+            new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
+        DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
     }
 
     @Override
