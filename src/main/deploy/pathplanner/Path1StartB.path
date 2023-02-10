@@ -7,7 +7,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.849999999999999,
+        "x": 2.0621871710868684,
         "y": 2.75
       },
       "holonomicAngle": 180.0,
@@ -26,11 +26,11 @@
     },
     {
       "anchorPoint": {
-        "x": 2.55,
+        "x": 2.5,
         "y": 2.75
       },
       "prevControl": {
-        "x": 1.5499999999999998,
+        "x": 2.2653739915806943,
         "y": 2.75
       },
       "nextControl": null,
@@ -40,8 +40,10 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "Auto-Balance-Charge-Station"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
