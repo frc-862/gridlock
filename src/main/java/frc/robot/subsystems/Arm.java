@@ -47,7 +47,7 @@ public class Arm extends SubsystemBase {
      * 
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle = LightningMath.inputModulus(angle.getRotations(), ArmConstants.MIN_ANGLE,
+        targetAngle = LightningMath.inputModulus(angle.getDegrees(), ArmConstants.MIN_ANGLE,
                 ArmConstants.MAX_ANGLE);
         controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }

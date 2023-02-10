@@ -53,7 +53,7 @@ public class Wrist extends SubsystemBase {
      * @param angle Rotation2d to set the wrist to
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle = LightningMath.inputModulus(angle.getRotations(), WristConstants.MIN_ANGLE,
+        targetAngle = LightningMath.inputModulus(angle.getDegrees(), WristConstants.MIN_ANGLE,
                 WristConstants.MAX_ANGLE);
         wristController.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
