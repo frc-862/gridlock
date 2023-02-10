@@ -11,13 +11,13 @@ public class MidScore extends InstantCommand {
     public MidScore(Lift lift, boolean isCone) {
         this.lift = lift;
         this.isCone = isCone;
-    
+
         addRequirements(lift);
     }
 
     @Override
     public void initialize() {
-        if(isCone) {
+        if (isCone) {
             lift.setNextState(LiftState.mediumConeScore);
         } else {
             lift.setNextState(LiftState.mediumConeScore);

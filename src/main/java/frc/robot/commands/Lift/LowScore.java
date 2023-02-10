@@ -7,13 +7,13 @@ import frc.robot.subsystems.Lift;
 public class LowScore extends InstantCommand {
     private Lift lift;
 
-  public LowScore(Lift lift) {
-    this.lift = lift;
-    addRequirements(lift);
-  }
+    public LowScore(Lift lift) {
+        this.lift = lift;
+        addRequirements(lift);
+    }
 
-  @Override
-  public void initialize() {
-    lift.setNextState(LiftState.ground);
-  }
+    @Override
+    public void initialize() {
+        lift.setNextState(LiftState.ground);
+    }
 }

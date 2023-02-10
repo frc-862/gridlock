@@ -8,8 +8,9 @@ import frc.robot.subsystems.Lift;
 public class Stow extends SequentialCommandGroup {
     public Stow(Lift lift) {
         addCommands(
-            new RunCommand(() -> lift.setNextState(LiftState.elevatorDeployed), lift).until(lift::isFinished),
-            new RunCommand(() -> lift.setNextState(LiftState.stowed), lift).until(lift::isFinished)
-        );
+                new RunCommand(() -> lift.setNextState(LiftState.elevatorDeployed), lift)
+                        .until(lift::isFinished),
+                new RunCommand(() -> lift.setNextState(LiftState.stowed), lift)
+                        .until(lift::isFinished));
     }
 }
