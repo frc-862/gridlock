@@ -96,7 +96,7 @@ public class Lift extends SubsystemBase {
                 yPose = possibleYPose1;
             } else {
                 // Find the distance between the desired pose and the possible poses to move to closer one
-                double elevatorHeight = elevator.getHeight();
+                double elevatorHeight = elevator.getExtension();
                 double elevatorX = elevatorHeight * Math.cos(ArmConstants.ELEVATOR_ANGLE);
                 double elevatorY = elevatorHeight * Math.sin(ArmConstants.ELEVATOR_ANGLE);
                 double dist1 = Math.sqrt(Math.pow(elevatorX - possibleXPose1, 2)
@@ -125,7 +125,7 @@ public class Lift extends SubsystemBase {
                 yPose = possibleYPose1;
             } else {
                 // Find the distance between the desired pose and the possible poses to move to closer one
-                double elevatorHeight = elevator.getHeight();
+                double elevatorHeight = elevator.getExtension();
                 double elevatorX = elevatorHeight * Math.cos(ArmConstants.ELEVATOR_ANGLE);
                 double elevatorY = elevatorHeight * Math.sin(ArmConstants.ELEVATOR_ANGLE);
                 double dist1 = Math.sqrt(Math.pow(elevatorX - possibleXPose1, 2)
