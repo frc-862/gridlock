@@ -80,9 +80,10 @@ public class Lift extends SubsystemBase {
         double possibleYPose1 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose1;
         double possibleYPose2 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose2;
 
-        // Find the x and y poses that are within the bounds of the robot or find the closer one
+        // Find the x and y poses that are within the bounds of the robot or find the closer one, or if the robot is in the way, find the one that doesn't intersect the robot
 
         if (desiredYPose < 0) {
+            // Find the slopes of the lines between the desired pose and the possible poses then get intersections
             double slope1 = (possibleYPose1 - desiredYPose) / (possibleXPose1 - desiredXPose);
             double slope2 = (possibleYPose2 - desiredYPose) / (possibleXPose2 - desiredXPose);
             double robotIntersectionX1 = -(desiredYPose / slope1) + desiredXPose;
@@ -94,6 +95,7 @@ public class Lift extends SubsystemBase {
                 xPose = possibleXPose1;
                 yPose = possibleYPose1;
             } else {
+                // Find the distance between the desired pose and the possible poses to move to closer one
                 double elevatorHeight = elevator.getHeight();
                 double elevatorX = elevatorHeight * Math.cos(ArmConstants.ELEVATOR_ANGLE);
                 double elevatorY = elevatorHeight * Math.sin(ArmConstants.ELEVATOR_ANGLE);
@@ -114,16 +116,15 @@ public class Lift extends SubsystemBase {
             }
 
         } else {
-
-            if (possibleXPose1 < ArmConstants.MIN_X || possibleXPose1 > ArmConstants.MAX_X
-                    || possibleYPose1 < ArmConstants.MIN_X) {
+            // If there is no chance of intersecting with the robot, make sure all the intersections are within the elevator bounds
+            if (possibleXPose1 < ArmConstants.MIN_X || possibleXPose1 > ArmConstants.MAX_X) {
                 xPose = possibleXPose2;
                 yPose = possibleYPose2;
-            } else if (possibleXPose2 < ArmConstants.MIN_X || possibleXPose2 > ArmConstants.MAX_X
-                    || possibleYPose2 < ArmConstants.MIN_X) {
+            } else if (possibleXPose2 < ArmConstants.MIN_X || possibleXPose2 > ArmConstants.MAX_X) {
                 xPose = possibleXPose1;
                 yPose = possibleYPose1;
             } else {
+                // Find the distance between the desired pose and the possible poses to move to closer one
                 double elevatorHeight = elevator.getHeight();
                 double elevatorX = elevatorHeight * Math.cos(ArmConstants.ELEVATOR_ANGLE);
                 double elevatorY = elevatorHeight * Math.sin(ArmConstants.ELEVATOR_ANGLE);
@@ -143,6 +144,8 @@ public class Lift extends SubsystemBase {
 
             }
         }
+
+
 
         // Find the angle of the arm pivot
         if (desiredYPose == yPose) {
@@ -158,6 +161,8 @@ public class Lift extends SubsystemBase {
             angle = 90 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
             angle -= Math.toDegrees(Math.atan((desiredXPose - xPose) / (desiredYPose - yPose)));
         }
+
+        // Find the length that the elevator needs to be extended at from the coordinates
         double elevatorLength = Math.sqrt(Math.pow(xPose, 2) + Math.pow(yPose, 2));
 
         double[] returnValue = {MathUtil.clamp(angle,ArmConstants.MIN_ANGLE,ArmConstants.MAX_ANGLE), elevatorLength};
