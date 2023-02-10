@@ -13,12 +13,20 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class AprilTagTargetting extends SubsystemBase {
 
+    //Change "limelight-alice" to whatever the name of the limelight you are currently using is
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
     private double horizAngleToTarget;
     private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
     private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
     private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+
+    private double horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
+    private double verticalOffset = limelightTab.getEntry("ty").getDouble(0);
+    private double targetArea = limelightTab.getEntry("ta").getDouble(0);
+    private double targetVisible = limelightTab.getEntry("ta").getDouble(0);
+
+    private int currentPipeline;
 
     public AprilTagTargetting() {
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -27,22 +35,36 @@ public class AprilTagTargetting extends SubsystemBase {
     
     @Override
     public void periodic() {
-        botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
-        botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-        botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+        if(currentPipeline == 0){
+            botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
+            botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+            botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
 
-        if (botPose.length != 0) {
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TY", botPose[1]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose RZ", botPose[5]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TX", botPoseBlue[0]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TY", botPoseBlue[1]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue RZ", botPoseBlue[5]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TX", botPoseRed[0]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
+            if (botPose.length != 0) {
+                LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
+                LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TY", botPose[1]);
+                LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose RZ", botPose[5]);
+                LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TX", botPoseBlue[0]);
+                LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TY", botPoseBlue[1]);
+                LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue RZ", botPoseBlue[5]);
+                LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TX", botPoseRed[0]);
+                LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
+                LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
 
+            }
         }
+        if(currentPipeline == 1){
+            horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
+            verticalOffset = limelightTab.getEntry("ty").getDouble(0);
+            targetArea = limelightTab.getEntry("ta").getDouble(0);
+            targetVisible = limelightTab.getEntry("tv").getDouble(0);
+            if(targetVisible == 1){
+                LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
+                LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
+                LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetArea);
+            }
+        }
+        
 
     }
 
@@ -84,6 +106,7 @@ public class AprilTagTargetting extends SubsystemBase {
      */
     public void setPipelineNum(int pipelineNum) {
         limelightTab.getEntry("pipeline").setNumber(pipelineNum);
+        currentPipeline = pipelineNum;
     }
 
     /**
@@ -131,5 +154,4 @@ public class AprilTagTargetting extends SubsystemBase {
         // Should put consideration into how accurate we want to be later on.
         return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
     }
-
 }
