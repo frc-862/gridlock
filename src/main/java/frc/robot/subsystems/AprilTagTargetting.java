@@ -18,9 +18,12 @@ public class AprilTagTargetting extends SubsystemBase {
 
     private double horizAngleToTarget;
     private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
-    private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-    private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
-
+    private double[] botPoseBlue =
+            limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+    private double[] botPoseRed =
+            limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+    private double hasVision = 
+            limelightTab.getEntry("tv").getDouble(0);
     private int pipelineNum = 0;
 
     public AprilTagTargetting() {
@@ -35,6 +38,7 @@ public class AprilTagTargetting extends SubsystemBase {
         botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
         botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
         botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+        hasVision = limelightTab.getEntry("tv").getDouble(0);
 
 
         if (botPose.length != 0) {
@@ -71,9 +75,13 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     public Pose2d getRobotPose() {
-
-        return new Pose2d(new Translation2d(botPoseBlue[0], botPoseBlue[1]), Rotation2d.fromDegrees(botPoseBlue[5]));
-
+        if (hasVision == 1){
+            return new Pose2d(new Translation2d(botPoseBlue[0], botPoseBlue[1]),
+                Rotation2d.fromDegrees(botPoseBlue[5]));
+        }
+        else {
+            return null;
+        }
     }
 
     /**

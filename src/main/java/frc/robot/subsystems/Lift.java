@@ -80,18 +80,21 @@ public class Lift extends SubsystemBase {
         double possibleYPose1 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose1;
         double possibleYPose2 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose2;
 
-        // Find the x and y poses that are within the bounds of the robot or find the closer one, or if the robot is in the way, find the one that doesn't intersect the robot
+        // Find the extension length at the possible poses
+        double possibleExtension1 = Math.sqrt(Math.pow(possibleXPose1, 2) + Math.pow(possibleYPose1,2));
+        double possibleExtension2 = Math.sqrt(Math.pow(possibleXPose2, 2) + Math.pow(possibleYPose2,2));
 
+        // Find the x and y poses that are within the bounds of the robot or find the closer one, or if the robot is in the way, find the one that doesn't intersect the robot
         if (desiredYPose < 0) {
             // Find the slopes of the lines between the desired pose and the possible poses then get intersections
             double slope1 = (possibleYPose1 - desiredYPose) / (possibleXPose1 - desiredXPose);
             double slope2 = (possibleYPose2 - desiredYPose) / (possibleXPose2 - desiredXPose);
             double robotIntersectionX1 = -(desiredYPose / slope1) + desiredXPose;
             double robotIntersectionX2 = -(desiredYPose / slope2) + desiredXPose;
-            if (robotIntersectionX1 < ArmConstants.ROBOT_BODY_LENGTH) {
+            if (robotIntersectionX1 < ArmConstants.ROBOT_BODY_LENGTH || possibleExtension1 < ArmConstants.MIN_EXTENSION || possibleExtension1 > ArmConstants.MAX_EXTENSION) {
                 xPose = possibleXPose2;
                 yPose = possibleYPose2;
-            } else if (robotIntersectionX2 < ArmConstants.ROBOT_BODY_LENGTH) {
+            } else if (robotIntersectionX2 < ArmConstants.ROBOT_BODY_LENGTH || possibleExtension2 < ArmConstants.MIN_EXTENSION || possibleExtension2 > ArmConstants.MAX_EXTENSION) {
                 xPose = possibleXPose1;
                 yPose = possibleYPose1;
             } else {
@@ -117,10 +120,10 @@ public class Lift extends SubsystemBase {
 
         } else {
             // If there is no chance of intersecting with the robot, make sure all the intersections are within the elevator bounds
-            if (possibleXPose1 < ArmConstants.MIN_X || possibleXPose1 > ArmConstants.MAX_X) {
+            if (possibleExtension1 < ArmConstants.MIN_EXTENSION || possibleExtension1 > ArmConstants.MAX_EXTENSION) {
                 xPose = possibleXPose2;
                 yPose = possibleYPose2;
-            } else if (possibleXPose2 < ArmConstants.MIN_X || possibleXPose2 > ArmConstants.MAX_X) {
+            } else if (possibleExtension2 < ArmConstants.MIN_EXTENSION || possibleExtension2 > ArmConstants.MAX_EXTENSION) {
                 xPose = possibleXPose1;
                 yPose = possibleYPose1;
             } else {
