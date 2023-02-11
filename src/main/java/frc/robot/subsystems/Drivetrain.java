@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -84,9 +83,10 @@ public class Drivetrain extends SubsystemBase {
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
+    private AprilTagTargetting vision = new AprilTagTargetting();
 
-    public Drivetrain() {
-
+    public Drivetrain(AprilTagTargetting vision) {
+        this.vision = vision;
         // TODO: make this better
         if (Files.exists(blackoutFile)) {
             FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;
@@ -165,6 +165,7 @@ public class Drivetrain extends SubsystemBase {
         // Update our module positions, odometery
         updateModulePositions();
         updateOdomtery();
+        resetOdymetyFVision(getHeading2d(), vision.getRobotPose());
         // field2d.setRobotPose(pose);
         SmartDashboard.putString("pose", pose.getTranslation().toString());
     }
@@ -417,6 +418,17 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(getHeading2d(), modulePositions, pose);
+    }
+
+    /**
+     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the
+     * current module positions.
+     * 
+     * @param gyroAngle the current yaw of the robot
+     * @param pose the pose from Vision of the robot
+     */
+    public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
+        odometry.resetPosition(gyroAngle, modulePositions, pose);
     }
 
     /**

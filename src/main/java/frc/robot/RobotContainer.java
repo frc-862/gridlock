@@ -3,19 +3,14 @@ package frc.robot;
 import frc.robot.subsystems.AprilTagTargetting;
 import frc.robot.subsystems.Arm;
 import java.util.HashMap;
-
 import com.pathplanner.lib.PathConstraints;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.subsystems.LEDController;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.LEDs;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.AutoBalance;
@@ -33,19 +28,20 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private AprilTagTargetting targetting = new AprilTagTargetting();
-    // Creates new LED controller
-    private static final LEDController led = new LEDController();
+    private static final AprilTagTargetting targetting = new AprilTagTargetting();
 
     private static final Drivetrain drivetrain = new Drivetrain();
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
      
+    // Creates new LED controller
+    private static final LEDs underglow = new LEDs();
+
+    private static final Drivetrain drivetrain = new Drivetrain(targetting);
 
     // Creates our driver controller and deadzones
     private static final XboxController driver = new XboxController(0);
-    private static final XboxController liftTest = new XboxController(1);
     private static final JoystickFilter joystickFilter =
             new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
                     XboxControllerConstants.MAX_POWER, Mode.CUBED);
@@ -70,9 +66,12 @@ public class RobotContainer extends LightningContainer {
     // Creates the autonomous commands
     @Override
     protected void configureAutonomousCommands() {
-        autoFactory.makeTrajectory("Tune", new HashMap<>(),
+        autoFactory.makeTrajectory("Path8StartC", new HashMap<>(),
                 new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
+        autoFactory.makeTrajectory("Tune", new HashMap<>(),
+            new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
+        DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
     }
 
     @Override

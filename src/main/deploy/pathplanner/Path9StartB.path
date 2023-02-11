@@ -51,25 +51,27 @@
     },
     {
       "anchorPoint": {
-        "x": 7.229629865821786,
-        "y": 3.4535083050194633
+        "x": 6.54350238800335,
+        "y": 2.893170864801073
       },
       "prevControl": {
-        "x": 7.206758949891462,
-        "y": 3.0761381922196014
+        "x": 6.326228686694178,
+        "y": 2.6644617055282613
       },
       "nextControl": {
-        "x": 7.243534647012524,
-        "y": 3.6829371946359526
+        "x": 6.326228686694178,
+        "y": 2.6644617055282613
       },
-      "holonomicAngle": 111.80140948635233,
-      "isReversal": false,
+      "holonomicAngle": 45.0,
+      "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "Collect-Game-Piece"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -124,13 +126,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 1.5,
-      "names": [
-        "event",
-        "Collect-Game-Piece"
-      ]
-    }
-  ]
+  "markers": []
 }
