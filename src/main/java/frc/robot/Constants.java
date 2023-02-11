@@ -248,17 +248,17 @@ public final class Constants {
             public static final int BACK_LEFT_CANCODER = 34;
 
             // COLLECTOR
-            public static final int LEFT_COLLECTOR_MOTOR = 0;
-            public static final int RIGHT_COLLECTOR_MOTOR = 0;
+            public static final int LEFT_COLLECTOR_MOTOR = 12;
+            public static final int RIGHT_COLLECTOR_MOTOR = 13;
 
             // ARM
-            public static final int ARM_MOTOR = 0;
+            public static final int ARM_MOTOR = 10;
 
             // WRIST
-            public static final int WRIST_MOTOR = 0;
+            public static final int WRIST_MOTOR = 11;
 
             // ELEVATOR
-            public static final int ELEVATOR_MOTOR = 0;
+            public static final int ELEVATOR_MOTOR = 9;
         }
     }
 
