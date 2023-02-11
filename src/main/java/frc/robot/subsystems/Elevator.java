@@ -12,6 +12,7 @@ import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
@@ -26,8 +27,12 @@ public class Elevator extends SubsystemBase {
         elevatorController = NeoConfig.createPIDController(motor.getPIDController(),
                 new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI,
                         ElevatorConstants.kD, ElevatorConstants.kF));
-        encoder = NeoConfig.createBuiltinEncoder(motor, ElevatorConstants.ENCODER_INVERT);
+        encoder = NeoConfig.createBuiltinEncoder(motor);
         encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
+
+        encoder.setPosition(0);
+
+        PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", elevatorController);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -47,21 +52,28 @@ public class Elevator extends SubsystemBase {
      * @param target the target distance in inches
      */
     public void setDistance(double target) {
-        // TODO: looks at this, since the elevator is a relative encoder we might not be able to re-zero at the top if its outside of the range
-        targetHeight = MathUtil.clamp(target, ElevatorConstants.MIN_HEIGHT,
-                ElevatorConstants.MAX_HEIGHT);
-        elevatorController.setReference(
-                (targetHeight),
-                CANSparkMax.ControlType.kPosition);
+        // TODO: looks at this, since the elevator is a relative encoder we might not be able to
+        // re-zero at the top if its outside of the range
+        targetHeight =
+                MathUtil.clamp(target, ElevatorConstants.MIN_HEIGHT, ElevatorConstants.MAX_HEIGHT);
+        elevatorController.setReference((targetHeight), CANSparkMax.ControlType.kPosition);
     }
 
     /**
      * setPower
      * 
-     * @param speed the percent speed to set the elevator motor to
+     * @param power the percent speed to set the elevator motor to
      */
-    public void setPower(double speed) {
-        motor.set(speed);
+    public void setPower(double power) {
+        LightningShuffleboard.setDouble("Elevator", "target elevator power", power);
+
+        if (getExtension() >= ElevatorConstants.MAX_HEIGHT && power > 0) {
+            motor.set(0);
+        } else if (getExtension() <= ElevatorConstants.MIN_HEIGHT && power < 0) {
+            motor.set(0);
+        } else {
+            motor.set(power);
+        }
     }
 
     /**
@@ -121,8 +133,12 @@ public class Elevator extends SubsystemBase {
         }
 
         LightningShuffleboard.setBool("Elevator", "Top Limit", getTopLimitSwitch());
-        LightningShuffleboard.setBool("Elevator", "Bottom Limit", getTopLimitSwitch());
+        LightningShuffleboard.setBool("Elevator", "Bottom Limit", getBottomLimitSwitch());
         LightningShuffleboard.setDouble("Elevator", "Elevator Height", getExtension());
+
+        // setDistance(LightningShuffleboard.getDouble("Elevaotr", "target elevator height", 0));
+        // elevatorController.setP(LightningShuffleboard.getDouble("Elevator", "KP thing", 0));
+        // LightningShuffleboard.setDouble("Elevator", "KP thing", elevatorController.getP());
 
     }
 }

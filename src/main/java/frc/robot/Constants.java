@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.thunder.swervelib.SdsModuleConfigurations;
-import frc.thunder.swervelib.Mk3SwerveModuleHelper.GearRatio;
 import java.awt.Polygon;
 import java.nio.file.*;
 
@@ -61,7 +60,7 @@ public final class Constants {
         public static final double BACK_RIGHT_RESTING_ANGLE = Math.toRadians(-45d);
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
-        public static final double MAX_VOLTAGE = 12;
+        public static final double MAX_VOLTAGE = 3;
         // TODO look at the calculation here
         public static final double MAX_VELOCITY_METERS_PER_SECOND =
                 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
@@ -83,7 +82,7 @@ public final class Constants {
             public static final double kI = 0d;
             public static final double kD = 0d;
 
-            public static final double kF = 0.229;
+            public static final double kF = 0.229d;
         }
 
         // Gains vaules for theta PIDControllers
@@ -103,15 +102,16 @@ public final class Constants {
             }
 
             public static final class Blackout {
-                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
-                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
-                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
-                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(253.740);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(222.363);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.863);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.105);
             }
         }
     }
 
     public static final class ElevatorConstants {
+        // TODO: check inverts
         public static final boolean MOTOR_INVERT = false;
         public static final boolean ENCODER_INVERT = false;
 
@@ -124,17 +124,19 @@ public final class Constants {
         public static final double kD = 0d;
         public static final double kF = 0d;
 
+        // TODO: set a tolerance
         public static final double TOLERANCE = 0d;
 
-        // TOOD: replace with actual values 
-        public static final int TICKS = 42;
+        // TOOD: replace with actual values
+        public static final int TICKS_PER_REV = 42;
         public static final double GEAR_RATIO = 16d / 1d;
-        public static final double INCHES_PER_REV = 1d;
-        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * INCHES_PER_REV;
+        public static final double SPROCKET_DIAMETER = 1.440d;
+        public static final double POSITION_CONVERSION_FACTOR =
+                1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
 
         // min/max height in inches
         // TODO: sanity check these values
-        public static final double MAX_HEIGHT = 50d;
+        public static final double MAX_HEIGHT = 23.287d;
         public static final double MIN_HEIGHT = 0d;
 
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
@@ -142,8 +144,9 @@ public final class Constants {
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
                 SparkMaxLimitSwitch.Type.kNormallyOpen;
 
-        public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in
-                                                                  // degrees
+        // Check this angle (should be 55)
+        public static final Rotation2d ANGLE = new Rotation2d(55); // Acute Elevator mount angle in
+                                                                   // degrees
 
         // horiz/vert offset from ground (See below)
         public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
@@ -259,6 +262,10 @@ public final class Constants {
 
             // ELEVATOR
             public static final int ELEVATOR_MOTOR = 9;
+
+            // COLECTOR
+            public static final int COLLECTOR_MOTOR_ONE = 12;
+            public static final int COLLECTOR_MOTOR_TWO = 13;
         }
     }
 
@@ -333,7 +340,7 @@ public final class Constants {
                 new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
     }
     public static final class manualLiftConstants {
-        public static final double ELEVATOR_SPEED_REDUCTION = 0.01;
+        public static final double ELEVATOR_SPEED_REDUCTION = 1;
         public static final double ARM_SPEED_REDUCTION = 0.01;
         public static final double WRIST_SPEED_REDUCTION = 0.01;
     }

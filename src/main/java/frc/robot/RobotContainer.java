@@ -30,6 +30,7 @@ public class RobotContainer extends LightningContainer {
 
     private static final AprilTagTargetting targetting = new AprilTagTargetting();
 
+    // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(targetting);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
@@ -68,9 +69,7 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("Path8StartC", new HashMap<>(),
                 new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
-        autoFactory.makeTrajectory("Tune", new HashMap<>(),
-                new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
-                        DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
+        autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(0.5, 0.5));
     }
 
     @Override

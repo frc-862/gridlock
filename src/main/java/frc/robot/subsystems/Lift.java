@@ -10,6 +10,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class Lift extends SubsystemBase {
 
@@ -35,19 +36,23 @@ public class Lift extends SubsystemBase {
         this.nextState = state;
     }
 
+    // Gets the XY position of the elevator at arm the pivot point
     public Translation2d getElevatorXY() {
         return new Translation2d(elevator.getExtension(), ElevatorConstants.ANGLE);
     }
 
+    // Gets the XY position of the arm at the wrist pivot point, with the arm pivot as the origin
     public Translation2d getArmXY() {
         return new Translation2d(ArmConstants.LENGTH, new Rotation2d(arm.getAngle().getRadians()));
     }
 
+    // Gets the overall XY position with offsets
     public Translation2d getOverallXY() {
         return ElevatorConstants.POSE_OFFSET.plus(getElevatorXY())
                 .plus(getArmXY().plus(WristConstants.POSE_OFFSET));
     }
 
+    // Checks if our set position is within the bounds of the robot
     public Boolean isReachable(Translation2d pose) {
         return LiftConstants.BOUNDING_BOX.contains(pose.getX(), pose.getY());
     }
@@ -236,6 +241,10 @@ public class Lift extends SubsystemBase {
                 position = LiftState.stowed.pose();
                 break;
         }
+
+        LightningShuffleboard.setDouble("Lift", "Overall X", getOverallXY().getX());
+        LightningShuffleboard.setDouble("Lift", "Overall Y", getOverallXY().getY());
+        LightningShuffleboard.setDouble("Lift", "Overall X", getOverallXY().getX());
 
         if (isReachable(position)) {
 
