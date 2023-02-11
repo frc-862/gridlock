@@ -80,8 +80,10 @@ public class Lift extends SubsystemBase {
         double possibleYPose1 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose1;
         double possibleYPose2 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose2;
 
-        // Find the x and y poses that are within the bounds of the robot or find the closer one, or if the robot is in the way, find the one that doesn't intersect the robot
+        posibleExtention1 = math.sqrt(math.pow(possibleXPose1, 2))
+        posibleExtention2
 
+        // Find the x and y poses that are within the bounds of the robot or find the closer one, or if the robot is in the way, find the one that doesn't intersect the robot
         if (desiredYPose < 0) {
             // Find the slopes of the lines between the desired pose and the possible poses then get intersections
             double slope1 = (possibleYPose1 - desiredYPose) / (possibleXPose1 - desiredXPose);
