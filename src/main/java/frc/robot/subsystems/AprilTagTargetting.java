@@ -24,7 +24,7 @@ public class AprilTagTargetting extends SubsystemBase {
     private double[] botPosCheck;
 
     private double timer = 0;
-    private int pipelineNum = -1;
+    private int pipelineNum = 0;
 
     //private int count = 0;
 
