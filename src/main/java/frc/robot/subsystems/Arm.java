@@ -12,6 +12,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.RobotMap;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
+import frc.thunder.logging.DataLogger;
 
 public class Arm extends SubsystemBase {
     private CANSparkMax motor;
@@ -36,8 +37,16 @@ public class Arm extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(
                 ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        
+        initLogging();
 
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+    
+    public void initLogging() {
+        DataLogger.addDataElement("Arm target angle", () -> targetAngle);
+        DataLogger.addDataElement("Arm angle", () -> getAngle().getDegrees());
+        DataLogger.addDataElement("Arm on target", () -> onTarget() ? 1 : 0);
     }
 
     /**

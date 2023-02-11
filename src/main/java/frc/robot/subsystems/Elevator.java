@@ -11,6 +11,8 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
+import frc.thunder.logging.DataLogger;
+import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
@@ -28,7 +30,21 @@ public class Elevator extends SubsystemBase {
                         ElevatorConstants.kD, ElevatorConstants.kF), encoder);
         encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
 
+        encoder.setPosition(0);
+
+        initLogging();
+
+        PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", elevatorController);
+
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+
+    public void initLogging() {
+        DataLogger.addDataElement("Elevator Extension", () -> getExtension());
+        DataLogger.addDataElement("Elevator Target Height", () -> targetHeight);
+        DataLogger.addDataElement("Elevator on Target", () -> onTarget() ? 1 : 0);
+        DataLogger.addDataElement("bottom limit switch", () -> getBottomLimitSwitch() ? 1 : 0);
+        DataLogger.addDataElement("top limit switch", () -> getTopLimitSwitch() ? 1 : 0);
     }
 
     /**
