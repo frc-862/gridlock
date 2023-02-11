@@ -86,8 +86,9 @@ public class Drivetrain extends SubsystemBase {
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
     private AprilTagTargetting vision = new AprilTagTargetting();
+    private VisionTargetting vision = new VisionTargetting();
 
-    public Drivetrain(AprilTagTargetting vision) {
+    public Drivetrain(VisionTargetting vision) {
         this.vision = vision;
         // TODO: make this better
         if (Files.exists(blackoutFile)) {

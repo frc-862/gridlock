@@ -11,6 +11,7 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.logging.DataLogger;
 
 public class Lift extends SubsystemBase {
 
@@ -29,7 +30,20 @@ public class Lift extends SubsystemBase {
         this.wrist = wrist;
         this.arm = arm;
 
+        initLogging();
+
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+
+    public void initLogging() {
+        DataLogger.addDataElement("Elevator X", () -> getElevatorXY().getX());
+        DataLogger.addDataElement("Elevator Y", () -> getElevatorXY().getY());
+        DataLogger.addDataElement("Arm X", () -> getArmXY().getX());
+        DataLogger.addDataElement("Arm Y", () -> getArmXY().getY());
+        DataLogger.addDataElement("Overall X", () -> getOverallXY().getX());
+        DataLogger.addDataElement("Overall Y", () -> getOverallXY().getY());
+        DataLogger.addDataElement("lift is finished", () -> isFinished() ? 1 : 0);
+        DataLogger.addDataElement("lift is reachable", () -> isReachable(getOverallXY()) ? 1 : 0);
     }
 
     public void setNextState(LiftState state) {

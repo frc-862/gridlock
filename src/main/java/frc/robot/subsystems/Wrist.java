@@ -12,7 +12,7 @@ import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.math.LightningMath;
+import frc.thunder.logging.DataLogger;
 
 public class Wrist extends SubsystemBase {
     private CANSparkMax motor;
@@ -31,13 +31,21 @@ public class Wrist extends SubsystemBase {
         motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, WristConstants.MOTOR_INVERT,
                 WristConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
                 WristConstants.MOTOR_TYPE, WristConstants.NEUTRAL_MODE);
+        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
         wristController = NeoConfig.createPIDController(motor.getPIDController(),
                 new SparkMaxPIDGains(WristConstants.kP, WristConstants.kI, WristConstants.kD,
-                        WristConstants.kF));
-        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
+                        WristConstants.kF), encoder);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
 
+        initLogging();
+
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+
+    public void initLogging() {
+        DataLogger.addDataElement("Target angle", () -> targetAngle);
+        DataLogger.addDataElement("Wrist angle", () -> getAngle().getDegrees());
+        DataLogger.addDataElement("on target", () -> onTarget() ? 1 : 0);
     }
 
     /**
@@ -57,11 +65,6 @@ public class Wrist extends SubsystemBase {
         targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE,
                 WristConstants.MAX_ANGLE);
         wristController.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
-    }
-
-    public void setGains(double kP, double kI, double kD, double kF) {
-        wristController = NeoConfig.createPIDController(wristController,
-                new SparkMaxPIDGains(kP, kI, kD, kF));
     }
 
     public void setPower(double speed) {

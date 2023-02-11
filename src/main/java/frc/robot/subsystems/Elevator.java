@@ -11,9 +11,6 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.logging.DataLogger;
-import frc.thunder.shuffleboard.LightningShuffleboard;
-import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
@@ -26,23 +23,14 @@ public class Elevator extends SubsystemBase {
         motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT,
                 ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
                 ElevatorConstants.MOTOR_TYPE, ElevatorConstants.NEUTRAL_MODE);
+        encoder = NeoConfig.createBuiltinEncoder(motor);
         elevatorController = NeoConfig.createPIDController(motor.getPIDController(),
                 new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI,
                         ElevatorConstants.kD, ElevatorConstants.kF));
-        encoder = NeoConfig.createBuiltinEncoder(motor);
+        encoder = NeoConfig.createBuiltinEncoder(motor, ElevatorConstants.ENCODER_INVERT);
         encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
 
-        encoder.setPosition(0);
-
-        PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", elevatorController);
-
         CommandScheduler.getInstance().registerSubsystem(this);
-    }
-    
-    public void initLogging(){
-        DataLogger.addDataElement("Elevator Extension", () -> getExtension());
-        DataLogger.addDataElement("Elevator Target Height", () -> targetHeight);
-        // DataLogger.addDataElement("Elevator on Target", () ->  nTarget());
     }
 
     /**
