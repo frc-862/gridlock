@@ -23,7 +23,7 @@ public class AprilTagTargetting extends SubsystemBase {
 
     private double horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
     private double verticalOffset = limelightTab.getEntry("ty").getDouble(0);
-    private double targetArea = limelightTab.getEntry("ta").getDouble(0);
+    private double targetVertical = limelightTab.getEntry("ta").getDouble(0);
     private double targetVisible = limelightTab.getEntry("ta").getDouble(0);
 
     private int currentPipeline;
@@ -56,12 +56,12 @@ public class AprilTagTargetting extends SubsystemBase {
         if(currentPipeline == 1){
             horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
             verticalOffset = limelightTab.getEntry("ty").getDouble(0);
-            targetArea = limelightTab.getEntry("ta").getDouble(0);
+            targetVertical = limelightTab.getEntry("tvert").getDouble(0);
             targetVisible = limelightTab.getEntry("tv").getDouble(0);
             if(targetVisible == 1){
                 LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
                 LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
-                LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetArea);
+                LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
             }
         }
         
