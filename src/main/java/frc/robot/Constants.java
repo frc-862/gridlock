@@ -259,6 +259,9 @@ public final class Constants {
 
             // ELEVATOR
             public static final int ELEVATOR_MOTOR = 0;
+
+            // MISC SENSORS
+            public static final int TIME_OF_FLIGHT = 0;
         }
     }
 
