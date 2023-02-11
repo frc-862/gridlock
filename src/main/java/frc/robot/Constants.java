@@ -30,7 +30,7 @@ public final class Constants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
         public static final double DEADBAND = 0.1;
         public static final double MIN_POWER = 0d;
-        public static final double MAX_POWER = 1d;
+        public static final double MAX_POWER = 0.9d;
 
     }
 

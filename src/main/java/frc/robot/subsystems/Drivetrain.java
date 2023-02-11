@@ -84,6 +84,7 @@ public class Drivetrain extends SubsystemBase {
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
+    private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
     private AprilTagTargetting vision = new AprilTagTargetting();
 
     public Drivetrain(AprilTagTargetting vision) {
@@ -102,6 +103,12 @@ public class Drivetrain extends SubsystemBase {
         swerveConfiguration.setSteerCurrentLimit(DrivetrainConstants.STEER_CURRENT_LIMIT);
         swerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
         swerveConfiguration
+                .setDrivePIDGains(new SparkMaxPIDGains(Gains.kP, Gains.kI, Gains.kD, Gains.kF));
+
+        blSwerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
+        blSwerveConfiguration.setSteerCurrentLimit(DrivetrainConstants.STEER_CURRENT_LIMIT);
+        blSwerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
+        blSwerveConfiguration
                 .setDrivePIDGains(new SparkMaxPIDGains(Gains.kP, Gains.kI, Gains.kD, Gains.kF));
 
         // Making front left module
@@ -124,7 +131,7 @@ public class Drivetrain extends SubsystemBase {
         backLeftModule = Mk4iSwerveModuleHelper.createNeo(
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(
                         4, 0),
-                swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
+                blSwerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR, RobotMap.CAN.BACK_LEFT_AZIMUTH_MOTOR,
                 RobotMap.CAN.BACK_LEFT_CANCODER, BACK_LEFT_STEER_OFFSET);
 

@@ -11,6 +11,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
+import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.tuning.PIDDashboardTuner;
 
@@ -19,6 +20,7 @@ public class Elevator extends SubsystemBase {
     private SparkMaxPIDController elevatorController;
     private RelativeEncoder encoder;
     private double targetHeight;
+
 
     public Elevator() {
         motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT,
@@ -35,6 +37,12 @@ public class Elevator extends SubsystemBase {
         PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", elevatorController);
 
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+    
+    public void initLogging(){
+        DataLogger.addDataElement("Elevator Extension", () -> getExtension());
+        DataLogger.addDataElement("Elevator Target Height", () -> targetHeight);
+        // DataLogger.addDataElement("Elevator on Target", () ->  nTarget());
     }
 
     /**
@@ -136,9 +144,8 @@ public class Elevator extends SubsystemBase {
         LightningShuffleboard.setBool("Elevator", "Bottom Limit", getBottomLimitSwitch());
         LightningShuffleboard.setDouble("Elevator", "Elevator Height", getExtension());
 
-        // setDistance(LightningShuffleboard.getDouble("Elevaotr", "target elevator height", 0));
-        // elevatorController.setP(LightningShuffleboard.getDouble("Elevator", "KP thing", 0));
-        // LightningShuffleboard.setDouble("Elevator", "KP thing", elevatorController.getP());
+        setDistance(LightningShuffleboard.getDouble("Elevaotr", "target elevator height", 0));
+        LightningShuffleboard.setDouble("Elevator", "KP thing", elevatorController.getP());
 
     }
 }
