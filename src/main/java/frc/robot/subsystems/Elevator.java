@@ -11,6 +11,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
@@ -118,6 +119,10 @@ public class Elevator extends SubsystemBase {
         if (getBottomLimitSwitch()) {
             encoder.setPosition(ElevatorConstants.MIN_HEIGHT);
         }
+
+        LightningShuffleboard.setBool("Elevator", "Top Limit", getTopLimitSwitch());
+        LightningShuffleboard.setBool("Elevator", "Bottom Limit", getTopLimitSwitch());
+        LightningShuffleboard.setDouble("Elevator", "Elevator Height", getExtension());
 
     }
 }

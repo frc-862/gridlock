@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.SwerveDrive;
-import frc.robot.commands.manualLift;
+import frc.robot.commands.ManualLift;
 import frc.robot.commands.tests.DriveTrainSystemTest;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -30,18 +30,17 @@ public class RobotContainer extends LightningContainer {
 
     private static final AprilTagTargetting targetting = new AprilTagTargetting();
 
-    private static final Drivetrain drivetrain = new Drivetrain();
+    private static final Drivetrain drivetrain = new Drivetrain(targetting);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
-     
+
     // Creates new LED controller
     private static final LEDs underglow = new LEDs();
 
-    private static final Drivetrain drivetrain = new Drivetrain(targetting);
-
     // Creates our driver controller and deadzones
-    private static final XboxController driver = new XboxController(0);
+    private static final XboxController driver =
+            new XboxController(XboxControllerConstants.DRIVER_CONTROLLER_PORT);
     private static final JoystickFilter joystickFilter =
             new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
                     XboxControllerConstants.MAX_POWER, Mode.CUBED);
@@ -70,8 +69,8 @@ public class RobotContainer extends LightningContainer {
                 new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
         autoFactory.makeTrajectory("Tune", new HashMap<>(),
-            new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
-        DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
+                new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
     }
 
     @Override
@@ -85,13 +84,10 @@ public class RobotContainer extends LightningContainer {
                 new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
                         () -> joystickFilter.filter(driver.getLeftY()),
                         () -> -joystickFilter.filter(driver.getRightX())));
-        
+
         elevator.setDefaultCommand(
-            new manualLift(() -> joystickFilter.filter(liftTest.getRightY()), 
-            () -> joystickFilter.filter(liftTest.getLeftY()), 
-            () -> (liftTest.getRightTriggerAxis()-liftTest.getLeftTriggerAxis()),
-            arm, wrist, elevator)
-        );
+                new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
+                        () -> 0, () -> 0, arm, wrist, elevator));
     }
 
     @Override
