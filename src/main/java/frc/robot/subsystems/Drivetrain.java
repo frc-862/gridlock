@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -85,7 +84,6 @@ public class Drivetrain extends SubsystemBase {
 
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
-    private AprilTagTargetting vision = new AprilTagTargetting();
     private VisionTargetting vision = new VisionTargetting();
 
     public Drivetrain(VisionTargetting vision) {
@@ -437,7 +435,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose from Vision of the robot
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
-        if (pose != null){
+        if (pose != null) {
             odometry.resetPosition(gyroAngle, modulePositions, pose);
         }
     }
@@ -518,14 +516,18 @@ public class Drivetrain extends SubsystemBase {
      * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */
     public void stop() {
-        states[0] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
-        states[1] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
-        states[2] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
-        states[3] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
+        states[0].speedMetersPerSecond = 0;
+        states[1].speedMetersPerSecond = 0;
+        states[2].speedMetersPerSecond = 0;
+        states[3].speedMetersPerSecond = 0;
+        // states[0] = new SwerveModuleState(0,
+        // new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
+        // states[1] = new SwerveModuleState(0,
+        // new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
+        // states[2] = new SwerveModuleState(0,
+        // new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
+        // states[3] = new SwerveModuleState(0,
+        // new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
     }
 
     public void resetNeoAngle() {
