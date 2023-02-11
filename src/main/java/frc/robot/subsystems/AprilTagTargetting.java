@@ -16,10 +16,17 @@ public class AprilTagTargetting extends SubsystemBase {
     //Change "limelight-alice" to whatever the name of the limelight you are currently using is
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
+    // Gets the horizontal angle to the target from the limelight
     private double horizAngleToTarget;
+
+    // Gets Bot Pose from the limelight (x,y,z,rx,ry,rz)
     private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
-    private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-    private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+    private double[] botPoseBlue =
+            limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+    private double[] botPoseRed =
+            limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+    private double hasVision = 
+            limelightTab.getEntry("tv").getDouble(0);
 
     private double horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
     private double verticalOffset = limelightTab.getEntry("ty").getDouble(0);
@@ -27,15 +34,19 @@ public class AprilTagTargetting extends SubsystemBase {
     private double targetVisible = limelightTab.getEntry("ta").getDouble(0);
 
     public AprilTagTargetting() {
-        CommandScheduler.getInstance().registerSubsystem(this);
+        // Inits logging for vision
         initLogging();
+
+        CommandScheduler.getInstance().registerSubsystem(this);
     }
-    
+
     @Override
     public void periodic() {
+        // Gets Bot Pose from the limelight periodic (x,y,z,rx,ry,rz)
         botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
         botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
         botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+        hasVision = limelightTab.getEntry("tv").getDouble(0);
 
         if (botPose.length != 0) {
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
@@ -75,9 +86,34 @@ public class AprilTagTargetting extends SubsystemBase {
         }
     }
 
-    public Pose2d getRobotPose() {
-        return new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
+    // Method to update the dashboard with current vision values
+    public void updateDashboard() {
+        if (botPose.length != 0) {
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TX", botPose[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TY", botPose[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose RZ", botPose[5]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TX",
+                    botPoseBlue[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TY",
+                    botPoseBlue[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue RZ",
+                    botPoseBlue[5]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TX", botPoseRed[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TY", botPoseRed[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red RZ", botPoseRed[5]);
+        }
 
+    }
+
+    // Returns the robot pose as a Pose2d from vision data
+    public Pose2d getRobotPose() {
+        if (hasVision == 1){
+            return new Pose2d(new Translation2d(botPose[0], botPose[1]),
+                Rotation2d.fromDegrees(botPose[5]));
+        }
+        else {
+            return null;
+        }
     }
 
     /**
@@ -90,8 +126,7 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     /**
-     * Sets the pipeline we're using on the limelight. The first is for april tag
-     * targetting The
+     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The
      * second is for retroreflective tape.
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
@@ -101,8 +136,7 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     /**
-     * Ensures that what we're receiving is actually a valid target (if it's outside
-     * of FOV, it
+     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it
      * can't be)
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
@@ -117,15 +151,18 @@ public class AprilTagTargetting extends SubsystemBase {
      * 
      * @return degree offset from target.
      */
-    public double autoAlign() {
+    public double retroAngleOffset() {
         // Set pipeline num to 2, should be retroreflective tape pipeline.
         setPipelineNum(2);
 
+        // Getting the valid target and horizAngleToTarget entry from the limelight
         var hasTarget = limelightTab.getEntry("tv").getDouble(0);
         this.horizAngleToTarget = limelightTab.getEntry("tx").getDouble(0);
 
-        boolean isOnTarget = isOnTarget(this.horizAngleToTarget);
+        // A check for if we're on target
+        boolean isOnTarget = isOnTarget(horizAngleToTarget);
 
+        // If were on target
         if (hasTarget == 1 && !isOnTarget && validTarget()) {
             return horizAngleToTarget;
         } else {
@@ -136,13 +173,12 @@ public class AprilTagTargetting extends SubsystemBase {
     /**
      * Function to tell us whether or not we're on target (centered on vision tape)
      * 
-     * @param expectedAngle Angle we're supposed to be at according to offset of
-     *                      target supplied by
-     *                      Limelight
+     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
+     *        Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle) {
         // Should put consideration into how accurate we want to be later on.
-        return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
+        return Math.abs(expectedAngle) < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
     }
 }

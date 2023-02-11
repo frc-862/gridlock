@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,20 +31,21 @@ public class Lift extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void setNextState(LiftState state){
+    public void setNextState(LiftState state) {
         this.nextState = state;
     }
 
     public Translation2d getElevatorXY() {
-        return new Translation2d(elevator.getHeight(), ElevatorConstants.ANGLE);
+        return new Translation2d(elevator.getExtension(), ElevatorConstants.ANGLE);
     }
 
-    public Translation2d getBarXY() {
+    public Translation2d getArmXY() {
         return new Translation2d(ArmConstants.LENGTH, new Rotation2d(arm.getAngle().getRadians()));
     }
 
     public Translation2d getOverallXY() {
-        return ElevatorConstants.POSE_OFFSET.plus(getElevatorXY()).plus(getBarXY().plus(WristConstants.POSE_OFFSET));
+        return ElevatorConstants.POSE_OFFSET.plus(getElevatorXY())
+                .plus(getArmXY().plus(WristConstants.POSE_OFFSET));
     }
 
     public Boolean isReachable(Translation2d pose) {
@@ -52,7 +54,7 @@ public class Lift extends SubsystemBase {
 
     public double[] elevatorMath(Translation2d desiredPose) {
 
-        double angle;
+        double angle = 0;
 
         double xPose;
         double yPose;
@@ -78,49 +80,109 @@ public class Lift extends SubsystemBase {
         double possibleYPose1 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose1;
         double possibleYPose2 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose2;
 
-        // Find the x and y poses that are within the bounds of the robot or find the closer one
-        if (possibleXPose1 < 0 || possibleXPose1 > ArmConstants.MAX_X) {
-            xPose = possibleXPose2;
-            yPose = possibleYPose2;
-        } else if (possibleXPose2 < 0 || possibleXPose2 > ArmConstants.MAX_X) {
-            xPose = possibleXPose1;
-            yPose = possibleYPose1;
+        // Find the extension length at the possible poses
+        double possibleExtension1 = Math.sqrt(Math.pow(possibleXPose1, 2) + Math.pow(possibleYPose1,2));
+        double possibleExtension2 = Math.sqrt(Math.pow(possibleXPose2, 2) + Math.pow(possibleYPose2,2));
+
+        // Find the x and y poses that are within the bounds of the robot or find the closer one, or if the robot is in the way, find the one that doesn't intersect the robot
+        if (desiredYPose < 0) {
+            // Find the slopes of the lines between the desired pose and the possible poses then get intersections
+            double slope1 = (possibleYPose1 - desiredYPose) / (possibleXPose1 - desiredXPose);
+            double slope2 = (possibleYPose2 - desiredYPose) / (possibleXPose2 - desiredXPose);
+            double robotIntersectionX1 = -(desiredYPose / slope1) + desiredXPose;
+            double robotIntersectionX2 = -(desiredYPose / slope2) + desiredXPose;
+            if (robotIntersectionX1 < ArmConstants.ROBOT_BODY_LENGTH || possibleExtension1 < ArmConstants.MIN_EXTENSION || possibleExtension1 > ArmConstants.MAX_EXTENSION) {
+                xPose = possibleXPose2;
+                yPose = possibleYPose2;
+            } else if (robotIntersectionX2 < ArmConstants.ROBOT_BODY_LENGTH || possibleExtension2 < ArmConstants.MIN_EXTENSION || possibleExtension2 > ArmConstants.MAX_EXTENSION) {
+                xPose = possibleXPose1;
+                yPose = possibleYPose1;
+            } else {
+                // Find the distance between the desired pose and the possible poses to move to closer one
+                double elevatorHeight = elevator.getExtension();
+                double elevatorX = elevatorHeight * Math.cos(ArmConstants.ELEVATOR_ANGLE);
+                double elevatorY = elevatorHeight * Math.sin(ArmConstants.ELEVATOR_ANGLE);
+                double dist1 = Math.sqrt(Math.pow(elevatorX - possibleXPose1, 2)
+                        + Math.pow(elevatorY - possibleYPose1, 2));
+                double dist2 = Math.sqrt(Math.pow(elevatorX - possibleXPose2, 2)
+                        + Math.pow(elevatorY - possibleYPose2, 2));
+
+                if (dist1 < dist2) {
+                    xPose = possibleXPose1;
+                    yPose = possibleYPose1;
+                } else {
+                    xPose = possibleXPose2;
+                    yPose = possibleYPose2;
+
+                }
+
+            }
+
         } else {
-            xPose = Math.min(possibleXPose1, possibleXPose2);
-            yPose = Math.min(possibleYPose1, possibleYPose2);
+            // If there is no chance of intersecting with the robot, make sure all the intersections are within the elevator bounds
+            if (possibleExtension1 < ArmConstants.MIN_EXTENSION || possibleExtension1 > ArmConstants.MAX_EXTENSION) {
+                xPose = possibleXPose2;
+                yPose = possibleYPose2;
+            } else if (possibleExtension2 < ArmConstants.MIN_EXTENSION || possibleExtension2 > ArmConstants.MAX_EXTENSION) {
+                xPose = possibleXPose1;
+                yPose = possibleYPose1;
+            } else {
+                // Find the distance between the desired pose and the possible poses to move to closer one
+                double elevatorHeight = elevator.getExtension();
+                double elevatorX = elevatorHeight * Math.cos(ArmConstants.ELEVATOR_ANGLE);
+                double elevatorY = elevatorHeight * Math.sin(ArmConstants.ELEVATOR_ANGLE);
+                double dist1 = Math.sqrt(Math.pow(elevatorX - possibleXPose1, 2)
+                        + Math.pow(elevatorY - possibleYPose1, 2));
+                double dist2 = Math.sqrt(Math.pow(elevatorX - possibleXPose2, 2)
+                        + Math.pow(elevatorY - possibleYPose2, 2));
+
+                if (dist1 < dist2) {
+                    xPose = possibleXPose1;
+                    yPose = possibleYPose1;
+                } else {
+                    xPose = possibleXPose2;
+                    yPose = possibleYPose2;
+
+                }
+
+            }
         }
 
-        // Find the angle of the arm pivot 
-        angle = 180 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
+
+
+        // Find the angle of the arm pivot
         if (desiredYPose == yPose) {
 
         } else if (desiredYPose > yPose) {
+            angle = 180 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
             angle += Math.toDegrees(Math.atan((desiredYPose - yPose) / (desiredXPose - xPose)));
-        } else if (desiredXPose > desiredXPose) {
+        } else if (desiredXPose > xPose) {
             angle = 90 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
-            angle += Math.toDegrees(
-                    Math.atan((desiredXPose - desiredXPose) / (desiredYPose - desiredXPose)));
+            angle += Math.toDegrees(Math.atan((desiredXPose - xPose) / (yPose - desiredYPose)));
 
         } else {
             angle = 90 - Math.toDegrees(ArmConstants.ELEVATOR_ANGLE);
-            angle -= Math.toDegrees(
-                    Math.atan((desiredXPose - desiredXPose) / (desiredYPose - desiredYPose)));
+            angle -= Math.toDegrees(Math.atan((desiredXPose - xPose) / (desiredYPose - yPose)));
         }
 
-        double[] returnValue = {angle, desiredYPose};
+        // Find the length that the elevator needs to be extended at from the coordinates
+        double elevatorLength = Math.sqrt(Math.pow(xPose, 2) + Math.pow(yPose, 2));
+
+        double[] returnValue = {MathUtil.clamp(angle,ArmConstants.MIN_ANGLE,ArmConstants.MAX_ANGLE), elevatorLength};
         return returnValue;
     }
 
     public boolean isFinished() {
-        return getElevatorXY() == currentState.pose(); //TODO: add some kind of tolerance
+        return getElevatorXY() == currentState.pose(); // TODO: add some kind of tolerance
     }
 
     @Override
     public void periodic() {
-        if(lastState != nextState && lastState == LiftState.stowed || currentState == LiftState.elevatorDeployed) {
+        if (lastState != nextState && lastState == LiftState.stowed
+                || currentState == LiftState.elevatorDeployed) {
             currentState = LiftState.elevatorDeployed;
 
-            if(isFinished()) {
+            if (isFinished()) {
                 currentState = nextState;
             }
 
@@ -130,59 +192,59 @@ public class Lift extends SubsystemBase {
 
 
         switch (currentState) {
-            //collect states
-            case ground: 
+            // collect states
+            case ground:
                 position = LiftState.ground.pose();
-            break;
+                break;
 
             case doubleSubstationCollect:
                 position = LiftState.doubleSubstationCollect.pose();
-            break;
+                break;
 
             case reverseSubstationCollect:
                 position = LiftState.reverseSubstationCollect.pose();
-            break;
+                break;
 
 
-            //scoring states
+            // scoring states
             case mediumCubeScore:
                 position = LiftState.mediumCubeScore.pose();
-            break;
+                break;
 
             case highCubeScore:
                 position = LiftState.highCubeScore.pose();
-            break;
+                break;
 
             case mediumConeScore:
                 position = LiftState.mediumConeScore.pose();
-            break;
+                break;
 
             case highConeScore:
                 position = LiftState.highConeScore.pose();
-            break;
+                break;
 
 
-            //substates
+            // substates
             case elevatorDeployed:
                 position = LiftState.elevatorDeployed.pose();
-            break;
+                break;
 
             case armDeployed:
                 position = LiftState.armDeployed.pose();
-            break;
+                break;
 
 
 
             case stowed:
                 position = LiftState.stowed.pose();
-            break;
+                break;
         }
 
         if (isReachable(position)) {
 
             double[] liftInfo = elevatorMath(position);
 
-            elevator.setHeight(liftInfo[1]);
+            elevator.setDistance(liftInfo[1]);
             arm.setAngle(new Rotation2d(liftInfo[0]));
             wrist.setAngle(new Rotation2d(liftInfo[0] + 90)); // math
         }
