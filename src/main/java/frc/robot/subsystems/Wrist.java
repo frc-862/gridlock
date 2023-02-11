@@ -34,7 +34,7 @@ public class Wrist extends SubsystemBase {
         wristController = NeoConfig.createPIDController(motor.getPIDController(),
                 new SparkMaxPIDGains(WristConstants.kP, WristConstants.kI, WristConstants.kD,
                         WristConstants.kF));
-        encoder = NeoConfig.createAbsoluteEncoder(motor, WristConstants.ENCODER_INVERT, OFFSET);
+        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
 
         CommandScheduler.getInstance().registerSubsystem(this);

@@ -144,8 +144,8 @@ public final class Constants {
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
                 SparkMaxLimitSwitch.Type.kNormallyOpen;
 
-        public static final Rotation2d ANGLE = new Rotation2d(0); 
-        // Acute Elevator mount angle in degrees
+        // Acute Elevator mount angle in degreess
+        public static final Rotation2d ANGLE = new Rotation2d(0);
 
         // horiz/vert offset from ground (See below)
         public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);

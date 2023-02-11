@@ -35,7 +35,7 @@ public class Arm extends SubsystemBase {
                 ArmConstants.NEUTRAL_MODE);
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(
                 ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF));
-        encoder = NeoConfig.createAbsoluteEncoder(motor, ArmConstants.ENCODER_INVERT, OFFSET);
+        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
         CommandScheduler.getInstance().registerSubsystem(this);
