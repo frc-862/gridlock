@@ -12,7 +12,6 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.RobotMap;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.math.LightningMath;
 
 public class Arm extends SubsystemBase {
     private CANSparkMax motor;
@@ -33,9 +32,9 @@ public class Arm extends SubsystemBase {
         motor = NeoConfig.createMotor(RobotMap.CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT,
                 ArmConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, ArmConstants.MOTOR_TYPE,
                 ArmConstants.NEUTRAL_MODE);
+        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(
-                ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF));
-        encoder = NeoConfig.createAbsoluteEncoder(motor, ArmConstants.ENCODER_INVERT, OFFSET);
+                ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -48,8 +47,8 @@ public class Arm extends SubsystemBase {
      * 
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle = MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE,
-                ArmConstants.MAX_ANGLE);
+        targetAngle =
+                MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
         controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
