@@ -1,6 +1,6 @@
 package frc.robot;
 
-import frc.robot.subsystems.AprilTagTargetting;
+import frc.robot.subsystems.VisionTargetting;
 import java.util.HashMap;
 import com.pathplanner.lib.PathConstraints;
 
@@ -24,7 +24,7 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final AprilTagTargetting targetting = new AprilTagTargetting();
+    private static final VisionTargetting targetting = new VisionTargetting();
 
     // Creates new LED controller
     private static final LEDs underglow = new LEDs();
