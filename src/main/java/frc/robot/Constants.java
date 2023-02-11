@@ -167,8 +167,8 @@ public final class Constants {
 
         public static final double ELEVATOR_ANGLE = 0.959931; // In radians
         // Elevator min and max extension in inches
-        public static final double MAX_EXTENSION = 63;
-        public static final double MIN_EXTENSION = 40;
+        public static final double MAX_EXTENSION = 63.287;
+        public static final double MIN_EXTENSION = 40d;
 
         // Min and Max arm angles in rotations
         public static final double MAX_ANGLE = 90d;
