@@ -16,7 +16,7 @@ import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
-    private SparkMaxPIDController elevatorController;
+    private SparkMaxPIDController controller;
     private RelativeEncoder encoder;
     private double targetHeight;
 
@@ -25,17 +25,18 @@ public class Elevator extends SubsystemBase {
                 ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
                 ElevatorConstants.MOTOR_TYPE, ElevatorConstants.NEUTRAL_MODE);
         encoder = NeoConfig.createBuiltinEncoder(motor);
-        elevatorController = NeoConfig.createPIDController(motor.getPIDController(),
+        controller = NeoConfig.createPIDController(motor.getPIDController(),
                 new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI,
                         ElevatorConstants.kD, ElevatorConstants.kF),
                 encoder);
         encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
+        controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
         encoder.setPosition(0);
 
         initLogging();
 
-        PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", elevatorController);
+        PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", controller);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -67,7 +68,7 @@ public class Elevator extends SubsystemBase {
         // able to
         // re-zero at the top if its outside of the range
         targetHeight = MathUtil.clamp(target, ElevatorConstants.MIN_HEIGHT, ElevatorConstants.MAX_HEIGHT);
-        elevatorController.setReference((targetHeight), CANSparkMax.ControlType.kPosition);
+        controller.setReference((targetHeight), CANSparkMax.ControlType.kPosition);
     }
 
     /**

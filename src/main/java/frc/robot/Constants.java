@@ -136,8 +136,8 @@ public final class Constants {
         public static final double MIN_HEIGHT = 0d;
 
         // Min and Max power
-        public static final double MAX_POWER = 0d;
-        public static final double MIN_POWER = 1d;
+        public static final double MIN_POWER = 0d;
+        public static final double MAX_POWER = 1d;
 
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
@@ -215,8 +215,8 @@ public final class Constants {
         public static final double MIN_ANGLE = -90d;
 
         // Min and Max power
-        public static final double MAX_POWER = 1d;
         public static final double MIN_POWER = 0d;
+        public static final double MAX_POWER = 1d;
 
         public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
 

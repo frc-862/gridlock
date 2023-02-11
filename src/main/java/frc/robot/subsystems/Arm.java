@@ -38,6 +38,7 @@ public class Arm extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(
                 ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        controller.setOutputRange(ArmConstants.MIN_POWER, ArmConstants.MAX_POWER);
 
         initLogging();
 
