@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
         motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT,
                 ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
                 ElevatorConstants.MOTOR_TYPE, ElevatorConstants.NEUTRAL_MODE);
-        encoder = NeoConfig.createBuiltinEncoder(motor, ElevatorConstants.ENCODER_INVERT);
+        encoder = NeoConfig.createBuiltinEncoder(motor);
         elevatorController = NeoConfig.createPIDController(motor.getPIDController(),
                 new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI,
                         ElevatorConstants.kD, ElevatorConstants.kF), encoder);

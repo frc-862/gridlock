@@ -32,7 +32,7 @@ public class Arm extends SubsystemBase {
         motor = NeoConfig.createMotor(RobotMap.CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT,
                 ArmConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, ArmConstants.MOTOR_TYPE,
                 ArmConstants.NEUTRAL_MODE);
-        encoder = NeoConfig.createAbsoluteEncoder(motor, ArmConstants.ENCODER_INVERT, OFFSET);
+        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(
                 ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
