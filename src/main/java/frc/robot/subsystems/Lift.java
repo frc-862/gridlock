@@ -80,8 +80,8 @@ public class Lift extends SubsystemBase {
         double possibleYPose1 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose1;
         double possibleYPose2 = Math.tan(ArmConstants.ELEVATOR_ANGLE) * possibleXPose2;
 
-        posibleExtention1 = math.sqrt(math.pow(possibleXPose1, 2))
-        posibleExtention2
+        possibleExtention1 = math.sqrt(math.pow(possibleXPose1, 2) + math.pow(possibleYPose1,2));
+        possibleExtention2 = math.sqrt(math.pow(possibleXPose2, 2) + math.pow(possibleYPose2,2));
 
         // Find the x and y poses that are within the bounds of the robot or find the closer one, or if the robot is in the way, find the one that doesn't intersect the robot
         if (desiredYPose < 0) {
@@ -119,10 +119,10 @@ public class Lift extends SubsystemBase {
 
         } else {
             // If there is no chance of intersecting with the robot, make sure all the intersections are within the elevator bounds
-            if (possibleXPose1 < ArmConstants.MIN_X || possibleXPose1 > ArmConstants.MAX_X) {
+            if (possibleExtention1 < ArmConstants.MIN_X || possibleExtention1 > ArmConstants.MAX_X) {
                 xPose = possibleXPose2;
                 yPose = possibleYPose2;
-            } else if (possibleXPose2 < ArmConstants.MIN_X || possibleXPose2 > ArmConstants.MAX_X) {
+            } else if (possibleExtention2 < ArmConstants.MIN_X || possibleExtention2 > ArmConstants.MAX_X) {
                 xPose = possibleXPose1;
                 yPose = possibleYPose1;
             } else {
