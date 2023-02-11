@@ -4,7 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-
+import com.playingwithfusion.TimeOfFlight;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
@@ -85,6 +85,8 @@ public class Drivetrain extends SubsystemBase {
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
     private VisionTargetting vision = new VisionTargetting();
+
+    private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
     public Drivetrain(VisionTargetting vision) {
         this.vision = vision;
@@ -535,5 +537,9 @@ public class Drivetrain extends SubsystemBase {
         frontRightModule.setEncoderAngle();
         backLeftModule.setEncoderAngle();
         backRightModule.setEncoderAngle();
+    }
+
+    public double getTOF() {
+        return tof.getRange();
     }
 }
