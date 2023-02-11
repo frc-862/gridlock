@@ -4,7 +4,7 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.manualLiftConstants;
+import frc.robot.Constants.ManualLiftConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
@@ -21,7 +21,6 @@ public class ManualLift extends CommandBase {
     double elevatorReductionConstant = 0.01;
     double wristReductionConstant = 0.01;
 
-
     public ManualLift(DoubleSupplier elevatorSpeed, DoubleSupplier armSpeed,
             DoubleSupplier wristSpeed, Arm arm, Wrist wrist, Elevator elevator) {
         this.arm = arm;
@@ -35,15 +34,15 @@ public class ManualLift extends CommandBase {
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
 
     @Override
     public void execute() {
         elevator.setPower(
-                manualLiftConstants.ELEVATOR_SPEED_REDUCTION * elevatorSpeed.getAsDouble());
+                ManualLiftConstants.ELEVATOR_SPEED_REDUCTION * elevatorSpeed.getAsDouble());
         // arm.setPower(manualLiftConstants.ARM_SPEED_REDUCTION*armSpeed.getAsDouble());
         // wrist.setPower(manualLiftConstants.WRIST_SPEED_REDUCTION*wristSpeed.getAsDouble());
-
 
     }
 

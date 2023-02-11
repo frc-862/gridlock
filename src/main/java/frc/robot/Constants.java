@@ -47,11 +47,6 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.8125d);
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
-        // Drivetrain PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(0, 0,
-                0);
-
         // Module resting/default angles
         public static final double FRONT_LEFT_RESTING_ANGLE = Math.toRadians(-45d);
         public static final double FRONT_RIGHT_RESTING_ANGLE = Math.toRadians(45d);
@@ -60,7 +55,6 @@ public final class Constants {
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 3;
-        // TODO look at the calculation here
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0
                 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
                 * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
@@ -110,9 +104,7 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
-        // TODO: check inverts
         public static final boolean MOTOR_INVERT = false;
-        public static final boolean ENCODER_INVERT = false;
 
         public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
@@ -151,7 +143,6 @@ public final class Constants {
 
     public static final class ArmConstants {
         public static final boolean MOTOR_INVERT = false;
-        public static final boolean ENCODER_INVERT = false;
 
         public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
@@ -191,7 +182,6 @@ public final class Constants {
 
     public static final class WristConstants {
         public static final boolean MOTOR_INVERT = false;
-        public static final boolean ENCODER_INVERT = false;
 
         public static final int CURRENT_LIMIT = 20;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
@@ -340,9 +330,15 @@ public final class Constants {
         public static final Polygon BOUNDING_BOX = new Polygon(new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 }, 4);
     }
 
-    public static final class manualLiftConstants {
+    public static final class ManualLiftConstants {
         public static final double ELEVATOR_SPEED_REDUCTION = 1;
         public static final double ARM_SPEED_REDUCTION = 0.01;
         public static final double WRIST_SPEED_REDUCTION = 0.01;
+    }
+
+    public static final class AutonomousConstants {
+        // Path planner PIDConstants
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(0, 0, 0);
     }
 }

@@ -24,6 +24,7 @@ import frc.robot.commands.tests.DriveTrainSystemTest;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.thunder.LightningContainer;
+import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
@@ -52,7 +53,7 @@ public class RobotContainer extends LightningContainer {
     // creates Autonomous Command
     private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(
             drivetrain::getPose, drivetrain::resetOdometry, drivetrain.getDriveKinematics(),
-            DrivetrainConstants.DRIVE_PID_CONSTANTS, DrivetrainConstants.THETA_PID_CONSTANTS,
+            AutonomousConstants.DRIVE_PID_CONSTANTS, AutonomousConstants.THETA_PID_CONSTANTS,
             drivetrain::setStates, drivetrain::resetNeoAngle, drivetrain);
 
     @Override
