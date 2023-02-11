@@ -1,12 +1,14 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.PIDConstants;
+import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.thunder.swervelib.SdsModuleConfigurations;
+import frc.thunder.swervelib.Mk3SwerveModuleHelper.GearRatio;
 import java.awt.Polygon;
 import java.nio.file.*;
 
@@ -119,24 +121,33 @@ public final class Constants {
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
+        public static final double kF = 0d;
 
         public static final double TOLERANCE = 0d;
 
+        // TOOD: replace with actual values 
         public static final int TICKS = 42;
-        public static final double GEAR_RATIO = 1d / 1d;
+        public static final double GEAR_RATIO = 16d / 1d;
         public static final double INCHES_PER_REV = 1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * INCHES_PER_REV;
 
-        public static final double MAX_HEIGHT = 0d;
-        public static final double MIN_HEIGHT = 100d;
+        // min/max height in inches
+        // TODO: sanity check these values
+        public static final double MAX_HEIGHT = 50d;
+        public static final double MIN_HEIGHT = 0d;
 
-        public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in degrees
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
 
-        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0); // horiz/vert
-                                                                                    // offset from
-                                                                                    // ground (See
-                                                                                    // below)
-    // X = distance from arm pivot point to front of bot at bottom limit (negative)
-    // Y = height of arm pivot point from ground at bottom limit
+        public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in
+                                                                  // degrees
+
+        // horiz/vert offset from ground (See below)
+        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
+        // X = distance from arm pivot point to front of bot at bottom limit (negative)
+        // Y = height of arm pivot point from ground at bottom limit
     }
 
     public static final class ArmConstants {
@@ -145,24 +156,37 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
+        public static final double kF = 0d;
 
         public static final double TOLERANCE = 0d;
 
         public static final double ELEVATOR_ANGLE = 0.959931;
         public static final double MAX_X = 100;
+        public static final double MIN_X = 0;
 
+        // Min and Max arm angles in rotations
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
 
         public static final double LENGTH = 0; // arm length in inches
 
-        //Offsets in degrees
+        // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
+
+        // robot lengths
+        // TODO: get accurate measurements
+        public static final double ROBOT_BODY_LENGTH = 27.7;
+
+        // TODO: replace with actual values
+        public static final double GEAR_RATIO = 1d;
+        public static final double DEGREES_PER_REV = 1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
     }
 
     public static final class WristConstants {
@@ -176,10 +200,11 @@ public final class Constants {
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
+        public static final double kF = 0d;
 
         public static final double TOLERANCE = 0d;
 
-        //min/max angles in degrees
+        // min/max angles in degrees
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
 
@@ -187,9 +212,14 @@ public final class Constants {
 
         public static final double LENGTH = 0; // wrist length in inches
 
-        //Offsets in degrees
+        // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
+
+        // TODO: replace with actual values
+        public static final double GEAR_RATIO = 1d;
+        public static final double DEGREES_PER_REV = 1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
     }
 
     public static final class RobotMap {
@@ -244,9 +274,9 @@ public final class Constants {
     }
 
     public static final class LedConstants {
-        public static final int port = 9;
-        public static final int length = 162;
-        public static final double brightness = 0.75;
+        public static final int ledPort = 22;
+        public static final int ledLength = 170;
+        public static final double ledSpeed = .5;
 
         public static final class Colors {
             // lightning colors
@@ -275,12 +305,17 @@ public final class Constants {
 
     public static final class LiftConstants {
         public enum LiftState {
-            groundCollect(new Translation2d(0d, 0d)),
-            doubleSubstationCollect(new Translation2d(0d, 0d)),
-            lowScore(new Translation2d(0d, 0d)),
-            mediumScore(new Translation2d(0d, 0d)),
-            highScore(new Translation2d(0d, 0d)),
+            ground(new Translation2d(0d, 0d)), doubleSubstationCollect(
+                    new Translation2d(0d, 0d)), reverseSubstationCollect(new Translation2d(0d, 0d)),
+
+            mediumCubeScore(new Translation2d(0d, 0d)), highCubeScore(
+                    new Translation2d(0d, 0d)), mediumConeScore(
+                            new Translation2d(0d, 0d)), highConeScore(new Translation2d(0d, 0d)),
+
+            elevatorDeployed(new Translation2d(0d, 0d)), armDeployed(new Translation2d(0d, 0d)),
+
             stowed(new Translation2d(0d, 0d));
+
 
             private Translation2d pose;
 
@@ -293,6 +328,7 @@ public final class Constants {
             }
         }
 
-        public static final Polygon BOUNDING_BOX = new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
+        public static final Polygon BOUNDING_BOX =
+                new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
     }
 }

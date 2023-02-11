@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -422,8 +421,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Takes pose2d from vision and resets odometry to that pose. 
-     * Sets module positions to the current module positions.
+     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the
+     * current module positions.
      * 
      * @param gyroAngle the current yaw of the robot
      * @param pose the pose from Vision of the robot

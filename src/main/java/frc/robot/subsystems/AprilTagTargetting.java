@@ -14,10 +14,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class AprilTagTargetting extends SubsystemBase {
 
-
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
+    // Gets the horizontal angle to the target from the limelight
     private double horizAngleToTarget;
+
+    // Gets Bot Pose from the limelight (x,y,z,rx,ry,rz)
     private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
     private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
     private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
@@ -37,10 +39,9 @@ public class AprilTagTargetting extends SubsystemBase {
         initLogging();
         //switchPipelines();
     }
-    
+
     @Override
     public void periodic() {
-
         botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
         
         if(limelightTab.getEntry("tv").getDouble(0)==1){
@@ -116,8 +117,7 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     /**
-     * Sets the pipeline we're using on the limelight. The first is for april tag
-     * targetting The
+     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The
      * second is for retroreflective tape.
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
@@ -129,8 +129,7 @@ public class AprilTagTargetting extends SubsystemBase {
 
 
     /**
-     * Ensures that what we're receiving is actually a valid target (if it's outside
-     * of FOV, it
+     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it
      * can't be)
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
@@ -145,15 +144,18 @@ public class AprilTagTargetting extends SubsystemBase {
      * 
      * @return degree offset from target.
      */
-    public double autoAlign() {
+    public double retroAngleOffset() {
         // Set pipeline num to 2, should be retroreflective tape pipeline.
         setPipelineNum(2);
 
+        // Getting the valid target and horizAngleToTarget entry from the limelight
         var hasTarget = limelightTab.getEntry("tv").getDouble(0);
         this.horizAngleToTarget = limelightTab.getEntry("tx").getDouble(0);
 
-        boolean isOnTarget = isOnTarget(this.horizAngleToTarget);
+        // A check for if we're on target
+        boolean isOnTarget = isOnTarget(horizAngleToTarget);
 
+        // If were on target
         if (hasTarget == 1 && !isOnTarget && validTarget()) {
             return horizAngleToTarget;
         } else {
@@ -164,14 +166,13 @@ public class AprilTagTargetting extends SubsystemBase {
     /**
      * Function to tell us whether or not we're on target (centered on vision tape)
      * 
-     * @param expectedAngle Angle we're supposed to be at according to offset of
-     *                      target supplied by
-     *                      Limelight
+     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
+     *        Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle) {
         // Should put consideration into how accurate we want to be later on.
-        return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
+        return Math.abs(expectedAngle) < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
     }
 
     // Change "limelight" to "limelight-alice" when on gridlock
