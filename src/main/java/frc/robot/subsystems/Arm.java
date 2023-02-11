@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,12 +38,12 @@ public class Arm extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(
                 ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
-        
+
         initLogging();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
-    
+
     public void initLogging() {
         DataLogger.addDataElement("Arm target angle", () -> targetAngle);
         DataLogger.addDataElement("Arm angle", () -> getAngle().getDegrees());
@@ -50,14 +51,14 @@ public class Arm extends SubsystemBase {
     }
 
     /**
-     * SetAngle: sets the angle of the arm to the angle in the given Rotation2d object
+     * SetAngle: sets the angle of the arm to the angle in the given Rotation2d
+     * object
      * 
      * @param angle a Rotation2d object containing the angle to set the arm to
      * 
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle =
-                MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
+        targetAngle = MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
         controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
@@ -73,10 +74,10 @@ public class Arm extends SubsystemBase {
     /**
      * SetPower: sets the percent power of the arm motor
      * 
-     * @param speed the percent power to set the arm motor to
+     * @param power the percent power to set the arm motor to
      */
-    public void setPower(double speed) {
-        motor.set(speed);
+    public void setPower(double power) {
+        motor.set(MathUtil.clamp(power, ArmConstants.MIN_POWER, ArmConstants.MAX_POWER));
     }
 
     /**

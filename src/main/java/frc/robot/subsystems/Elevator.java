@@ -27,7 +27,8 @@ public class Elevator extends SubsystemBase {
         encoder = NeoConfig.createBuiltinEncoder(motor);
         elevatorController = NeoConfig.createPIDController(motor.getPIDController(),
                 new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI,
-                        ElevatorConstants.kD, ElevatorConstants.kF), encoder);
+                        ElevatorConstants.kD, ElevatorConstants.kF),
+                encoder);
         encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
 
         encoder.setPosition(0);
@@ -62,20 +63,20 @@ public class Elevator extends SubsystemBase {
      * @param target the target distance in inches
      */
     public void setDistance(double target) {
-        // TODO: looks at this, since the elevator is a relative encoder we might not be able to
+        // TODO: looks at this, since the elevator is a relative encoder we might not be
+        // able to
         // re-zero at the top if its outside of the range
-        targetHeight =
-                MathUtil.clamp(target, ElevatorConstants.MIN_HEIGHT, ElevatorConstants.MAX_HEIGHT);
+        targetHeight = MathUtil.clamp(target, ElevatorConstants.MIN_HEIGHT, ElevatorConstants.MAX_HEIGHT);
         elevatorController.setReference((targetHeight), CANSparkMax.ControlType.kPosition);
     }
 
     /**
      * setPower
      * 
-     * @param speed the percent speed to set the elevator motor to
+     * @param power the percent speed to set the elevator motor to
      */
-    public void setPower(double speed) {
-        motor.set(speed);
+    public void setPower(double power) {
+        motor.set(MathUtil.clamp(power, ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER));
     }
 
     /**
