@@ -13,17 +13,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class VisionTargetting extends SubsystemBase {
 
-    //Change "limelight-alice" to whatever the name of the limelight you are currently using is
-    private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
+    // Change "limelight-alice" to whatever the name of the limelight you are
+    // currently using is
+    private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
     private double horizAngleToTarget;
     private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
-    private double[] botPoseBlue =
-            limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-    private double[] botPoseRed =
-            limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
-    private double hasVision = 
-            limelightTab.getEntry("tv").getDouble(0);
+    private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+    private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+    private double hasVision = limelightTab.getEntry("tv").getDouble(0);
     private int pipelineNum = 0;
 
     private double horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
@@ -36,10 +34,10 @@ public class VisionTargetting extends SubsystemBase {
         initLogging();
         CommandScheduler.getInstance().registerSubsystem(this);
     }
-    
+
     @Override
     public void periodic() {
-        
+
         botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
         botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
         botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
@@ -63,10 +61,9 @@ public class VisionTargetting extends SubsystemBase {
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
         }
-        if(targetVisible == 1){
+        if (targetVisible == 1) {
             LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
         }
-
 
     }
 
@@ -82,18 +79,15 @@ public class VisionTargetting extends SubsystemBase {
             DataLogger.addDataElement("Vision bot pose Red TY", () -> botPoseRed[1]);
             DataLogger.addDataElement("Vision bot pose Red RZ", () -> botPoseRed[5]);
 
-
-            
         }
     }
 
     // Returns the robot pose as a Pose2d from vision data
     public Pose2d getRobotPose() {
-        if (hasVision == 1){
+        if (hasVision == 1) {
             return new Pose2d(new Translation2d(botPoseBlue[0], botPoseBlue[1]),
-                Rotation2d.fromDegrees(botPoseBlue[5]));
-        }
-        else {
+                    Rotation2d.fromDegrees(botPoseBlue[5]));
+        } else {
             return null;
         }
     }
@@ -118,11 +112,9 @@ public class VisionTargetting extends SubsystemBase {
         limelightTab.getEntry("pipeline").setNumber(pipelineNum);
     }
 
-    public double getPipelineNum(){
+    public double getPipelineNum() {
         return this.pipelineNum;
     }
-
-
 
     /**
      * Ensures that what we're receiving is actually a valid target (if it's outside
@@ -171,10 +163,10 @@ public class VisionTargetting extends SubsystemBase {
     }
 
     private void setPipeline() {
-        
+
         pipelineNum = (int) LightningShuffleboard.getDouble("limelight", "pipeline", 0);
-       
+
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipelineNum);
-        
+
     }
 }

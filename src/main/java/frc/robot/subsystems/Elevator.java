@@ -36,7 +36,7 @@ public class Elevator extends SubsystemBase {
 
         initLogging();
 
-        PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", elevatorController);
+        // PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", elevatorController);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -148,8 +148,8 @@ public class Elevator extends SubsystemBase {
         LightningShuffleboard.setBool("Elevator", "Bottom Limit", getBottomLimitSwitch());
         LightningShuffleboard.setDouble("Elevator", "Elevator Height", getExtension());
 
-        setDistance(LightningShuffleboard.getDouble("Elevaotr", "target elevator height", 0));
-        LightningShuffleboard.setDouble("Elevator", "KP thing", elevatorController.getP());
+        // setDistance(LightningShuffleboard.getDouble("Elevaotr", "target elevator height", 0));
+        // LightningShuffleboard.setDouble("Elevator", "KP thing", elevatorController.getP());
 
     }
 }

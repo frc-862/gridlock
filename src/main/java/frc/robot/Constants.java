@@ -28,7 +28,7 @@ public final class Constants {
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
-        public static final double DEADBAND = 0.1;
+        public static final double DEADBAND = 0.05;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 0.9d;
 
@@ -48,10 +48,9 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
         // Drivetrain PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS =
-                new PIDConstants(Gains.kP, Gains.kI, Gains.kD);
-        public static final PIDConstants THETA_PID_CONSTANTS =
-                new PIDConstants(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD);
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(0, 0,
+                0);
 
         // Module resting/default angles
         public static final double FRONT_LEFT_RESTING_ANGLE = Math.toRadians(-45d);
@@ -62,14 +61,14 @@ public final class Constants {
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 3;
         // TODO look at the calculation here
-        public static final double MAX_VELOCITY_METERS_PER_SECOND =
-                5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
-                        * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
-        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-                MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0
+                * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
+                * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
+                / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                         DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND =
-                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                * 2 * Math.PI;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -78,11 +77,11 @@ public final class Constants {
 
         // Gains vaules for PIDControllers
         public static final class Gains {
-            public static final double kP = 0.116d;
+            public static final double kP = 0.15;// .116d;
             public static final double kI = 0d;
             public static final double kD = 0d;
 
-            public static final double kF = 0.229d;
+            public static final double kF = 0.225;// 229d;
         }
 
         // Gains vaules for theta PIDControllers
@@ -102,10 +101,10 @@ public final class Constants {
             }
 
             public static final class Blackout {
-                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(253.740);
-                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(222.363);
-                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.863);
-                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.105);
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(253.916);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(222.451);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.688);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.018);
             }
         }
     }
@@ -131,18 +130,15 @@ public final class Constants {
         public static final int TICKS_PER_REV = 42;
         public static final double GEAR_RATIO = 16d / 1d;
         public static final double SPROCKET_DIAMETER = 1.440d;
-        public static final double POSITION_CONVERSION_FACTOR =
-                1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
 
         // min/max height in inches
         // TODO: sanity check these values
         public static final double MAX_HEIGHT = 23.287d;
         public static final double MIN_HEIGHT = 0d;
 
-        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
-        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
         // Acute Elevator mount angle in degreess
         public static final Rotation2d ANGLE = new Rotation2d(0);
@@ -266,7 +262,6 @@ public final class Constants {
             // COLECTOR
             public static final int COLLECTOR_MOTOR_ONE = 12;
             public static final int COLLECTOR_MOTOR_TWO = 13;
-            public static final int ELEVATOR_MOTOR = 0;
 
             // MISC SENSORS
             public static final int TIME_OF_FLIGHT = 0;
@@ -292,17 +287,17 @@ public final class Constants {
 
         public static final class Colors {
             // lightning colors
-            public static final int[] lightningOrange = {255, 71, 15};
-            public static final int[] lightningBlue = {0, 0, 255};
+            public static final int[] lightningOrange = { 255, 71, 15 };
+            public static final int[] lightningBlue = { 0, 0, 255 };
 
             // misc colors
-            public static final int[] cyan = {96, 209, 149};
-            public static final int[] yellow = {255, 230, 20};
-            public static final int[] purple = {220, 30, 240};
-            public static final int[] green = {0, 255, 0};
-            public static final int[] red = {255, 0, 0};
-            public static final int[] white = {255, 255, 255};
-            public static final int[] off = {0, 0, 0};
+            public static final int[] cyan = { 96, 209, 149 };
+            public static final int[] yellow = { 255, 230, 20 };
+            public static final int[] purple = { 220, 30, 240 };
+            public static final int[] green = { 0, 255, 0 };
+            public static final int[] red = { 255, 0, 0 };
+            public static final int[] white = { 255, 255, 255 };
+            public static final int[] off = { 0, 0, 0 };
         }
     }
 
@@ -318,16 +313,18 @@ public final class Constants {
     public static final class LiftConstants {
         public enum LiftState {
             ground(new Translation2d(0d, 0d)), doubleSubstationCollect(
-                    new Translation2d(0d, 0d)), reverseSubstationCollect(new Translation2d(0d, 0d)),
+                    new Translation2d(0d, 0d)),
+            reverseSubstationCollect(new Translation2d(0d, 0d)),
 
             mediumCubeScore(new Translation2d(0d, 0d)), highCubeScore(
-                    new Translation2d(0d, 0d)), mediumConeScore(
-                            new Translation2d(0d, 0d)), highConeScore(new Translation2d(0d, 0d)),
+                    new Translation2d(0d, 0d)),
+            mediumConeScore(
+                    new Translation2d(0d, 0d)),
+            highConeScore(new Translation2d(0d, 0d)),
 
             elevatorDeployed(new Translation2d(0d, 0d)), armDeployed(new Translation2d(0d, 0d)),
 
             stowed(new Translation2d(0d, 0d));
-
 
             private Translation2d pose;
 
@@ -340,9 +337,9 @@ public final class Constants {
             }
         }
 
-        public static final Polygon BOUNDING_BOX =
-                new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
+        public static final Polygon BOUNDING_BOX = new Polygon(new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 }, 4);
     }
+
     public static final class manualLiftConstants {
         public static final double ELEVATOR_SPEED_REDUCTION = 1;
         public static final double ARM_SPEED_REDUCTION = 0.01;
