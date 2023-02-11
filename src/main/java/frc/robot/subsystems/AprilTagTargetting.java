@@ -7,48 +7,32 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
-import com.fasterxml.jackson.annotation.JacksonInject.Value;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class AprilTagTargetting extends SubsystemBase {
 
+
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
-    // Gets the horizontal angle to the target from the limelight
     private double horizAngleToTarget;
-
-    // Gets Bot Pose from the limelight (x,y,z,rx,ry,rz)
     private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
     private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
     private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
-    private double[] botPosCheck;
 
-    private double timer = 0;
     private int pipelineNum = 0;
-
-    //private int count = 0;
-
-    //private boolean pipelineSwitched = false;
 
     public AprilTagTargetting() {
         limelightTab.getEntry("pipeline").setNumber(0);
-        limelightTab.getEntry("check").setDouble(0);
-        CommandScheduler.getInstance().registerSubsystem(this);
         initLogging();
-        //switchPipelines();
+        CommandScheduler.getInstance().registerSubsystem(this);
     }
-
+    
     @Override
     public void periodic() {
+        
         botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
-        
-        if(limelightTab.getEntry("tv").getDouble(0)==1){
-            timer += 0.2;
-        }
-        
-        botPosCheck = botPose;
         botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
         botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
 
@@ -64,14 +48,9 @@ public class AprilTagTargetting extends SubsystemBase {
             LightningShuffleboard.setDouble("Autonomous", "1Vi  sion bot pose Red TY", botPoseRed[1]);
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
 
-            LightningShuffleboard.setDouble("limelight", "timer", timer);
             LightningShuffleboard.setDouble("limelight", "check", LightningShuffleboard.getDouble("limelight", "pipeline", 0));
         }
-        //checkPeriodicCount();
         setPipeline();
-        //limelightTab.getEntry("check").setDouble(limelightTab.getEntry("limelight").getNumber(0));
-        //timer += 0.02;
-
     }
 
     public void initLogging() {
@@ -91,19 +70,9 @@ public class AprilTagTargetting extends SubsystemBase {
         }
     }
 
-    /*public void checkPeriodicCount(){
-        count ++;
-        System.out.println("The function is running.");
-        if (count == 30){
-            switchPipelines();
-            System.out.println("fortnite");
-            count = 0;
-        }
-    }*/
-
     public Pose2d getRobotPose() {
 
-        return new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
+        return new Pose2d(new Translation2d(botPoseBlue[0], botPoseBlue[1]), Rotation2d.fromDegrees(botPoseBlue[5]));
 
     }
 
@@ -117,7 +86,8 @@ public class AprilTagTargetting extends SubsystemBase {
     }
 
     /**
-     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The
+     * Sets the pipeline we're using on the limelight. The first is for april tag
+     * targetting The
      * second is for retroreflective tape.
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
@@ -126,10 +96,15 @@ public class AprilTagTargetting extends SubsystemBase {
         limelightTab.getEntry("pipeline").setNumber(pipelineNum);
     }
 
+    public double getPipelineNum(){
+        return this.pipelineNum;
+    }
+
 
 
     /**
-     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it
+     * Ensures that what we're receiving is actually a valid target (if it's outside
+     * of FOV, it
      * can't be)
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
@@ -144,18 +119,15 @@ public class AprilTagTargetting extends SubsystemBase {
      * 
      * @return degree offset from target.
      */
-    public double retroAngleOffset() {
+    public double autoAlign() {
         // Set pipeline num to 2, should be retroreflective tape pipeline.
         setPipelineNum(2);
 
-        // Getting the valid target and horizAngleToTarget entry from the limelight
         var hasTarget = limelightTab.getEntry("tv").getDouble(0);
         this.horizAngleToTarget = limelightTab.getEntry("tx").getDouble(0);
 
-        // A check for if we're on target
-        boolean isOnTarget = isOnTarget(horizAngleToTarget);
+        boolean isOnTarget = isOnTarget(this.horizAngleToTarget);
 
-        // If were on target
         if (hasTarget == 1 && !isOnTarget && validTarget()) {
             return horizAngleToTarget;
         } else {
@@ -166,39 +138,21 @@ public class AprilTagTargetting extends SubsystemBase {
     /**
      * Function to tell us whether or not we're on target (centered on vision tape)
      * 
-     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
-     *        Limelight
+     * @param expectedAngle Angle we're supposed to be at according to offset of
+     *                      target supplied by
+     *                      Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle) {
         // Should put consideration into how accurate we want to be later on.
-        return Math.abs(expectedAngle) < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
+        return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
     }
-
-    // Change "limelight" to "limelight-alice" when on gridlock
-    /*private void switchPipelines(){
-        if (pipelineSwitched == false){
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
-            pipelineSwitched = true;
-        }
-        else if (pipelineSwitched == true){
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
-            pipelineSwitched = false;
-
-        }
-
-
-    }*/
 
     private void setPipeline() {
         
-        /*if (pipelineNum != (int) LightningShuffleboard.getDouble("limelight", "pipeline", 0)){
-            timer = 0;
-        }*/
         pipelineNum = (int) LightningShuffleboard.getDouble("limelight", "pipeline", 0);
        
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipelineNum);
-        //System.out.println(pipelineNum);
         
     }
 
