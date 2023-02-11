@@ -12,6 +12,7 @@ import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
+import frc.thunder.logging.DataLogger;
 
 public class Wrist extends SubsystemBase {
     private CANSparkMax motor;
@@ -36,7 +37,15 @@ public class Wrist extends SubsystemBase {
                         WristConstants.kF), encoder);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
 
+        initLogging();
+
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+
+    public void initLogging() {
+        DataLogger.addDataElement("Target angle", () -> targetAngle);
+        DataLogger.addDataElement("Wrist angle", () -> getAngle().getDegrees());
+        DataLogger.addDataElement("on target", () -> onTarget() ? 1 : 0);
     }
 
     /**
