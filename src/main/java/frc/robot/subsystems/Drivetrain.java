@@ -54,15 +54,14 @@ public class Drivetrain extends SubsystemBase {
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
     // Creating our list of module states and module positions
-    private SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(),
-            new SwerveModuleState(), new SwerveModuleState()};
-    private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(),
-            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
+    private SwerveModuleState[] states = { new SwerveModuleState(), new SwerveModuleState(),
+            new SwerveModuleState(), new SwerveModuleState() };
+    private SwerveModulePosition[] modulePositions = { new SwerveModulePosition(),
+            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition() };
 
     // Creating new pose, odometry, cahssis speeds
     private Pose2d pose = new Pose2d();
-    private SwerveDriveOdometry odometry =
-            new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
+    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our modules
@@ -153,9 +152,12 @@ public class Drivetrain extends SubsystemBase {
         initDashboard();
 
         /*
-         * //display gravity vector for PID tuning - leave commented out until tuning neccessary
-         * tab.addDouble("gravityX", () -> getGravityVector()[0]); tab.addDouble("gravityY", () ->
-         * getGravityVector()[1]); tab.addDouble("gravityZ", () -> getGravityVector()[2]);
+         * //display gravity vector for PID tuning - leave commented out until tuning
+         * neccessary
+         * tab.addDouble("gravityX", () -> getGravityVector()[0]);
+         * tab.addDouble("gravityY", () ->
+         * getGravityVector()[1]); tab.addDouble("gravityZ", () ->
+         * getGravityVector()[2]);
          */
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -173,7 +175,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * This takes chassis speeds and converts them to module states and then sets states.
+     * This takes chassis speeds and converts them to module states and then sets
+     * states.
      * 
      * @param chassisSpeeds the chassis speeds to convert to module states
      */
@@ -389,7 +392,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Converts percent output of joystick to a rotational velocity in omega radians per second.
+     * Converts percent output of joystick to a rotational velocity in omega radians
+     * per second.
      * 
      * @param percentOutput the percent output of the joystick
      * 
@@ -423,14 +427,15 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the
+     * Takes pose2d from vision and resets odometry to that pose. Sets module
+     * positions to the
      * current module positions.
      * 
      * @param gyroAngle the current yaw of the robot
-     * @param pose the pose from Vision of the robot
+     * @param pose      the pose from Vision of the robot
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
-        if (pose != null){
+        if (pose != null) {
             odometry.resetPosition(gyroAngle, modulePositions, pose);
         }
     }
@@ -508,7 +513,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Sets all motor speeds to 0 and sets the modules to their respective resting angles
+     * Sets all motor speeds to 0 and sets the modules to their respective resting
+     * angles
      */
     public void stop() {
         states[0] = new SwerveModuleState(0,

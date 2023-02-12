@@ -33,9 +33,9 @@ public class RobotContainer extends LightningContainer {
 
     // Creates our driver controller and deadzone
     private static final XboxController driver = new XboxController(0);
-    private static final JoystickFilter joystickFilter =
-            new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
-                    XboxControllerConstants.MAX_POWER, Mode.CUBED);
+    private static final JoystickFilter joystickFilter = new JoystickFilter(XboxControllerConstants.DEADBAND,
+            XboxControllerConstants.MIN_POWER,
+            XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
     // creates Autonomous Command
     private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(
@@ -61,15 +61,17 @@ public class RobotContainer extends LightningContainer {
                 new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
         autoFactory.makeTrajectory("Tune", new HashMap<>(),
-            new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
-        DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
+                new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
+                        DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
     }
 
     @Override
     protected void configureDefaultCommands() {
         /*
-         * Set up the default command for the drivetrain. The controls are for field-oriented
-         * driving: Left stick Y axis -> forward and backwards movement Left stick X axis -> left
+         * Set up the default command for the drivetrain. The controls are for
+         * field-oriented
+         * driving: Left stick Y axis -> forward and backwards movement Left stick X
+         * axis -> left
          * and right movement Right stick X axis -> rotation
          */
         drivetrain.setDefaultCommand(
@@ -94,7 +96,8 @@ public class RobotContainer extends LightningContainer {
     }
 
     @Override
-    protected void releaseDefaultCommands() {}
+    protected void releaseDefaultCommands() {
+    }
 
     @Override
     protected void initializeDashboardCommands() {
@@ -103,10 +106,12 @@ public class RobotContainer extends LightningContainer {
     }
 
     @Override
-    protected void configureFaultCodes() {}
+    protected void configureFaultCodes() {
+    }
 
     @Override
-    protected void configureFaultMonitors() {}
+    protected void configureFaultMonitors() {
+    }
 
     @Override
     protected AutonomousCommandFactory getCommandFactory() {

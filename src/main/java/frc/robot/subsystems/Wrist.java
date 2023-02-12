@@ -16,7 +16,7 @@ import frc.thunder.logging.DataLogger;
 
 public class Wrist extends SubsystemBase {
     private CANSparkMax motor;
-    private SparkMaxPIDController wristController;
+    private SparkMaxPIDController controller;
     private SparkMaxAbsoluteEncoder encoder;
     private double OFFSET;
     private double targetAngle;
@@ -32,10 +32,12 @@ public class Wrist extends SubsystemBase {
                 WristConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
                 WristConstants.MOTOR_TYPE, WristConstants.NEUTRAL_MODE);
         encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
-        wristController = NeoConfig.createPIDController(motor.getPIDController(),
+        controller = NeoConfig.createPIDController(motor.getPIDController(),
                 new SparkMaxPIDGains(WristConstants.kP, WristConstants.kI, WristConstants.kD,
-                        WristConstants.kF), encoder);
+                        WristConstants.kF),
+                encoder);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
+        controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
 
         initLogging();
 
@@ -57,18 +59,19 @@ public class Wrist extends SubsystemBase {
     }
 
     /**
-     * Takes a rotation2d and sets the wrist to that angle bounded by the min and max angles
+     * Takes a rotation2d and sets the wrist to that angle bounded by the min and
+     * max angles
      * 
      * @param angle Rotation2d to set the wrist to
      */
     public void setAngle(Rotation2d angle) {
         targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE,
                 WristConstants.MAX_ANGLE);
-        wristController.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
+        controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
-    public void setPower(double speed) {
-        motor.set(speed);
+    public void setPower(double power) {
+        motor.set(MathUtil.clamp(power, WristConstants.MIN_POWER, WristConstants.MAX_POWER));
     }
 
     public void stop() {

@@ -21,9 +21,9 @@ public class Collector extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void runCollector(double speed) {
-        leftMotor.set(speed);
-        rightMotor.set(speed);
+    public void runCollector(double power) {
+        leftMotor.set(power);
+        rightMotor.set(power);
     }
 
     public void stop() {
