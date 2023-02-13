@@ -262,7 +262,7 @@ public class Lift extends SubsystemBase {
 
             double[] liftInfo = elevatorMath(position);
 
-            elevator.setDistance(liftInfo[1]);
+            elevator.setExtension(liftInfo[1]);
             arm.setAngle(new Rotation2d(liftInfo[0]));
             wrist.setAngle(new Rotation2d(liftInfo[0] + 90)); // math
         }
