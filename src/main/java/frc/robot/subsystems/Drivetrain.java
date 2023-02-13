@@ -452,7 +452,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
         if (pose != null) {
-        odometry.resetPosition(gyroAngle, modulePositions, pose);
+            odometry.resetPosition(gyroAngle, modulePositions, pose);
         }
     }
 

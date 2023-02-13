@@ -17,7 +17,7 @@ import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
-    private SparkMaxPIDController elevatorController;
+    private SparkMaxPIDController controller;
     private RelativeEncoder encoder;
     private double targetHeight;
 
@@ -27,10 +27,12 @@ public class Elevator extends SubsystemBase {
                 ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
                 ElevatorConstants.MOTOR_TYPE, ElevatorConstants.NEUTRAL_MODE);
         encoder = NeoConfig.createBuiltinEncoder(motor);
-        elevatorController = NeoConfig.createPIDController(motor.getPIDController(),
+        controller = NeoConfig.createPIDController(motor.getPIDController(),
                 new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI,
-                        ElevatorConstants.kD, ElevatorConstants.kF), encoder);
+                        ElevatorConstants.kD, ElevatorConstants.kF),
+                encoder);
         encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
+        controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
         encoder.setPosition(0);
 
@@ -59,16 +61,16 @@ public class Elevator extends SubsystemBase {
     }
 
     /**
-     * setDistance
+     * setExtension
      * 
      * @param target the target distance in inches
      */
-    public void setDistance(double target) {
-        // TODO: looks at this, since the elevator is a relative encoder we might not be able to
-        // re-zero at the top if its outside of the range
-        targetHeight =
-                MathUtil.clamp(target, ElevatorConstants.MIN_HEIGHT, ElevatorConstants.MAX_HEIGHT);
-        elevatorController.setReference((targetHeight), CANSparkMax.ControlType.kPosition);
+    public void setExtension(double target) {
+        // if the target is reachable, set the target and enable the controller
+        if (isReachable(target)) {
+            controller.setReference(target, CANSparkMax.ControlType.kPosition);
+        }
+        // otherwise, do nothing
     }
 
     /**
@@ -77,15 +79,7 @@ public class Elevator extends SubsystemBase {
      * @param power the percent speed to set the elevator motor to
      */
     public void setPower(double power) {
-        LightningShuffleboard.setDouble("Elevator", "target elevator power", power);
-
-        if (getExtension() >= ElevatorConstants.MAX_HEIGHT && power > 0) {
-            motor.set(0);
-        } else if (getExtension() <= ElevatorConstants.MIN_HEIGHT && power < 0) {
-            motor.set(0);
-        } else {
-            motor.set(power);
-        }
+        motor.set(MathUtil.clamp(power, ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER));
     }
 
     /**
@@ -120,6 +114,15 @@ public class Elevator extends SubsystemBase {
      */
     public boolean getTopLimitSwitch() {
         return motor.getForwardLimitSwitch(ElevatorConstants.TOP_LIMIT_SWITCH_TYPE).isPressed();
+    }
+
+    /**
+     * setEncoderPosition
+     *
+     * @param position the position to set the encoder to in inches
+     */
+    public void setEncoderPosition(double position) {
+        encoder.setPosition(position);
     }
 
     /**

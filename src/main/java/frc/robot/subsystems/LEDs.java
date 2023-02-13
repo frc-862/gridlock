@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedConstants;
 
-
 public class LEDs extends SubsystemBase {
     /** Creates a new LED subsystem. */
     // Establish the led variables
@@ -21,8 +20,7 @@ public class LEDs extends SubsystemBase {
     // Create LEDs
     private CANdle leds = new CANdle(LedConstants.ledPort, "Canivore"); //
     private CANdleConfiguration ledConfig = new CANdleConfiguration();
-    RainbowAnimation rainbowAnim =
-            new RainbowAnimation(1, LedConstants.ledSpeed, LedConstants.ledLength);
+    RainbowAnimation rainbowAnim = new RainbowAnimation(1, LedConstants.ledSpeed, LedConstants.ledLength);
     String currentState = "none";
 
     public LEDs() {
@@ -106,7 +104,6 @@ public class LEDs extends SubsystemBase {
                 leds.setLEDs(255, 75, 0, 0, x, 1);
             }
 
-
         }
 
     }
@@ -118,12 +115,10 @@ public class LEDs extends SubsystemBase {
     }
 
     public void autoAligned() {
-        RainbowAnimation rainbowAnim =
-                new RainbowAnimation(0, LedConstants.ledSpeed, LedConstants.ledLength);
+        RainbowAnimation rainbowAnim = new RainbowAnimation(0, LedConstants.ledSpeed, LedConstants.ledLength);
         leds.animate(rainbowAnim);
         currentState = "autoAligned";
     }
-
 
     @Override
     public void periodic() {

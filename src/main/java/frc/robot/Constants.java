@@ -47,6 +47,10 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.8125d);
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
+        // Drivetrain PIDConstants
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(0, 0,0);
+
         // Module resting/default angles
         public static final double FRONT_LEFT_RESTING_ANGLE = Math.toRadians(-45d);
         public static final double FRONT_RIGHT_RESTING_ANGLE = Math.toRadians(45d);
@@ -129,11 +133,15 @@ public final class Constants {
         public static final double MAX_HEIGHT = 23.287d;
         public static final double MIN_HEIGHT = 0d;
 
+        // Min and Max power
+        public static final double MIN_POWER = 0d;
+        public static final double MAX_POWER = 1d;
+
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
-        // Acute Elevator mount angle in degreess
         public static final Rotation2d ANGLE = new Rotation2d(0);
+        // Acute Elevator mount angle in degrees
 
         // horiz/vert offset from ground (See below)
         public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
@@ -163,6 +171,10 @@ public final class Constants {
         // Min and Max arm angles in rotations
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
+
+        // Min and Max power
+        public static final double MIN_POWER = 0d;
+        public static final double MAX_POWER = 1d;
 
         public static final double LENGTH = 30; // arm length in inches
 
@@ -197,6 +209,10 @@ public final class Constants {
         // min/max angles in degrees
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
+
+        // Min and Max power
+        public static final double MIN_POWER = 0d;
+        public static final double MAX_POWER = 1d;
 
         public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
 
