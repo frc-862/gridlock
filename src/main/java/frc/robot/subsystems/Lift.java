@@ -49,19 +49,40 @@ public class Lift extends SubsystemBase {
         this.nextState = state;
     }
 
+    /**
+     * getEleveatorXY
+     *
+     * @return Translation2d of the elevator from it's zero point
+     */
     public Translation2d getElevatorXY() {
         return new Translation2d(elevator.getExtension(), ElevatorConstants.ANGLE);
     }
 
+    /**
+     * getArmXY
+     *
+     * @return Translation2d of the arm from it's pivot point
+     */
     public Translation2d getArmXY() {
-        return new Translation2d(ArmConstants.LENGTH, new Rotation2d(arm.getAngle().getRadians()));
+        return new Translation2d(ArmConstants.LENGTH, arm.getAngle());
     }
 
+    /**
+     * getOverallXY
+     *
+     * @return Translation2d of the collector from the origin
+     */
     public Translation2d getOverallXY() {
         return ElevatorConstants.POSE_OFFSET.plus(getElevatorXY())
                 .plus(getArmXY().plus(WristConstants.POSE_OFFSET));
     }
 
+    /**
+     * isReachable
+     *
+     * @param pose a desired point to check
+     * @return whether the desired point is possible for the elevator to reach
+     */
     public Boolean isReachable(Translation2d pose) {
         return LiftConstants.BOUNDING_BOX.contains(pose.getX(), pose.getY());
     }
