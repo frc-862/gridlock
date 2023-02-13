@@ -6,7 +6,6 @@ import java.util.HashMap;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPoint;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
@@ -66,9 +65,8 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
-        new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), 
-        drivetrain.getCurrentPathPoint(), 
-        new PathPoint(new Translation2d(0, 0), new Rotation2d(0))));
+        new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
+                drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
     }
 
     // Creates the autonomous commands
