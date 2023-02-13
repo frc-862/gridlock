@@ -132,8 +132,8 @@ public final class Constants {
 
         // min/max height in inches
         // TODO: sanity check these values
-        public static final double MAX_HEIGHT = 50d;
-        public static final double MIN_HEIGHT = 0d;
+        public static final double MAX_EXTENSION = 50d;
+        public static final double MIN_EXTENSION = 0d;
 
         // Min and Max power
         public static final double MIN_POWER = 0d;
@@ -142,7 +142,7 @@ public final class Constants {
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
-        public static final Rotation2d ANGLE = new Rotation2d(0);
+        public static final Rotation2d ANGLE = Rotation2d.fromDegrees(55d);
         // Acute Elevator mount angle in degrees
 
         // horiz/vert offset from ground (See below)
@@ -166,12 +166,11 @@ public final class Constants {
 
         public static final double TOLERANCE = 0d;
 
-        public static final double ELEVATOR_ANGLE = 0.959931; // In radians
         // Elevator min and max extension in inches
         public static final double MAX_EXTENSION = 63.287;
         public static final double MIN_EXTENSION = 40d;
 
-        // Min and Max arm angles in rotations
+        // Min and Max arm angles in degrees
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
 

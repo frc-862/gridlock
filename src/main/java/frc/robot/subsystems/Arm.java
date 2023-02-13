@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -95,5 +94,9 @@ public class Arm extends SubsystemBase {
      */
     public boolean onTarget() {
         return Math.abs(getAngle().getDegrees() - targetAngle) < ArmConstants.TOLERANCE;
+    }
+
+    public boolean isReachable(Rotation2d angle) {
+        return angle.getDegrees() >= ArmConstants.MIN_ANGLE && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
     }
 }

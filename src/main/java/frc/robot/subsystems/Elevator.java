@@ -131,18 +131,18 @@ public class Elevator extends SubsystemBase {
      * @return true if the target height is reachable by the elevator
      */
     public boolean isReachable(double targetHeight) {
-        return targetHeight >= ElevatorConstants.MIN_HEIGHT
-                && targetHeight <= ElevatorConstants.MAX_HEIGHT;
+        return targetHeight >= ElevatorConstants.MIN_EXTENSION
+                && targetHeight <= ElevatorConstants.MAX_EXTENSION;
     }
 
     @Override
     public void periodic() {
         if (getTopLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MAX_HEIGHT);
+            encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
         }
 
         if (getBottomLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MIN_HEIGHT);
+            encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
         }
 
     }
