@@ -84,11 +84,11 @@ public class Drivetrain extends SubsystemBase {
 
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
-    private VisionTargetting vision = new VisionTargetting();
+    private Vision vision = new Vision();
 
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
-    public Drivetrain(VisionTargetting vision) {
+    public Drivetrain(Vision vision) {
         this.vision = vision;
         // TODO: make this better
         if (Files.exists(blackoutFile)) {

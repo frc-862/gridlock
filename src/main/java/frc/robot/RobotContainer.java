@@ -1,7 +1,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.VisionTargetting;
+import frc.robot.subsystems.Vision;
 import java.util.HashMap;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPoint;
@@ -32,7 +32,7 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final VisionTargetting targetting = new VisionTargetting();
+    private static final Vision targetting = new Vision();
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(targetting);

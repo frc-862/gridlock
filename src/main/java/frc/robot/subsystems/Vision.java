@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-public class VisionTargetting extends SubsystemBase {
+public class Vision extends SubsystemBase {
 
     // Change "limelight-alice" to whatever the name of the limelight you are
     // currently using Alice
@@ -38,7 +38,7 @@ public class VisionTargetting extends SubsystemBase {
     private double targetVertical = LimelightHelpers.getTA(limelightName);
 
 
-    public VisionTargetting() {
+    public Vision() {
         // Inits logging for vision
         initLogging();
 
@@ -50,37 +50,26 @@ public class VisionTargetting extends SubsystemBase {
     public void periodic() {
 
 
-        // Updates all of our values used in VisionTargeting
-        botPose = LimelightHelpers.getBotPose(limelightName);
-        botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-        botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
+        // Checks if we have vision
         hasVision = LimelightHelpers.getTV(limelightName);
-        horizontalOffset = LimelightHelpers.getTX(limelightName);
-        verticalOffset = LimelightHelpers.getTY(limelightName);
-        targetVertical = LimelightHelpers.getTA(limelightName);
 
         // Sets the pipeline to the current one set on shuffleboard
         setPipeline();
 
         if (hasVision) {
-            // Updating the Shuffleboard if we have vision
 
-            // Fiducial (april tag) Values
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TY", botPose[1]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose RZ", botPose[5]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TX", botPoseBlue[0]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TY", botPoseBlue[1]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue RZ", botPoseBlue[5]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TX", botPoseRed[0]);
+            // Fiducial Pipeline
+            if (pipelineNum == 0){
+                // Updates Fiducial Values
+                updateFiducial();
+            }
 
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
+            // RetroReflective Pipeline
+            else if (pipelineNum == 1){
+                // Updates RetroReflective Values
+                updateRetro();
+            }
 
-            // RetroReflective Values
-            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
-            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
-            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
         }
 
     }
@@ -92,12 +81,15 @@ public class VisionTargetting extends SubsystemBase {
             DataLogger.addDataElement("Vision bot pose TX", () -> botPose[0]);
             DataLogger.addDataElement("Vision bot pose TY", () -> botPose[1]);
             DataLogger.addDataElement("Vision bot pose RZ", () -> botPose[5]);
+
             DataLogger.addDataElement("Vision bot pose Blue TX", () -> botPoseBlue[0]);
             DataLogger.addDataElement("Vision bot pose Blue TY", () -> botPoseBlue[1]);
             DataLogger.addDataElement("Vision bot pose Blue RZ", () -> botPoseBlue[5]);
+
             DataLogger.addDataElement("Vision bot pose Red TX", () -> botPoseRed[0]);
             DataLogger.addDataElement("Vision bot pose Red TY", () -> botPoseRed[1]);
             DataLogger.addDataElement("Vision bot pose Red RZ", () -> botPoseRed[5]);
+
             DataLogger.addDataElement("Vision retro reflective TX", () -> horizontalOffset);
             DataLogger.addDataElement("Vision retro reflective TY", () -> verticalOffset);
             DataLogger.addDataElement("Vision retro reflective TA", () -> targetVertical);
@@ -122,6 +114,46 @@ public class VisionTargetting extends SubsystemBase {
     public double[] getBotPose() {
         return this.botPose;
     }
+
+    public double[] getBotPoseRed() {
+        return this.botPoseRed;
+    }
+
+    public double[] getBotPoseBlue() {
+        return this.botPoseBlue;
+    }
+
+
+    // Updates each used fiducial value
+    private void updateFiducial(){
+        botPose = LimelightHelpers.getBotPose(limelightName);
+        botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
+        botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
+
+        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
+        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TY", botPose[1]);
+        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose RZ", botPose[5]);
+
+        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TX", botPoseBlue[0]);
+        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TY", botPoseBlue[1]);
+        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue RZ", botPoseBlue[5]);
+
+        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TX", botPoseRed[0]);
+        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
+        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
+    }
+
+    // Updates each used retroreflective value
+    private void updateRetro(){
+        horizontalOffset = LimelightHelpers.getTX(limelightName);
+        verticalOffset = LimelightHelpers.getTY(limelightName);
+        targetVertical = LimelightHelpers.getTA(limelightName);
+        
+        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
+        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
+        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
+    }
+
 
     /**
      * Sets the pipeline we're using on the limelight. The first is for april tag
@@ -184,6 +216,8 @@ public class VisionTargetting extends SubsystemBase {
         return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
     }
 
+
+    // Sets the pipeline based on what is put in shuffleboard
     private void setPipeline() {
 
         // Gets the current shuffleboard value for the Pipeline entry
