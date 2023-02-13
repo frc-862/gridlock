@@ -2,9 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
+import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,42 +13,59 @@ import edu.wpi.first.math.geometry.Translation2d;
 public class VisionTargetting extends SubsystemBase {
 
     // Change "limelight-alice" to whatever the name of the limelight you are
-    // currently using is
-    private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
+    // currently using Alice
+    // we should rename the limelight names to something consistent later
+    private String limelightName = "limelight-alice";
 
+
+    // Setting values that we want to get later
     private double horizAngleToTarget;
-    private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
-    private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-    private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
-    private double hasVision = limelightTab.getEntry("tv").getDouble(0);
+
+    // Fiducial values
+    private double[] botPose = LimelightHelpers.getBotPose(limelightName);
+    private double[] botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
+    private double[] botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
+
+    // Both Fiducial and RetroReflective
+    private boolean hasVision = LimelightHelpers.getTV(limelightName);
+
+    // Pipeline 0 is Fiducial (april tags), Pipeline 1 is RetroReflective (tape)
     private int pipelineNum = 0;
 
-    private double horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
-    private double verticalOffset = limelightTab.getEntry("ty").getDouble(0);
-    private double targetVertical = limelightTab.getEntry("ta").getDouble(0);
-    private double targetVisible = limelightTab.getEntry("ta").getDouble(0);
+    // RetroReflective values
+    private double horizontalOffset = LimelightHelpers.getTX(limelightName);
+    private double verticalOffset = LimelightHelpers.getTY(limelightName);
+    private double targetVertical = LimelightHelpers.getTA(limelightName);
+
 
     public VisionTargetting() {
         // Inits logging for vision
         initLogging();
+
+        // Registers this as a proper Subsystem
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
     @Override
     public void periodic() {
 
-        botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
-        botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
-        botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
-        hasVision = limelightTab.getEntry("tv").getDouble(0);
-        horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
-        verticalOffset = limelightTab.getEntry("ty").getDouble(0);
-        targetVertical = limelightTab.getEntry("tvert").getDouble(0);
-        targetVisible = limelightTab.getEntry("tv").getDouble(0);
-        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
-        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
 
-        if (botPose.length != 0) {
+        // Updates all of our values used in VisionTargeting
+        botPose = LimelightHelpers.getBotPose(limelightName);
+        botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
+        botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
+        hasVision = LimelightHelpers.getTV(limelightName);
+        horizontalOffset = LimelightHelpers.getTX(limelightName);
+        verticalOffset = LimelightHelpers.getTY(limelightName);
+        targetVertical = LimelightHelpers.getTA(limelightName);
+
+        // Sets the pipeline to the current one set on shuffleboard
+        setPipeline();
+
+        if (hasVision) {
+            // Updating the Shuffleboard if we have vision
+
+            // Fiducial (april tag) Values
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TY", botPose[1]);
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose RZ", botPose[5]);
@@ -60,15 +76,19 @@ public class VisionTargetting extends SubsystemBase {
 
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
-        }
-        if (targetVisible == 1) {
+
+            // RetroReflective Values
+            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
+            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
             LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
         }
 
     }
 
+
+    // Adds logging for vision so we can look at values when the robot is off and check them
     public void initLogging() {
-        if (botPose.length != 0) {
+        if (hasVision) {
             DataLogger.addDataElement("Vision bot pose TX", () -> botPose[0]);
             DataLogger.addDataElement("Vision bot pose TY", () -> botPose[1]);
             DataLogger.addDataElement("Vision bot pose RZ", () -> botPose[5]);
@@ -78,13 +98,15 @@ public class VisionTargetting extends SubsystemBase {
             DataLogger.addDataElement("Vision bot pose Red TX", () -> botPoseRed[0]);
             DataLogger.addDataElement("Vision bot pose Red TY", () -> botPoseRed[1]);
             DataLogger.addDataElement("Vision bot pose Red RZ", () -> botPoseRed[5]);
-
+            DataLogger.addDataElement("Vision retro reflective TX", () -> horizontalOffset);
+            DataLogger.addDataElement("Vision retro reflective TY", () -> verticalOffset);
+            DataLogger.addDataElement("Vision retro reflective TA", () -> targetVertical);
         }
     }
 
     // Returns the robot pose as a Pose2d from vision data
     public Pose2d getRobotPose() {
-        if (hasVision == 1) {
+        if (hasVision) {
             return new Pose2d(new Translation2d(botPoseBlue[0], botPoseBlue[1]),
                     Rotation2d.fromDegrees(botPoseBlue[5]));
         } else {
@@ -109,7 +131,7 @@ public class VisionTargetting extends SubsystemBase {
      * @param pipelineNum The pipeline number being used on the limelight.
      */
     public void setPipelineNum(int pipelineNum) {
-        limelightTab.getEntry("pipeline").setNumber(pipelineNum);
+        LimelightHelpers.setPipelineIndex(limelightName, pipelineNum);
     }
 
     public double getPipelineNum() {
@@ -137,12 +159,12 @@ public class VisionTargetting extends SubsystemBase {
         // Set pipeline num to 2, should be retroreflective tape pipeline.
         setPipelineNum(2);
 
-        var hasTarget = limelightTab.getEntry("tv").getDouble(0);
-        this.horizAngleToTarget = limelightTab.getEntry("tx").getDouble(0);
+        this.horizAngleToTarget = LimelightHelpers.getTX(limelightName);
 
         boolean isOnTarget = isOnTarget(this.horizAngleToTarget);
 
-        if (hasTarget == 1 && !isOnTarget && validTarget()) {
+        // Checks our current angle on the target
+        if (hasVision && !isOnTarget && validTarget()) {
             return horizAngleToTarget;
         } else {
             return 0d;
@@ -164,9 +186,12 @@ public class VisionTargetting extends SubsystemBase {
 
     private void setPipeline() {
 
-        pipelineNum = (int) LightningShuffleboard.getDouble("limelight", "pipeline", 0);
+        // Gets the current shuffleboard value for the Pipeline entry
+        pipelineNum = (int) LimelightHelpers.getLimelightNTDouble("limelight", "pipeline");
 
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipelineNum);
-
+        // Updates the Limelight pipeline accordingly if pipelineNum is different than the current pipeline
+        if (pipelineNum != getPipelineNum()){
+            LimelightHelpers.setLimelightNTDouble("limelight", "pipeline", pipelineNum);
+        }
     }
 }
