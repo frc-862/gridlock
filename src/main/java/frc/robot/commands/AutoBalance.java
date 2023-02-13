@@ -131,7 +131,7 @@ public class AutoBalance extends CommandBase {
                 break;
         }
 
-        SmartDashboard.putNumber("magROC", filteredMagnitudeRateOfChange);
+        LightningShuffleboard.setDouble("autobalance", "magROC", filteredMagnitudeRateOfChange);
         LightningShuffleboard.setString("autobalance", "state", climbState.toString());
     }
 

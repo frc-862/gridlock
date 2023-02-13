@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AutoBalanceConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.Offsets;
 import frc.robot.Constants.RobotMap;
@@ -158,15 +157,6 @@ public class Drivetrain extends SubsystemBase {
         initLogging();
         initDashboard();
 
-        /*
-         * //display gravity vector for PID tuning - leave commented out until tuning
-         * neccessary
-         * tab.addDouble("gravityX", () -> getGravityVector()[0]);
-         * tab.addDouble("gravityY", () ->
-         * getGravityVector()[1]); tab.addDouble("gravityZ", () ->
-         * getGravityVector()[2]);
-         */
-
         CommandScheduler.getInstance().registerSubsystem(this);
 
     }
@@ -177,7 +167,9 @@ public class Drivetrain extends SubsystemBase {
         updateModulePositions();
         updateOdomtery();
         resetOdymetyFVision(getHeading2d(), vision.getRobotPose());
-        // field2d.setRobotPose(pose);
+
+        LightningShuffleboard.setString("Drivetrain", "Pose", getPose().toString());
+
         double pitchAngle = getPitch2d().getDegrees();
         double rollAngle = getRoll2d().getDegrees();
         double theta = Math.atan2(rollAngle, pitchAngle);
