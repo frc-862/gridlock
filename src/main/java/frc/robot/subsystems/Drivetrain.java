@@ -285,6 +285,15 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br module position",
                 () -> backRightModule.getPosition().distanceMeters);
 
+        // DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.DriveController.getTemperature());
+        // DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.SteerController.getTemperature());
+        // DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.DriveController.getTemperature());
+        // DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.SteerController.getTemperature());
+        // DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.DriveController.getTemperature());
+        // DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.SteerController.getTemperature());
+        // DataLogger.addDataElement("br drive Temperature", () -> backRightModule.DriveController.getTemperature());
+        // DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.SteerController.getTemperature());
+
         DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
         DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
         DataLogger.addDataElement("fr target angle", () -> states[1].angle.getDegrees());
@@ -302,6 +311,7 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("Heading", () -> getHeading2d().getDegrees());
         DataLogger.addDataElement("poseX", () -> getPose().getX());
         DataLogger.addDataElement("poseY", () -> getPose().getY());
+
     }
 
     /**

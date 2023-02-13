@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
+import frc.thunder.logging.DataLogger;
 
 public class Collector extends SubsystemBase {
     private CANSparkMax leftMotor;
@@ -18,7 +19,14 @@ public class Collector extends SubsystemBase {
         rightMotor = NeoConfig.createMotor(CAN.RIGHT_COLLECTOR_MOTOR, true, 0, 0,
                 MotorType.kBrushless, IdleMode.kCoast);
 
+        initLogging();
+
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+
+    public void initLogging() {
+        DataLogger.addDataElement("Collector Left Motor Temperature", () -> leftMotor.getMotorTemperature());
+        DataLogger.addDataElement("Collector Right Motor Temperature", () -> rightMotor.getMotorTemperature());
     }
 
     public void runCollector(double power) {

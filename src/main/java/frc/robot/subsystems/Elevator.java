@@ -12,6 +12,7 @@ import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Elevator extends SubsystemBase {
@@ -47,6 +48,7 @@ public class Elevator extends SubsystemBase {
         DataLogger.addDataElement("Elevator on Target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("bottom limit switch", () -> getBottomLimitSwitch() ? 1 : 0);
         DataLogger.addDataElement("top limit switch", () -> getTopLimitSwitch() ? 1 : 0);
+        DataLogger.addDataElement("Elevator Motor Temperature", () -> motor.getMotorTemperature());
     }
 
     /**

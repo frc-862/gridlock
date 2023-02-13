@@ -49,6 +49,7 @@ public class Arm extends SubsystemBase {
         DataLogger.addDataElement("Arm target angle", () -> targetAngle);
         DataLogger.addDataElement("Arm angle", () -> getAngle().getDegrees());
         DataLogger.addDataElement("Arm on target", () -> onTarget() ? 1 : 0);
+        DataLogger.addDataElement("Arm motor temperature", () -> motor.getMotorTemperature());
     }
 
     /**
