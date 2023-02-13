@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import java.util.Arrays;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -11,7 +10,6 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.logging.DataLogger;
 
 public class Lift extends SubsystemBase {
@@ -24,7 +22,7 @@ public class Lift extends SubsystemBase {
     public LiftState currentState = LiftState.stowed;
     public LiftState nextState = LiftState.stowed;
 
-    private Translation2d position = new Translation2d();
+    private Translation2d position;
 
     public Lift(Elevator elevator, Wrist wrist, Arm arm) {
         this.elevator = elevator;
@@ -43,7 +41,7 @@ public class Lift extends SubsystemBase {
         DataLogger.addDataElement("Arm Y", () -> getArmXY().getY());
         DataLogger.addDataElement("Overall X", () -> getOverallXY().getX());
         DataLogger.addDataElement("Overall Y", () -> getOverallXY().getY());
-        DataLogger.addDataElement("lift is finished", () -> isFinished() ? 1 : 0);
+        DataLogger.addDataElement("lift on target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("lift is reachable", () -> isReachable(getOverallXY()) ? 1 : 0);
     }
 
@@ -52,7 +50,7 @@ public class Lift extends SubsystemBase {
     }
 
     /**
-     * getEleveatorXY
+     * getElevatorXY
      *
      * @return Translation2d of the elevator from it's zero point
      */
@@ -156,8 +154,8 @@ public class Lift extends SubsystemBase {
         return possibleSolutions[0];
     }
 
-    public boolean isFinished() {
-        return getElevatorXY() == currentState.pose(); // TODO: add some kind of tolerance
+    public boolean onTarget() {
+        return elevator.onTarget() && arm.onTarget();
     }
 
     @Override
@@ -166,7 +164,7 @@ public class Lift extends SubsystemBase {
                 || currentState == LiftState.elevatorDeployed) {
             currentState = LiftState.elevatorDeployed;
 
-            if (isFinished()) {
+            if (onTarget()) {
                 currentState = nextState;
             }
 
