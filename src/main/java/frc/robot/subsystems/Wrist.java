@@ -49,6 +49,8 @@ public class Wrist extends SubsystemBase {
         DataLogger.addDataElement("Wrist angle", () -> getAngle().getDegrees());
         DataLogger.addDataElement("on target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("Wrist motor temperature", () -> motor.getMotorTemperature());
+        DataLogger.addDataElement("Wrist Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Wrist Motor Controller Input Voltage", () -> motor.getBusVoltage());
     }
 
     /**

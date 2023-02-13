@@ -48,7 +48,12 @@ public class Elevator extends SubsystemBase {
         DataLogger.addDataElement("Elevator on Target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("bottom limit switch", () -> getBottomLimitSwitch() ? 1 : 0);
         DataLogger.addDataElement("top limit switch", () -> getTopLimitSwitch() ? 1 : 0);
+
         DataLogger.addDataElement("Elevator Motor Temperature", () -> motor.getMotorTemperature());
+        DataLogger.addDataElement("Elevator Motor Output Current", () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Elevator Motor Controller Input Voltage", () -> motor.getBusVoltage());
+
     }
 
     /**

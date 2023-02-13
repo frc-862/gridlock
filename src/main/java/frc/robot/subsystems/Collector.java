@@ -27,6 +27,11 @@ public class Collector extends SubsystemBase {
     public void initLogging() {
         DataLogger.addDataElement("Collector Left Motor Temperature", () -> leftMotor.getMotorTemperature());
         DataLogger.addDataElement("Collector Right Motor Temperature", () -> rightMotor.getMotorTemperature());
+        DataLogger.addDataElement("R Collector Motor Controller Input Voltage", () -> rightMotor.getBusVoltage());
+        DataLogger.addDataElement("R Collector Motor Controller Output (Amps)", () -> rightMotor.getOutputCurrent());
+        DataLogger.addDataElement("L Collector Motor Controller Input Voltage", () -> leftMotor.getBusVoltage());
+        DataLogger.addDataElement("L Collector Motor Controller Output (Amps)", () -> leftMotor.getOutputCurrent());
+        
     }
 
     public void runCollector(double power) {
