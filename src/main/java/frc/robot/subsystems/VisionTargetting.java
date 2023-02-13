@@ -12,8 +12,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-public class AprilTagTargetting extends SubsystemBase {
+public class VisionTargetting extends SubsystemBase {
 
+    // Change "limelight-alice" to whatever the name of the limelight you are
+    // currently using is
     private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
 
@@ -23,17 +25,33 @@ public class AprilTagTargetting extends SubsystemBase {
     private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
     private double[] botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
     private double[] botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+    private double hasVision = limelightTab.getEntry("tv").getDouble(0);
+    private int pipelineNum = 0;
 
-    public AprilTagTargetting() {
-        CommandScheduler.getInstance().registerSubsystem(this);
+    private double horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
+    private double verticalOffset = limelightTab.getEntry("ty").getDouble(0);
+    private double targetVertical = limelightTab.getEntry("ta").getDouble(0);
+    private double targetVisible = limelightTab.getEntry("ta").getDouble(0);
+
+    public VisionTargetting() {
+        // Inits logging for vision
         initLogging();
+        CommandScheduler.getInstance().registerSubsystem(this);
     }
-    
+
     @Override
     public void periodic() {
+
         botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
         botPoseBlue = limelightTab.getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
         botPoseRed = limelightTab.getEntry("botpose_wpired").getDoubleArray(new double[6]);
+        hasVision = limelightTab.getEntry("tv").getDouble(0);
+        horizontalOffset = limelightTab.getEntry("tx").getDouble(0);
+        verticalOffset = limelightTab.getEntry("ty").getDouble(0);
+        targetVertical = limelightTab.getEntry("tvert").getDouble(0);
+        targetVisible = limelightTab.getEntry("tv").getDouble(0);
+        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
+        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
 
         if (botPose.length != 0) {
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
@@ -43,9 +61,12 @@ public class AprilTagTargetting extends SubsystemBase {
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TY", botPoseBlue[1]);
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue RZ", botPoseBlue[5]);
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TX", botPoseRed[0]);
+
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
             LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
-
+        }
+        if (targetVisible == 1) {
+            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
         }
 
     }
@@ -65,9 +86,14 @@ public class AprilTagTargetting extends SubsystemBase {
         }
     }
 
+    // Returns the robot pose as a Pose2d from vision data
     public Pose2d getRobotPose() {
-        return new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
-
+        if (hasVision == 1) {
+            return new Pose2d(new Translation2d(botPoseBlue[0], botPoseBlue[1]),
+                    Rotation2d.fromDegrees(botPoseBlue[5]));
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -88,6 +114,10 @@ public class AprilTagTargetting extends SubsystemBase {
      */
     public void setPipelineNum(int pipelineNum) {
         limelightTab.getEntry("pipeline").setNumber(pipelineNum);
+    }
+
+    public double getPipelineNum() {
+        return this.pipelineNum;
     }
 
     /**
@@ -136,4 +166,11 @@ public class AprilTagTargetting extends SubsystemBase {
         return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
     }
 
+    private void setPipeline() {
+
+        pipelineNum = (int) LightningShuffleboard.getDouble("limelight", "pipeline", 0);
+
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipelineNum);
+
+    }
 }

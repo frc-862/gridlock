@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
@@ -13,23 +9,25 @@ import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 
 public class Collector extends SubsystemBase {
-  private CANSparkMax leftMotor;
-  private CANSparkMax rightMotor;
+    private CANSparkMax leftMotor;
+    private CANSparkMax rightMotor;
 
-  public Collector() {
-    leftMotor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kCoast);
-    rightMotor = NeoConfig.createMotor(CAN.RIGHT_COLLECTOR_MOTOR, true, 0, 0, MotorType.kBrushless, IdleMode.kCoast);
-    
-    CommandScheduler.getInstance().registerSubsystem(this);
-}
+    public Collector() {
+        leftMotor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, false, 0, 0,
+                MotorType.kBrushless, IdleMode.kCoast);
+        rightMotor = NeoConfig.createMotor(CAN.RIGHT_COLLECTOR_MOTOR, true, 0, 0,
+                MotorType.kBrushless, IdleMode.kCoast);
 
-  public void runCollector(double speed) {
-    leftMotor.set(speed);
-    rightMotor.set(speed);
-  }
+        CommandScheduler.getInstance().registerSubsystem(this);
+    }
 
-  public void stop() {
-    leftMotor.set(0);
-    rightMotor.set(0);
-  }
+    public void runCollector(double power) {
+        leftMotor.set(power);
+        rightMotor.set(power);
+    }
+
+    public void stop() {
+        leftMotor.set(0);
+        rightMotor.set(0);
+    }
 }

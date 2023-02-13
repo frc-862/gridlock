@@ -6,7 +6,6 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoBalanceConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -140,6 +139,7 @@ public class AutoBalance extends CommandBase {
     public void end(boolean interrupted) {
         drivetrain.stop();
     }
+
 
     @Override
     public boolean isFinished() {

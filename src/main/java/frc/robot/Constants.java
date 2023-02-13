@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.PIDConstants;
+import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,9 +27,10 @@ public final class Constants {
 
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
-        public static final double DEADBAND = 0.1;
+        public static final int DRIVER_CONTROLLER_PORT = 0;
+        public static final double DEADBAND = 0.05;
         public static final double MIN_POWER = 0d;
-        public static final double MAX_POWER = 1d;
+        public static final double MAX_POWER = 0.9d;
 
     }
 
@@ -46,10 +48,8 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
         // Drivetrain PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS =
-                new PIDConstants(Gains.kP, Gains.kI, Gains.kD);
-        public static final PIDConstants THETA_PID_CONSTANTS =
-                new PIDConstants(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD);
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(0, 0,0);
 
         // Module resting/default angles
         public static final double FRONT_LEFT_RESTING_ANGLE = Math.toRadians(-45d);
@@ -58,16 +58,16 @@ public final class Constants {
         public static final double BACK_RIGHT_RESTING_ANGLE = Math.toRadians(-45d);
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
-        public static final double MAX_VOLTAGE = 12;
+        public static final double MAX_VOLTAGE = 3;
         // TODO look at the calculation here
-        public static final double MAX_VELOCITY_METERS_PER_SECOND =
-                5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
-                        * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
-        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-                MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0
+                * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
+                * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
+                / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                         DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND =
-                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                * 2 * Math.PI;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -76,11 +76,11 @@ public final class Constants {
 
         // Gains vaules for PIDControllers
         public static final class Gains {
-            public static final double kP = 0.116d;
+            public static final double kP = 0.15;// .116d;
             public static final double kI = 0d;
             public static final double kD = 0d;
 
-            public static final double kF = 0.229;
+            public static final double kF = 0.225;// 229d;
         }
 
         // Gains vaules for theta PIDControllers
@@ -100,15 +100,16 @@ public final class Constants {
             }
 
             public static final class Blackout {
-                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
-                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
-                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
-                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(253.916);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(222.451);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.688);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.018);
             }
         }
     }
 
     public static final class ElevatorConstants {
+        // TODO: check inverts
         public static final boolean MOTOR_INVERT = false;
         public static final boolean ENCODER_INVERT = false;
 
@@ -119,24 +120,36 @@ public final class Constants {
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
+        public static final double kF = 0d;
 
+        // TODO: set a tolerance
         public static final double TOLERANCE = 0d;
 
-        public static final int TICKS = 42;
-        public static final double GEAR_RATIO = 1d / 1d;
-        public static final double INCHES_PER_REV = 1d;
+        // TOOD: replace with actual values
+        public static final int TICKS_PER_REV = 42;
+        public static final double GEAR_RATIO = 16d / 1d;
+        public static final double SPROCKET_DIAMETER = 1.440d;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
 
-        public static final double MAX_HEIGHT = 0d;
-        public static final double MIN_HEIGHT = 100d;
+        // min/max height in inches
+        // TODO: sanity check these values
+        public static final double MAX_HEIGHT = 23.287d;
+        public static final double MIN_HEIGHT = 0d;
 
-        public static final Rotation2d ANGLE = new Rotation2d(0); // Acute Elevator mount angle in degrees
+        // Min and Max power
+        public static final double MIN_POWER = 0d;
+        public static final double MAX_POWER = 1d;
 
-        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0); // horiz/vert
-                                                                                    // offset from
-                                                                                    // ground (See
-                                                                                    // below)
-    // X = distance from arm pivot point to front of bot at bottom limit (negative)
-    // Y = height of arm pivot point from ground at bottom limit
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+
+        public static final Rotation2d ANGLE = new Rotation2d(0);
+        // Acute Elevator mount angle in degrees
+
+        // horiz/vert offset from ground (See below)
+        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
+        // X = distance from arm pivot point to front of bot at bottom limit (negative)
+        // Y = height of arm pivot point from ground at bottom limit
     }
 
     public static final class ArmConstants {
@@ -145,24 +158,42 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
+        public static final double kF = 0d;
 
         public static final double TOLERANCE = 0d;
 
-        public static final double ELEVATOR_ANGLE = 0.959931;
-        public static final double MAX_X = 100;
+        public static final double ELEVATOR_ANGLE = 0.959931; // In radians
+        // Elevator min and max extension in inches
+        public static final double MAX_EXTENSION = 63.287;
+        public static final double MIN_EXTENSION = 40d;
 
+        // Min and Max arm angles in rotations
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
 
-        public static final double LENGTH = 0; // arm length in inches
+        // Min and Max power
+        public static final double MIN_POWER = 0d;
+        public static final double MAX_POWER = 1d;
 
-        //Offsets in degrees
+        public static final double LENGTH = 30; // arm length in inches
+
+        // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
+
+        // robot lengths
+        // TODO: get accurate measurements
+        public static final double ROBOT_BODY_LENGTH = 27.7;
+
+        // TODO: replace with actual values
+        public static final double GEAR_RATIO = 1d;
+        public static final double DEGREES_PER_REV = 1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
     }
 
     public static final class WristConstants {
@@ -176,20 +207,30 @@ public final class Constants {
         public static final double kP = 0d;
         public static final double kI = 0d;
         public static final double kD = 0d;
+        public static final double kF = 0d;
 
         public static final double TOLERANCE = 0d;
 
-        //min/max angles in degrees
+        // min/max angles in degrees
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
+
+        // Min and Max power
+        public static final double MIN_POWER = 0d;
+        public static final double MAX_POWER = 1d;
 
         public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
 
         public static final double LENGTH = 0; // wrist length in inches
 
-        //Offsets in degrees
+        // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
+
+        // TODO: replace with actual values
+        public static final double GEAR_RATIO = 1d;
+        public static final double DEGREES_PER_REV = 1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
     }
 
     public static final class RobotMap {
@@ -217,17 +258,24 @@ public final class Constants {
             public static final int BACK_LEFT_CANCODER = 34;
 
             // COLLECTOR
-            public static final int LEFT_COLLECTOR_MOTOR = 0;
-            public static final int RIGHT_COLLECTOR_MOTOR = 0;
+            public static final int LEFT_COLLECTOR_MOTOR = 12;
+            public static final int RIGHT_COLLECTOR_MOTOR = 13;
 
             // ARM
-            public static final int ARM_MOTOR = 0;
+            public static final int ARM_MOTOR = 10;
 
             // WRIST
-            public static final int WRIST_MOTOR = 0;
+            public static final int WRIST_MOTOR = 11;
 
             // ELEVATOR
-            public static final int ELEVATOR_MOTOR = 0;
+            public static final int ELEVATOR_MOTOR = 9;
+
+            // COLECTOR
+            public static final int COLLECTOR_MOTOR_ONE = 12;
+            public static final int COLLECTOR_MOTOR_TWO = 13;
+
+            // MISC SENSORS
+            public static final int TIME_OF_FLIGHT = 0;
         }
     }
 
@@ -243,23 +291,23 @@ public final class Constants {
     }
 
     public static final class LedConstants {
-        public static final int port = 9;
-        public static final int length = 162;
-        public static final double brightness = 0.75;
+        public static final int ledPort = 22;
+        public static final int ledLength = 170;
+        public static final double ledSpeed = .5;
 
         public static final class Colors {
             // lightning colors
-            public static final int[] lightningOrange = {255, 71, 15};
-            public static final int[] lightningBlue = {0, 0, 255};
+            public static final int[] lightningOrange = { 255, 71, 15 };
+            public static final int[] lightningBlue = { 0, 0, 255 };
 
             // misc colors
-            public static final int[] cyan = {96, 209, 149};
-            public static final int[] yellow = {255, 230, 20};
-            public static final int[] purple = {220, 30, 240};
-            public static final int[] green = {0, 255, 0};
-            public static final int[] red = {255, 0, 0};
-            public static final int[] white = {255, 255, 255};
-            public static final int[] off = {0, 0, 0};
+            public static final int[] cyan = { 96, 209, 149 };
+            public static final int[] yellow = { 255, 230, 20 };
+            public static final int[] purple = { 220, 30, 240 };
+            public static final int[] green = { 0, 255, 0 };
+            public static final int[] red = { 255, 0, 0 };
+            public static final int[] white = { 255, 255, 255 };
+            public static final int[] off = { 0, 0, 0 };
         }
     }
 
@@ -274,11 +322,18 @@ public final class Constants {
 
     public static final class LiftConstants {
         public enum LiftState {
-            groundCollect(new Translation2d(0d, 0d)),
-            doubleSubstationCollect(new Translation2d(0d, 0d)),
-            lowScore(new Translation2d(0d, 0d)),
-            mediumScore(new Translation2d(0d, 0d)),
-            highScore(new Translation2d(0d, 0d)),
+            ground(new Translation2d(0d, 0d)), doubleSubstationCollect(
+                    new Translation2d(0d, 0d)),
+            reverseSubstationCollect(new Translation2d(0d, 0d)),
+
+            mediumCubeScore(new Translation2d(0d, 0d)), highCubeScore(
+                    new Translation2d(0d, 0d)),
+            mediumConeScore(
+                    new Translation2d(0d, 0d)),
+            highConeScore(new Translation2d(0d, 0d)),
+
+            elevatorDeployed(new Translation2d(0d, 0d)), armDeployed(new Translation2d(0d, 0d)),
+
             stowed(new Translation2d(0d, 0d));
 
             private Translation2d pose;
@@ -292,6 +347,12 @@ public final class Constants {
             }
         }
 
-        public static final Polygon BOUNDING_BOX = new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
+        public static final Polygon BOUNDING_BOX = new Polygon(new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 }, 4);
+    }
+
+    public static final class manualLiftConstants {
+        public static final double ELEVATOR_SPEED_REDUCTION = 1;
+        public static final double ARM_SPEED_REDUCTION = 0.01;
+        public static final double WRIST_SPEED_REDUCTION = 0.01;
     }
 }
