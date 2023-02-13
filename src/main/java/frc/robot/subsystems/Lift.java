@@ -218,18 +218,5 @@ public class Lift extends SubsystemBase {
                 position = LiftState.stowed.pose();
                 break;
         }
-
-        LightningShuffleboard.setDouble("Lift", "Overall X", getOverallXY().getX());
-        LightningShuffleboard.setDouble("Lift", "Overall Y", getOverallXY().getY());
-        LightningShuffleboard.setDouble("Lift", "Overall X", getOverallXY().getX());
-
-        if (isReachable(position)) {
-
-            double[] liftInfo = elevatorMath(position);
-
-            elevator.setExtension(liftInfo[1]);
-            arm.setAngle(new Rotation2d(liftInfo[0]));
-            wrist.setAngle(new Rotation2d(liftInfo[0] + 90)); // math
-        }
     }
 }
