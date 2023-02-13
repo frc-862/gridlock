@@ -59,16 +59,16 @@ public class Elevator extends SubsystemBase {
     }
 
     /**
-     * setDistance
+     * setExtension
      * 
      * @param target the target distance in inches
      */
-    public void setDistance(double target) {
-        // TODO: looks at this, since the elevator is a relative encoder we might not be
-        // able to
-        // re-zero at the top if its outside of the range
-        targetHeight = MathUtil.clamp(target, ElevatorConstants.MIN_HEIGHT, ElevatorConstants.MAX_HEIGHT);
-        controller.setReference((targetHeight), CANSparkMax.ControlType.kPosition);
+    public void setExtension(double target) {
+        // if the target is reachable, set the target and enable the controller
+        if (isReachable(target)) {
+            controller.setReference(target, CANSparkMax.ControlType.kPosition);
+        }
+        // otherwise, do nothing
     }
 
     /**
@@ -112,6 +112,15 @@ public class Elevator extends SubsystemBase {
      */
     public boolean getTopLimitSwitch() {
         return motor.getForwardLimitSwitch(ElevatorConstants.TOP_LIMIT_SWITCH_TYPE).isPressed();
+    }
+
+    /**
+     * setEncoderPosition
+     *
+     * @param position the position to set the encoder to in inches
+     */
+    public void setEncoderPosition(double position) {
+        encoder.setPosition(position);
     }
 
     /**
