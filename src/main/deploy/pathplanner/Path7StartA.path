@@ -67,8 +67,8 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
+        "executionBehavior": "parallelDeadline",
+        "waitBehavior": "deadline",
         "waitTime": 0
       }
     },

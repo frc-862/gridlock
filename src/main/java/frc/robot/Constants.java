@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.thunder.swervelib.SdsModuleConfigurations;
-import frc.thunder.swervelib.Mk3SwerveModuleHelper.GearRatio;
 import java.awt.Polygon;
 import java.nio.file.*;
 
@@ -28,9 +27,10 @@ public final class Constants {
 
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
-        public static final double DEADBAND = 0.1;
+        public static final int DRIVER_CONTROLLER_PORT = 0;
+        public static final double DEADBAND = 0.05;
         public static final double MIN_POWER = 0d;
-        public static final double MAX_POWER = 1d;
+        public static final double MAX_POWER = 0.9d;
 
     }
 
@@ -48,9 +48,8 @@ public final class Constants {
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
         // Drivetrain PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(Gains.kP, Gains.kI, Gains.kD);
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(ThetaGains.kP, ThetaGains.kI,
-                ThetaGains.kD);
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(0, 0,0);
 
         // Module resting/default angles
         public static final double FRONT_LEFT_RESTING_ANGLE = Math.toRadians(-45d);
@@ -59,7 +58,7 @@ public final class Constants {
         public static final double BACK_RIGHT_RESTING_ANGLE = Math.toRadians(-45d);
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
-        public static final double MAX_VOLTAGE = 12;
+        public static final double MAX_VOLTAGE = 3;
         // TODO look at the calculation here
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0
                 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
@@ -77,11 +76,11 @@ public final class Constants {
 
         // Gains vaules for PIDControllers
         public static final class Gains {
-            public static final double kP = 0.116d;
+            public static final double kP = 0.15;// .116d;
             public static final double kI = 0d;
             public static final double kD = 0d;
 
-            public static final double kF = 0.229;
+            public static final double kF = 0.225;// 229d;
         }
 
         // Gains vaules for theta PIDControllers
@@ -101,15 +100,16 @@ public final class Constants {
             }
 
             public static final class Blackout {
-                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(84.832);
-                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(192.7441);
-                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.5996);
-                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.457);
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(253.916);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(222.451);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(19.688);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(63.018);
             }
         }
     }
 
     public static final class ElevatorConstants {
+        // TODO: check inverts
         public static final boolean MOTOR_INVERT = false;
         public static final boolean ENCODER_INVERT = false;
 
@@ -122,13 +122,14 @@ public final class Constants {
         public static final double kD = 0d;
         public static final double kF = 0d;
 
+        // TODO: set a tolerance
         public static final double TOLERANCE = 0d;
 
         // TOOD: replace with actual values
-        public static final int TICKS = 42;
+        public static final int TICKS_PER_REV = 42;
         public static final double GEAR_RATIO = 16d / 1d;
-        public static final double INCHES_PER_REV = 1d;
-        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * INCHES_PER_REV;
+        public static final double SPROCKET_DIAMETER = 1.440d;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
 
         // min/max height in inches
         // TODO: sanity check these values
@@ -256,17 +257,21 @@ public final class Constants {
             public static final int BACK_LEFT_CANCODER = 34;
 
             // COLLECTOR
-            public static final int LEFT_COLLECTOR_MOTOR = 0;
-            public static final int RIGHT_COLLECTOR_MOTOR = 0;
+            public static final int LEFT_COLLECTOR_MOTOR = 12;
+            public static final int RIGHT_COLLECTOR_MOTOR = 13;
 
             // ARM
-            public static final int ARM_MOTOR = 0;
+            public static final int ARM_MOTOR = 10;
 
             // WRIST
-            public static final int WRIST_MOTOR = 0;
+            public static final int WRIST_MOTOR = 11;
 
             // ELEVATOR
-            public static final int ELEVATOR_MOTOR = 0;
+            public static final int ELEVATOR_MOTOR = 9;
+
+            // COLECTOR
+            public static final int COLLECTOR_MOTOR_ONE = 12;
+            public static final int COLLECTOR_MOTOR_TWO = 13;
 
             // MISC SENSORS
             public static final int TIME_OF_FLIGHT = 0;
@@ -343,5 +348,11 @@ public final class Constants {
         }
 
         public static final Polygon BOUNDING_BOX = new Polygon(new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 }, 4);
+    }
+
+    public static final class manualLiftConstants {
+        public static final double ELEVATOR_SPEED_REDUCTION = 1;
+        public static final double ARM_SPEED_REDUCTION = 0.01;
+        public static final double WRIST_SPEED_REDUCTION = 0.01;
     }
 }
