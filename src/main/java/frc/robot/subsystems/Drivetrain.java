@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.pathplanner.lib.PathPoint;
 import com.playingwithfusion.TimeOfFlight;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
@@ -30,6 +29,7 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
+import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
@@ -56,14 +56,15 @@ public class Drivetrain extends SubsystemBase {
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
     // Creating our list of module states and module positions
-    private SwerveModuleState[] states = { new SwerveModuleState(), new SwerveModuleState(),
-            new SwerveModuleState(), new SwerveModuleState() };
-    private SwerveModulePosition[] modulePositions = { new SwerveModulePosition(),
-            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition() };
+    private SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(),
+            new SwerveModuleState(), new SwerveModuleState()};
+    private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(),
+            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
 
     // Creating new pose, odometry, cahssis speeds
     private Pose2d pose = new Pose2d();
-    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
+    private SwerveDriveOdometry odometry =
+            new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our modules
@@ -161,12 +162,9 @@ public class Drivetrain extends SubsystemBase {
         initDashboard();
 
         /*
-         * //display gravity vector for PID tuning - leave commented out until tuning
-         * neccessary
-         * tab.addDouble("gravityX", () -> getGravityVector()[0]);
-         * tab.addDouble("gravityY", () ->
-         * getGravityVector()[1]); tab.addDouble("gravityZ", () ->
-         * getGravityVector()[2]);
+         * //display gravity vector for PID tuning - leave commented out until tuning neccessary
+         * tab.addDouble("gravityX", () -> getGravityVector()[0]); tab.addDouble("gravityY", () ->
+         * getGravityVector()[1]); tab.addDouble("gravityZ", () -> getGravityVector()[2]);
          */
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -182,12 +180,12 @@ public class Drivetrain extends SubsystemBase {
         // field2d.setRobotPose(pose);
         LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
         LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
-        LightningShuffleboard.setDouble("Autonomous", "Current Z", odometry.getPoseMeters().getRotation().getDegrees());
+        LightningShuffleboard.setDouble("Autonomous", "Current Z",
+                odometry.getPoseMeters().getRotation().getDegrees());
     }
 
     /**
-     * This takes chassis speeds and converts them to module states and then sets
-     * states.
+     * This takes chassis speeds and converts them to module states and then sets states.
      * 
      * @param chassisSpeeds the chassis speeds to convert to module states
      */
@@ -342,7 +340,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public PathPoint getCurrentPathPoint() {
-        return new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()),
+        return new PathPoint(
+                new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()),
                 odometry.getPoseMeters().getRotation());
     }
 
@@ -408,8 +407,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Converts percent output of joystick to a rotational velocity in omega radians
-     * per second.
+     * Converts percent output of joystick to a rotational velocity in omega radians per second.
      * 
      * @param percentOutput the percent output of the joystick
      * 
@@ -443,12 +441,11 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Takes pose2d from vision and resets odometry to that pose. Sets module
-     * positions to the
+     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the
      * current module positions.
      * 
      * @param gyroAngle the current yaw of the robot
-     * @param pose      the pose from Vision of the robot
+     * @param pose the pose from Vision of the robot
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
         if (pose != null) {
@@ -529,8 +526,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Sets all motor speeds to 0 and sets the modules to their respective resting
-     * angles
+     * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */
     public void stop() {
         states[0].speedMetersPerSecond = 0;
