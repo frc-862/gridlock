@@ -12,10 +12,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class Vision extends SubsystemBase {
 
-    // Change "limelight-alice" to whatever the name of the limelight you are
-    // currently using Alice
+    // Change "limelight" to whatever the name of the limelight you are using
     // we should rename the limelight names to something consistent later
-    private String limelightName = "limelight-alice";
+    private final String limelightName = "limelight";
 
 
     // Setting values that we want to get later
@@ -29,7 +28,7 @@ public class Vision extends SubsystemBase {
     // Both Fiducial and RetroReflective
     private boolean hasVision = LimelightHelpers.getTV(limelightName);
 
-    // Pipeline 0 is Fiducial (april tags), Pipeline 1 is RetroReflective (tape)
+    // Read the README file in thunder's limelightlib for pipeline indexes
     private int pipelineNum = 0;
 
     // RetroReflective values
@@ -59,17 +58,16 @@ public class Vision extends SubsystemBase {
         if (hasVision) {
 
             // Fiducial Pipeline
-            if (pipelineNum == 0){
+            if (pipelineNum == 0 || pipelineNum == 1){
                 // Updates Fiducial Values
                 updateFiducial();
             }
 
             // RetroReflective Pipeline
-            else if (pipelineNum == 1){
+            else if (pipelineNum == 2 || pipelineNum == 3){
                 // Updates RetroReflective Values
                 updateRetro();
             }
-
         }
 
     }
@@ -152,9 +150,8 @@ public class Vision extends SubsystemBase {
         LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
         LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
         LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
+
     }
-
-
     /**
      * Sets the pipeline we're using on the limelight. The first is for april tag
      * targetting The
@@ -228,4 +225,5 @@ public class Vision extends SubsystemBase {
             LimelightHelpers.setLimelightNTDouble("limelight", "pipeline", pipelineNum);
         }
     }
+    
 }
