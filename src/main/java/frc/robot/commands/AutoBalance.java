@@ -3,10 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoBalanceConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class AutoBalance extends CommandBase {
     private Drivetrain drivetrain;
@@ -28,13 +28,12 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public void initialize() {
-        SmartDashboard.putNumber("p gain", AutoBalanceConstants.kP);
     }
 
 
     @Override
     public void execute() {
-        pid.setP(SmartDashboard.getNumber("P gain", AutoBalanceConstants.kP));
+        pid.setP(LightningShuffleboard.getDouble("AutoBalance","P gain" , AutoBalanceConstants.kP));
 
         if (Timer.getFPGATimestamp() - lastTime > AutoBalanceConstants.THRESHOLD_TIME) {
             pitchDelta = Math.abs(drivetrain.getPitch2d().getDegrees() - lastPitch);
@@ -59,14 +58,14 @@ public class AutoBalance extends CommandBase {
                     drivetrain.percentOutputToMetersPerSecond(0), // -pid.calculate(drivetrain.getRoll2d().getDegrees(),
                                                                   // 0)),
                     drivetrain.percentOutputToMetersPerSecond(0)));
-            SmartDashboard.putNumber("motor output",
+            LightningShuffleboard.setDouble("AutoBalance", "motor output",
                     pid.calculate(drivetrain.getPitch2d().getDegrees(), 0));
         } else {
             // drivetrain.stop();
             drivetrain.drive(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(0),
                     drivetrain.percentOutputToMetersPerSecond(0),
                     drivetrain.percentOutputToMetersPerSecond(0)));
-            SmartDashboard.putNumber("motor output", 0);
+            LightningShuffleboard.setDouble("AutoBalance", "motor output",0);
         }
     }
 

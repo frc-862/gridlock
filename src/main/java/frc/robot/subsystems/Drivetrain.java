@@ -20,7 +20,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
@@ -294,6 +293,15 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br module position",
                 () -> backRightModule.getPosition().distanceMeters);
 
+        DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.getDriveTemperature());
+        DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.getSteerTemperature());
+        DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("br drive Temperature", () -> backRightModule.getDriveTemperature());
+        DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.getSteerTemperature());
+
         DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
         DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
         DataLogger.addDataElement("fr target angle", () -> states[1].angle.getDegrees());
@@ -311,6 +319,7 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("Heading", () -> getHeading2d().getDegrees());
         DataLogger.addDataElement("poseX", () -> getPose().getX());
         DataLogger.addDataElement("poseY", () -> getPose().getY());
+
     }
 
     /**
