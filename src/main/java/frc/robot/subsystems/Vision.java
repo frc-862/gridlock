@@ -49,30 +49,12 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
 
-
         // Checks if we have vision
         hasVision = LimelightHelpers.getTV(limelightName);
 
         // Sets the pipeline to the current one set on shuffleboard
         if (curPipeline != pipelineNum){
             setPipeline();
-        }
-
-        if (hasVision) {
-
-            // Fiducial Pipeline
-            if (pipelineNum == 0 || pipelineNum == 1){
-                // Updates Fiducial Values
-                updateFiducial();
-            }
-
-            // RetroReflective Pipeline
-            else if (pipelineNum == 2 || pipelineNum == 3){
-                // Updates RetroReflective Values
-                updateRetro();
-            }
-            
-            updateShuffleboard();
         }
 
     }
@@ -115,23 +97,18 @@ public class Vision extends SubsystemBase {
      * @return 3d bot pose
      */
     public double[] getBotPose() {
+        botPose = LimelightHelpers.getBotPose(limelightName);
         return this.botPose;
     }
 
     public double[] getBotPoseRed() {
+        botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
         return this.botPoseRed;
     }
 
     public double[] getBotPoseBlue() {
-        return this.botPoseBlue;
-    }
-
-
-    // Updates each used fiducial value
-    private void updateFiducial(){
-        botPose = LimelightHelpers.getBotPose(limelightName);
-        botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
         botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
+        return this.botPoseBlue;
     }
 
 
@@ -155,13 +132,7 @@ public class Vision extends SubsystemBase {
             LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
         }
     }
-
-    // Updates each used retroreflective value
-    private void updateRetro(){
-        horizontalOffset = LimelightHelpers.getTX(limelightName);
-        verticalOffset = LimelightHelpers.getTY(limelightName);
-        targetVertical = LimelightHelpers.getTA(limelightName);
-    }
+    
     /**
      * Sets the pipeline we're using on the limelight. The first is for april tag
      * targetting The
