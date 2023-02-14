@@ -136,6 +136,10 @@ public final class Constants {
         public static final double MAX_EXTENSION = 50d;
         public static final double MIN_EXTENSION = 0d;
 
+        //these are the values used to check the points in lift math are valid, by seeing how far up the elevator in inches they are starting from the very base
+        public static final double MAX_PHYSICAL_EXTENSION = 63.287d;
+        public static final double MIN_PHYSICAL_EXTENSION = 40d;
+
         // Min and Max power
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 1d;
@@ -167,9 +171,6 @@ public final class Constants {
 
         public static final double TOLERANCE = 0d;
 
-        // Elevator min and max extension in inches
-        public static final double MAX_EXTENSION = 63.287;
-        public static final double MIN_EXTENSION = 40d;
 
         // Min and Max arm angles in degrees
         public static final double MAX_ANGLE = 90d;
@@ -347,6 +348,7 @@ public final class Constants {
             }
         }
 
+        //TODO: replace with actual bounding box values
         public static final Polygon BOUNDING_BOX = new Polygon(new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 }, 4);
     }
 

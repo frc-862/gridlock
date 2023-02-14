@@ -133,8 +133,8 @@ public class Elevator extends SubsystemBase {
      * @return true if the target height is reachable by the elevator
      */
     public boolean isReachable(double targetHeight) {
-        return targetHeight >= ElevatorConstants.MIN_EXTENSION
-                && targetHeight <= ElevatorConstants.MAX_EXTENSION;
+        return targetHeight >= (ElevatorConstants.MIN_PHYSICAL_EXTENSION)
+                && targetHeight <= (ElevatorConstants.MAX_PHYSICAL_EXTENSION);
     }
 
     @Override

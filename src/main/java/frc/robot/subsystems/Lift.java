@@ -11,6 +11,7 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.thunder.logging.DataLogger;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class Lift extends SubsystemBase {
 
@@ -104,7 +105,7 @@ public class Lift extends SubsystemBase {
         public Translation2d desiredPose;
 
         public liftSolution(double elevatorX, Translation2d desiredPose) {
-            this.elevatorPose = new Translation2d(elevatorX, ElevatorConstants.ANGLE.getTan());
+            this.elevatorPose = new Translation2d(elevatorX, ElevatorConstants.ANGLE.getTan()*elevatorX);
             this.desiredPose = desiredPose;
         }
 
@@ -113,11 +114,12 @@ public class Lift extends SubsystemBase {
         }
 
         public Rotation2d getArmAngle() {
-            return elevatorPose.minus(desiredPose).getAngle();
+            return desiredPose.minus(elevatorPose).getAngle();
         }
 
         public boolean isValid() {
-            return elevator.isReachable(getExtension()) && arm.isReachable(getArmAngle()) && isReachable(desiredPose);
+            // Commented out bounding box check because the bounding box values aren't correct, uncomment when fixed
+            return elevator.isReachable(getExtension()) && arm.isReachable(getArmAngle()); // && isReachable(desiredPose);
         }
     }
 
@@ -158,8 +160,22 @@ public class Lift extends SubsystemBase {
         return elevator.onTarget() && arm.onTarget();
     }
 
+    // Test code for lift math
+    double x,y;
+    liftSolution testSolution;
+
     @Override
     public void periodic() {
+        
+        //Test code for lift math
+        // x = LightningShuffleboard.getDouble("test lift math", "x", 40);
+        // y = LightningShuffleboard.getDouble("test lift math", "y", 10);
+        // liftSolution testSolution = liftMath(new Translation2d(x,y));
+        // LightningShuffleboard.setDouble("test lift math", "lift solution y", testSolution.elevatorPose.getY());
+        // LightningShuffleboard.setDouble("test lift math", "lift solution x", testSolution.elevatorPose.getX());
+        // LightningShuffleboard.setDouble("test lift math", "lift solution arm angle", testSolution.getArmAngle().getDegrees());
+        // LightningShuffleboard.setDouble("test lift math", "lift solution extension", testSolution.getExtension());
+
         if (lastState != nextState && lastState == LiftState.stowed
                 || currentState == LiftState.elevatorDeployed) {
             currentState = LiftState.elevatorDeployed;
