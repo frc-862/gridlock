@@ -49,19 +49,13 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // Checks if we have vision
-        hasVision = LimelightHelpers.getTV(limelightName);
-
-        // Sets the pipeline to the current one set on shuffleboard
-        if (curPipeline != pipelineNum){
-            setPipeline();
-        }
-
     }
 
 
     // Adds logging for vision so we can look at values when the robot is off and check them
     public void initLogging() {
+        // Checks if we have vision
+        hasVision = LimelightHelpers.getTV(limelightName);
         if (hasVision) {
             DataLogger.addDataElement("Vision bot pose TX", () -> botPose[0]);
             DataLogger.addDataElement("Vision bot pose TY", () -> botPose[1]);
@@ -111,6 +105,9 @@ public class Vision extends SubsystemBase {
         return this.botPoseBlue;
     }
 
+    public boolean getVision(){
+        return this.hasVision;
+    }
 
     private void updateShuffleboard(){
         if (pipelineNum == 0 || pipelineNum == 1){
@@ -132,7 +129,7 @@ public class Vision extends SubsystemBase {
             LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
         }
     }
-    
+
     /**
      * Sets the pipeline we're using on the limelight. The first is for april tag
      * targetting The
@@ -145,7 +142,8 @@ public class Vision extends SubsystemBase {
     }
 
     public double getPipelineNum() {
-        return this.pipelineNum;
+        curPipeline = LimelightHelpers.getCurrentPipelineIndex(limelightName);
+        return this.curPipeline;
     }
 
     /**
@@ -172,6 +170,9 @@ public class Vision extends SubsystemBase {
         this.horizAngleToTarget = LimelightHelpers.getTX(limelightName);
 
         boolean isOnTarget = isOnTarget(this.horizAngleToTarget);
+
+        // Checks if we have vision
+        hasVision = LimelightHelpers.getTV(limelightName);
 
         // Checks our current angle on the target
         if (hasVision && !isOnTarget && validTarget()) {
