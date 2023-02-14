@@ -30,6 +30,7 @@ public class Vision extends SubsystemBase {
 
     // Read the README file in thunder's limelightlib for pipeline indexes
     private int pipelineNum = 0;
+    private double curPipeline = LimelightHelpers.getCurrentPipelineIndex(limelightName);
 
     // RetroReflective values
     private double horizontalOffset = LimelightHelpers.getTX(limelightName);
@@ -53,7 +54,9 @@ public class Vision extends SubsystemBase {
         hasVision = LimelightHelpers.getTV(limelightName);
 
         // Sets the pipeline to the current one set on shuffleboard
-        setPipeline();
+        if (curPipeline != pipelineNum){
+            setPipeline();
+        }
 
         if (hasVision) {
 
@@ -68,6 +71,8 @@ public class Vision extends SubsystemBase {
                 // Updates RetroReflective Values
                 updateRetro();
             }
+            
+            updateShuffleboard();
         }
 
     }
@@ -127,18 +132,28 @@ public class Vision extends SubsystemBase {
         botPose = LimelightHelpers.getBotPose(limelightName);
         botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
         botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
+    }
 
-        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
-        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TY", botPose[1]);
-        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose RZ", botPose[5]);
 
-        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TX", botPoseBlue[0]);
-        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TY", botPoseBlue[1]);
-        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue RZ", botPoseBlue[5]);
+    private void updateShuffleboard(){
+        if (pipelineNum == 0 || pipelineNum == 1){
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TY", botPose[1]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose RZ", botPose[5]);
 
-        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TX", botPoseRed[0]);
-        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
-        LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TX", botPoseBlue[0]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TY", botPoseBlue[1]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue RZ", botPoseBlue[5]);
+
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TX", botPoseRed[0]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
+            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
+        }
+        else if (pipelineNum == 2 || pipelineNum == 3){
+            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
+            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
+            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
+        }
     }
 
     // Updates each used retroreflective value
@@ -146,11 +161,6 @@ public class Vision extends SubsystemBase {
         horizontalOffset = LimelightHelpers.getTX(limelightName);
         verticalOffset = LimelightHelpers.getTY(limelightName);
         targetVertical = LimelightHelpers.getTA(limelightName);
-        
-        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
-        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
-        LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
-
     }
     /**
      * Sets the pipeline we're using on the limelight. The first is for april tag
