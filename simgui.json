@@ -2,10 +2,6 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-<<<<<<< HEAD
-=======
-      "/Shuffleboard/Autonomous/Auto Mode": "String Chooser",
->>>>>>> 89-find-elevator-pos-and-arm-angle-math
       "/Shuffleboard/LEDs/autoAligned": "Command",
       "/Shuffleboard/LEDs/believeScored": "Command",
       "/Shuffleboard/LEDs/fullWhite": "Command",
@@ -18,15 +14,11 @@
       "/Shuffleboard/LEDs/stop": "Command",
       "/Shuffleboard/LEDs/swirl": "Command",
       "/Shuffleboard/LEDs/wantsCone": "Command",
-<<<<<<< HEAD
-      "/Shuffleboard/LEDs/wantsCube": "Command"
-=======
       "/Shuffleboard/LEDs/wantsCube": "Command",
       "/Shuffleboard/SystemTest/bl drive test": "Command",
       "/Shuffleboard/SystemTest/br drive test": "Command",
       "/Shuffleboard/SystemTest/fl drive test": "Command",
       "/Shuffleboard/SystemTest/fr drive test": "Command"
->>>>>>> 89-find-elevator-pos-and-arm-angle-math
     }
   }
 }
