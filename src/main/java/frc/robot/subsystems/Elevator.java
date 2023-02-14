@@ -21,6 +21,7 @@ public class Elevator extends SubsystemBase {
     private RelativeEncoder encoder;
     private double targetHeight;
 
+
     public Elevator() {
         motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT,
                 ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
@@ -37,11 +38,11 @@ public class Elevator extends SubsystemBase {
 
         initLogging();
 
-        PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", controller);
+        // PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", elevatorController);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
-
+    
     public void initLogging() {
         DataLogger.addDataElement("Elevator Extension", () -> getExtension());
         DataLogger.addDataElement("Elevator Target Height", () -> targetHeight);
@@ -151,6 +152,13 @@ public class Elevator extends SubsystemBase {
         if (getBottomLimitSwitch()) {
             encoder.setPosition(ElevatorConstants.MIN_HEIGHT);
         }
+
+        LightningShuffleboard.setBool("Elevator", "Top Limit", getTopLimitSwitch());
+        LightningShuffleboard.setBool("Elevator", "Bottom Limit", getBottomLimitSwitch());
+        LightningShuffleboard.setDouble("Elevator", "Elevator Height", getExtension());
+
+        // setDistance(LightningShuffleboard.getDouble("Elevaotr", "target elevator height", 0));
+        // LightningShuffleboard.setDouble("Elevator", "KP thing", elevatorController.getP());
 
     }
 }

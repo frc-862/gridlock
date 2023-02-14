@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.pathplanner.lib.PathPoint;
 import com.playingwithfusion.TimeOfFlight;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
@@ -20,7 +21,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
@@ -29,6 +29,7 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
  * Our drivetrain subsystem
@@ -82,6 +83,7 @@ public class Drivetrain extends SubsystemBase {
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
+    private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
     private VisionTargetting vision = new VisionTargetting();
 
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
@@ -104,6 +106,12 @@ public class Drivetrain extends SubsystemBase {
         swerveConfiguration
                 .setDrivePIDGains(new SparkMaxPIDGains(Gains.kP, Gains.kI, Gains.kD, Gains.kF));
 
+        blSwerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
+        blSwerveConfiguration.setSteerCurrentLimit(DrivetrainConstants.STEER_CURRENT_LIMIT);
+        blSwerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
+        blSwerveConfiguration
+                .setDrivePIDGains(new SparkMaxPIDGains(Gains.kP, Gains.kI, Gains.kD, Gains.kF));
+
         // Making front left module
         frontLeftModule = Mk4iSwerveModuleHelper.createNeo(
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4)
@@ -124,7 +132,7 @@ public class Drivetrain extends SubsystemBase {
         backLeftModule = Mk4iSwerveModuleHelper.createNeo(
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(
                         4, 0),
-                swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
+                blSwerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
                 RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR, RobotMap.CAN.BACK_LEFT_AZIMUTH_MOTOR,
                 RobotMap.CAN.BACK_LEFT_CANCODER, BACK_LEFT_STEER_OFFSET);
 
@@ -171,7 +179,9 @@ public class Drivetrain extends SubsystemBase {
         updateOdomtery();
         resetOdymetyFVision(getHeading2d(), vision.getRobotPose());
         // field2d.setRobotPose(pose);
-        SmartDashboard.putString("pose", pose.getTranslation().toString());
+        LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
+        LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
+        LightningShuffleboard.setDouble("Autonomous", "Current Z", odometry.getPoseMeters().getRotation().getDegrees());
     }
 
     /**
@@ -338,6 +348,11 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("pitch", () -> getPitch2d().getDegrees());
 
         tab.addDouble("fl drive voltage", () -> frontLeftModule.getDriveVoltage());
+    }
+
+    public PathPoint getCurrentPathPoint() {
+        return new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()),
+                odometry.getPoseMeters().getRotation());
     }
 
     /**
@@ -527,14 +542,18 @@ public class Drivetrain extends SubsystemBase {
      * angles
      */
     public void stop() {
-        states[0] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
-        states[1] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
-        states[2] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
-        states[3] = new SwerveModuleState(0,
-                new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
+        states[0].speedMetersPerSecond = 0;
+        states[1].speedMetersPerSecond = 0;
+        states[2].speedMetersPerSecond = 0;
+        states[3].speedMetersPerSecond = 0;
+        // states[0] = new SwerveModuleState(0,
+        // new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
+        // states[1] = new SwerveModuleState(0,
+        // new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
+        // states[2] = new SwerveModuleState(0,
+        // new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
+        // states[3] = new SwerveModuleState(0,
+        // new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
     }
 
     public void resetNeoAngle() {

@@ -15,7 +15,7 @@ public class VisionTargetting extends SubsystemBase {
 
     // Change "limelight-alice" to whatever the name of the limelight you are
     // currently using is
-    private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight");
+    private final NetworkTable limelightTab = NetworkTableInstance.getDefault().getTable("limelight-alice");
 
     private double horizAngleToTarget;
     private double[] botPose = limelightTab.getEntry("botpose").getDoubleArray(new double[6]);
