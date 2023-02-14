@@ -285,14 +285,14 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br module position",
                 () -> backRightModule.getPosition().distanceMeters);
 
-        // DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.DriveController.getTemperature());
-        // DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.SteerController.getTemperature());
-        // DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.DriveController.getTemperature());
-        // DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.SteerController.getTemperature());
-        // DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.DriveController.getTemperature());
-        // DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.SteerController.getTemperature());
-        // DataLogger.addDataElement("br drive Temperature", () -> backRightModule.DriveController.getTemperature());
-        // DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.SteerController.getTemperature());
+        DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.getDriveTemperature());
+        DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.getSteerTemperature());
+        DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("br drive Temperature", () -> backRightModule.getDriveTemperature());
+        DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.getSteerTemperature());
 
         DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
         DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
