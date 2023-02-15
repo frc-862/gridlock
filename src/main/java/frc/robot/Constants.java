@@ -132,9 +132,11 @@ public final class Constants {
         public static final double POSITION_CONVERSION_FACTOR = 1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
 
         // min/max height in inches
-        // TODO: sanity check these values
-        public static final double MAX_HEIGHT = 23.287d;
-        public static final double MIN_HEIGHT = 0d;
+        public static final double MAX_EXTENSION = 23.287d;
+        public static final double MIN_EXTENSION = 0d;
+
+        //the height of the elevator from the ground, use as an offset for our math
+        public static final double ELEVATOR_HEIGHT_OFFSET = 40d;
 
         // Min and Max power
         public static final double MIN_POWER = 0d;
@@ -143,7 +145,7 @@ public final class Constants {
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
-        public static final Rotation2d ANGLE = new Rotation2d(0);
+        public static final Rotation2d ANGLE = Rotation2d.fromDegrees(55d);
         // Acute Elevator mount angle in degrees
 
         // horiz/vert offset from ground (See below)
@@ -167,12 +169,8 @@ public final class Constants {
 
         public static final double TOLERANCE = 0d;
 
-        public static final double ELEVATOR_ANGLE = 0.959931; // In radians
-        // Elevator min and max extension in inches
-        public static final double MAX_EXTENSION = 63.287;
-        public static final double MIN_EXTENSION = 40d;
 
-        // Min and Max arm angles in rotations
+        // Min and Max arm angles in degrees
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
 
@@ -348,6 +346,7 @@ public final class Constants {
             }
         }
 
+        //TODO: replace with actual bounding box values
         public static final Polygon BOUNDING_BOX = new Polygon(new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 }, 4);
     }
 
