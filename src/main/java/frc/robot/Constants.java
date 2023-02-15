@@ -132,13 +132,11 @@ public final class Constants {
         public static final double POSITION_CONVERSION_FACTOR = 1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
 
         // min/max height in inches
-        // TODO: sanity check these values
-        public static final double MAX_EXTENSION = 50d;
+        public static final double MAX_EXTENSION = 23.287d;
         public static final double MIN_EXTENSION = 0d;
 
-        //these are the values used to check the points in lift math are valid, by seeing how far up the elevator in inches they are starting from the very base
-        public static final double MAX_PHYSICAL_EXTENSION = 63.287d;
-        public static final double MIN_PHYSICAL_EXTENSION = 40d;
+        //the height of the elevator from the ground, use as an offset for our math
+        public static final double ELEVATOR_HEIGHT_OFFSET = 40d;
 
         // Min and Max power
         public static final double MIN_POWER = 0d;
