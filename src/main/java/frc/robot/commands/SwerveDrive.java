@@ -50,8 +50,6 @@ public class SwerveDrive extends CommandBase {
                         drivetrain.percentOutputToRadiansPerSecond(
                                 m_rotationSupplier.getAsDouble()),
                         drivetrain.getHeading2d()));
-
-        System.out.println("joystick Power" + m_translationYSupplier.getAsDouble());
     }
 
     @Override
