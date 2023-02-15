@@ -77,7 +77,8 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("Path4StartA", new HashMap<>(),
                 new PathConstraints(DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
                         DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND));
-        autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(0.5, 0.5));
+        autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(1, 0.25));
+        autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(1, 0.25));
     }
 
     @Override

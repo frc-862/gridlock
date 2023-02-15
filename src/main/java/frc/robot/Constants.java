@@ -351,8 +351,8 @@ public final class Constants {
 
     public static final class AutonomousConstants {
         // Path planner PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(0, 0, 0);
-        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(3.75, 0, 0);
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7.5, 0, 0);
+        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(12, 0, 0);
     }
 }
