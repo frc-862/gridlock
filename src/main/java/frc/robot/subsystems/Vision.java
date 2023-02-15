@@ -111,22 +111,22 @@ public class Vision extends SubsystemBase {
 
     private void updateShuffleboard(){
         if (pipelineNum == 0 || pipelineNum == 1){
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TX", botPose[0]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose TY", botPose[1]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose RZ", botPose[5]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TX", botPose[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TY", botPose[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose RZ", botPose[5]);
 
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TX", botPoseBlue[0]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue TY", botPoseBlue[1]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Blue RZ", botPoseBlue[5]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TX", botPoseBlue[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TY", botPoseBlue[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue RZ", botPoseBlue[5]);
 
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TX", botPoseRed[0]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red TY", botPoseRed[1]);
-            LightningShuffleboard.setDouble("Autonomous", "1Vision bot pose Red RZ", botPoseRed[5]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TX", botPoseRed[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TY", botPoseRed[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red RZ", botPoseRed[5]);
         }
         else if (pipelineNum == 2 || pipelineNum == 3){
-            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Horizontal Offset", horizontalOffset);
-            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Vertical Offset", verticalOffset);
-            LightningShuffleboard.setDouble("Autonomous", "1RR Tape Target Area", targetVertical);
+            LightningShuffleboard.setDouble("Autonomous", "RR Tape Horizontal Offset", horizontalOffset);
+            LightningShuffleboard.setDouble("Autonomous", "RR Tape Vertical Offset", verticalOffset);
+            LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area", targetVertical);
         }
     }
 
