@@ -80,6 +80,10 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("StraightButRotate", new HashMap<>(),
                 new PathConstraints(10, 1));
         autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(10, 1));
+        autoFactory.makeTrajectory("Path8StartC", new HashMap<>(), new PathConstraints(10, 1));
+        autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(10, 1));
+        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(10, 1));
+        autoFactory.makeTrajectory("jitter", new HashMap<>(), new PathConstraints(5, 1));
     }
 
     @Override

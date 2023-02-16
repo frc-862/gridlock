@@ -63,7 +63,7 @@ public class Drivetrain extends SubsystemBase {
     // Creating new pose, odometry, cahssis speeds
     private Pose2d pose = new Pose2d();
     private SwerveDriveOdometry odometry =
-            new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
+            new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our modules
@@ -175,7 +175,7 @@ public class Drivetrain extends SubsystemBase {
         // Update our module positions, odometery
         updateModulePositions();
         updateOdomtery();
-        resetOdymetyFVision(getHeading2d(), vision.getRobotPose());
+        resetOdymetyFVision(getYaw2d(), vision.getRobotPose());
         // field2d.setRobotPose(pose);
         LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
         LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
@@ -243,7 +243,7 @@ public class Drivetrain extends SubsystemBase {
      * Updates odometry using the current yaw and module states.
      */
     public void updateOdomtery() {
-        pose = odometry.update(getHeading2d(), modulePositions);
+        pose = odometry.update(getYaw2d(), modulePositions);
     }
 
     /**
@@ -293,14 +293,22 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br module position",
                 () -> backRightModule.getPosition().distanceMeters);
 
-        DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.getDriveTemperature());
-        DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.getSteerTemperature());
-        DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("br drive Temperature", () -> backRightModule.getDriveTemperature());
-        DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.getSteerTemperature());
+        DataLogger.addDataElement("fl drive Temperature",
+                () -> frontLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("fl azimuth Temperature",
+                () -> frontLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("fr drive Temperature",
+                () -> frontRightModule.getDriveTemperature());
+        DataLogger.addDataElement("fr azimuth Temperature",
+                () -> frontRightModule.getSteerTemperature());
+        DataLogger.addDataElement("bl drive Temperature",
+                () -> backLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("bl azimuth Temperature",
+                () -> backLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("br drive Temperature",
+                () -> backRightModule.getDriveTemperature());
+        DataLogger.addDataElement("br azimuth Temperature",
+                () -> backRightModule.getSteerTemperature());
 
         DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
         DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
@@ -316,9 +324,9 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("bl drive voltage", () -> backLeftModule.getDriveVoltage());
         DataLogger.addDataElement("br drive voltage", () -> backRightModule.getDriveVoltage());
 
-        DataLogger.addDataElement("Heading", () -> getHeading2d().getDegrees());
-        DataLogger.addDataElement("poseX", () -> getPose().getX());
-        DataLogger.addDataElement("poseY", () -> getPose().getY());
+        DataLogger.addDataElement("Heading", () -> odometry.getPoseMeters().getRotation().getDegrees());
+        DataLogger.addDataElement("poseX", () -> odometry.getPoseMeters().getX());
+        DataLogger.addDataElement("poseY", () -> odometry.getPoseMeters().getY());
 
     }
 
@@ -341,7 +349,7 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("fr drive vel", () -> frontLeftModule.getDriveVelocity());
         tab.addDouble("br drive vel", () -> frontLeftModule.getDriveVelocity());
 
-        tab.addDouble("heading", () -> getHeading2d().getDegrees());
+        tab.addDouble("heading", () -> getYaw2d().getDegrees());
         tab.addDouble("roll", () -> getRoll2d().getDegrees());
         tab.addDouble("pitch", () -> getPitch2d().getDegrees());
 
@@ -363,7 +371,7 @@ public class Drivetrain extends SubsystemBase {
     public void setInitialPose(Pose2d initalPosition, Rotation2d initalRotation) {
         pigeon.setYaw(initalRotation.getDegrees());
         pose = new Pose2d(initalPosition.getTranslation(), initalRotation);
-        odometry = new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
+        odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
 
     }
 
@@ -372,7 +380,7 @@ public class Drivetrain extends SubsystemBase {
      * 
      * @return the current heading of the robot in meters
      */
-    public Rotation2d getHeading2d() {
+    public Rotation2d getYaw2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
     }
 
@@ -446,7 +454,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(getHeading2d(), modulePositions, pose);
+        odometry.resetPosition(getYaw2d(), modulePositions, pose);
     }
 
     /**
@@ -458,7 +466,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
         // if (pose != null) {
-        //     odometry.resetPosition(gyroAngle, modulePositions, pose);
+        // odometry.resetPosition(gyroAngle, modulePositions, pose);
         // }
     }
 
