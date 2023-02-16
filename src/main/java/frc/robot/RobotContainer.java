@@ -78,12 +78,13 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(1, 0.25));
         autoFactory.makeTrajectory("Straight", new HashMap<>(), new PathConstraints(11, 3));
         autoFactory.makeTrajectory("StraightButRotate", new HashMap<>(),
-                new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("Path8StartC", new HashMap<>(), new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(10, 1));
+                new PathConstraints(AutonomousConstants.MAX_VEL, 1));
+        autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VEL, AutonomousConstants.MAX_ACCEL));
+        autoFactory.makeTrajectory("Path6StartC", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VEL, AutonomousConstants.MAX_ACCEL));
+        autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VEL, AutonomousConstants.MAX_ACCEL));
+        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VEL, AutonomousConstants.MAX_ACCEL));
         autoFactory.makeTrajectory("jitter", new HashMap<>(), new PathConstraints(5, 1));
+        autoFactory.makeTrajectory("Path8StartC", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VEL, AutonomousConstants.MAX_ACCEL));
     }
 
     @Override

@@ -352,5 +352,8 @@ public final class Constants {
         public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(8, 0, 0);
         public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(6, 0, 0);
         public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0,0, 0);
+
+        public static final double MAX_VEL = 10;
+        public static final double MAX_ACCEL = 1;
     }
 }
