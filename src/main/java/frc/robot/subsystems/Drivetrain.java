@@ -8,7 +8,9 @@ import com.playingwithfusion.TimeOfFlight;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
+import frc.thunder.tuning.PIDDashboardTuner;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,6 +28,7 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.Offsets;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
+import frc.robot.Constants.DrivetrainConstants.HeadingGains;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
@@ -88,6 +91,9 @@ public class Drivetrain extends SubsystemBase {
     private Vision vision = new Vision();
 
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
+
+    private final PIDController headingController =
+            new PIDController(HeadingGains.kP, HeadingGains.kI, HeadingGains.kD);
 
     public Drivetrain(Vision vision) {
         this.vision = vision;
@@ -160,6 +166,8 @@ public class Drivetrain extends SubsystemBase {
         initLogging();
         initDashboard();
 
+        PIDDashboardTuner pidTuner = new PIDDashboardTuner("Heading", headingController);
+
         /*
          * //display gravity vector for PID tuning - leave commented out until tuning neccessary
          * tab.addDouble("gravityX", () -> getGravityVector()[0]); tab.addDouble("gravityY", () ->
@@ -181,6 +189,10 @@ public class Drivetrain extends SubsystemBase {
         LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
         LightningShuffleboard.setDouble("Autonomous", "Current Z",
                 odometry.getPoseMeters().getRotation().getDegrees());
+    }
+
+    public PIDController getHeadingController() {
+        return headingController;
     }
 
     /**
@@ -373,6 +385,10 @@ public class Drivetrain extends SubsystemBase {
         pose = new Pose2d(initalPosition.getTranslation(), initalRotation);
         odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
 
+    }
+
+    public Rotation2d getHeading() {
+        return odometry.getPoseMeters().getRotation();
     }
 
     /**

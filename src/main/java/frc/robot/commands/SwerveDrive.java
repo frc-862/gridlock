@@ -1,7 +1,9 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
 import java.util.function.DoubleSupplier;
@@ -17,6 +19,9 @@ public class SwerveDrive extends CommandBase {
     private final DoubleSupplier m_translationXSupplier;
     private final DoubleSupplier m_translationYSupplier;
     private final DoubleSupplier m_rotationSupplier;
+
+    private Rotation2d lastGoodHeading = new Rotation2d();
+    private boolean updated = false;
 
     /**
      * Creates a new SwerveDrive command.
@@ -39,17 +44,26 @@ public class SwerveDrive extends CommandBase {
     @Override
     public void execute() {
         // Call drive method from drivetrain
-        drivetrain.drive(
-                // Supply chassie speeds from the translation suppliers using feild
-                // relative control
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                        drivetrain.percentOutputToMetersPerSecond(
-                                m_translationXSupplier.getAsDouble()),
-                        drivetrain.percentOutputToMetersPerSecond(
-                                m_translationYSupplier.getAsDouble()),
-                        drivetrain.percentOutputToRadiansPerSecond(
-                                m_rotationSupplier.getAsDouble()),
-                        drivetrain.getYaw2d()));
+
+
+        if (Math.abs(m_translationXSupplier.getAsDouble()) < 0 && !updated) {
+            lastGoodHeading = drivetrain.getYaw2d();
+            updated = true;
+        } else {
+            updated = false;
+        }
+
+
+        drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+                drivetrain.percentOutputToMetersPerSecond(drivetrain.getHeadingController()
+                        .calculate(drivetrain.getYaw2d().getDegrees(), lastGoodHeading.getDegrees())
+                        + m_translationXSupplier.getAsDouble()),
+                drivetrain.percentOutputToMetersPerSecond(m_translationYSupplier.getAsDouble()),
+                drivetrain.percentOutputToMetersPerSecond(drivetrain.getHeadingController()
+                        .calculate(drivetrain.getYaw2d().getDegrees(), lastGoodHeading.getDegrees())
+                        + m_rotationSupplier.getAsDouble()),
+                drivetrain.getYaw2d()));
+
     }
 
     @Override
