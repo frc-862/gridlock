@@ -88,10 +88,10 @@ public final class Constants {
 
         public static final class Offsets {
             public static final class Gridlock {
-                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(287.402);
-                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(119.795);
-                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(325.811);
-                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(13.271);
+                public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(193.535);
+                public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(145.547);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(198.721);
+                public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(210.938);
             }
 
             public static final class Blackout {
@@ -133,7 +133,7 @@ public final class Constants {
         public static final double ELEVATOR_HEIGHT_OFFSET = 40d;
 
         // Min and Max power
-        public static final double MIN_POWER = 0d;
+        public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
@@ -170,7 +170,7 @@ public final class Constants {
         public static final double MIN_ANGLE = -90d;
 
         // Min and Max power
-        public static final double MIN_POWER = 0d;
+        public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
         public static final double LENGTH = 30; // arm length in inches
@@ -208,7 +208,7 @@ public final class Constants {
         public static final double MIN_ANGLE = -90d;
 
         // Min and Max power
-        public static final double MIN_POWER = 0d;
+        public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
         public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
@@ -349,8 +349,8 @@ public final class Constants {
 
     public static final class AutonomousConstants {
         // Path planner PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0);
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(6.8, 0, 0);
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(8, 0, 0);
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(6, 0, 0);
         public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0,0, 0);
     }
 }
