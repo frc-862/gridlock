@@ -289,14 +289,22 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br module position",
                 () -> backRightModule.getPosition().distanceMeters);
 
-        DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.getDriveTemperature());
-        DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.getSteerTemperature());
-        DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("br drive Temperature", () -> backRightModule.getDriveTemperature());
-        DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.getSteerTemperature());
+        DataLogger.addDataElement("fl drive Temperature",
+                () -> frontLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("fl azimuth Temperature",
+                () -> frontLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("fr drive Temperature",
+                () -> frontRightModule.getDriveTemperature());
+        DataLogger.addDataElement("fr azimuth Temperature",
+                () -> frontRightModule.getSteerTemperature());
+        DataLogger.addDataElement("bl drive Temperature",
+                () -> backLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("bl azimuth Temperature",
+                () -> backLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("br drive Temperature",
+                () -> backRightModule.getDriveTemperature());
+        DataLogger.addDataElement("br azimuth Temperature",
+                () -> backRightModule.getSteerTemperature());
 
         DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
         DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
@@ -454,7 +462,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
         // if (pose != null) {
-        //     odometry.resetPosition(gyroAngle, modulePositions, pose);
+        // odometry.resetPosition(gyroAngle, modulePositions, pose);
         // }
     }
 
@@ -534,10 +542,11 @@ public class Drivetrain extends SubsystemBase {
      * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */
     public void stop() {
-        states[0].speedMetersPerSecond = 0;
-        states[1].speedMetersPerSecond = 0;
-        states[2].speedMetersPerSecond = 0;
-        states[3].speedMetersPerSecond = 0;
+        frontLeftModule.set(0, DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE);
+        frontRightModule.set(0, DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE);
+        backLeftModule.set(0, DrivetrainConstants.BACK_LEFT_RESTING_ANGLE);
+        backRightModule.set(0, DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE);
+
     }
 
     public void resetNeoAngle() {
@@ -545,7 +554,7 @@ public class Drivetrain extends SubsystemBase {
         frontRightModule.setEncoderAngle();
         backLeftModule.setEncoderAngle();
         backRightModule.setEncoderAngle();
-    }
+    }   
 
     public double getTOF() {
         return tof.getRange();

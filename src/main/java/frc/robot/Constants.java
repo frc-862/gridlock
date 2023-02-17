@@ -86,7 +86,7 @@ public final class Constants {
             public static final double kD = 0d;
 
         }
-        
+
 
         public static final class Offsets {
             public static final class Gridlock {
@@ -131,7 +131,7 @@ public final class Constants {
         public static final double MAX_EXTENSION = 23.287d;
         public static final double MIN_EXTENSION = 0d;
 
-        //the height of the elevator from the ground, use as an offset for our math
+        // the height of the elevator from the ground, use as an offset for our math
         public static final double ELEVATOR_HEIGHT_OFFSET = 40d;
 
         // Min and Max power
@@ -279,9 +279,14 @@ public final class Constants {
         public static final double UPPER_MAGNITUDE_THRESHOLD = 11;
         public static final double LOWER_MAGNITUDE_THRESHOLD = 3;
         public static final double MAGNITUDE_RATE_OF_CHANGE_THRESHOLD = 0.05;
-        public static final double MIN_SPEED_THRESHOLD = -0.9;
-        public static final double MAX_SPEED_THRESHOLD = 0.9;
+        public static final double MIN_SPEED_THRESHOLD = 0.35;
+        public static final double MAX_SPEED_THRESHOLD = 3;
         public static final double DELAY_TIME = 2;
+
+        public static final double TARGET_X = 3.93;
+        public static final double kP = 2;
+        public static final double kI = 0;
+        public static final double kD = 0;
     }
 
     public static final class LedConstants {
@@ -338,8 +343,9 @@ public final class Constants {
             }
         }
 
-        //TODO: replace with actual bounding box values
-        public static final Polygon BOUNDING_BOX = new Polygon(new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 }, 4);
+        // TODO: replace with actual bounding box values
+        public static final Polygon BOUNDING_BOX =
+                new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
     }
 
     public static final class ManualLiftConstants {
@@ -352,6 +358,6 @@ public final class Constants {
         // Path planner PIDConstants
         public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0);
         public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7, 0, 0);
-        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0,0, 0);
+        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
     }
 }
