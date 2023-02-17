@@ -206,7 +206,7 @@ public class Drivetrain extends SubsystemBase {
      * @param chassisSpeeds the chassis speeds to convert to module states
      */
     public void drive(ChassisSpeeds chassisSpeeds) {
-        this.chassisSpeeds = chassisSpeeds;
+        outputChassisSpeeds = chassisSpeeds;
 
         if (!updatedHeading) {   
             lastGoodheading = pose.getRotation().getDegrees();
