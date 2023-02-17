@@ -86,10 +86,10 @@ public final class Constants {
             public static final double kD = 0d;
 
         }
-        
+
 
         public static final class HeadingGains {
-            public static final double kP = 0d;
+            public static final double kP = 0.001d;
             public static final double kI = 0d;
             public static final double kD = 0d;
         }
@@ -360,6 +360,6 @@ public final class Constants {
         // Path planner PIDConstants
         public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(8, 0, 0);
         public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(6, 0, 0);
-        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0,0, 0);
+        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
     }
 }

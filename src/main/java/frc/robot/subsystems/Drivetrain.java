@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.fasterxml.jackson.core.io.OutputDecorator;
 import com.playingwithfusion.TimeOfFlight;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
@@ -95,6 +96,10 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController headingController =
             new PIDController(HeadingGains.kP, HeadingGains.kI, HeadingGains.kD);
 
+    private boolean updatedHeading = false;
+    private double lastGoodheading = 0d;
+    private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
+
     public Drivetrain(Vision vision) {
         this.vision = vision;
         // TODO: make this better
@@ -166,7 +171,7 @@ public class Drivetrain extends SubsystemBase {
         initLogging();
         initDashboard();
 
-        PIDDashboardTuner pidTuner = new PIDDashboardTuner("Heading", headingController);
+        // PIDDashboardTuner pidTuner = new PIDDashboardTuner("Heading", headingController);
 
         /*
          * //display gravity vector for PID tuning - leave commented out until tuning neccessary
@@ -202,6 +207,18 @@ public class Drivetrain extends SubsystemBase {
      */
     public void drive(ChassisSpeeds chassisSpeeds) {
         this.chassisSpeeds = chassisSpeeds;
+
+        if (!updatedHeading) {   
+            lastGoodheading = pose.getRotation().getDegrees();
+            updatedHeading = true;
+        }
+
+        if (chassisSpeeds.omegaRadiansPerSecond == 0) {
+            outputChassisSpeeds.omegaRadiansPerSecond = headingController.calculate(pose.getRotation().getDegrees(), lastGoodheading);
+        } else {
+            updatedHeading = false;
+        }
+
         if (states != null && chassisSpeeds.vxMetersPerSecond == 0
                 && chassisSpeeds.vyMetersPerSecond == 0
                 && chassisSpeeds.omegaRadiansPerSecond == 0) {
@@ -210,18 +227,11 @@ public class Drivetrain extends SubsystemBase {
             states[1].speedMetersPerSecond = 0;
             states[2].speedMetersPerSecond = 0;
             states[3].speedMetersPerSecond = 0;
-            // states[0] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
-            // states[1] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
-            // states[2] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
-            // states[3] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
 
         } else {
-            states = kinematics.toSwerveModuleStates(chassisSpeeds);
+            states = kinematics.toSwerveModuleStates(outputChassisSpeeds);
         }
+
         setStates(states);
     }
 
