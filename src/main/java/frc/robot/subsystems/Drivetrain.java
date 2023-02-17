@@ -28,6 +28,7 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
+import frc.thunder.math.LightningMath;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
@@ -145,11 +146,8 @@ public class Drivetrain extends SubsystemBase {
                 RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
                 RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
-        // Setting states of the modules
-        setStates(states);
 
-        // Update our module positions, odometery, and states
-        updateModulePositions();
+        // Setting states of the modules
         updateOdomtery();
         updateDriveStates(states);
 
@@ -159,12 +157,6 @@ public class Drivetrain extends SubsystemBase {
         // Start logging data and adding data to the dashboard
         initLogging();
         initDashboard();
-
-        /*
-         * //display gravity vector for PID tuning - leave commented out until tuning neccessary
-         * tab.addDouble("gravityX", () -> getGravityVector()[0]); tab.addDouble("gravityY", () ->
-         * getGravityVector()[1]); tab.addDouble("gravityZ", () -> getGravityVector()[2]);
-         */
 
         CommandScheduler.getInstance().registerSubsystem(this);
 
@@ -176,7 +168,19 @@ public class Drivetrain extends SubsystemBase {
         updateModulePositions();
         updateOdomtery();
         resetOdymetyFVision(getHeading2d(), vision.getRobotPose());
-        // field2d.setRobotPose(pose);
+
+        LightningShuffleboard.setString("Drivetrain", "Pose", getPose().toString());
+
+        double pitchAngle = getPitch2d().getDegrees();
+        double rollAngle = getRoll2d().getDegrees();
+        double theta = Math.atan2(rollAngle, pitchAngle);
+        double magnitude = Math.sqrt((pitchAngle * pitchAngle) + (rollAngle * rollAngle));
+        LightningShuffleboard.setDouble("autobalance", "pitch angle", pitchAngle);
+        LightningShuffleboard.setDouble("autobalance", "roll angle", rollAngle);
+        LightningShuffleboard.setDouble("autobalance", "theta",
+                LightningMath.inputModulus((theta + Math.PI), -Math.PI, Math.PI));
+        LightningShuffleboard.setDouble("autobalance", "magnitude", magnitude);
+
         LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
         LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
         LightningShuffleboard.setDouble("Autonomous", "Current Z",
@@ -198,14 +202,6 @@ public class Drivetrain extends SubsystemBase {
             states[1].speedMetersPerSecond = 0;
             states[2].speedMetersPerSecond = 0;
             states[3].speedMetersPerSecond = 0;
-            // states[0] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
-            // states[1] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
-            // states[2] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
-            // states[3] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
 
         } else {
             states = kinematics.toSwerveModuleStates(chassisSpeeds);
@@ -293,14 +289,22 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br module position",
                 () -> backRightModule.getPosition().distanceMeters);
 
-        DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.getDriveTemperature());
-        DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.getSteerTemperature());
-        DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("br drive Temperature", () -> backRightModule.getDriveTemperature());
-        DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.getSteerTemperature());
+        DataLogger.addDataElement("fl drive Temperature",
+                () -> frontLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("fl azimuth Temperature",
+                () -> frontLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("fr drive Temperature",
+                () -> frontRightModule.getDriveTemperature());
+        DataLogger.addDataElement("fr azimuth Temperature",
+                () -> frontRightModule.getSteerTemperature());
+        DataLogger.addDataElement("bl drive Temperature",
+                () -> backLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("bl azimuth Temperature",
+                () -> backLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("br drive Temperature",
+                () -> backRightModule.getDriveTemperature());
+        DataLogger.addDataElement("br azimuth Temperature",
+                () -> backRightModule.getSteerTemperature());
 
         DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
         DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
@@ -458,7 +462,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
         // if (pose != null) {
-        //     odometry.resetPosition(gyroAngle, modulePositions, pose);
+        // odometry.resetPosition(gyroAngle, modulePositions, pose);
         // }
     }
 
@@ -538,18 +542,11 @@ public class Drivetrain extends SubsystemBase {
      * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */
     public void stop() {
-        states[0].speedMetersPerSecond = 0;
-        states[1].speedMetersPerSecond = 0;
-        states[2].speedMetersPerSecond = 0;
-        states[3].speedMetersPerSecond = 0;
-        // states[0] = new SwerveModuleState(0,
-        // new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
-        // states[1] = new SwerveModuleState(0,
-        // new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
-        // states[2] = new SwerveModuleState(0,
-        // new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
-        // states[3] = new SwerveModuleState(0,
-        // new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
+        frontLeftModule.set(0, DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE);
+        frontRightModule.set(0, DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE);
+        backLeftModule.set(0, DrivetrainConstants.BACK_LEFT_RESTING_ANGLE);
+        backRightModule.set(0, DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE);
+
     }
 
     public void resetNeoAngle() {
@@ -557,7 +554,7 @@ public class Drivetrain extends SubsystemBase {
         frontRightModule.setEncoderAngle();
         backLeftModule.setEncoderAngle();
         backRightModule.setEncoderAngle();
-    }
+    }   
 
     public double getTOF() {
         return tof.getRange();
