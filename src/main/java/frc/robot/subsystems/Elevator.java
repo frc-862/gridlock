@@ -49,6 +49,12 @@ public class Elevator extends SubsystemBase {
         DataLogger.addDataElement("Elevator on Target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("bottom limit switch", () -> getBottomLimitSwitch() ? 1 : 0);
         DataLogger.addDataElement("top limit switch", () -> getTopLimitSwitch() ? 1 : 0);
+
+        DataLogger.addDataElement("Elevator Motor Temperature", () -> motor.getMotorTemperature());
+        DataLogger.addDataElement("Elevator Motor Output Current", () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Elevator Motor Controller Input Voltage", () -> motor.getBusVoltage());
+
     }
 
     /**
@@ -133,18 +139,18 @@ public class Elevator extends SubsystemBase {
      * @return true if the target height is reachable by the elevator
      */
     public boolean isReachable(double targetHeight) {
-        return targetHeight >= ElevatorConstants.MIN_HEIGHT
-                && targetHeight <= ElevatorConstants.MAX_HEIGHT;
+        return targetHeight >= (ElevatorConstants.MIN_EXTENSION + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET)
+                && targetHeight <= (ElevatorConstants.MAX_EXTENSION + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET);
     }
 
     @Override
     public void periodic() {
         if (getTopLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MAX_HEIGHT);
+            encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
         }
 
         if (getBottomLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MIN_HEIGHT);
+            encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
         }
 
         LightningShuffleboard.setBool("Elevator", "Top Limit", getTopLimitSwitch());

@@ -9,8 +9,8 @@ public class Stow extends SequentialCommandGroup {
     public Stow(Lift lift) {
         addCommands(
                 new RunCommand(() -> lift.setNextState(LiftState.elevatorDeployed), lift)
-                        .until(lift::isFinished),
+                        .until(lift::onTarget),
                 new RunCommand(() -> lift.setNextState(LiftState.stowed), lift)
-                        .until(lift::isFinished));
+                        .until(lift::onTarget));
     }
 }

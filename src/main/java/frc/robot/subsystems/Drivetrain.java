@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.pathplanner.lib.PathPoint;
 import com.playingwithfusion.TimeOfFlight;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
@@ -30,6 +29,7 @@ import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.math.LightningMath;
+import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
@@ -56,14 +56,15 @@ public class Drivetrain extends SubsystemBase {
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
     // Creating our list of module states and module positions
-    private SwerveModuleState[] states = { new SwerveModuleState(), new SwerveModuleState(),
-            new SwerveModuleState(), new SwerveModuleState() };
-    private SwerveModulePosition[] modulePositions = { new SwerveModulePosition(),
-            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition() };
+    private SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(),
+            new SwerveModuleState(), new SwerveModuleState()};
+    private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(),
+            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
 
     // Creating new pose, odometry, cahssis speeds
     private Pose2d pose = new Pose2d();
-    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
+    private SwerveDriveOdometry odometry =
+            new SwerveDriveOdometry(kinematics, getHeading2d(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our modules
@@ -85,11 +86,11 @@ public class Drivetrain extends SubsystemBase {
 
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
-    private VisionTargetting vision = new VisionTargetting();
+    private Vision vision = new Vision();
 
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
-    public Drivetrain(VisionTargetting vision) {
+    public Drivetrain(Vision vision) {
         this.vision = vision;
         // TODO: make this better
         if (Files.exists(blackoutFile)) {
@@ -179,11 +180,15 @@ public class Drivetrain extends SubsystemBase {
         LightningShuffleboard.setDouble("autobalance", "theta",
                 LightningMath.inputModulus((theta + Math.PI), -Math.PI, Math.PI));
         LightningShuffleboard.setDouble("autobalance", "magnitude", magnitude);
+
+        LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
+        LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
+        LightningShuffleboard.setDouble("Autonomous", "Current Z",
+                odometry.getPoseMeters().getRotation().getDegrees());
     }
 
     /**
-     * This takes chassis speeds and converts them to module states and then sets
-     * states.
+     * This takes chassis speeds and converts them to module states and then sets states.
      * 
      * @param chassisSpeeds the chassis speeds to convert to module states
      */
@@ -197,14 +202,6 @@ public class Drivetrain extends SubsystemBase {
             states[1].speedMetersPerSecond = 0;
             states[2].speedMetersPerSecond = 0;
             states[3].speedMetersPerSecond = 0;
-            // states[0] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
-            // states[1] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
-            // states[2] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
-            // states[3] = new SwerveModuleState(0,
-            // new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
 
         } else {
             states = kinematics.toSwerveModuleStates(chassisSpeeds);
@@ -292,6 +289,15 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("br module position",
                 () -> backRightModule.getPosition().distanceMeters);
 
+        DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.getDriveTemperature());
+        DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.getSteerTemperature());
+        DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("br drive Temperature", () -> backRightModule.getDriveTemperature());
+        DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.getSteerTemperature());
+
         DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
         DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
         DataLogger.addDataElement("fr target angle", () -> states[1].angle.getDegrees());
@@ -309,6 +315,7 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("Heading", () -> getHeading2d().getDegrees());
         DataLogger.addDataElement("poseX", () -> getPose().getX());
         DataLogger.addDataElement("poseY", () -> getPose().getY());
+
     }
 
     /**
@@ -338,7 +345,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public PathPoint getCurrentPathPoint() {
-        return new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()),
+        return new PathPoint(
+                new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()),
                 odometry.getPoseMeters().getRotation());
     }
 
@@ -404,8 +412,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Converts percent output of joystick to a rotational velocity in omega radians
-     * per second.
+     * Converts percent output of joystick to a rotational velocity in omega radians per second.
      * 
      * @param percentOutput the percent output of the joystick
      * 
@@ -439,17 +446,16 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Takes pose2d from vision and resets odometry to that pose. Sets module
-     * positions to the
+     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the
      * current module positions.
      * 
      * @param gyroAngle the current yaw of the robot
-     * @param pose      the pose from Vision of the robot
+     * @param pose the pose from Vision of the robot
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
-        if (pose != null) {
-            odometry.resetPosition(gyroAngle, modulePositions, pose);
-        }
+        // if (pose != null) {
+        //     odometry.resetPosition(gyroAngle, modulePositions, pose);
+        // }
     }
 
     /**
@@ -525,22 +531,13 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Sets all motor speeds to 0 and sets the modules to their respective resting
-     * angles
+     * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */
     public void stop() {
         states[0].speedMetersPerSecond = 0;
         states[1].speedMetersPerSecond = 0;
         states[2].speedMetersPerSecond = 0;
         states[3].speedMetersPerSecond = 0;
-        // states[0] = new SwerveModuleState(0,
-        // new Rotation2d(DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE));
-        // states[1] = new SwerveModuleState(0,
-        // new Rotation2d(DrivetrainConstants.FRONT_RIGHT_RESTING_ANGLE));
-        // states[2] = new SwerveModuleState(0,
-        // new Rotation2d(DrivetrainConstants.BACK_LEFT_RESTING_ANGLE));
-        // states[3] = new SwerveModuleState(0,
-        // new Rotation2d(DrivetrainConstants.BACK_RIGHT_RESTING_ANGLE));
     }
 
     public void resetNeoAngle() {
