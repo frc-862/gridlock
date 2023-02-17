@@ -271,6 +271,9 @@ public final class Constants {
             // MISC SENSORS
             public static final int TIME_OF_FLIGHT = 0;
         }
+        public static final class PWM {
+            public static final int SERVO = 0;
+        }
     }
 
     public static final class AutoBalanceConstants {
