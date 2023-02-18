@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Vision;
 import java.util.HashMap;
 
@@ -16,7 +17,14 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.AutoBalance;
+import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.Lift.DoubleSubstationCollect;
+import frc.robot.commands.Lift.Ground;
+import frc.robot.commands.Lift.HighScore;
+import frc.robot.commands.Lift.MidScore;
+import frc.robot.commands.Lift.ReverseDoubleSubstationCollect;
+import frc.robot.commands.Lift.Stow;
 import frc.robot.commands.ManualLift;
 import frc.robot.commands.tests.DriveTrainSystemTest;
 import frc.robot.subsystems.Drivetrain;
@@ -39,13 +47,17 @@ public class RobotContainer extends LightningContainer {
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
+    // private static final Lift lift = new Lift(elevator, wrist, arm);
+    // private static final Collector collector = new Collector();
 
     // Creates new LED controller
     private static final LEDs underglow = new LEDs();
 
-    // Creates our driver controller and deadzones
+    // Creates our controllers and deadzones
     private static final XboxController driver =
             new XboxController(XboxControllerConstants.DRIVER_CONTROLLER_PORT);
+    private static final XboxController copilot =
+            new XboxController(XboxControllerConstants.COPILOT_CONTROLLER_PORT);
     private static final JoystickFilter joystickFilter =
             new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
                     XboxControllerConstants.MAX_POWER, Mode.CUBED);
@@ -70,6 +82,17 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getXButton)
                 .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
                         drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+
+        /*
+        //copilot controls
+        new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
+        new Trigger(copilot::getBButton).whileTrue(new Stow(lift));
+        //TODO: implement color sensors into the commands themselves
+        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
+        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
+        new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
+        new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
+        */
     }
 
     // Creates the autonomous commands
@@ -82,7 +105,8 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(10, 1));
         autoFactory.makeTrajectory("Path8StartC", new HashMap<>(), new PathConstraints(10, 1));
         autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(10, 1));
+        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(),
+                new PathConstraints(10, 1));
         autoFactory.makeTrajectory("jitter", new HashMap<>(), new PathConstraints(5, 1));
     }
 
@@ -101,6 +125,8 @@ public class RobotContainer extends LightningContainer {
         elevator.setDefaultCommand(
                 new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
                         () -> 0, () -> 0, arm, wrist, elevator));
+
+        // collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis, copilot::getRightTriggerAxis));
     }
 
     @Override
