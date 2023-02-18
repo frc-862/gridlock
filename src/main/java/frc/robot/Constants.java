@@ -55,7 +55,7 @@ public final class Constants {
         public static final double BACK_RIGHT_RESTING_ANGLE = Math.toRadians(-45d);
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
-        public static final double MAX_VOLTAGE = 3;
+        public static final double MAX_VOLTAGE = 12;
         public static final double MAX_VELOCITY_METERS_PER_SECOND =
                 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
                         * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
@@ -87,6 +87,11 @@ public final class Constants {
 
         }
 
+        public static final class HeadingGains {
+            public static final double kP = 0.005d;
+            public static final double kI = 0d;
+            public static final double kD = 0d;
+        }
 
         public static final class Offsets {
             public static final class Gridlock {
@@ -135,7 +140,7 @@ public final class Constants {
         public static final double ELEVATOR_HEIGHT_OFFSET = 40d;
 
         // Min and Max power
-        public static final double MIN_POWER = 0d;
+        public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
@@ -172,7 +177,7 @@ public final class Constants {
         public static final double MIN_ANGLE = -90d;
 
         // Min and Max power
-        public static final double MIN_POWER = 0d;
+        public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
         public static final double LENGTH = 30; // arm length in inches
@@ -210,7 +215,7 @@ public final class Constants {
         public static final double MIN_ANGLE = -90d;
 
         // Min and Max power
-        public static final double MIN_POWER = 0d;
+        public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
         public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
