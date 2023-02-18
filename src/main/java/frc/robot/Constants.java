@@ -55,7 +55,7 @@ public final class Constants {
         public static final double BACK_RIGHT_RESTING_ANGLE = Math.toRadians(-45d);
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
-        public static final double MAX_VOLTAGE = 3;
+        public static final double MAX_VOLTAGE = 12;
         public static final double MAX_VELOCITY_METERS_PER_SECOND =
                 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
                         * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
@@ -87,6 +87,11 @@ public final class Constants {
 
         }
 
+        public static final class HeadingGains {
+            public static final double kP = 0.005d;
+            public static final double kI = 0d;
+            public static final double kD = 0d;
+        }
 
         public static final class Offsets {
             public static final class Gridlock {
@@ -270,6 +275,9 @@ public final class Constants {
 
             // MISC SENSORS
             public static final int TIME_OF_FLIGHT = 0;
+        }
+        public static final class PWM {
+            public static final int SERVO = 0;
         }
     }
 

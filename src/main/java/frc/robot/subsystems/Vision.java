@@ -42,6 +42,9 @@ public class Vision extends SubsystemBase {
     private double verticalOffset = LimelightHelpers.getTY(limelightName);
     private double targetVertical = LimelightHelpers.getTA(limelightName);
 
+    // Getting limelight's latency
+    private double visionLatency = LimelightHelpers.getLatency_Capture(limelightName);
+
 
     public Vision() {
         // Inits logging for vision
@@ -55,7 +58,6 @@ public class Vision extends SubsystemBase {
     public void periodic() {
 
     }
-
 
     // Adds logging for vision so we can look at values when the robot is off and check them
     public void initLogging() {
@@ -114,6 +116,11 @@ public class Vision extends SubsystemBase {
         return this.hasVision;
     }
 
+    public double getLatency(){
+        visionLatency = LimelightHelpers.getLatency_Capture(limelightName);
+        return this.visionLatency;
+    }
+
     private void updateShuffleboard(){
         if (pipelineNum == 0 || pipelineNum == 1){
             LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TX", botPose[0]);
@@ -133,6 +140,7 @@ public class Vision extends SubsystemBase {
             LightningShuffleboard.setDouble("Autonomous", "RR Tape Vertical Offset", verticalOffset);
             LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area", targetVertical);
         }
+        LightningShuffleboard.setDouble("Autonomous", "Vision Latency", visionLatency);
     }
 
     /**
