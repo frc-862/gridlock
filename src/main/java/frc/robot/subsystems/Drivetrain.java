@@ -227,8 +227,8 @@ public class Drivetrain extends SubsystemBase {
         }
 
         if (chassisSpeeds.omegaRadiansPerSecond == 0 && !checkModuleStates()) {
-            outputChassisSpeeds.omegaRadiansPerSecond =
-                    headingController.calculate(pose.getRotation().getDegrees(), lastGoodheading);
+            // outputChassisSpeeds.omegaRadiansPerSecond =
+            //         headingController.calculate(pose.getRotation().getDegrees(), lastGoodheading);
         } else {
             updatedHeading = false;
         }

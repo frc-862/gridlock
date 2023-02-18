@@ -8,10 +8,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.ServoTurn;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
@@ -36,6 +38,7 @@ public class RobotContainer extends LightningContainer {
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(targetting);
+    private static final ServoTurn servoturn = new ServoTurn();
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
@@ -70,8 +73,9 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getXButton)
                 .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
                         drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+    
+        new Trigger(driver::getYButton).onTrue(new RunCommand(() -> servoturn.turnServo(.25), servoturn));
     }
-
     // Creates the autonomous commands
     @Override
     protected void configureAutonomousCommands() {
@@ -80,7 +84,7 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("StraightButRotate", new HashMap<>(),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, 1));
         autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path6StartC", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path6StartCCharge", Maps.getPath6ChargeMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("jitter", new HashMap<>(), new PathConstraints(5, 1));
