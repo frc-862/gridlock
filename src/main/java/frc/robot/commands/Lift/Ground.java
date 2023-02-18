@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.subsystems.Lift;
 
-public class GroundCollect extends InstantCommand {
+public class Ground extends InstantCommand {
     private Lift lift;
 
-    public GroundCollect(Lift lift) {
+    public Ground(Lift lift) {
         this.lift = lift;
         addRequirements(lift);
     }
