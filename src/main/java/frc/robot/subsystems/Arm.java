@@ -13,6 +13,8 @@ import frc.robot.Constants.RobotMap;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
+import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Arm extends SubsystemBase {
     private CANSparkMax motor;
@@ -20,6 +22,8 @@ public class Arm extends SubsystemBase {
     private SparkMaxAbsoluteEncoder encoder;
     private double OFFSET;
     private double targetAngle;
+
+    // private PIDDashboardTuner tuner = new PIDDashboardTuner("Arm", controller);
 
     public Arm() {
         if (Constants.isBlackout()) {
@@ -49,20 +53,22 @@ public class Arm extends SubsystemBase {
         DataLogger.addDataElement("Arm angle", () -> getAngle().getDegrees());
         DataLogger.addDataElement("Arm on target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("Arm motor temperature", () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Arm Motor Controller Input Voltage", () -> motor.getBusVoltage());
-        DataLogger.addDataElement("Arm Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Arm Motor Controller Input Voltage",
+                () -> motor.getBusVoltage());
+        DataLogger.addDataElement("Arm Motor Controller Output (Amps)",
+                () -> motor.getOutputCurrent());
 
     }
 
     /**
-     * SetAngle: sets the angle of the arm to the angle in the given Rotation2d
-     * object
+     * SetAngle: sets the angle of the arm to the angle in the given Rotation2d object
      * 
      * @param angle a Rotation2d object containing the angle to set the arm to
      * 
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle = MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
+        targetAngle =
+                MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
         controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
@@ -92,6 +98,24 @@ public class Arm extends SubsystemBase {
     }
 
     /**
+     * getBottomLimitSwitch
+     * 
+     * @return true if the bottom limit switch is pressed
+     */
+    public boolean getReverseLimitSwitch() {
+        return motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).isPressed();
+    }
+
+    /**
+     * getTopLimitSwitch
+     * 
+     * @return true if the top limit switch is pressed
+     */
+    public boolean getForwardLimitSwitch() {
+        return motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).isPressed();
+    }
+
+    /**
      * onTarget
      * 
      * @return true if the arm is within the tolerance of the target angle
@@ -101,6 +125,14 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean isReachable(Rotation2d angle) {
-        return angle.getDegrees() >= ArmConstants.MIN_ANGLE && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
+        return angle.getDegrees() >= ArmConstants.MIN_ANGLE
+                && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
+    }
+
+    @Override
+    public void periodic() {
+        LightningShuffleboard.setBool("Arm", "fwd Limit", getForwardLimitSwitch());
+        LightningShuffleboard.setBool("Arm", "rev Limit", getReverseLimitSwitch());
+        LightningShuffleboard.setDouble("Arm", "absolute encoder", getAngle().getDegrees());
     }
 }

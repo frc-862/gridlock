@@ -21,16 +21,18 @@ public class Elevator extends SubsystemBase {
     private RelativeEncoder encoder;
     private double targetHeight;
 
+    // private PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", controller);
 
     public Elevator() {
         motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT,
                 ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
                 ElevatorConstants.MOTOR_TYPE, ElevatorConstants.NEUTRAL_MODE);
         encoder = NeoConfig.createBuiltinEncoder(motor);
-        controller = NeoConfig.createPIDController(motor.getPIDController(),
-                new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI,
-                        ElevatorConstants.kD, ElevatorConstants.kF),
-                encoder);
+        controller =
+                NeoConfig.createPIDController(
+                        motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP,
+                                ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF),
+                        encoder);
         encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
         controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
@@ -42,7 +44,7 @@ public class Elevator extends SubsystemBase {
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
-    
+
     public void initLogging() {
         DataLogger.addDataElement("Elevator Extension", () -> getExtension());
         DataLogger.addDataElement("Elevator Target Height", () -> targetHeight);
@@ -52,8 +54,10 @@ public class Elevator extends SubsystemBase {
 
         DataLogger.addDataElement("Elevator Motor Temperature", () -> motor.getMotorTemperature());
         DataLogger.addDataElement("Elevator Motor Output Current", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Input Voltage", () -> motor.getBusVoltage());
+        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)",
+                () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Elevator Motor Controller Input Voltage",
+                () -> motor.getBusVoltage());
 
     }
 
@@ -139,8 +143,10 @@ public class Elevator extends SubsystemBase {
      * @return true if the target height is reachable by the elevator
      */
     public boolean isReachable(double targetHeight) {
-        return targetHeight >= (ElevatorConstants.MIN_EXTENSION + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET)
-                && targetHeight <= (ElevatorConstants.MAX_EXTENSION + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET);
+        return targetHeight >= (ElevatorConstants.MIN_EXTENSION
+                + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET)
+                && targetHeight <= (ElevatorConstants.MAX_EXTENSION
+                        + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET);
     }
 
     @Override

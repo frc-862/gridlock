@@ -13,6 +13,8 @@ import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
+import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Wrist extends SubsystemBase {
     private CANSparkMax motor;
@@ -20,6 +22,8 @@ public class Wrist extends SubsystemBase {
     private SparkMaxAbsoluteEncoder encoder;
     private double OFFSET;
     private double targetAngle;
+
+    // private PIDDashboardTuner tuner = new PIDDashboardTuner("Wrist", controller);
 
     public Wrist() {
         if (Constants.isBlackout()) {
@@ -49,8 +53,10 @@ public class Wrist extends SubsystemBase {
         DataLogger.addDataElement("Wrist angle", () -> getAngle().getDegrees());
         DataLogger.addDataElement("on target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("Wrist motor temperature", () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Wrist Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Wrist Motor Controller Input Voltage", () -> motor.getBusVoltage());
+        DataLogger.addDataElement("Wrist Motor Controller Output (Amps)",
+                () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Wrist Motor Controller Input Voltage",
+                () -> motor.getBusVoltage());
     }
 
     /**
@@ -62,8 +68,7 @@ public class Wrist extends SubsystemBase {
     }
 
     /**
-     * Takes a rotation2d and sets the wrist to that angle bounded by the min and
-     * max angles
+     * Takes a rotation2d and sets the wrist to that angle bounded by the min and max angles
      * 
      * @param angle Rotation2d to set the wrist to
      */
@@ -81,7 +86,32 @@ public class Wrist extends SubsystemBase {
         motor.set(0d);
     }
 
+    /**
+     * getBottomLimitSwitch
+     * 
+     * @return true if the bottom limit switch is pressed
+     */
+    public boolean getReverseLimitSwitch() {
+        return motor.getReverseLimitSwitch(WristConstants.BOTTOM_LIMIT_SWITCH_TYPE).isPressed();
+    }
+
+    /**
+     * getTopLimitSwitch
+     * 
+     * @return true if the top limit switch is pressed
+     */
+    public boolean getForwardLimitSwitch() {
+        return motor.getForwardLimitSwitch(WristConstants.TOP_LIMIT_SWITCH_TYPE).isPressed();
+    }
+
     public boolean onTarget() {
         return Math.abs(encoder.getPosition() - targetAngle) < WristConstants.TOLERANCE;
+    }
+
+    @Override
+    public void periodic() {
+        LightningShuffleboard.setBool("Wrist", "fwd Limit", getForwardLimitSwitch());
+        LightningShuffleboard.setBool("Wrist", "rev Limit", getReverseLimitSwitch());
+        LightningShuffleboard.setDouble("Wrist", "Wrist Angle", getAngle().getDegrees());
     }
 }

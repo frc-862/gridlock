@@ -193,6 +193,11 @@ public final class Constants {
 
         public static final double GEAR_RATIO = 60/1d;
         public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * 360 ;
+
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
     }
 
     public static final class WristConstants {
@@ -227,6 +232,12 @@ public final class Constants {
 
         public static final double GEAR_RATIO = 36/1d;
         public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * 360;
+
+
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
     }
 
     public static final class RobotMap {
