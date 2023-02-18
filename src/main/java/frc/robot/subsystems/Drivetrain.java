@@ -4,12 +4,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.fasterxml.jackson.core.io.OutputDecorator;
 import com.playingwithfusion.TimeOfFlight;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
-import frc.thunder.tuning.PIDDashboardTuner;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -102,7 +100,7 @@ public class Drivetrain extends SubsystemBase {
 
     public Drivetrain(Vision vision) {
         this.vision = vision;
-        // TODO: make this better
+
         if (Files.exists(blackoutFile)) {
             FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;
             FRONT_RIGHT_STEER_OFFSET = Offsets.Blackout.FRONT_RIGHT_STEER_OFFSET;
@@ -189,6 +187,13 @@ public class Drivetrain extends SubsystemBase {
         updateModulePositions();
         updateOdomtery();
         resetOdymetyFVision(getYaw2d(), vision.getRobotPose());
+
+        var board = LightningShuffleboard.getDouble("Autonomous", "pee", 0.015);
+
+        if (headingController.getP() != board) {
+            headingController.setP(board);
+        }
+
         // field2d.setRobotPose(pose);
         LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
         LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
@@ -200,6 +205,11 @@ public class Drivetrain extends SubsystemBase {
         return headingController;
     }
 
+    public boolean checkModuleStates() {
+        return Math.abs(states[0].speedMetersPerSecond + states[1].speedMetersPerSecond
+                + states[2].speedMetersPerSecond + states[3].speedMetersPerSecond) == 0;
+    }
+
     /**
      * This takes chassis speeds and converts them to module states and then sets states.
      * 
@@ -208,13 +218,14 @@ public class Drivetrain extends SubsystemBase {
     public void drive(ChassisSpeeds chassisSpeeds) {
         outputChassisSpeeds = chassisSpeeds;
 
-        if (!updatedHeading) {   
+        if (!updatedHeading) {
             lastGoodheading = pose.getRotation().getDegrees();
             updatedHeading = true;
         }
 
-        if (chassisSpeeds.omegaRadiansPerSecond == 0) {
-            outputChassisSpeeds.omegaRadiansPerSecond = headingController.calculate(pose.getRotation().getDegrees(), lastGoodheading);
+        if (chassisSpeeds.omegaRadiansPerSecond == 0 && !checkModuleStates()) {
+            outputChassisSpeeds.omegaRadiansPerSecond =
+                    headingController.calculate(pose.getRotation().getDegrees(), lastGoodheading);
         } else {
             updatedHeading = false;
         }
@@ -231,6 +242,9 @@ public class Drivetrain extends SubsystemBase {
         } else {
             states = kinematics.toSwerveModuleStates(outputChassisSpeeds);
         }
+
+        LightningShuffleboard.setDouble("Autonomous", "omegaradpersec",
+                outputChassisSpeeds.omegaRadiansPerSecond);
 
         setStates(states);
     }
@@ -346,7 +360,8 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("bl drive voltage", () -> backLeftModule.getDriveVoltage());
         DataLogger.addDataElement("br drive voltage", () -> backRightModule.getDriveVoltage());
 
-        DataLogger.addDataElement("Heading", () -> odometry.getPoseMeters().getRotation().getDegrees());
+        DataLogger.addDataElement("Heading",
+                () -> odometry.getPoseMeters().getRotation().getDegrees());
         DataLogger.addDataElement("poseX", () -> odometry.getPoseMeters().getX());
         DataLogger.addDataElement("poseY", () -> odometry.getPoseMeters().getY());
 

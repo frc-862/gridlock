@@ -89,7 +89,7 @@ public final class Constants {
 
 
         public static final class HeadingGains {
-            public static final double kP = 0.001d;
+            public static final double kP = 0.005d;
             public static final double kI = 0d;
             public static final double kD = 0d;
         }
