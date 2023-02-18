@@ -87,7 +87,6 @@ public final class Constants {
 
         }
 
-
         public static final class HeadingGains {
             public static final double kP = 0.005d;
             public static final double kI = 0d;
@@ -277,18 +276,25 @@ public final class Constants {
             // MISC SENSORS
             public static final int TIME_OF_FLIGHT = 0;
         }
+        public static final class PWM {
+            public static final int SERVO = 0;
+        }
     }
 
     public static final class AutoBalanceConstants {
-        public static final double OPTIMAL_PITCH = 2d;
-        public static final double OPTIMAL_ROLL = 2d;
-        public static final double kP = 0.02;
+        public static final double MAGNITUDE_SCALER = 0.09;
+        public static final double BALANCED_MAGNITUDE = 2.5;
+        public static final double UPPER_MAGNITUDE_THRESHOLD = 11;
+        public static final double LOWER_MAGNITUDE_THRESHOLD = 3;
+        public static final double MAGNITUDE_RATE_OF_CHANGE_THRESHOLD = 0.05;
+        public static final double MIN_SPEED_THRESHOLD = 0.35;
+        public static final double MAX_SPEED_THRESHOLD = 3;
+        public static final double DELAY_TIME = 2;
+
+        public static final double TARGET_X = 3.93;
+        public static final double kP = 2;
         public static final double kI = 0;
         public static final double kD = 0;
-
-        public static final double THRESHOLD_TIME = 0.075;
-        public static final double THRESHOLD_ANGLE = 1;
-        public static final double BB_SPEED = 0.2;
     }
 
     public static final class LedConstants {
@@ -358,8 +364,8 @@ public final class Constants {
 
     public static final class AutonomousConstants {
         // Path planner PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(8, 0, 0);
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(6, 0, 0);
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0);
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7, 0, 0);
         public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
     }
 }
