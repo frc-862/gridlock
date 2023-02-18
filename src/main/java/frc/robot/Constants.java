@@ -173,6 +173,7 @@ public final class Constants {
 
 
         // Min and Max arm angles in degrees
+        //TODO: change to actual values
         public static final double MAX_ANGLE = 90d;
         public static final double MIN_ANGLE = -90d;
 
@@ -180,7 +181,7 @@ public final class Constants {
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
-        public static final double LENGTH = 30; // arm length in inches
+        public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
@@ -190,10 +191,8 @@ public final class Constants {
         // TODO: get accurate measurements
         public static final double ROBOT_BODY_LENGTH = 27.7;
 
-        // TODO: replace with actual values
-        public static final double GEAR_RATIO = 1d;
-        public static final double DEGREES_PER_REV = 1d;
-        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
+        public static final double GEAR_RATIO = 60/1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * 360 ;
     }
 
     public static final class WristConstants {
@@ -226,10 +225,8 @@ public final class Constants {
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
 
-        // TODO: replace with actual values
-        public static final double GEAR_RATIO = 1d;
-        public static final double DEGREES_PER_REV = 1d;
-        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
+        public static final double GEAR_RATIO = 36/1d;
+        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * 360;
     }
 
     public static final class RobotMap {
