@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece"
+          "Score-Game-Piece-Servo"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -41,7 +41,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Auto-Balance-Charge-Station"
+          "Auto-Balance"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
