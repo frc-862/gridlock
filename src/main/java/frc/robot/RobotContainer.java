@@ -133,6 +133,7 @@ public class RobotContainer extends LightningContainer {
 
         // collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis,
         // copilot::getRightTriggerAxis));
+        // collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis, copilot::getRightTriggerAxis));
     }
 
     @Override
