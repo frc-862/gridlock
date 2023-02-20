@@ -4,5 +4,9 @@ version: 2
 updates:
   - package-ecosystem: "gitsubmodule"
     directory: "/"
+    reviewers:
+      - "frc-862/reviewers"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[#34] "
