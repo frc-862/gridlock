@@ -117,7 +117,7 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double kP = 0d;
+        public static final double kP = .45d;
         public static final double kI = 0d;
         public static final double kD = 0d;
         public static final double kF = 0d;
@@ -158,24 +158,29 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-        public static final boolean MOTOR_INVERT = false;
+        public static final boolean MOTOR_INVERT = true;
 
         public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double kP = 0d;
-        public static final double kI = 0d;
-        public static final double kD = 0d;
-        public static final double kF = 0d;
+        public static final double UP_kP = 0.006d;
+        public static final double UP_kI = 0d;
+        public static final double UP_kD = 0d;
+        public static final double UP_kF = 0.00025d;
+
+        public static final double DOWN_kP = 0.004d;
+        public static final double DOWN_kI = 0d;
+        public static final double DOWN_kD = 0d;
+        public static final double DOWN_kF = 0.0002d;
 
         public static final double TOLERANCE = 0d;
 
 
         // Min and Max arm angles in degrees
-        //TODO: change to actual values
-        public static final double MAX_ANGLE = 90d;
-        public static final double MIN_ANGLE = -90d;
+        // TODO: change to actual values
+        public static final double MAX_ANGLE = 0d;
+        public static final double MIN_ANGLE = -106d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -185,14 +190,14 @@ public final class Constants {
 
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
-        public static final double ENCODER_OFFSET_BLACKOUT = 0;
+        public static final double ENCODER_OFFSET_BLACKOUT = 194;
 
         // robot lengths
         // TODO: get accurate measurements
         public static final double ROBOT_BODY_LENGTH = 27.7;
 
-        public static final double GEAR_RATIO = 60/1d;
-        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * 360 ;
+        public static final double GEAR_RATIO = 60 / 1d;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / 8192 * 360;
 
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
                 SparkMaxLimitSwitch.Type.kNormallyOpen;
@@ -230,7 +235,7 @@ public final class Constants {
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 0;
 
-        public static final double GEAR_RATIO = 36/1d;
+        public static final double GEAR_RATIO = 38.5 / 1d;
         public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * 360;
 
 

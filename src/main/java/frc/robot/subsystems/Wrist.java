@@ -23,8 +23,6 @@ public class Wrist extends SubsystemBase {
     private double OFFSET;
     private double targetAngle;
 
-    // private PIDDashboardTuner tuner = new PIDDashboardTuner("Wrist", controller);
-
     public Wrist() {
         if (Constants.isBlackout()) {
             OFFSET = WristConstants.ENCODER_OFFSET_BLACKOUT;
@@ -42,6 +40,8 @@ public class Wrist extends SubsystemBase {
                 encoder);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
         controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
+
+        PIDDashboardTuner tuner = new PIDDashboardTuner("Wrist", controller);
 
         initLogging();
 
@@ -75,11 +75,11 @@ public class Wrist extends SubsystemBase {
     public void setAngle(Rotation2d angle) {
         targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE,
                 WristConstants.MAX_ANGLE);
-        controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
+        // controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
     }
 
     public void setPower(double power) {
-        motor.set(MathUtil.clamp(power, WristConstants.MIN_POWER, WristConstants.MAX_POWER));
+        // motor.set(MathUtil.clamp(power, WristConstants.MIN_POWER, WristConstants.MAX_POWER));
     }
 
     public void stop() {

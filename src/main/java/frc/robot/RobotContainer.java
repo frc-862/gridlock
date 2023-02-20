@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.LEDs;
@@ -60,16 +61,20 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void configureButtonBindings() {
         // Back button to reset field centeric driving to current heading of the robot
-        new Trigger(driver::getBackButton)
-                .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+        // new Trigger(driver::getBackButton)
+        //         .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
-        new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
+        // new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
-        new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
+        // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
-        new Trigger(driver::getXButton)
-                .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
-                        drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+        // new Trigger(driver::getXButton)
+        //         .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
+        //                 drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+
+
+        new Trigger(driver::getAButton).whileTrue(new RunCommand(() -> elevator.setExtension(4), elevator)).onFalse(new InstantCommand(elevator::stop, elevator));
+        new Trigger(driver::getBButton).whileTrue(new RunCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-75)), arm)).onFalse(new InstantCommand(arm::stop, arm));
     }
 
     // Creates the autonomous commands
@@ -82,7 +87,8 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(10, 1));
         autoFactory.makeTrajectory("Path8StartC", new HashMap<>(), new PathConstraints(10, 1));
         autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(10, 1));
+        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(),
+                new PathConstraints(10, 1));
         autoFactory.makeTrajectory("jitter", new HashMap<>(), new PathConstraints(5, 1));
     }
 
@@ -98,9 +104,9 @@ public class RobotContainer extends LightningContainer {
                         () -> joystickFilter.filter(driver.getLeftY()),
                         () -> -joystickFilter.filter(driver.getRightX())));
 
-        elevator.setDefaultCommand(
-                new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
-                        () -> 0, () -> 0, arm, wrist, elevator));
+        // elevator.setDefaultCommand(
+        // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
+        // () -> 0, () -> 0, arm, wrist, elevator));
     }
 
     @Override

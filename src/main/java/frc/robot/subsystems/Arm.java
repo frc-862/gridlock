@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -23,8 +24,6 @@ public class Arm extends SubsystemBase {
     private double OFFSET;
     private double targetAngle;
 
-    // private PIDDashboardTuner tuner = new PIDDashboardTuner("Arm", controller);
-
     public Arm() {
         if (Constants.isBlackout()) {
             // if blackout, use the blackout offset
@@ -37,11 +36,21 @@ public class Arm extends SubsystemBase {
         motor = NeoConfig.createMotor(RobotMap.CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT,
                 ArmConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, ArmConstants.MOTOR_TYPE,
                 ArmConstants.NEUTRAL_MODE);
-        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
-        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(
-                ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
-        encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+        controller = NeoConfig.createPIDController(motor.getPIDController(),
+                new SparkMaxPIDGains(ArmConstants.DOWN_kP, ArmConstants.DOWN_kI,
+                        ArmConstants.DOWN_kD, ArmConstants.DOWN_kF),
+                new SparkMaxPIDGains(ArmConstants.UP_kP, ArmConstants.UP_kI, ArmConstants.UP_kD,
+                        ArmConstants.UP_kF),
+                encoder);
+        encoder.setPositionConversionFactor(360);
+        // encoder.setZeroOffset(-194);
         controller.setOutputRange(ArmConstants.MIN_POWER, ArmConstants.MAX_POWER);
+        motor.setClosedLoopRampRate(1);
+
+
+
+        // PIDDashboardTuner tuner = new PIDDashboardTuner("Arm", controller);
 
         initLogging();
 
@@ -69,7 +78,17 @@ public class Arm extends SubsystemBase {
     public void setAngle(Rotation2d angle) {
         targetAngle =
                 MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
-        controller.setReference(targetAngle, CANSparkMax.ControlType.kPosition);
+
+        // LightningShuffleboard.setDouble("Arm", "target agle", targetAngle);
+
+        if (targetAngle - getAngle().getDegrees() > 2) {
+            controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
+        } else {
+            controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
+        }
+
+        // controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
+
     }
 
     /**
@@ -78,7 +97,7 @@ public class Arm extends SubsystemBase {
      * @return the angle of the arm as a Rotation2d object
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromRotations(encoder.getPosition());
+        return Rotation2d.fromDegrees(encoder.getPosition() - OFFSET);
     }
 
     /**
@@ -134,5 +153,20 @@ public class Arm extends SubsystemBase {
         LightningShuffleboard.setBool("Arm", "fwd Limit", getForwardLimitSwitch());
         LightningShuffleboard.setBool("Arm", "rev Limit", getReverseLimitSwitch());
         LightningShuffleboard.setDouble("Arm", "absolute encoder", getAngle().getDegrees());
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint",
+        // -90)));
+
+        // controller.setP(LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP), 1);
+        // controller.setFF(LightningShuffleboard.getDouble("Arm", "up kF", ArmConstants.UP_kF), 1);
+        // controller.setP(LightningShuffleboard.getDouble("Arm", "down kP", ArmConstants.DOWN_kP),
+        // 0);
+        // controller.setFF(LightningShuffleboard.getDouble("Arm", "down kF", ArmConstants.DOWN_kF),
+        // 0);
+
+
+        // motor.setClosedLoopRampRate(LightningShuffleboard.getDouble("Arm", "ramp rate", 1));
+
+        // LightningShuffleboard.setDouble("Arm", "curr speed", motor.get());
+        LightningShuffleboard.setDouble("Arm", "output volt", motor.getAppliedOutput());
     }
 }
