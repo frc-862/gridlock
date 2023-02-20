@@ -35,6 +35,7 @@ public final class Constants {
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
+        public static final int COPILOT_CONTROLLER_PORT = 1;
         public static final double DEADBAND = 0.05;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 0.9d;
