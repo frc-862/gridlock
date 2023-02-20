@@ -17,10 +17,9 @@ public class Vision extends SubsystemBase {
 
     // Change "limelight" to whatever the name of the limelight you are using
     // we should rename the limelight names to something consistent later
-    private final String limelightName = "limelight";
+    private final String limelightName = "limelight-front";
 
-
-    // NetworkTableEntry 
+    // NetworkTableEntry
 
     // Setting values that we want to get later
     private double horizAngleToTarget;
@@ -34,7 +33,7 @@ public class Vision extends SubsystemBase {
     private boolean hasVision = LimelightHelpers.getTV(limelightName);
 
     // Read the README file in thunder's limelightlib for pipeline indexes
-    private int pipelineNum = 0;
+    private int pipelineNum = 1;
     private double curPipeline = LimelightHelpers.getCurrentPipelineIndex(limelightName);
 
     // RetroReflective values
@@ -43,8 +42,12 @@ public class Vision extends SubsystemBase {
     private double targetVertical = LimelightHelpers.getTA(limelightName);
 
     // Getting limelight's latency
-    private double visionLatency = LimelightHelpers.getLatency_Capture(limelightName);
+    private double latencyPipline = LimelightHelpers.getLatency_Pipeline(limelightName);
+    private double latencyCapture = LimelightHelpers.getLatency_Capture(limelightName);
 
+    private double botPoseTotalLatency;
+    private double botPoseBlueTotalLatency;
+    private double botPoseRedTotalLatency;
 
     public Vision() {
         // Inits logging for vision
@@ -56,40 +59,73 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // if (botPose.length != 0) {
+        // updateShuffleboard();
+
+        // }
 
     }
 
-    // Adds logging for vision so we can look at values when the robot is off and check them
+    // Adds logging for vision so we can look at values when the robot is off and
+    // check them
     public void initLogging() {
         // Checks if we have vision
         hasVision = LimelightHelpers.getTV(limelightName);
-        if (hasVision) {
-            DataLogger.addDataElement("Vision bot pose TX", () -> botPose[0]);
-            DataLogger.addDataElement("Vision bot pose TY", () -> botPose[1]);
-            DataLogger.addDataElement("Vision bot pose RZ", () -> botPose[5]);
 
-            DataLogger.addDataElement("Vision bot pose Blue TX", () -> botPoseBlue[0]);
-            DataLogger.addDataElement("Vision bot pose Blue TY", () -> botPoseBlue[1]);
-            DataLogger.addDataElement("Vision bot pose Blue RZ", () -> botPoseBlue[5]);
+        // DataLogger.addDataElement("Has vision", () -> hasVision);
 
-            DataLogger.addDataElement("Vision bot pose Red TX", () -> botPoseRed[0]);
-            DataLogger.addDataElement("Vision bot pose Red TY", () -> botPoseRed[1]);
-            DataLogger.addDataElement("Vision bot pose Red RZ", () -> botPoseRed[5]);
+        DataLogger.addDataElement("Vision bot pose TX", () -> getBotPose()[0]);
+        DataLogger.addDataElement("Vision bot pose TY", () -> getBotPose()[1]);
+        DataLogger.addDataElement("Vision bot pose RZ", () -> getBotPose()[5]);
 
-            DataLogger.addDataElement("Vision retro reflective TX", () -> horizontalOffset);
-            DataLogger.addDataElement("Vision retro reflective TY", () -> verticalOffset);
-            DataLogger.addDataElement("Vision retro reflective TA", () -> targetVertical);
-        }
+        DataLogger.addDataElement("Vision bot pose Blue TX", () -> getBotPoseBlue()[0]);
+        DataLogger.addDataElement("Vision bot pose Blue TY", () -> getBotPoseBlue()[1]);
+        DataLogger.addDataElement("Vision bot pose Blue RZ", () -> getBotPoseBlue()[5]);
+
+        DataLogger.addDataElement("Vision bot pose Red TX", () -> getBotPoseRed()[0]);
+        DataLogger.addDataElement("Vision bot pose Red TY", () -> getBotPoseRed()[1]);
+        DataLogger.addDataElement("Vision bot pose Red RZ", () -> getBotPoseRed()[5]);
+
+        DataLogger.addDataElement("Vision retro reflective TX", () -> getHorizontalOffset());
+        DataLogger.addDataElement("Vision retro reflective TY", () -> getVerticalOffset());
+        DataLogger.addDataElement("Vision retro reflective TA", () -> getTargetVertical());
+
+        // DataLogger.addDataElement("Vision latency pipeline", () ->
+        // getLatencyPipline());
+        // DataLogger.addDataElement("Vision latency capture", () ->
+        // getLatencyCapture());
+        // DataLogger.addDataElement("Vision bot pose latency", () ->
+        // getLatencyBotPose());
+        // DataLogger.addDataElement("Vision bot pose Blue latency", () ->
+        // getLatencyBotPoseBlue());
+        // DataLogger.addDataElement("Vision bot pose Red latency", () ->
+        // getLatencyBotPoseRed());
+
     }
 
     // Returns the robot pose as a Pose2d from vision data
     public Pose2d getRobotPose() {
         if (hasVision) {
-            return new Pose2d(new Translation2d(botPoseBlue[0], botPoseBlue[1]),
-                    Rotation2d.fromDegrees(botPoseBlue[5]));
+            return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]),
+                    Rotation2d.fromDegrees(getBotPoseBlue()[5]));
         } else {
             return null;
         }
+    }
+
+    public double getHorizontalOffset() {
+        horizontalOffset = LimelightHelpers.getTX(limelightName);
+        return horizontalOffset;
+    }
+
+    public double getVerticalOffset() {
+        verticalOffset = LimelightHelpers.getTX(limelightName);
+        return verticalOffset;
+    }
+
+    public double getTargetVertical() {
+        targetVertical = LimelightHelpers.getTX(limelightName);
+        return targetVertical;
     }
 
     /**
@@ -99,48 +135,100 @@ public class Vision extends SubsystemBase {
      */
     public double[] getBotPose() {
         botPose = LimelightHelpers.getBotPose(limelightName);
-        return this.botPose;
+        if (botPose != null && botPose.length != 0) {
+            return botPose;
+        } else {
+            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
+        }
     }
 
     public double[] getBotPoseRed() {
-        botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-        return this.botPoseRed;
+        botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
+        if (botPoseRed != null && botPoseRed.length != 0) {
+            return botPoseRed;
+        } else {
+            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
+        }
     }
 
     public double[] getBotPoseBlue() {
-        botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
-        return this.botPoseBlue;
-    }
-
-    public boolean getVision(){
-        return this.hasVision;
-    }
-
-    public double getLatency(){
-        visionLatency = LimelightHelpers.getLatency_Capture(limelightName);
-        return this.visionLatency;
-    }
-
-    private void updateShuffleboard(){
-        if (pipelineNum == 0 || pipelineNum == 1){
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TX", botPose[0]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TY", botPose[1]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose RZ", botPose[5]);
-
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TX", botPoseBlue[0]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TY", botPoseBlue[1]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue RZ", botPoseBlue[5]);
-
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TX", botPoseRed[0]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TY", botPoseRed[1]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red RZ", botPoseRed[5]);
+        botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
+        if (botPoseBlue != null && botPoseBlue.length != 0) {
+            return botPoseBlue;
+        } else {
+            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
         }
-        else if (pipelineNum == 2 || pipelineNum == 3){
-            LightningShuffleboard.setDouble("Autonomous", "RR Tape Horizontal Offset", horizontalOffset);
-            LightningShuffleboard.setDouble("Autonomous", "RR Tape Vertical Offset", verticalOffset);
-            LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area", targetVertical);
+    }
+
+    public boolean getVision() {
+        hasVision = LimelightHelpers.getTV(limelightName);
+        return hasVision;
+    }
+
+    public double getLatencyPipline() {
+        latencyPipline = LimelightHelpers.getLatency_Pipeline(limelightName);
+        return latencyPipline;
+    }
+
+    public double getLatencyCapture() {
+        latencyCapture = LimelightHelpers.getLatency_Capture(limelightName);
+        return latencyCapture;
+    }
+
+    public double getLatencyBotPose() {
+        var pose = LimelightHelpers.getBotPose(limelightName);
+        if (pose.length != 0) {
+            botPoseTotalLatency = LimelightHelpers.getBotPose(limelightName)[6];
+            return botPoseTotalLatency;
         }
-        LightningShuffleboard.setDouble("Autonomous", "Vision Latency", visionLatency);
+        return 0;
+    }
+
+    public double getLatencyBotPoseBlue() {
+        var pose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
+        if (pose.length != 0) {
+            botPoseBlueTotalLatency = LimelightHelpers.getBotPose_wpiBlue(limelightName)[6];
+            return botPoseBlueTotalLatency;
+        }
+        return 0;
+    }
+
+    public double getLatencyBotPoseRed() {
+        var pose = LimelightHelpers.getBotPose_wpiRed(limelightName);
+        if (pose.length != 0) {
+            botPoseRedTotalLatency = LimelightHelpers.getBotPose_wpiRed(limelightName)[6];
+            return botPoseRedTotalLatency;
+        }
+        return 0;
+    }
+
+    private void updateShuffleboard() {
+        if (pipelineNum == 0 || pipelineNum == 1) {
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TX", getBotPose()[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TY", getBotPose()[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose RZ", getBotPose()[5]);
+
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TX",
+                    getBotPoseBlue()[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TY",
+                    getBotPoseBlue()[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue RZ",
+                    getBotPoseBlue()[5]);
+
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TX",
+                    getBotPoseRed()[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TY",
+                    getBotPoseRed()[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red RZ",
+                    getBotPoseRed()[5]);
+        } else if (pipelineNum == 2 || pipelineNum == 3) {
+            LightningShuffleboard.setDouble("Autonomous", "RR Tape Horizontal Offset",
+                    getHorizontalOffset());
+            LightningShuffleboard.setDouble("Autonomous", "RR Tape Vertical Offset",
+                    getVerticalOffset());
+            LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area",
+                    getTargetVertical());
+        }
     }
 
     /**
@@ -168,7 +256,7 @@ public class Vision extends SubsystemBase {
      */
     public boolean validTarget() {
         // 29.8d represents the LL2+'s max FOV, from center of camera to edge of frame.
-        return Math.abs(this.horizAngleToTarget) < Constants.Vision.HORIZ_CAMERA_FOV;
+        return Math.abs(this.horizAngleToTarget) < Constants.VisionConstants.HORIZ_CAMERA_FOV;
     }
 
     /**
@@ -205,9 +293,8 @@ public class Vision extends SubsystemBase {
      */
     public boolean isOnTarget(double expectedAngle) {
         // Should put consideration into how accurate we want to be later on.
-        return expectedAngle < Constants.Vision.HORIZ_DEGREE_TOLERANCE;
+        return expectedAngle < Constants.VisionConstants.HORIZ_DEGREE_TOLERANCE;
     }
-
 
     // Sets the pipeline based on what is put in shuffleboard
     private void setPipeline() {
@@ -215,10 +302,12 @@ public class Vision extends SubsystemBase {
         // Gets the current shuffleboard value for the Pipeline entry
         pipelineNum = (int) LimelightHelpers.getLimelightNTDouble("limelight", "pipeline");
 
-        // Updates the Limelight pipeline accordingly if pipelineNum is different than the current pipeline
-        if (pipelineNum != getPipelineNum()){
+        // Updates the Limelight pipeline accordingly if pipelineNum is different than
+        // the current
+        // pipeline
+        if (pipelineNum != getPipelineNum()) {
             LimelightHelpers.setLimelightNTDouble("limelight", "pipeline", pipelineNum);
         }
     }
-    
+
 }
