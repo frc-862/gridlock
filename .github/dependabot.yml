@@ -1,14 +1,15 @@
 # Dependabot config file for updating thunder
 
 version: 2
-registries:
-  thunder:
-    type: git
-    url: https://github.com/frc-862/thunder.git
+#registries:
+#  thunder:
+#    type: git
+#    url: https://github.com/frc-862/thunder.git
+    
 updates:
   - package-ecosystem: "gitsubmodule"
     directory: "/src/main/java/frc"
-    registries:
-      - thunder
+#    registries:
+#      - thunder
     schedule:
       interval: "weekly"
