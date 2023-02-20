@@ -6,8 +6,14 @@ import java.nio.file.Paths;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch;
+
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Num;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.thunder.pathplanner.com.pathplanner.lib.auto.PIDConstants;
 import frc.thunder.swervelib.SdsModuleConfigurations;
@@ -29,6 +35,7 @@ public final class Constants {
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
+        public static final int COPILOT_CONTROLLER_PORT = 1;
         public static final double DEADBAND = 0.05;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 0.9d;
@@ -56,19 +63,23 @@ public final class Constants {
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12;
-        public static final double MAX_VELOCITY_METERS_PER_SECOND =
-                5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
-                        * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
-        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-                MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0
+                * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
+                * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
+                / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                         DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND =
-                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                * 2 * Math.PI;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
         public static final int STEER_CURRENT_LIMIT = 30;
         public static final double NOMINAL_VOLTAGE = 12d;
+
+        // // Standard dev for robot pose
+        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(0.3313838876, 0.2642363651,
+                0.03681853519);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -129,8 +140,7 @@ public final class Constants {
         public static final int TICKS_PER_REV = 42;
         public static final double GEAR_RATIO = 16d / 1d;
         public static final double SPROCKET_DIAMETER = 1.440d;
-        public static final double POSITION_CONVERSION_FACTOR =
-                1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
 
         // min/max height in inches
         public static final double MAX_EXTENSION = 23.287d;
@@ -143,10 +153,8 @@ public final class Constants {
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
-        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
-        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
         public static final Rotation2d ANGLE = Rotation2d.fromDegrees(55d);
         // Acute Elevator mount angle in degrees
@@ -175,7 +183,6 @@ public final class Constants {
         public static final double DOWN_kF = 0.0002d;
 
         public static final double TOLERANCE = 0d;
-
 
         // Min and Max arm angles in degrees
         // TODO: change to actual values
@@ -289,6 +296,7 @@ public final class Constants {
             // MISC SENSORS
             public static final int TIME_OF_FLIGHT = 0;
         }
+
         public static final class PWM {
             public static final int SERVO = 0;
         }
@@ -317,37 +325,41 @@ public final class Constants {
 
         public static final class Colors {
             // lightning colors
-            public static final int[] lightningOrange = {255, 71, 15};
-            public static final int[] lightningBlue = {0, 0, 255};
+            public static final int[] lightningOrange = { 255, 71, 15 };
+            public static final int[] lightningBlue = { 0, 0, 255 };
 
             // misc colors
-            public static final int[] cyan = {96, 209, 149};
-            public static final int[] yellow = {255, 230, 20};
-            public static final int[] purple = {220, 30, 240};
-            public static final int[] green = {0, 255, 0};
-            public static final int[] red = {255, 0, 0};
-            public static final int[] white = {255, 255, 255};
-            public static final int[] off = {0, 0, 0};
+            public static final int[] cyan = { 96, 209, 149 };
+            public static final int[] yellow = { 255, 230, 20 };
+            public static final int[] purple = { 220, 30, 240 };
+            public static final int[] green = { 0, 255, 0 };
+            public static final int[] red = { 255, 0, 0 };
+            public static final int[] white = { 255, 255, 255 };
+            public static final int[] off = { 0, 0, 0 };
         }
     }
 
-    public static final class Vision {
+    public static final class VisionConstants {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;
 
         // Arbitrary value for how close the robot needs to be to the target (in angles)
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
+        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
     }
 
     public static final class LiftConstants {
         public enum LiftState {
             ground(new Translation2d(0d, 0d)), doubleSubstationCollect(
-                    new Translation2d(0d, 0d)), reverseSubstationCollect(new Translation2d(0d, 0d)),
+                    new Translation2d(0d, 0d)),
+            reverseSubstationCollect(new Translation2d(0d, 0d)),
 
             mediumCubeScore(new Translation2d(0d, 0d)), highCubeScore(
-                    new Translation2d(0d, 0d)), mediumConeScore(
-                            new Translation2d(0d, 0d)), highConeScore(new Translation2d(0d, 0d)),
+                    new Translation2d(0d, 0d)),
+            mediumConeScore(
+                    new Translation2d(0d, 0d)),
+            highConeScore(new Translation2d(0d, 0d)),
 
             elevatorDeployed(new Translation2d(0d, 0d)), armDeployed(new Translation2d(0d, 0d)),
 
@@ -365,8 +377,7 @@ public final class Constants {
         }
 
         // TODO: replace with actual bounding box values
-        public static final Polygon BOUNDING_BOX =
-                new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
+        public static final Polygon BOUNDING_BOX = new Polygon(new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 }, 4);
     }
 
     public static final class ManualLiftConstants {
