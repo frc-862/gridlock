@@ -137,7 +137,7 @@ public class RobotContainer extends LightningContainer {
         // copilot::getRightTriggerAxis));
     }
 
-    @Overridea
+    @Override
     protected void configureSystemTests() {
         SystemTest.registerTest("fl drive test",
                 new DriveTrainSystemTest(drivetrain, drivetrain.getFrontLeftModule(), 0.25));
