@@ -10,6 +10,7 @@ import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.Offsets;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
 import frc.thunder.config.SparkMaxPIDGains;
@@ -58,15 +61,15 @@ public class Drivetrain extends SubsystemBase {
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
     // Creating our list of module states and module positions
-    private SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(),
-            new SwerveModuleState(), new SwerveModuleState()};
-    private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(),
-            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
+    private SwerveModuleState[] states = { new SwerveModuleState(), new SwerveModuleState(),
+            new SwerveModuleState(), new SwerveModuleState() };
+    private SwerveModulePosition[] modulePositions = { new SwerveModulePosition(),
+            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition() };
 
     // Creating new pose, odometry, cahssis speeds
     private Pose2d pose = new Pose2d();
-    private SwerveDriveOdometry odometry =
-            new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
+    private Pose2d ESpose = new Pose2d();
+    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our modules
@@ -75,25 +78,28 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule backLeftModule;
     private final SwerveModule backRightModule;
 
-    public double FRONT_LEFT_STEER_OFFSET = Offsets.Gridlock.FRONT_LEFT_STEER_OFFSET;
-    public double BACK_LEFT_STEER_OFFSET = Offsets.Gridlock.BACK_LEFT_STEER_OFFSET;
-    public double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
-    public double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
+    private double FRONT_LEFT_STEER_OFFSET = Offsets.Gridlock.FRONT_LEFT_STEER_OFFSET;
+    private double BACK_LEFT_STEER_OFFSET = Offsets.Gridlock.BACK_LEFT_STEER_OFFSET;
+    private double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
+    private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
+
+    private SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(kinematics, getHeading(), modulePositions,
+            pose,
+            DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
 
     Path gridlockFile = Paths.get("home/lvuser/gridlock");
     Path blackoutFile = Paths.get("home/lvuser/blackout");
 
     // Creates our drivetrain shuffleboard tab for displaying module data
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
     private Vision vision = new Vision();
 
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
-    private final PIDController headingController =
-            new PIDController(HeadingGains.kP, HeadingGains.kI, HeadingGains.kD);
+    private final PIDController headingController = new PIDController(HeadingGains.kP, HeadingGains.kI,
+            HeadingGains.kD);
 
     private boolean updatedHeading = false;
     private double lastGoodheading = 0d;
@@ -155,7 +161,6 @@ public class Drivetrain extends SubsystemBase {
                 RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
                 RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
-
         // Setting states of the modules
         updateOdomtery();
         updateDriveStates(states);
@@ -183,7 +188,7 @@ public class Drivetrain extends SubsystemBase {
         if (headingController.getP() != board) {
             headingController.setP(board);
         }
-        
+
         resetOdymetyFVision(pose.getRotation(), vision.getRobotPose());
 
         LightningShuffleboard.setString("Drivetrain", "Pose", getPose().toString());
@@ -214,7 +219,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * This takes chassis speeds and converts them to module states and then sets states.
+     * This takes chassis speeds and converts them to module states and then sets
+     * states.
      * 
      * @param chassisSpeeds the chassis speeds to convert to module states
      */
@@ -282,7 +288,17 @@ public class Drivetrain extends SubsystemBase {
      * Updates odometry using the current yaw and module states.
      */
     public void updateOdomtery() {
+        updateModulePositions();
         pose = odometry.update(getYaw2d(), modulePositions);
+
+        ESpose = estimator.update(getHeading(), modulePositions);
+
+        var visionPose = vision.getRobotPose();
+        if (visionPose != null) {
+            estimator.addVisionMeasurement(visionPose,
+                    Timer.getFPGATimestamp() - vision.getLatencyBotPoseBlue());
+
+        }
     }
 
     /**
@@ -290,7 +306,6 @@ public class Drivetrain extends SubsystemBase {
      */
     public void setStates(SwerveModuleState[] newStates) {
         states = newStates;
-        updateModulePositions();
         updateOdomtery();
         updateDriveStates(states);
 
@@ -394,6 +409,13 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("pitch", () -> getPitch2d().getDegrees());
 
         tab.addDouble("fl drive voltage", () -> frontLeftModule.getDriveVoltage());
+
+        tab.addDouble("es X", () -> ESpose.getX());
+        tab.addDouble("es Y", () -> ESpose.getY());
+        tab.addDouble("es Z", () -> ESpose.getRotation().getDegrees());
+        tab.addDouble("od X", () -> pose.getX());
+        tab.addDouble("od Y", () -> pose.getY());
+        tab.addDouble("od Z", () -> pose.getRotation().getDegrees());
     }
 
     public PathPoint getCurrentPathPoint() {
@@ -468,7 +490,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Converts percent output of joystick to a rotational velocity in omega radians per second.
+     * Converts percent output of joystick to a rotational velocity in omega radians
+     * per second.
      * 
      * @param percentOutput the percent output of the joystick
      * 
@@ -502,11 +525,12 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the
+     * Takes pose2d from vision and resets odometry to that pose. Sets module
+     * positions to the
      * current module positions.
      * 
      * @param gyroAngle the current yaw of the robot
-     * @param pose the pose from Vision of the robot
+     * @param pose      the pose from Vision of the robot
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
         // if (pose != null) {
@@ -587,7 +611,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Sets all motor speeds to 0 and sets the modules to their respective resting angles
+     * Sets all motor speeds to 0 and sets the modules to their respective resting
+     * angles
      */
     public void stop() {
         frontLeftModule.set(0, DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE);
@@ -602,7 +627,7 @@ public class Drivetrain extends SubsystemBase {
         frontRightModule.setEncoderAngle();
         backLeftModule.setEncoderAngle();
         backRightModule.setEncoderAngle();
-    }   
+    }
 
     public double getTOF() {
         return tof.getRange();
