@@ -102,4 +102,13 @@ public class Maps {
         return eventMap;
     }
 
+    public static HashMap<String, Command> getPath9StartBChargeMap(Drivetrain drivetrain, ServoTurn servoturn) {
+        HashMap<String, Command> eventMap = new HashMap<>();
+        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(.25), servoturn));
+        eventMap.put("Collect-Game-Piece", new PrintCommand("Collect-Game-Piece"));
+        eventMap.put("Score-Game-Piece", new PrintCommand("Score-Game-Piece"));
+        eventMap.put("Auto-balance", new AutoBalance(drivetrain));
+        return eventMap;
+    }
+
 }
