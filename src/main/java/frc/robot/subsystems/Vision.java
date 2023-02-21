@@ -17,7 +17,7 @@ public class Vision extends SubsystemBase {
 
     // Change "limelight" to whatever the name of the limelight you are using
     // we should rename the limelight names to something consistent later
-    private final String limelightName = "limelight-front";
+    private String limelightName = "limelight-front";
 
     // NetworkTableEntry
 
@@ -300,7 +300,11 @@ public class Vision extends SubsystemBase {
     }
 
     private void setCameraPose(){
-        LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0, 0.14224, 0.9398, 0, 0, 0);
+        if (limelightName == "limelight-front"){
+            LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, 0.14224, 0.9398, 0, 0, 0);
+        } else {
+            LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, -0.14224, 0.9398, 0, 0, 0);
+        }
     }
 
     // Sets the pipeline based on what is put in shuffleboard
