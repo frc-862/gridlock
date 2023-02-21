@@ -78,22 +78,25 @@ public class RobotContainer extends LightningContainer {
     protected void configureButtonBindings() {
         // Back button to reset field centeric driving to current heading of the robot
         // new Trigger(driver::getBackButton)
-        //         .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+        // .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
         // new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
         // new Trigger(driver::getXButton)
-        //         .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
-        //                 drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+        // .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
+        // drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
 
-        new Trigger(driver::getAButton).whileTrue(new RunCommand(() -> elevator.setExtension(4), elevator)).onFalse(new InstantCommand(elevator::stop, elevator));
-        new Trigger(driver::getBButton).whileTrue(new RunCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-75)), arm)).onFalse(new InstantCommand(arm::stop, arm));
+        // new Trigger(driver::getAButton).whileTrue(new RunCommand(() -> elevator.setExtension(4),
+        // elevator)).onFalse(new InstantCommand(elevator::stop, elevator));
+        // new Trigger(driver::getBButton).whileTrue(new RunCommand(() ->
+        // arm.setAngle(Rotation2d.fromDegrees(-75)), arm)).onFalse(new InstantCommand(arm::stop,
+        // arm));
         // new Trigger(driver::getXButton)
-        //         .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
-        //                 drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+        // .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
+        // drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
         // new Trigger(driver::getYButton).whileTrue(new StdDev(targetting));
         /*

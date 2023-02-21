@@ -172,15 +172,23 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double UP_kP = 0.006d;
+        public static final double UP_kP = 0d;
         public static final double UP_kI = 0d;
         public static final double UP_kD = 0d;
-        public static final double UP_kF = 0.00025d;
+        public static final double UP_kF = 0.01d;
 
-        public static final double DOWN_kP = 0.004d;
+        public static final double DOWN_kP = 0d;
         public static final double DOWN_kI = 0d;
         public static final double DOWN_kD = 0d;
-        public static final double DOWN_kF = 0.0002d;
+        public static final double DOWN_kF = 0.01d;
+
+        // public static final double PROFILED_kP = 0d;
+        // public static final double PROFILED_kI = 0d;
+        // public static final double PROFILED_kD = 0d;
+        // public static final double PROFILED_kF = 0.01d;
+
+        public static final double PROFILED_MAX_VELOCITY = .04;
+        public static final double PROFILED_MAX_ACCEL = .01;
 
         public static final double TOLERANCE = 0d;
 
@@ -204,8 +212,9 @@ public final class Constants {
         public static final double ROBOT_BODY_LENGTH = 27.7;
 
         public static final double GEAR_RATIO = 60 / 1d;
-        public static final double POSITION_CONVERSION_FACTOR = 1 / 8192 * 360;
-
+        public static final double POSITION_CONVERSION_FACTOR = 360;
+        // 60 seconds per minute, and 360 degrees per rotation
+        public static final double VELOCITY_CONVERSION_FACTOR = 360;
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
                 SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
