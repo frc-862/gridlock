@@ -4,6 +4,7 @@ package frc.robot.commands;
     import edu.wpi.first.wpilibj2.command.CommandBase;
     import frc.robot.subsystems.Drivetrain;
     import frc.robot.subsystems.Vision;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
     public class AutoAlign extends CommandBase {
         private Drivetrain drivetrain;
@@ -23,8 +24,12 @@ package frc.robot.commands;
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        LightningShuffleboard.setDouble("AutoAlign", "Degree offset from tar", vision.autoAlign());
+        LightningShuffleboard.setDouble("AutoAlign", "Distance from tar", vision.calculateRetroReflectiveDistance());
+
         //Gets distance to travel along the y axis
         double distance = vision.calculateRetroReflectiveDistance() * Math.sin(vision.autoAlign());
+        LightningShuffleboard.setDouble("AutoAlign", "Distance on y", distance);
         // TODO: Tune this value IT is the scalar for speed 
         distance *= 0.25; 
         // THis is kinda dumb
