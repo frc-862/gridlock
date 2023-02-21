@@ -10,6 +10,6 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "[#34] "
-    labels"
+    labels:
       - "thunder"
-    milestone: 3 # Will update after mishawaka
+    milestone: 3
