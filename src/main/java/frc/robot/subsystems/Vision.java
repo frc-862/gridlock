@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.lang.Math.*;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
@@ -319,6 +320,18 @@ public class Vision extends SubsystemBase {
         if (pipelineNum != getPipelineNum()) {
             LimelightHelpers.setLimelightNTDouble("limelight", "pipeline", pipelineNum);
         }
+    }
+
+    public double calculateRetroReflectiveDistance(){
+        //top tape
+        if(curPipeline == 2){
+            return(5.969/Math.tanh(verticalOffset));
+        }
+        //bottom tape
+        else if(curPipeline == 3){
+            return(13.781/Math.tanh(verticalOffset));
+        }
+        return 0;
     }
 
 }
