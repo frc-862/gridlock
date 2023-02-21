@@ -49,12 +49,17 @@ public class Vision extends SubsystemBase {
     private double botPoseBlueTotalLatency;
     private double botPoseRedTotalLatency;
 
+    //initial drivercam settings
+    boolean driverCam = true;
+
     public Vision() {
         // Inits logging for vision
         initLogging();
 
         // Registers this as a proper Subsystem
         CommandScheduler.getInstance().registerSubsystem(this);
+
+        setDriverCam();
     }
 
     @Override
@@ -101,6 +106,18 @@ public class Vision extends SubsystemBase {
         // DataLogger.addDataElement("Vision bot pose Red latency", () ->
         // getLatencyBotPoseRed());
 
+    }
+
+    public void setDriverCam() {
+        if (driverCam == true) {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+        } else if (driverCam == false) {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+        }
+    }
+
+    public boolean getCamMode(){
+        return driverCam;
     }
 
     // Returns the robot pose as a Pose2d from vision data
