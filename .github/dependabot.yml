@@ -1,0 +1,15 @@
+# Dependabot config file for updating thunder
+
+version: 2    
+updates:
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    reviewers:
+      - "frc-862/reviewers"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "[#34] "
+    labels:
+      - "thunder"
+    milestone: 3
