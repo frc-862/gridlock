@@ -10,14 +10,14 @@
         "x": 3.0621585441459045,
         "y": 0.7298071770180636
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece"
+          "Score-Game-Piece-Servo"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -69,7 +69,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Game-Piece"
+          "Collect-Game-Piece-One"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -78,15 +78,15 @@
     },
     {
       "anchorPoint": {
-        "x": 1.85,
+        "x": 1.8,
         "y": 1.05
       },
       "prevControl": {
-        "x": 2.4500767978794977,
+        "x": 2.4000767978794975,
         "y": 0.9829645093434334
       },
       "nextControl": {
-        "x": 1.7291745853106537,
+        "x": 1.6791745853106537,
         "y": 1.063497590618576
       },
       "holonomicAngle": 180.0,
@@ -96,7 +96,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece"
+          "Score-Game-Piece-One"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -148,7 +148,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Game-Piece"
+          "Collect-Game-Piece-Two"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -182,12 +182,12 @@
     },
     {
       "anchorPoint": {
-        "x": 1.85,
+        "x": 2.0846359000410324,
         "y": 1.05
       },
       "prevControl": {
-        "x": 2.696223889309403,
-        "y": 0.8784681305453899
+        "x": 2.930859789350435,
+        "y": 0.8784681305453901
       },
       "nextControl": null,
       "holonomicAngle": -180.0,
@@ -197,7 +197,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece"
+          "Score-Game-Piece-Two"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",

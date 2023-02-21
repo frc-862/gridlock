@@ -285,7 +285,7 @@ public final class Constants {
         }
 
         public static final class PWM {
-            public static final int SERVO = 0;
+            public static final int SERVO = 3;
         }
     }
 
@@ -377,6 +377,9 @@ public final class Constants {
         // Path planner PIDConstants
         public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0);
         public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7, 0, 0);
-        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
+        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0,0, 0);
+
+        public static final double MAX_VELOCITY = 3;
+        public static final double MAX_ACCELERATION = 3;
     }
 }

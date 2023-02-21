@@ -4,17 +4,20 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Vision;
 import java.util.HashMap;
+import javax.security.auth.AuthPermission;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.ServoTurn;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
@@ -48,6 +51,7 @@ public class RobotContainer extends LightningContainer {
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(targetting);
+    private static final ServoTurn servoturn = new ServoTurn();
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
@@ -87,7 +91,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getXButton)
                 .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
                         drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
-
+    
         new Trigger(driver::getYButton).whileTrue(new StdDev(targetting));
         /*
          * //copilot controls new Trigger(copilot::getAButton).whileTrue(new Ground(lift)); new
@@ -99,20 +103,28 @@ public class RobotContainer extends LightningContainer {
          * DoubleSubstationCollect(lift));
          */
     }
-
     // Creates the autonomous commands
     @Override
     protected void configureAutonomousCommands() {
+        //Test paths 
         autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(1, 0.25));
         autoFactory.makeTrajectory("Straight", new HashMap<>(), new PathConstraints(11, 3));
-        autoFactory.makeTrajectory("StraightButRotate", new HashMap<>(),
-                new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("Path8StartC", new HashMap<>(), new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(10, 1));
-        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(),
-                new PathConstraints(10, 1));
+        autoFactory.makeTrajectory("StraightButRotate", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, 1));
+        autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("jitter", new HashMap<>(), new PathConstraints(5, 1));
+        autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // Game paths
+        autoFactory.makeTrajectory("Path1StartB", Maps.getPath1StartBMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path2StartB", Maps.getPath2StartBMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY,AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path3StartA", Maps.getPath3StartAMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path4StartA", Maps.getPath4StartAMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path5StartC", Maps.getPath5StartCMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path6StartC", Maps.getPath6StartCMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path6StartCCharge", Maps.getPath6ChargeMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path7StartA", Maps.getPath7StartAMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path8StartC", Maps.getPath8StartCMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path9StartB", Maps.getPath9StartBMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
     }
 
     @Override
