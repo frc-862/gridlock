@@ -17,7 +17,7 @@ public class Vision extends SubsystemBase {
 
     // Change "limelight" to whatever the name of the limelight you are using
     // we should rename the limelight names to something consistent later
-    private final String limelightName = "limelight-front";
+    private String limelightName = "limelight-front";
 
     // NetworkTableEntry
 
@@ -52,6 +52,9 @@ public class Vision extends SubsystemBase {
     public Vision() {
         // Inits logging for vision
         initLogging();
+
+        // Sets the appropriate camera position
+        setCameraPose();
 
         // Registers this as a proper Subsystem
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -294,6 +297,14 @@ public class Vision extends SubsystemBase {
     public boolean isOnTarget(double expectedAngle) {
         // Should put consideration into how accurate we want to be later on.
         return expectedAngle < Constants.VisionConstants.HORIZ_DEGREE_TOLERANCE;
+    }
+
+    private void setCameraPose(){
+        if (limelightName == "limelight-front"){
+            LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, 0.14224, 0.9398, 0, 0, 0);
+        } else {
+            LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, -0.14224, 0.9398, 0, 0, 0);
+        }
     }
 
     // Sets the pipeline based on what is put in shuffleboard
