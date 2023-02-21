@@ -46,8 +46,7 @@ public class Arm extends SubsystemBase {
         encoder.setPositionConversionFactor(360);
         // encoder.setZeroOffset(-194);
         controller.setOutputRange(ArmConstants.MIN_POWER, ArmConstants.MAX_POWER);
-        motor.setClosedLoopRampRate(1);
-
+        motor.setClosedLoopRampRate(2);
 
 
         // PIDDashboardTuner tuner = new PIDDashboardTuner("Arm", controller);
@@ -80,12 +79,15 @@ public class Arm extends SubsystemBase {
                 MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
 
         // LightningShuffleboard.setDouble("Arm", "target agle", targetAngle);
-
+        // if(targetAngle - getAngle().getDegrees() > 5) {
         if (targetAngle - getAngle().getDegrees() > 2) {
             controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
         } else {
             controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
         }
+        // } else {
+        // controller.setReference(, CANSparkMax.ControlType.kPosition, 0);
+        // }
 
         // controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
 
@@ -156,6 +158,7 @@ public class Arm extends SubsystemBase {
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint",
         // -90)));
 
+
         // controller.setP(LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP), 1);
         // controller.setFF(LightningShuffleboard.getDouble("Arm", "up kF", ArmConstants.UP_kF), 1);
         // controller.setP(LightningShuffleboard.getDouble("Arm", "down kP", ArmConstants.DOWN_kP),
@@ -166,7 +169,6 @@ public class Arm extends SubsystemBase {
 
         // motor.setClosedLoopRampRate(LightningShuffleboard.getDouble("Arm", "ramp rate", 1));
 
-        // LightningShuffleboard.setDouble("Arm", "curr speed", motor.get());
-        LightningShuffleboard.setDouble("Arm", "output volt", motor.getAppliedOutput());
+        LightningShuffleboard.setDouble("Arm", "curr speed", motor.get());
     }
 }
