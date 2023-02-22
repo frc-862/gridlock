@@ -30,6 +30,9 @@ import frc.robot.commands.Lift.HighScore;
 import frc.robot.commands.Lift.MidScore;
 import frc.robot.commands.Lift.ReverseDoubleSubstationCollect;
 import frc.robot.commands.Lift.Stow;
+import frc.robot.commands.Lift.demoPos1;
+import frc.robot.commands.Lift.demoPos2;
+import frc.robot.commands.Lift.demoPos3;
 import frc.robot.commands.ManualLift;
 import frc.robot.commands.StdDev;
 import frc.robot.commands.StdDevOdo;
@@ -51,10 +54,10 @@ public class RobotContainer extends LightningContainer {
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(targetting);
+    // private static final Arm arm = new Arm();
+    // private static final Wrist wrist = new Wrist();
+    // private static final Elevator elevator = new Elevator();
     private static final ServoTurn servoturn = new ServoTurn();
-    private static final Arm arm = new Arm();
-    private static final Wrist wrist = new Wrist();
-    private static final Elevator elevator = new Elevator();
     // private static final Lift lift = new Lift(elevator, wrist, arm);
     // private static final Collector collector = new Collector();
 
@@ -80,13 +83,12 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void configureButtonBindings() {
         // Back button to reset field centeric driving to current heading of the robot
-        new Trigger(driver::getBackButton).onTrue(
-                new SequentialCommandGroup(new InstantCommand(drivetrain::zeroHeading, drivetrain),
-                        new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d()))));
+        new Trigger(driver::getBackButton)
+                .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
-        new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
+        // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
         new Trigger(driver::getXButton)
                 .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
@@ -139,14 +141,9 @@ public class RobotContainer extends LightningContainer {
                         () -> joystickFilter.filter(driver.getLeftY()),
                         () -> -joystickFilter.filter(driver.getRightX())));
 
-        elevator.setDefaultCommand(
-                new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
-                        () -> 0, () -> 0, arm, wrist, elevator));
-
-        // collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis,
-        // copilot::getRightTriggerAxis));
-        // collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis,
-        // copilot::getRightTriggerAxis));
+        // elevator.setDefaultCommand(
+        // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
+        // () -> 0, () -> 0, arm, wrist, elevator));
     }
 
     @Override
