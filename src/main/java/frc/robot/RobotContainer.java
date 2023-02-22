@@ -28,6 +28,9 @@ import frc.robot.commands.Lift.HighScore;
 import frc.robot.commands.Lift.MidScore;
 import frc.robot.commands.Lift.ReverseDoubleSubstationCollect;
 import frc.robot.commands.Lift.Stow;
+import frc.robot.commands.Lift.demoPos1;
+import frc.robot.commands.Lift.demoPos2;
+import frc.robot.commands.Lift.demoPos3;
 import frc.robot.commands.ManualLift;
 import frc.robot.commands.StdDev;
 import frc.robot.commands.StdDevOdo;
@@ -50,7 +53,7 @@ public class RobotContainer extends LightningContainer {
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(targetting);
     // private static final Arm arm = new Arm();
-    private static final Wrist wrist = new Wrist();
+    // private static final Wrist wrist = new Wrist();
     // private static final Elevator elevator = new Elevator();
     // private static final Lift lift = new Lift(elevator, wrist, arm);
     // private static final Collector collector = new Collector();
@@ -77,10 +80,10 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void configureButtonBindings() {
         // Back button to reset field centeric driving to current heading of the robot
-        // new Trigger(driver::getBackButton)
-        //         .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+        new Trigger(driver::getBackButton)
+                .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
-        // new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
+        new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
@@ -94,6 +97,10 @@ public class RobotContainer extends LightningContainer {
         // new Trigger(driver::getXButton)
         //         .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
         //                 drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+
+        // new Trigger(driver::getBButton).whileTrue(new demoPos1(elevator, arm, wrist));
+        // new Trigger(driver::getXButton).whileTrue(new demoPos2(elevator, arm, wrist));
+        // new Trigger(driver::getYButton).whileTrue(new demoPos3(elevator, arm, wrist));
 
         // new Trigger(driver::getYButton).whileTrue(new StdDev(targetting));
         /*

@@ -134,7 +134,7 @@ public final class Constants {
         public static final double kF = 0d;
 
         // TODO: set a tolerance
-        public static final double TOLERANCE = 0d;
+        public static final double TOLERANCE = 0.5d;
 
         // TOOD: replace with actual values
         public static final int TICKS_PER_REV = 42;
@@ -222,15 +222,15 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double UP_kP = 0.00d;
+        public static final double UP_kP = 0.001d;
         public static final double UP_kI = 0d;
         public static final double UP_kD = 0d;
-        public static final double UP_kF = 0.000d;
+        public static final double UP_kF = 0.0004d;
 
-        public static final double DOWN_kP = 0.00d;
+        public static final double DOWN_kP = 0.002d;
         public static final double DOWN_kI = 0d;
         public static final double DOWN_kD = 0d;
-        public static final double DOWN_kF = 0.000d;
+        public static final double DOWN_kF = 0.00008d;
 
         public static final double TOLERANCE = 0d;
 

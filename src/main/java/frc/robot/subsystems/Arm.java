@@ -155,8 +155,7 @@ public class Arm extends SubsystemBase {
         LightningShuffleboard.setBool("Arm", "fwd Limit", getForwardLimitSwitch());
         LightningShuffleboard.setBool("Arm", "rev Limit", getReverseLimitSwitch());
         LightningShuffleboard.setDouble("Arm", "absolute encoder", getAngle().getDegrees());
-        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint",
-        // -90)));
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint", -90)));
 
 
         // controller.setP(LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP), 1);
@@ -167,8 +166,8 @@ public class Arm extends SubsystemBase {
         // 0);
 
 
-        // motor.setClosedLoopRampRate(LightningShuffleboard.getDouble("Arm", "ramp rate", 1));
+        // motor.setClosedLoopRampRate(LightningShuffleboard.getDouble("Arm", "ramp rate", 2));
 
-        LightningShuffleboard.setDouble("Arm", "curr speed", motor.get());
+        // LightningShuffleboard.setDouble("Arm", "curr speed", motor.get());
     }
 }

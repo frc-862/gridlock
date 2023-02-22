@@ -121,20 +121,20 @@ public class Wrist extends SubsystemBase {
         LightningShuffleboard.setBool("Wrist", "rev Limit", getReverseLimitSwitch());
         LightningShuffleboard.setDouble("Wrist", "Wrist Angle", getAngle().getDegrees());
 
-        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Wrist", "setpoint", -90)));
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Wrist", "setpoint", -90)));
 
 
-        controller.setP(LightningShuffleboard.getDouble("Wrist", "up kP", WristConstants.UP_kP), 1);
-        controller.setFF(LightningShuffleboard.getDouble("Wrist", "up kF", WristConstants.UP_kF),
-                1);
-        controller.setP(LightningShuffleboard.getDouble("Wrist", "down kP", WristConstants.DOWN_kP),
-                0);
-        controller.setFF(
-                LightningShuffleboard.getDouble("Wrist", "down kF", WristConstants.DOWN_kF), 0);
+        // controller.setP(LightningShuffleboard.getDouble("Wrist", "up kP", WristConstants.UP_kP), 1);
+        // controller.setFF(LightningShuffleboard.getDouble("Wrist", "up kF", WristConstants.UP_kF),
+        //         1);
+        // controller.setP(LightningShuffleboard.getDouble("Wrist", "down kP", WristConstants.DOWN_kP),
+        //         0);
+        // controller.setFF(
+        //         LightningShuffleboard.getDouble("Wrist", "down kF", WristConstants.DOWN_kF), 0);
 
 
 
-        LightningShuffleboard.setDouble("Wrist", "curr speed", motor.get());
+        // LightningShuffleboard.setDouble("Wrist", "curr speed", motor.get());
 
     }
 }
