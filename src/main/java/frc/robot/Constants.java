@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.thunder.math.InterpolationMap;
 import frc.thunder.pathplanner.com.pathplanner.lib.auto.PIDConstants;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 
@@ -175,7 +176,7 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double UP_kP = 0.006d;
+        public static final double UP_kP = 0.0062d;
         public static final double UP_kI = 0d;
         public static final double UP_kD = 0d;
         public static final double UP_kF = 0.00025d;
@@ -189,8 +190,8 @@ public final class Constants {
 
         // Min and Max arm angles in degrees
         // TODO: change to actual values
-        public static final double MAX_ANGLE = 0d;
-        public static final double MIN_ANGLE = -106d;
+        public static final double MAX_ANGLE = 90d;
+        public static final double MIN_ANGLE = -111d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -200,7 +201,7 @@ public final class Constants {
 
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
-        public static final double ENCODER_OFFSET_BLACKOUT = 194;
+        public static final double ENCODER_OFFSET_BLACKOUT = 196.5;
 
         // robot lengths
         // TODO: get accurate measurements
@@ -213,12 +214,24 @@ public final class Constants {
                 SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
                 SparkMaxLimitSwitch.Type.kNormallyOpen;
+
+
+        public static InterpolationMap ARM_UP_KF_MAP = new InterpolationMap() {
+            {
+                put(-110d, -0.0001);
+                put(-90d, 0.0002);
+                put(-60d, 0.00028);
+                put(-30d, 0.00065);
+                put(0d, 0.00037);
+            }
+        };
     }
 
     public static final class WristConstants {
         public static final boolean MOTOR_INVERT = true;
 
-        public static final int CURRENT_LIMIT = 20;
+        // TODO: make 20 for comp
+        public static final int CURRENT_LIMIT = 10;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 

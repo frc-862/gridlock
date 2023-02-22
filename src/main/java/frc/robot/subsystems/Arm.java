@@ -155,19 +155,24 @@ public class Arm extends SubsystemBase {
         LightningShuffleboard.setBool("Arm", "fwd Limit", getForwardLimitSwitch());
         LightningShuffleboard.setBool("Arm", "rev Limit", getReverseLimitSwitch());
         LightningShuffleboard.setDouble("Arm", "absolute encoder", getAngle().getDegrees());
-        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint", -90)));
+
+        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint", -90)));
+
+        double kf = LightningShuffleboard.getDouble("Arm", "kF", ArmConstants.UP_kF);
+        // double kf = ArmConstants.ARM_UP_KF_MAP.get(getAngle().getDegrees());
+        double kp = LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP);
+        controller.setP(kp, 1);
+        controller.setP(kp, 0);
+        controller.setFF(kf, 1);
+        controller.setFF(kf, 0);
+
+        LightningShuffleboard.setDouble("Arm", "current FF", kf);
 
 
-        // controller.setP(LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP), 1);
-        // controller.setFF(LightningShuffleboard.getDouble("Arm", "up kF", ArmConstants.UP_kF), 1);
-        // controller.setP(LightningShuffleboard.getDouble("Arm", "down kP", ArmConstants.DOWN_kP),
-        // 0);
         // controller.setFF(LightningShuffleboard.getDouble("Arm", "down kF", ArmConstants.DOWN_kF),
         // 0);
+        motor.setClosedLoopRampRate(LightningShuffleboard.getDouble("Arm", "ramp rate", 2));
 
-
-        // motor.setClosedLoopRampRate(LightningShuffleboard.getDouble("Arm", "ramp rate", 2));
-
-        // LightningShuffleboard.setDouble("Arm", "curr speed", motor.get());
+        LightningShuffleboard.setDouble("Arm", "curr speed", motor.get());
     }
 }

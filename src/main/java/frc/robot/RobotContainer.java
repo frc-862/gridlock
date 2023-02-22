@@ -52,8 +52,8 @@ public class RobotContainer extends LightningContainer {
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(targetting);
-    // private static final Arm arm = new Arm();
-    // private static final Wrist wrist = new Wrist();
+    private static final Arm arm = new Arm();
+    private static final Wrist wrist = new Wrist();
     // private static final Elevator elevator = new Elevator();
     // private static final Lift lift = new Lift(elevator, wrist, arm);
     // private static final Collector collector = new Collector();
@@ -88,15 +88,18 @@ public class RobotContainer extends LightningContainer {
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
         // new Trigger(driver::getXButton)
-        //         .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
-        //                 drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+        // .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
+        // drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
 
-        // new Trigger(driver::getAButton).whileTrue(new RunCommand(() -> elevator.setExtension(4), elevator)).onFalse(new InstantCommand(elevator::stop, elevator));
-        // new Trigger(driver::getBButton).whileTrue(new RunCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-75)), arm)).onFalse(new InstantCommand(arm::stop, arm));
+        // new Trigger(driver::getAButton).whileTrue(new RunCommand(() -> elevator.setExtension(4),
+        // elevator)).onFalse(new InstantCommand(elevator::stop, elevator));
+        // new Trigger(driver::getBButton).whileTrue(new RunCommand(() ->
+        // arm.setAngle(Rotation2d.fromDegrees(-75)), arm)).onFalse(new InstantCommand(arm::stop,
+        // arm));
         // new Trigger(driver::getXButton)
-        //         .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
-        //                 drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+        // .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
+        // drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
         // new Trigger(driver::getBButton).whileTrue(new demoPos1(elevator, arm, wrist));
         // new Trigger(driver::getXButton).whileTrue(new demoPos2(elevator, arm, wrist));
