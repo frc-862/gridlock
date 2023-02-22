@@ -390,7 +390,7 @@ public final class Constants {
         }
 
         public enum LiftPlan {
-            parallel, armPriority, elevatorPriority, wristPriority
+            parallel, armPriority, elevatorPriority, elevatorLast
         }
     }
 

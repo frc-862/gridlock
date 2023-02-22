@@ -44,8 +44,6 @@ public class Wrist extends SubsystemBase {
         controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
         motor.setClosedLoopRampRate(2);
 
-        targetAngle = getAngle().getDegrees();
-
         initLogging();
 
         CommandScheduler.getInstance().registerSubsystem(this);

@@ -47,7 +47,7 @@ public class StateTable {
                 if(current == LiftState.stowed) {
                     return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-20), LiftPlan.elevatorPriority, LiftState.transition);
                 } else if (goal == LiftState.stowed) {
-                    return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-20), LiftPlan.armPriority, LiftState.stowed);
+                    return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-20), LiftPlan.elevatorLast, LiftState.stowed);
                 } else {
                     return stateTable.get(current).get(goal);
                 }

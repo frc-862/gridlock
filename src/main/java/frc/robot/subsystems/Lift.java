@@ -31,6 +31,10 @@ public class Lift extends SubsystemBase {
         this.wrist = wrist;
         this.arm = arm;
 
+        elevator.setExtension(elevator.getExtension());
+        arm.setAngle(arm.getAngle());
+        wrist.setAngle(wrist.getAngle());
+
         initLogging();
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -88,11 +92,13 @@ public class Lift extends SubsystemBase {
                         wrist.setAngle(nextState.getWristAngle());
                     }
                     break;
-                case wristPriority:
+                case elevatorLast:
                     wrist.setAngle(nextState.getWristAngle());
                     if (wrist.onTarget()) {
-                        elevator.setExtension(nextState.getElevatorExtension());
                         arm.setAngle(nextState.getArmAngle());
+                        if(arm.onTarget()) {
+                            elevator.setExtension(nextState.getElevatorExtension());   
+                        }
                     }
                     break;
             }
