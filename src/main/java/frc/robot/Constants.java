@@ -176,15 +176,20 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double UP_kP = 0.0062d;
-        public static final double UP_kI = 0d;
-        public static final double UP_kD = 0d;
-        public static final double UP_kF = 0.00025d;
+        // public static final double UP_kP = 0.0062d;
+        // public static final double UP_kI = 0d;
+        // public static final double UP_kD = 0d;
+        // public static final double UP_kF = 0.00025d;
 
-        public static final double DOWN_kP = 0.004d;
-        public static final double DOWN_kI = 0d;
-        public static final double DOWN_kD = 0d;
-        public static final double DOWN_kF = 0.0002d;
+        // public static final double DOWN_kP = 0.004d;
+        // public static final double DOWN_kI = 0d;
+        // public static final double DOWN_kD = 0d;
+        // public static final double DOWN_kF = 0.0002d;
+
+        public static final double kP = 0.0062d;
+        public static final double kI = 0d;
+        public static final double kD = 0d;
+        public static final double kF = 0d;
 
         public static final double TOLERANCE = 0d;
 

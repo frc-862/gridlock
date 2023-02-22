@@ -37,12 +37,8 @@ public class Arm extends SubsystemBase {
                 ArmConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, ArmConstants.MOTOR_TYPE,
                 ArmConstants.NEUTRAL_MODE);
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-        controller = NeoConfig.createPIDController(motor.getPIDController(),
-                new SparkMaxPIDGains(ArmConstants.DOWN_kP, ArmConstants.DOWN_kI,
-                        ArmConstants.DOWN_kD, ArmConstants.DOWN_kF),
-                new SparkMaxPIDGains(ArmConstants.UP_kP, ArmConstants.UP_kI, ArmConstants.UP_kD,
-                        ArmConstants.UP_kF),
-                encoder);
+        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(
+                ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
         encoder.setPositionConversionFactor(360);
         // encoder.setZeroOffset(-194);
         controller.setOutputRange(ArmConstants.MIN_POWER, ArmConstants.MAX_POWER);
@@ -78,18 +74,7 @@ public class Arm extends SubsystemBase {
         targetAngle =
                 MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
 
-        // LightningShuffleboard.setDouble("Arm", "target agle", targetAngle);
-        // if(targetAngle - getAngle().getDegrees() > 5) {
-        if (targetAngle - getAngle().getDegrees() > 2) {
-            controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
-        } else {
-            controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
-        }
-        // } else {
-        // controller.setReference(, CANSparkMax.ControlType.kPosition, 0);
-        // }
-
-        // controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
+        controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
 
     }
 
@@ -156,23 +141,15 @@ public class Arm extends SubsystemBase {
         LightningShuffleboard.setBool("Arm", "rev Limit", getReverseLimitSwitch());
         LightningShuffleboard.setDouble("Arm", "absolute encoder", getAngle().getDegrees());
 
-        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint", -90)));
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint", -90)));
 
-        double kf = LightningShuffleboard.getDouble("Arm", "kF", ArmConstants.UP_kF);
-        // double kf = ArmConstants.ARM_UP_KF_MAP.get(getAngle().getDegrees());
-        double kp = LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP);
-        controller.setP(kp, 1);
-        controller.setP(kp, 0);
-        controller.setFF(kf, 1);
-        controller.setFF(kf, 0);
+        // double kf = LightningShuffleboard.getDouble("Arm", "kF", ArmConstants.kF);
+        // double kp = LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.kP);
+        // controller.setP(kp, 1);
+        // controller.setP(kp, 0);
+        // controller.setFF(kf, 1);
+        // controller.setFF(kf, 0);
 
-        LightningShuffleboard.setDouble("Arm", "current FF", kf);
-
-
-        // controller.setFF(LightningShuffleboard.getDouble("Arm", "down kF", ArmConstants.DOWN_kF),
-        // 0);
-        motor.setClosedLoopRampRate(LightningShuffleboard.getDouble("Arm", "ramp rate", 2));
-
-        LightningShuffleboard.setDouble("Arm", "curr speed", motor.get());
+        controller.setFF(ArmConstants.ARM_UP_KF_MAP.get(getAngle().getDegrees()), 0);
     }
 }
