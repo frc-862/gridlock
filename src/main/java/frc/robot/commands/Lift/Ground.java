@@ -14,6 +14,6 @@ public class Ground extends InstantCommand {
 
     @Override
     public void initialize() {
-        lift.setNextState(LiftState.ground);
+        lift.setGoalState(LiftState.ground);
     }
 }

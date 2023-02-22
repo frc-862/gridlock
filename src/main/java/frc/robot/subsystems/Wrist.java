@@ -44,6 +44,7 @@ public class Wrist extends SubsystemBase {
         controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
         motor.setClosedLoopRampRate(2);
 
+        targetAngle = getAngle().getDegrees();
 
         initLogging();
 
@@ -77,12 +78,6 @@ public class Wrist extends SubsystemBase {
     public void setAngle(Rotation2d angle) {
         targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE,
                 WristConstants.MAX_ANGLE);
-
-        if (targetAngle - getAngle().getDegrees() > 2) {
-            controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
-        } else {
-            controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
-        }
     }
 
     public void setPower(double power) {
@@ -112,7 +107,11 @@ public class Wrist extends SubsystemBase {
     }
 
     public boolean onTarget() {
-        return Math.abs(encoder.getPosition() - targetAngle) < WristConstants.TOLERANCE;
+        return Math.abs(getAngle().getDegrees() - targetAngle) < WristConstants.TOLERANCE;
+    }
+
+    public boolean onTarget(double target) {
+        return Math.abs(getAngle().getDegrees() - target) < WristConstants.TOLERANCE;
     }
 
     @Override
@@ -121,16 +120,32 @@ public class Wrist extends SubsystemBase {
         LightningShuffleboard.setBool("Wrist", "rev Limit", getReverseLimitSwitch());
         LightningShuffleboard.setDouble("Wrist", "Wrist Angle", getAngle().getDegrees());
 
-        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Wrist", "setpoint", -20)));
+        LightningShuffleboard.setBool("Lift", "Wrist on target", onTarget());
+        LightningShuffleboard.setDouble("Lift", "Wrist target", targetAngle);
 
 
-        // controller.setP(LightningShuffleboard.getDouble("Wrist", "up kP", WristConstants.UP_kP), 1);
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Wrist", "setpoint",
+        // -20)));
+
+
+        // controller.setP(LightningShuffleboard.getDouble("Wrist", "up kP", WristConstants.UP_kP),
+        // 1);
         // controller.setFF(LightningShuffleboard.getDouble("Wrist", "up kF", WristConstants.UP_kF),
-        //         1);
-        // controller.setP(LightningShuffleboard.getDouble("Wrist", "down kP", WristConstants.DOWN_kP),
-        //         0);
+        // 1);
+        // controller.setP(LightningShuffleboard.getDouble("Wrist", "down kP",
+        // WristConstants.DOWN_kP),
+        // 0);
         // controller.setFF(
-        //         LightningShuffleboard.getDouble("Wrist", "down kF", WristConstants.DOWN_kF), 0);
+        // LightningShuffleboard.getDouble("Wrist", "down kF", WristConstants.DOWN_kF), 0);
+
+
+        if (!onTarget()) {
+            if (targetAngle - getAngle().getDegrees() > 2) {
+                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
+            } else {
+                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
+            }
+        }
 
 
 
