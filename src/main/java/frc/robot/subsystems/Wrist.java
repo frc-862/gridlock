@@ -116,25 +116,22 @@ public class Wrist extends SubsystemBase {
     public void periodic() {
         LightningShuffleboard.setBool("Wrist", "fwd Limit", getForwardLimitSwitch());
         LightningShuffleboard.setBool("Wrist", "rev Limit", getReverseLimitSwitch());
-        LightningShuffleboard.setDouble("Wrist", "Wrist Angle", getAngle().getDegrees());
+        LightningShuffleboard.setDouble("Lift", "Wrist Angle", getAngle().getDegrees());
 
-        LightningShuffleboard.setBool("Lift", "Wrist on target", onTarget());
-        LightningShuffleboard.setDouble("Lift", "Wrist target", targetAngle);
-
-
-        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Wrist", "setpoint",
-        // -20)));
+        // LightningShuffleboard.setBool("Lift", "Wrist on target", onTarget());
+        // LightningShuffleboard.setDouble("Lift", "Wrist target", targetAngle);
 
 
-        // controller.setP(LightningShuffleboard.getDouble("Wrist", "up kP", WristConstants.UP_kP),
-        // 1);
-        // controller.setFF(LightningShuffleboard.getDouble("Wrist", "up kF", WristConstants.UP_kF),
-        // 1);
-        // controller.setP(LightningShuffleboard.getDouble("Wrist", "down kP",
-        // WristConstants.DOWN_kP),
-        // 0);
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -20)));
+
+
+        // controller.setP(LightningShuffleboard.getDouble("Lift", "up kP", WristConstants.UP_kP), 1);
+        // controller.setFF(LightningShuffleboard.getDouble("Lift", "up kF", WristConstants.UP_kF),
+        //         1);
+        // controller.setP(LightningShuffleboard.getDouble("Lift", "down kP", WristConstants.DOWN_kP),
+        //         0);
         // controller.setFF(
-        // LightningShuffleboard.getDouble("Wrist", "down kF", WristConstants.DOWN_kF), 0);
+        //         LightningShuffleboard.getDouble("Lift", "down kF", WristConstants.DOWN_kF), 0);
 
 
         if (!onTarget()) {

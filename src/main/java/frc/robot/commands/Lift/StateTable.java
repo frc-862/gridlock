@@ -26,7 +26,8 @@ public class StateTable {
                 LiftState.midConeScore, new StateTransition(10, Rotation2d.fromDegrees(-45), Rotation2d.fromDegrees(-120), LiftPlan.parallel, LiftState.midConeScore),
                 LiftState.highCubeScore, new StateTransition(20, Rotation2d.fromDegrees(-45), Rotation2d.fromDegrees(-120), LiftPlan.parallel, LiftState.highCubeScore),
                 LiftState.highConeScore, new StateTransition(20, Rotation2d.fromDegrees(-45), Rotation2d.fromDegrees(-120), LiftPlan.parallel, LiftState.highConeScore),
-                LiftState.doubleSubstationCollect, new StateTransition(5, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-130), LiftPlan.parallel, LiftState.doubleSubstationCollect));
+                LiftState.doubleSubstationCollect, new StateTransition(5, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-130), LiftPlan.parallel, LiftState.doubleSubstationCollect),
+                LiftState.reverseSubstationCollect, new StateTransition(5, Rotation2d.fromDegrees(60), Rotation2d.fromDegrees(-130), LiftPlan.parallel, LiftState.reverseSubstationCollect));
 
     // index is current state, goal state; outputs a StateTransition
     private static Map<LiftState, Map<LiftState, StateTransition>> stateTable = Map.of(
@@ -36,8 +37,8 @@ public class StateTable {
             LiftState.midConeScore, nextStateTable,
             LiftState.highCubeScore, nextStateTable,
             LiftState.highConeScore, nextStateTable,
-            LiftState.doubleSubstationCollect, nextStateTable
-
+            LiftState.doubleSubstationCollect, nextStateTable,
+            LiftState.reverseSubstationCollect, nextStateTable
             );
 
             

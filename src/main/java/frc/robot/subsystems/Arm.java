@@ -150,20 +150,18 @@ public class Arm extends SubsystemBase {
         LightningShuffleboard.setBool("Arm", "fwd Limit", getForwardLimitSwitch());
         LightningShuffleboard.setBool("Arm", "rev Limit", getReverseLimitSwitch());
 
-        LightningShuffleboard.setDouble("Arm", "absolute encoder", getAngle().getDegrees());
+        LightningShuffleboard.setDouble("Lift", "arm angle", getAngle().getDegrees());
 
-        LightningShuffleboard.setBool("Lift", "Arm on target", onTarget());
-        LightningShuffleboard.setDouble("Lift", "Arm target", targetAngle);
+        // LightningShuffleboard.setBool("Lift", "Arm on target", onTarget());
+        // LightningShuffleboard.setDouble("Lift", "Arm target", targetAngle);
 
 
-        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint", -90)));
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "arm setpoint", -90)));
 
-        // double kf = LightningShuffleboard.getDouble("Arm", "kF", ArmConstants.kF);
-        // double kp = LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.kP);
-        // controller.setP(kp, 1);
+        // double kf = LightningShuffleboard.getDouble("Lift", "kF", ArmConstants.kF);
+        // double kp = LightningShuffleboard.getDouble("Lift", "kP", ArmConstants.kP);
         // controller.setP(kp, 0);
-        // controller.setFF(kf, 1);
-        // controller.setFF(kf, 0);
+        // System.out.println(controller.setFF(kf, 0));
 
         controller.setFF(ArmConstants.ARM_UP_KF_MAP.get(getAngle().getDegrees()), 0);
     }

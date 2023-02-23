@@ -57,7 +57,7 @@ public class RobotContainer extends LightningContainer {
     private static final Elevator elevator = new Elevator();
     private static final ServoTurn servoturn = new ServoTurn();
     private static final Lift lift = new Lift(elevator, wrist, arm);
-    // private static final Collector collector = new Collector();
+    private static final Collector collector = new Collector();
 
     // Creates new LED controller
     private static final LEDs underglow = new LEDs();
@@ -99,7 +99,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
         new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
-        // new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
+        new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
         new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
 
     }
@@ -167,6 +167,8 @@ public class RobotContainer extends LightningContainer {
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
+
+        collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis, copilot::getRightTriggerAxis));
     }
 
     @Override
