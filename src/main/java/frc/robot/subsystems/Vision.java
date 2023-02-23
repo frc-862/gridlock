@@ -71,7 +71,7 @@ public class Vision extends SubsystemBase {
 
     // Adds logging for vision so we can look at values when the robot is off and
     // check them
-    public void initLogging() {
+    private void initLogging() {
         // Checks if we have vision
         hasVision = LimelightHelpers.getTV(limelightName);
 

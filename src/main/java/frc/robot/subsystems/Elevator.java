@@ -51,7 +51,7 @@ public class Elevator extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void initLogging() {
+    private void initLogging() {
         DataLogger.addDataElement("Elevator Extension", () -> getExtension());
         DataLogger.addDataElement("Elevator Target Height", () -> targetExtension);
         DataLogger.addDataElement("Elevator on Target", () -> onTarget() ? 1 : 0);

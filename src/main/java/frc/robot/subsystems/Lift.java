@@ -40,7 +40,7 @@ public class Lift extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void initLogging() {}
+    private void initLogging() {}
 
     public void setGoalState(LiftState state) {
         this.goalState = state;

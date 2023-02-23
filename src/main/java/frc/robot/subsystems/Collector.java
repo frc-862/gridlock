@@ -9,40 +9,42 @@ import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.logging.DataLogger;
 
+/**
+ * The collector subsystem
+ */
 public class Collector extends SubsystemBase {
-    private CANSparkMax leftMotor;
-    // private CANSparkMax rightMotor;
+
+    // The collector motor
+    private CANSparkMax motor;
 
     public Collector() {
-        leftMotor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kCoast);
-        // rightMotor = NeoConfig.createMotor(CAN.RIGHT_COLLECTOR_MOTOR, true, 0, 0,
-        // MotorType.kBrushless, IdleMode.kCoast);
+        // Creates collector motor and configures it
+        motor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kCoast);
 
+        // Starts logging
         initLogging();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void initLogging() {
-        DataLogger.addDataElement("Collector Left Motor Temperature", () -> leftMotor.getMotorTemperature());
-        // DataLogger.addDataElement("Collector Right Motor Temperature", () ->
-        // rightMotor.getMotorTemperature());
-        // DataLogger.addDataElement("R Collector Motor Controller Input Voltage", () ->
-        // rightMotor.getBusVoltage());
-        // DataLogger.addDataElement("R Collector Motor Controller Output (Amps)", () ->
-        // rightMotor.getOutputCurrent());
-        DataLogger.addDataElement("L Collector Motor Controller Input Voltage", () -> leftMotor.getBusVoltage());
-        DataLogger.addDataElement("L Collector Motor Controller Output (Amps)", () -> leftMotor.getOutputCurrent());
+    // Method to start logging
+    private void initLogging() {
+        DataLogger.addDataElement("Collector Left Motor Temperature", () -> motor.getMotorTemperature());
+        DataLogger.addDataElement("L Collector Motor Controller Input Voltage", () -> motor.getBusVoltage());
+        DataLogger.addDataElement("L Collector Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
 
     }
 
+    /**
+     * Runs the collector and the given power
+     * 
+     * @param power The power to run the collector at
+     */
     public void runCollector(double power) {
-        leftMotor.set(power);
-        // rightMotor.set(power);
+        motor.set(power);
     }
 
     public void stop() {
-        leftMotor.set(0);
-        // rightMotor.set(0);
+        motor.set(0);
     }
 }

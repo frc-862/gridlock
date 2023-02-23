@@ -38,7 +38,7 @@ import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
- * Our drivetrain subsystem
+ * The drivetrain subsystem
  */
 public class Drivetrain extends SubsystemBase {
 
@@ -53,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
             // Back right
             new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
-    // Creating new pigeon2 gyro
+    // Creating new pigeon2 IMU
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
     // Creating our list of module states and module positions
@@ -285,7 +285,7 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Method to start logging data.
      */
-    public void initLogging() {
+    private void initLogging() {
         DataLogger.addDataElement("fl steer angle", () -> Math.toDegrees(frontLeftModule.getSteerAngle()));
         DataLogger.addDataElement("fl drive velocity", () -> frontLeftModule.getDriveVelocity());
         DataLogger.addDataElement("fr steer angle", () -> Math.toDegrees(frontRightModule.getSteerAngle()));

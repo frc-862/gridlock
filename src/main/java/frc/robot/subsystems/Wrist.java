@@ -44,7 +44,7 @@ public class Wrist extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void initLogging() {
+    private void initLogging() {
         DataLogger.addDataElement("Target angle", () -> targetAngle);
         DataLogger.addDataElement("Wrist angle", () -> getAngle().getDegrees());
         DataLogger.addDataElement("on target", () -> onTarget() ? 1 : 0);
