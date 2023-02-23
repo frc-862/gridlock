@@ -46,18 +46,13 @@ public class Lift extends SubsystemBase {
         this.goalState = state;
     }
 
-
     public boolean onTarget() {
         if (nextState == null) {
             return elevator.onTarget() && arm.onTarget() && wrist.onTarget();
         } else {
-            return elevator.onTarget(nextState.getElevatorExtension())
-                    && arm.onTarget(nextState.getArmAngle().getDegrees())
-                    && wrist.onTarget(nextState.getWristAngle().getDegrees());
+            return elevator.onTarget(nextState.getElevatorExtension()) && arm.onTarget(nextState.getArmAngle().getDegrees()) && wrist.onTarget(nextState.getWristAngle().getDegrees());
         }
     }
-
-
 
     @Override
     public void periodic() {
@@ -96,8 +91,8 @@ public class Lift extends SubsystemBase {
                     wrist.setAngle(nextState.getWristAngle());
                     if (wrist.onTarget()) {
                         arm.setAngle(nextState.getArmAngle());
-                        if(arm.onTarget()) {
-                            elevator.setExtension(nextState.getElevatorExtension());   
+                        if (arm.onTarget()) {
+                            elevator.setExtension(nextState.getElevatorExtension());
                         }
                     }
                     break;

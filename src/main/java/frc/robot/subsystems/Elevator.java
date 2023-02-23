@@ -23,15 +23,10 @@ public class Elevator extends SubsystemBase {
     private double targetExtension;
 
     public Elevator() {
-        motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT,
-                ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
-                ElevatorConstants.MOTOR_TYPE, ElevatorConstants.NEUTRAL_MODE);
+        motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT, ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, ElevatorConstants.MOTOR_TYPE,
+                ElevatorConstants.NEUTRAL_MODE);
         encoder = NeoConfig.createBuiltinEncoder(motor);
-        controller =
-                NeoConfig.createPIDController(
-                        motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP,
-                                ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF),
-                        encoder);
+        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF), encoder);
         encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
         controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
@@ -65,10 +60,8 @@ public class Elevator extends SubsystemBase {
 
         DataLogger.addDataElement("Elevator Motor Temperature", () -> motor.getMotorTemperature());
         DataLogger.addDataElement("Elevator Motor Output Current", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)",
-                () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Input Voltage",
-                () -> motor.getBusVoltage());
+        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Elevator Motor Controller Input Voltage", () -> motor.getBusVoltage());
 
     }
 
@@ -88,8 +81,7 @@ public class Elevator extends SubsystemBase {
      */
     public void setExtension(double target) {
         // if the target is reachable, set the target and enable the controller
-        targetExtension = MathUtil.clamp(target, ElevatorConstants.MIN_EXTENSION,
-                ElevatorConstants.MAX_EXTENSION);
+        targetExtension = MathUtil.clamp(target, ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION);
         controller.setReference(targetExtension, CANSparkMax.ControlType.kPosition, 0);
 
         // otherwise, do nothing
@@ -122,6 +114,7 @@ public class Elevator extends SubsystemBase {
 
     /**
      * onTarget
+     * 
      * @param target the target to check against
      * @return true if the elevator is within the tolerance of the target
      */
@@ -187,7 +180,6 @@ public class Elevator extends SubsystemBase {
 
         LightningShuffleboard.setBool("Lift", "Elevator on target", onTarget());
         LightningShuffleboard.setDouble("Lift", "Elevator target", targetExtension);
-
 
         // setExtension(LightningShuffleboard.getDouble("Elevator", "target elevator height", 0));
         // controller.setP(LightningShuffleboard.getDouble("Elevator", "KP", controller.getP()));

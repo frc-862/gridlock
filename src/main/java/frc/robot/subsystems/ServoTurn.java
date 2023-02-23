@@ -11,6 +11,7 @@ public class ServoTurn extends SubsystemBase {
 
     /**
      * Turns the servo to the specified position
+     * 
      * @param position the position to turn the servo to, between 0 and 1
      */
     public void turnServo(double position) {

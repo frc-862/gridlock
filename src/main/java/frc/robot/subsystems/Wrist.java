@@ -30,16 +30,11 @@ public class Wrist extends SubsystemBase {
             OFFSET = WristConstants.ENCODER_OFFSET_GRIDLOCK;
         }
 
-        motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, WristConstants.MOTOR_INVERT,
-                WristConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
-                WristConstants.MOTOR_TYPE, WristConstants.NEUTRAL_MODE);
+        motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, WristConstants.MOTOR_INVERT, WristConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, WristConstants.MOTOR_TYPE,
+                WristConstants.NEUTRAL_MODE);
         encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
-        controller = NeoConfig.createPIDController(motor.getPIDController(),
-                new SparkMaxPIDGains(WristConstants.DOWN_kP, WristConstants.DOWN_kI,
-                        WristConstants.DOWN_kD, WristConstants.DOWN_kF),
-                new SparkMaxPIDGains(WristConstants.UP_kP, WristConstants.UP_kI,
-                        WristConstants.UP_kD, WristConstants.UP_kF),
-                encoder);
+        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(WristConstants.DOWN_kP, WristConstants.DOWN_kI, WristConstants.DOWN_kD, WristConstants.DOWN_kF),
+                new SparkMaxPIDGains(WristConstants.UP_kP, WristConstants.UP_kI, WristConstants.UP_kD, WristConstants.UP_kF), encoder);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
         controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
         motor.setClosedLoopRampRate(2);
@@ -54,10 +49,8 @@ public class Wrist extends SubsystemBase {
         DataLogger.addDataElement("Wrist angle", () -> getAngle().getDegrees());
         DataLogger.addDataElement("on target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("Wrist motor temperature", () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Wrist Motor Controller Output (Amps)",
-                () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Wrist Motor Controller Input Voltage",
-                () -> motor.getBusVoltage());
+        DataLogger.addDataElement("Wrist Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Wrist Motor Controller Input Voltage", () -> motor.getBusVoltage());
     }
 
     /**
@@ -74,8 +67,7 @@ public class Wrist extends SubsystemBase {
      * @param angle Rotation2d to set the wrist to
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE,
-                WristConstants.MAX_ANGLE);
+        targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
     }
 
     public void setPower(double power) {
@@ -121,9 +113,7 @@ public class Wrist extends SubsystemBase {
         // LightningShuffleboard.setBool("Lift", "Wrist on target", onTarget());
         // LightningShuffleboard.setDouble("Lift", "Wrist target", targetAngle);
 
-
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -20)));
-
 
         // controller.setP(LightningShuffleboard.getDouble("Lift", "up kP", WristConstants.UP_kP), 1);
         // controller.setFF(LightningShuffleboard.getDouble("Lift", "up kF", WristConstants.UP_kF),
@@ -133,7 +123,6 @@ public class Wrist extends SubsystemBase {
         // controller.setFF(
         //         LightningShuffleboard.getDouble("Lift", "down kF", WristConstants.DOWN_kF), 0);
 
-
         if (!onTarget()) {
             if (targetAngle - getAngle().getDegrees() > 2) {
                 controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
@@ -141,8 +130,6 @@ public class Wrist extends SubsystemBase {
                 controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
             }
         }
-
-
 
         LightningShuffleboard.setDouble("Wrist", "curr speed", motor.get());
 

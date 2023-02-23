@@ -13,7 +13,7 @@ import frc.robot.subsystems.ServoTurn;
  * Class for creating all auton HasMaps
  */
 public class Maps {
-    
+
     public static HashMap<String, Command> getPath1StartBMap(Drivetrain drivetrain, ServoTurn servoturn) {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(.25), servoturn));

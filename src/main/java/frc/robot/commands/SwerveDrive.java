@@ -26,8 +26,7 @@ public class SwerveDrive extends CommandBase {
      * @param translationYSupplier The control input for the translation in the Y direction
      * @param rotationSupplier The control input for rotation
      */
-    public SwerveDrive(Drivetrain drivetrainSubsystem, DoubleSupplier translationXSupplier,
-            DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier) {
+    public SwerveDrive(Drivetrain drivetrainSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier) {
         this.drivetrain = drivetrainSubsystem;
         this.m_translationXSupplier = translationXSupplier;
         this.m_translationYSupplier = translationYSupplier;
@@ -42,13 +41,8 @@ public class SwerveDrive extends CommandBase {
         drivetrain.drive(
                 // Supply chassie speeds from the translation suppliers using feild
                 // relative control
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                        drivetrain.percentOutputToMetersPerSecond(
-                                m_translationXSupplier.getAsDouble()),
-                        drivetrain.percentOutputToMetersPerSecond(
-                                m_translationYSupplier.getAsDouble()),
-                        drivetrain.percentOutputToRadiansPerSecond(
-                                m_rotationSupplier.getAsDouble()),
+                ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(m_translationXSupplier.getAsDouble()),
+                        drivetrain.percentOutputToMetersPerSecond(m_translationYSupplier.getAsDouble()), drivetrain.percentOutputToRadiansPerSecond(m_rotationSupplier.getAsDouble()),
                         drivetrain.getYaw2d()));
     }
 

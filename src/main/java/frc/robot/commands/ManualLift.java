@@ -21,8 +21,7 @@ public class ManualLift extends CommandBase {
     double elevatorReductionConstant = 0.01;
     double wristReductionConstant = 0.01;
 
-    public ManualLift(DoubleSupplier elevatorSpeed, DoubleSupplier armSpeed,
-            DoubleSupplier wristSpeed, Arm arm, Wrist wrist, Elevator elevator) {
+    public ManualLift(DoubleSupplier elevatorSpeed, DoubleSupplier armSpeed, DoubleSupplier wristSpeed, Arm arm, Wrist wrist, Elevator elevator) {
         this.arm = arm;
         this.elevator = elevator;
         this.wrist = wrist;
@@ -34,13 +33,11 @@ public class ManualLift extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {
-        elevator.setPower(
-                ManualLiftConstants.ELEVATOR_SPEED_REDUCTION * elevatorSpeed.getAsDouble());
+        elevator.setPower(ManualLiftConstants.ELEVATOR_SPEED_REDUCTION * elevatorSpeed.getAsDouble());
         // arm.setPower(manualLiftConstants.ARM_SPEED_REDUCTION*armSpeed.getAsDouble());
         // wrist.setPower(manualLiftConstants.WRIST_SPEED_REDUCTION*wristSpeed.getAsDouble());
 

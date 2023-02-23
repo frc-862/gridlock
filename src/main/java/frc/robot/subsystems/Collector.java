@@ -14,8 +14,7 @@ public class Collector extends SubsystemBase {
     // private CANSparkMax rightMotor;
 
     public Collector() {
-        leftMotor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, false, 0, 0,
-                MotorType.kBrushless, IdleMode.kCoast);
+        leftMotor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, false, 0, 0, MotorType.kBrushless, IdleMode.kCoast);
         // rightMotor = NeoConfig.createMotor(CAN.RIGHT_COLLECTOR_MOTOR, true, 0, 0,
         // MotorType.kBrushless, IdleMode.kCoast);
 
@@ -25,18 +24,15 @@ public class Collector extends SubsystemBase {
     }
 
     public void initLogging() {
-        DataLogger.addDataElement("Collector Left Motor Temperature",
-                () -> leftMotor.getMotorTemperature());
+        DataLogger.addDataElement("Collector Left Motor Temperature", () -> leftMotor.getMotorTemperature());
         // DataLogger.addDataElement("Collector Right Motor Temperature", () ->
         // rightMotor.getMotorTemperature());
         // DataLogger.addDataElement("R Collector Motor Controller Input Voltage", () ->
         // rightMotor.getBusVoltage());
         // DataLogger.addDataElement("R Collector Motor Controller Output (Amps)", () ->
         // rightMotor.getOutputCurrent());
-        DataLogger.addDataElement("L Collector Motor Controller Input Voltage",
-                () -> leftMotor.getBusVoltage());
-        DataLogger.addDataElement("L Collector Motor Controller Output (Amps)",
-                () -> leftMotor.getOutputCurrent());
+        DataLogger.addDataElement("L Collector Motor Controller Input Voltage", () -> leftMotor.getBusVoltage());
+        DataLogger.addDataElement("L Collector Motor Controller Output (Amps)", () -> leftMotor.getOutputCurrent());
 
     }
 

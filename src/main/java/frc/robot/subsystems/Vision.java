@@ -109,8 +109,7 @@ public class Vision extends SubsystemBase {
     // Returns the robot pose as a Pose2d from vision data
     public Pose2d getRobotPose() {
         if (hasVision) {
-            return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]),
-                    Rotation2d.fromDegrees(getBotPoseBlue()[5]));
+            return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]), Rotation2d.fromDegrees(getBotPoseBlue()[5]));
         } else {
             return null;
         }
@@ -141,7 +140,7 @@ public class Vision extends SubsystemBase {
         if (botPose != null && botPose.length != 0) {
             return botPose;
         } else {
-            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
+            return new double[] {0, 0, 0, 0, 0, 0, 0};
         }
     }
 
@@ -150,7 +149,7 @@ public class Vision extends SubsystemBase {
         if (botPoseRed != null && botPoseRed.length != 0) {
             return botPoseRed;
         } else {
-            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
+            return new double[] {0, 0, 0, 0, 0, 0, 0};
         }
     }
 
@@ -159,7 +158,7 @@ public class Vision extends SubsystemBase {
         if (botPoseBlue != null && botPoseBlue.length != 0) {
             return botPoseBlue;
         } else {
-            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
+            return new double[] {0, 0, 0, 0, 0, 0, 0};
         }
     }
 
@@ -211,33 +210,23 @@ public class Vision extends SubsystemBase {
             LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TY", getBotPose()[1]);
             LightningShuffleboard.setDouble("Autonomous", "Vision bot pose RZ", getBotPose()[5]);
 
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TX",
-                    getBotPoseBlue()[0]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TY",
-                    getBotPoseBlue()[1]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue RZ",
-                    getBotPoseBlue()[5]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TX", getBotPoseBlue()[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TY", getBotPoseBlue()[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue RZ", getBotPoseBlue()[5]);
 
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TX",
-                    getBotPoseRed()[0]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TY",
-                    getBotPoseRed()[1]);
-            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red RZ",
-                    getBotPoseRed()[5]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TX", getBotPoseRed()[0]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TY", getBotPoseRed()[1]);
+            LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red RZ", getBotPoseRed()[5]);
         } else if (pipelineNum == 2 || pipelineNum == 3) {
-            LightningShuffleboard.setDouble("Autonomous", "RR Tape Horizontal Offset",
-                    getHorizontalOffset());
-            LightningShuffleboard.setDouble("Autonomous", "RR Tape Vertical Offset",
-                    getVerticalOffset());
-            LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area",
-                    getTargetVertical());
+            LightningShuffleboard.setDouble("Autonomous", "RR Tape Horizontal Offset", getHorizontalOffset());
+            LightningShuffleboard.setDouble("Autonomous", "RR Tape Vertical Offset", getVerticalOffset());
+            LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area", getTargetVertical());
         }
     }
 
     /**
-     * Sets the pipeline we're using on the limelight. The first is for april tag
-     * targetting The
-     * second is for retroreflective tape.
+     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The second
+     * is for retroreflective tape.
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
      */
@@ -251,9 +240,8 @@ public class Vision extends SubsystemBase {
     }
 
     /**
-     * Ensures that what we're receiving is actually a valid target (if it's outside
-     * of FOV, it
-     * can't be)
+     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it can't
+     * be)
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
      */
@@ -289,9 +277,8 @@ public class Vision extends SubsystemBase {
     /**
      * Function to tell us whether or not we're on target (centered on vision tape)
      * 
-     * @param expectedAngle Angle we're supposed to be at according to offset of
-     *                      target supplied by
-     *                      Limelight
+     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
+     *        Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle) {
@@ -299,8 +286,8 @@ public class Vision extends SubsystemBase {
         return expectedAngle < Constants.VisionConstants.HORIZ_DEGREE_TOLERANCE;
     }
 
-    private void setCameraPose(){
-        if (limelightName == "limelight-front"){
+    private void setCameraPose() {
+        if (limelightName == "limelight-front") {
             LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, 0.14224, 0.9398, 0, 0, 0);
         } else {
             LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, -0.14224, 0.9398, 0, 0, 0);

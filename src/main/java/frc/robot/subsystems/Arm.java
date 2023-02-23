@@ -33,17 +33,14 @@ public class Arm extends SubsystemBase {
             OFFSET = ArmConstants.ENCODER_OFFSET_GRIDLOCK;
         }
 
-        motor = NeoConfig.createMotor(RobotMap.CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT,
-                ArmConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, ArmConstants.MOTOR_TYPE,
+        motor = NeoConfig.createMotor(RobotMap.CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT, ArmConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, ArmConstants.MOTOR_TYPE,
                 ArmConstants.NEUTRAL_MODE);
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(
-                ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
+        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
         encoder.setPositionConversionFactor(360);
         // encoder.setZeroOffset(-194);
         controller.setOutputRange(ArmConstants.MIN_POWER, ArmConstants.MAX_POWER);
         motor.setClosedLoopRampRate(2);
-
 
         // PIDDashboardTuner tuner = new PIDDashboardTuner("Arm", controller);
 
@@ -57,10 +54,8 @@ public class Arm extends SubsystemBase {
         DataLogger.addDataElement("Arm angle", () -> getAngle().getDegrees());
         DataLogger.addDataElement("Arm on target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("Arm motor temperature", () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Arm Motor Controller Input Voltage",
-                () -> motor.getBusVoltage());
-        DataLogger.addDataElement("Arm Motor Controller Output (Amps)",
-                () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Arm Motor Controller Input Voltage", () -> motor.getBusVoltage());
+        DataLogger.addDataElement("Arm Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
 
     }
 
@@ -71,8 +66,7 @@ public class Arm extends SubsystemBase {
      * 
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle =
-                MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
+        targetAngle = MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
 
         controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
 
@@ -141,8 +135,7 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean isReachable(Rotation2d angle) {
-        return angle.getDegrees() >= ArmConstants.MIN_ANGLE
-                && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
+        return angle.getDegrees() >= ArmConstants.MIN_ANGLE && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
     }
 
     @Override
@@ -154,7 +147,6 @@ public class Arm extends SubsystemBase {
 
         // LightningShuffleboard.setBool("Lift", "Arm on target", onTarget());
         // LightningShuffleboard.setDouble("Lift", "Arm target", targetAngle);
-
 
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "arm setpoint", -90)));
 

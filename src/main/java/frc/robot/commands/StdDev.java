@@ -14,7 +14,6 @@ public class StdDev extends CommandBase {
 
     private Vision vision;
 
-
     private ArrayList<Double> x;
     private ArrayList<Double> y;
     private ArrayList<Double> z;
