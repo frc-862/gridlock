@@ -18,9 +18,9 @@ public class HighScore extends InstantCommand {
     @Override
     public void initialize() {
         if (isCone) {
-            lift.setNextState(LiftState.highConeScore);
+            lift.setGoalState(LiftState.highConeScore);
         } else {
-            lift.setNextState(LiftState.highCubeScore);
+            lift.setGoalState(LiftState.highCubeScore);
         }
     }
 }

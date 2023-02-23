@@ -21,6 +21,7 @@ import frc.robot.subsystems.ServoTurn;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
+import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
@@ -51,12 +52,12 @@ public class RobotContainer extends LightningContainer {
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(targetting);
-    private static final ServoTurn servoturn = new ServoTurn();
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
-    // private static final Lift lift = new Lift(elevator, wrist, arm);
-    // private static final Collector collector = new Collector();
+    private static final ServoTurn servoturn = new ServoTurn();
+    private static final Lift lift = new Lift(elevator, wrist, arm);
+    private static final Collector collector = new Collector();
 
     // Creates new LED controller
     private static final LEDs underglow = new LEDs();
@@ -80,29 +81,29 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void configureButtonBindings() {
         // Back button to reset field centeric driving to current heading of the robot
-        new Trigger(driver::getBackButton).onTrue(
-                new SequentialCommandGroup(new InstantCommand(drivetrain::zeroHeading, drivetrain),
-                        new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d()))));
+        new Trigger(driver::getBackButton)
+                .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
-        new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
+        // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
         new Trigger(driver::getXButton)
                 .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
                         drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
-    
+
         new Trigger(driver::getYButton).whileTrue(new StdDev(targetting));
-        /*
-         * //copilot controls new Trigger(copilot::getAButton).whileTrue(new Ground(lift)); new
-         * Trigger(copilot::getBButton).whileTrue(new Stow(lift)); //TODO: implement color sensors
-         * into the commands themselves new Trigger(copilot::getYButton).whileTrue(new
-         * HighScore(lift, false)); new Trigger(copilot::getXButton).whileTrue(new MidScore(lift,
-         * false)); new Trigger(copilot::getRightBumper).whileTrue(new
-         * ReverseDoubleSubstationCollect(lift)); new Trigger(copilot::getLeftBumper).whileTrue(new
-         * DoubleSubstationCollect(lift));
-         */
+
+        // copilot controls 
+        new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
+        new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
+        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
+        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
+        new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
+        new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
+
     }
+
     // Creates the autonomous commands
     @Override
     protected void configureAutonomousCommands() {
@@ -141,14 +142,11 @@ public class RobotContainer extends LightningContainer {
                         () -> joystickFilter.filter(driver.getLeftY()),
                         () -> -joystickFilter.filter(driver.getRightX())));
 
-        elevator.setDefaultCommand(
-                new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
-                        () -> 0, () -> 0, arm, wrist, elevator));
+        // elevator.setDefaultCommand(
+        // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
+        // () -> 0, () -> 0, arm, wrist, elevator));
 
-        // collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis,
-        // copilot::getRightTriggerAxis));
-        // collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis,
-        // copilot::getRightTriggerAxis));
+        collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis, copilot::getRightTriggerAxis));
     }
 
     @Override

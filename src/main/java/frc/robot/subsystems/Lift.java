@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.Arrays;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -10,6 +11,8 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
+import frc.robot.commands.Lift.StateTable;
+import frc.robot.commands.Lift.StateTransition;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
@@ -19,218 +22,99 @@ public class Lift extends SubsystemBase {
     private Wrist wrist;
     private Arm arm;
 
-    public LiftState lastState = LiftState.stowed;
     public LiftState currentState = LiftState.stowed;
-    public LiftState nextState = LiftState.stowed;
-
-    private Translation2d position;
+    public LiftState goalState = LiftState.stowed;
+    public StateTransition nextState;
 
     public Lift(Elevator elevator, Wrist wrist, Arm arm) {
         this.elevator = elevator;
         this.wrist = wrist;
         this.arm = arm;
 
+        elevator.setExtension(elevator.getExtension());
+        arm.setAngle(arm.getAngle());
+        wrist.setAngle(wrist.getAngle());
+
         initLogging();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void initLogging() {
-        DataLogger.addDataElement("Elevator X", () -> getElevatorXY().getX());
-        DataLogger.addDataElement("Elevator Y", () -> getElevatorXY().getY());
-        DataLogger.addDataElement("Arm X", () -> getArmXY().getX());
-        DataLogger.addDataElement("Arm Y", () -> getArmXY().getY());
-        DataLogger.addDataElement("Overall X", () -> getOverallXY().getX());
-        DataLogger.addDataElement("Overall Y", () -> getOverallXY().getY());
-        DataLogger.addDataElement("lift on target", () -> onTarget() ? 1 : 0);
-        DataLogger.addDataElement("lift is reachable", () -> isReachable(getOverallXY()) ? 1 : 0);
+    public void initLogging() {}
+
+    public void setGoalState(LiftState state) {
+        this.goalState = state;
     }
 
-    public void setNextState(LiftState state) {
-        this.nextState = state;
-    }
-
-    /**
-     * getElevatorXY
-     *
-     * @return Translation2d of the elevator from it's zero point
-     */
-    // Gets the XY position of the elevator at arm the pivot point
-    public Translation2d getElevatorXY() {
-        return new Translation2d(elevator.getExtension(), ElevatorConstants.ANGLE);
-    }
-
-    /**
-     * getArmXY
-     *
-     * @return Translation2d of the arm from it's pivot point
-     */
-    // Gets the XY position of the arm at the wrist pivot point, with the arm pivot as the origin
-    public Translation2d getArmXY() {
-        return new Translation2d(ArmConstants.LENGTH, arm.getAngle());
-    }
-
-    /**
-     * getOverallXY
-     *
-     * @return Translation2d of the collector from the origin
-     */
-    // Gets the overall XY position with offsets
-    public Translation2d getOverallXY() {
-        return ElevatorConstants.POSE_OFFSET.plus(getElevatorXY())
-                .plus(getArmXY().plus(WristConstants.POSE_OFFSET));
-    }
-
-    public double getExtensionFromPoint(Translation2d point) {
-        return Math.sqrt(Math.pow(point.getX(), 2) + Math.pow(point.getY(), 2));
-    }
-
-    public double getExtensionFromPoint(double x, double y) {
-        return this.getExtensionFromPoint(new Translation2d(x, y));
-    }
-
-    /**
-     * isReachable
-     *
-     * @param pose a desired point to check
-     * @return whether the desired point is possible for the elevator to reach
-     */
-    // Checks if our set position is within the bounds of the robot
-    public Boolean isReachable(Translation2d pose) {
-        return LiftConstants.BOUNDING_BOX.contains(pose.getX(), pose.getY());
-    }
-
-    public class liftSolution {
-        public Translation2d elevatorPose;
-        public Translation2d desiredPose;
-
-        public liftSolution(double elevatorX, Translation2d desiredPose) {
-            this.elevatorPose = new Translation2d(elevatorX, ElevatorConstants.ANGLE.getTan()*elevatorX);
-            this.desiredPose = desiredPose;
-        }
-
-        public double getExtension() {
-            return getExtensionFromPoint(elevatorPose);
-        }
-
-        public Rotation2d getArmAngle() {
-            return desiredPose.minus(elevatorPose).getAngle();
-        }
-
-        public boolean isValid() {
-            // Commented out bounding box check because the bounding box values aren't correct, uncomment when fixed
-            return elevator.isReachable(getExtension()) && arm.isReachable(getArmAngle()); // && isReachable(desiredPose);
-        }
-    }
-
-    public liftSolution liftMath(Translation2d desiredPose) {
-        // Find quadratic formula values
-        double aQuadraticValue = 1 + Math.pow(ElevatorConstants.ANGLE.getTan(), 2);
-        double bQuadraticValue = -2 * (desiredPose.getX() + desiredPose.getY() * ElevatorConstants.ANGLE.getTan());
-        double cQuadraticValue = Math.pow(desiredPose.getX(), 2) + Math.pow(desiredPose.getY(), 2)
-                - Math.pow(ArmConstants.LENGTH, 2);
-
-        // Find possible x and y poses using quadratic formula (using a list because of the +/- in the square root)
-        liftSolution[] possibleSolutions = {
-                new liftSolution((-bQuadraticValue + 
-                Math.sqrt(bQuadraticValue * bQuadraticValue - 4 * aQuadraticValue * cQuadraticValue))
-                / (2 * aQuadraticValue), desiredPose), 
-                new liftSolution(((-bQuadraticValue - 
-                Math.sqrt(bQuadraticValue * bQuadraticValue - 4 * aQuadraticValue * cQuadraticValue))
-                / (2 * aQuadraticValue)), desiredPose)
-        };
-
-        //remove all invalid solutions from list
-        possibleSolutions = Arrays.stream(possibleSolutions).filter(liftSolution::isValid).toArray(liftSolution[]::new);
-
-        // if we still have 2 solutions, use the one with the lowest elevator extension
-        if (possibleSolutions.length == 2) {
-            if (possibleSolutions[0].getExtension() < possibleSolutions[1].getExtension()) {
-                possibleSolutions = new liftSolution[] { possibleSolutions[0] };
-            } else {
-                possibleSolutions = new liftSolution[] { possibleSolutions[1] };
-            }
-        } else if (possibleSolutions.length == 0) {
-            return null; //we messed up
-        }
-        return possibleSolutions[0];
-    }
 
     public boolean onTarget() {
-        return elevator.onTarget() && arm.onTarget();
+        if (nextState == null) {
+            return elevator.onTarget() && arm.onTarget() && wrist.onTarget();
+        } else {
+            return elevator.onTarget(nextState.getElevatorExtension())
+                    && arm.onTarget(nextState.getArmAngle().getDegrees())
+                    && wrist.onTarget(nextState.getWristAngle().getDegrees());
+        }
     }
 
-    // Test code for lift math
-    double x,y;
-    liftSolution testSolution;
+
 
     @Override
     public void periodic() {
-        
-        //Test code for lift math
-        // x = LightningShuffleboard.getDouble("test lift math", "x", 40);
-        // y = LightningShuffleboard.getDouble("test lift math", "y", 10);
-        // liftSolution testSolution = liftMath(new Translation2d(x,y));
-        // LightningShuffleboard.setDouble("test lift math", "lift solution y", testSolution.elevatorPose.getY());
-        // LightningShuffleboard.setDouble("test lift math", "lift solution x", testSolution.elevatorPose.getX());
-        // LightningShuffleboard.setDouble("test lift math", "lift solution arm angle", testSolution.getArmAngle().getDegrees());
-        // LightningShuffleboard.setDouble("test lift math", "lift solution extension", testSolution.getExtension());
-
-        if (lastState != nextState && lastState == LiftState.stowed
-                || currentState == LiftState.elevatorDeployed) {
-            currentState = LiftState.elevatorDeployed;
-
-            if (onTarget()) {
-                currentState = nextState;
+        if (onTarget() || nextState == null) {
+            if (currentState != goalState) {
+                nextState = StateTable.get(currentState, goalState);
+            } else {
+                nextState = null;
             }
 
+            if (nextState != null) {
+                currentState = nextState.getEndState();
+            }
         } else {
-            currentState = nextState;
+            switch (nextState.getPlan()) {
+                case parallel:
+                    elevator.setExtension(nextState.getElevatorExtension());
+                    arm.setAngle(nextState.getArmAngle());
+                    wrist.setAngle(nextState.getWristAngle());
+                    break;
+                case armPriority:
+                    arm.setAngle(nextState.getArmAngle());
+                    if (arm.onTarget()) {
+                        elevator.setExtension(nextState.getElevatorExtension());
+                        wrist.setAngle(nextState.getWristAngle());
+                    }
+                    break;
+                case elevatorPriority:
+                    elevator.setExtension(nextState.getElevatorExtension());
+                    if (elevator.onTarget()) {
+                        arm.setAngle(nextState.getArmAngle());
+                        wrist.setAngle(nextState.getWristAngle());
+                    }
+                    break;
+                case elevatorLast:
+                    wrist.setAngle(nextState.getWristAngle());
+                    if (wrist.onTarget()) {
+                        arm.setAngle(nextState.getArmAngle());
+                        if(arm.onTarget()) {
+                            elevator.setExtension(nextState.getElevatorExtension());   
+                        }
+                    }
+                    break;
+            }
         }
 
-        switch (currentState) {
-            // collect states
-            case ground:
-                position = LiftState.ground.pose();
-                break;
+        // if(transitionState != null) {
+        // LightningShuffleboard.setDouble("Lift", "ele target",
+        // transitionState.getElevatorExtension());
+        // LightningShuffleboard.setDouble("Lift", "arm target",
+        // transitionState.getArmAngle().getDegrees());
+        // LightningShuffleboard.setDouble("Lift", "wrist target",
+        // transitionState.getWristAngle().getDegrees());
+        // }
 
-            case doubleSubstationCollect:
-                position = LiftState.doubleSubstationCollect.pose();
-                break;
-
-            case reverseSubstationCollect:
-                position = LiftState.reverseSubstationCollect.pose();
-                break;
-
-            // scoring states
-            case mediumCubeScore:
-                position = LiftState.mediumCubeScore.pose();
-                break;
-
-            case highCubeScore:
-                position = LiftState.highCubeScore.pose();
-                break;
-
-            case mediumConeScore:
-                position = LiftState.mediumConeScore.pose();
-                break;
-
-            case highConeScore:
-                position = LiftState.highConeScore.pose();
-                break;
-
-            // substates
-            case elevatorDeployed:
-                position = LiftState.elevatorDeployed.pose();
-                break;
-
-            case armDeployed:
-                position = LiftState.armDeployed.pose();
-                break;
-
-            case stowed:
-                position = LiftState.stowed.pose();
-                break;
-        }
+        LightningShuffleboard.setString("Lift", "current state", currentState.toString());
+        LightningShuffleboard.setString("Lift", "goal state", goalState.toString());
+        LightningShuffleboard.setBool("Lift", "on target", onTarget());
     }
 }

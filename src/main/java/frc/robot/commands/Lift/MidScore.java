@@ -18,9 +18,9 @@ public class MidScore extends InstantCommand {
     @Override
     public void initialize() {
         if (isCone) {
-            lift.setNextState(LiftState.mediumConeScore);
+            lift.setGoalState(LiftState.midConeScore);
         } else {
-            lift.setNextState(LiftState.mediumConeScore);
+            lift.setGoalState(LiftState.midConeScore);
         }
     }
 }

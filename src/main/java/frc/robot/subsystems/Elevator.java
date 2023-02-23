@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,41 +20,55 @@ public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
     private SparkMaxPIDController controller;
     private RelativeEncoder encoder;
-    private double targetHeight;
-
+    private double targetExtension;
 
     public Elevator() {
         motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT,
                 ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
                 ElevatorConstants.MOTOR_TYPE, ElevatorConstants.NEUTRAL_MODE);
         encoder = NeoConfig.createBuiltinEncoder(motor);
-        controller = NeoConfig.createPIDController(motor.getPIDController(),
-                new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI,
-                        ElevatorConstants.kD, ElevatorConstants.kF),
-                encoder);
+        controller =
+                NeoConfig.createPIDController(
+                        motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP,
+                                ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF),
+                        encoder);
         encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
         controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
         encoder.setPosition(0);
 
+        // input inches per second
+        double maxVelocity = 0.003;
+        // ((1 / (ElevatorConstants.SPROCKET_DIAMETER * Math.PI) / ElevatorConstants.GEAR_RATIO)
+        // / 60) * 10;
+        controller.setSmartMotionMaxVelocity(maxVelocity, 0);
+        controller.setSmartMotionMaxAccel(maxVelocity * 2, 0);
+        controller.setSmartMotionAllowedClosedLoopError(0.05, 0);
+        controller.setSmartMotionMinOutputVelocity(0, 0);
+        controller.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+
+        motor.setClosedLoopRampRate(.3);
+
         initLogging();
 
-        // PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", elevatorController);
+        // PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", controller);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
-    
+
     public void initLogging() {
         DataLogger.addDataElement("Elevator Extension", () -> getExtension());
-        DataLogger.addDataElement("Elevator Target Height", () -> targetHeight);
+        DataLogger.addDataElement("Elevator Target Height", () -> targetExtension);
         DataLogger.addDataElement("Elevator on Target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("bottom limit switch", () -> getBottomLimitSwitch() ? 1 : 0);
         DataLogger.addDataElement("top limit switch", () -> getTopLimitSwitch() ? 1 : 0);
 
         DataLogger.addDataElement("Elevator Motor Temperature", () -> motor.getMotorTemperature());
         DataLogger.addDataElement("Elevator Motor Output Current", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Input Voltage", () -> motor.getBusVoltage());
+        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)",
+                () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Elevator Motor Controller Input Voltage",
+                () -> motor.getBusVoltage());
 
     }
 
@@ -73,9 +88,10 @@ public class Elevator extends SubsystemBase {
      */
     public void setExtension(double target) {
         // if the target is reachable, set the target and enable the controller
-        if (isReachable(target)) {
-            controller.setReference(target, CANSparkMax.ControlType.kPosition);
-        }
+        targetExtension = MathUtil.clamp(target, ElevatorConstants.MIN_EXTENSION,
+                ElevatorConstants.MAX_EXTENSION);
+        controller.setReference(targetExtension, CANSparkMax.ControlType.kPosition, 0);
+
         // otherwise, do nothing
     }
 
@@ -101,7 +117,16 @@ public class Elevator extends SubsystemBase {
      * @return true if the elevator is within the tolerance of the target
      */
     public boolean onTarget() {
-        return Math.abs(targetHeight - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+        return Math.abs(targetExtension - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+    }
+
+    /**
+     * onTarget
+     * @param target the target to check against
+     * @return true if the elevator is within the tolerance of the target
+     */
+    public boolean onTarget(double target) {
+        return Math.abs(target - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
     }
 
     /**
@@ -139,26 +164,53 @@ public class Elevator extends SubsystemBase {
      * @return true if the target height is reachable by the elevator
      */
     public boolean isReachable(double targetHeight) {
-        return targetHeight >= (ElevatorConstants.MIN_EXTENSION + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET)
-                && targetHeight <= (ElevatorConstants.MAX_EXTENSION + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET);
+        // return targetHeight >= (ElevatorConstants.MIN_EXTENSION
+        // + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET)
+        // && targetHeight <= (ElevatorConstants.MAX_EXTENSION
+        // + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET);
+        return true;
     }
 
     @Override
     public void periodic() {
-        if (getTopLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
-        }
+        // if (getTopLimitSwitch()) {
+        // encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
+        // }
 
-        if (getBottomLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
-        }
+        // if (getBottomLimitSwitch()) {
+        // encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
+        // }
 
         LightningShuffleboard.setBool("Elevator", "Top Limit", getTopLimitSwitch());
         LightningShuffleboard.setBool("Elevator", "Bottom Limit", getBottomLimitSwitch());
         LightningShuffleboard.setDouble("Elevator", "Elevator Height", getExtension());
 
-        // setDistance(LightningShuffleboard.getDouble("Elevaotr", "target elevator height", 0));
-        // LightningShuffleboard.setDouble("Elevator", "KP thing", elevatorController.getP());
+        LightningShuffleboard.setBool("Lift", "Elevator on target", onTarget());
+        LightningShuffleboard.setDouble("Lift", "Elevator target", targetExtension);
+
+
+        // setExtension(LightningShuffleboard.getDouble("Elevator", "target elevator height", 0));
+        // controller.setP(LightningShuffleboard.getDouble("Elevator", "KP", controller.getP()));
+        // controller.setFF(LightningShuffleboard.getDouble("Elevator", "KF", controller.getFF()));
+
+        // controller.setSmartMotionMaxVelocity(
+        // LightningShuffleboard.getDouble("Elevator", "max velocity set", 0.02), 0);
+
+        // LightningShuffleboard.setString("Elevator", "strategy",
+        // controller.getSmartMotionAccelStrategy(0).toString());
+        // LightningShuffleboard.setDouble("Elevator", "mac veloc",
+        // controller.getSmartMotionMaxVelocity(0));
+        // LightningShuffleboard.setDouble("Elevator", "min veloc",
+        // controller.getSmartMotionMinOutputVelocity(0));
+        // LightningShuffleboard.setDouble("Elevator", "max accel",
+        // controller.getSmartMotionMaxAccel(0));
+        // LightningShuffleboard.setDouble("Elevator", "max error",
+        // controller.getSmartMotionAllowedClosedLoopError(0));
+
+        // motor.setClosedLoopRampRate(LightningShuffleboard.getDouble("Elevator", "ramp rate",
+        // .3));
+
+        LightningShuffleboard.setDouble("Elevator", "curr speed", motor.get());
 
     }
 }
