@@ -10,14 +10,14 @@
         "x": 2.8470632580830824,
         "y": 4.45
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece"
+          "Score-Game-Piece-Servo"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -37,7 +37,7 @@
         "x": 5.297170422434127,
         "y": 4.802892344729054
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,

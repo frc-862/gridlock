@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.thunder.math.InterpolationMap;
 import frc.thunder.pathplanner.com.pathplanner.lib.auto.PIDConstants;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 
@@ -63,14 +64,14 @@ public final class Constants {
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12;
-        public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0
-                * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
-                * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
-        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
-                / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+        public static final double MAX_VELOCITY_METERS_PER_SECOND =
+                5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
+                        * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
+                MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
                         DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-                * 2 * Math.PI;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND =
+                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -78,8 +79,8 @@ public final class Constants {
         public static final double NOMINAL_VOLTAGE = 12d;
 
         // // Standard dev for robot pose
-        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(0.3313838876, 0.2642363651,
-                0.03681853519);
+        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX =
+                VecBuilder.fill(0.3313838876, 0.2642363651, 0.03681853519);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -128,19 +129,20 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double kP = 0d;
+        public static final double kP = .35d;
         public static final double kI = 0d;
         public static final double kD = 0d;
-        public static final double kF = 0d;
+        public static final double kF = 0.007d;
 
         // TODO: set a tolerance
-        public static final double TOLERANCE = 0d;
+        public static final double TOLERANCE = 1d;
 
         // TOOD: replace with actual values
         public static final int TICKS_PER_REV = 42;
         public static final double GEAR_RATIO = 16d / 1d;
         public static final double SPROCKET_DIAMETER = 1.440d;
-        public static final double POSITION_CONVERSION_FACTOR = 1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
+        public static final double POSITION_CONVERSION_FACTOR =
+                1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
 
         // min/max height in inches
         public static final double MAX_EXTENSION = 23.287d;
@@ -153,8 +155,10 @@ public final class Constants {
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
-        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
-        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
 
         public static final Rotation2d ANGLE = Rotation2d.fromDegrees(55d);
         // Acute Elevator mount angle in degrees
@@ -166,60 +170,103 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-        public static final boolean MOTOR_INVERT = false;
+        public static final boolean MOTOR_INVERT = true;
 
         public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double kP = 0d;
+        // public static final double UP_kP = 0.0062d;
+        // public static final double UP_kI = 0d;
+        // public static final double UP_kD = 0d;
+        // public static final double UP_kF = 0.00025d;
+
+        // public static final double DOWN_kP = 0.004d;
+        // public static final double DOWN_kI = 0d;
+        // public static final double DOWN_kD = 0d;
+        // public static final double DOWN_kF = 0.0002d;
+
+        public static final double kP = 0.0062d;
         public static final double kI = 0d;
         public static final double kD = 0d;
         public static final double kF = 0d;
 
-        public static final double TOLERANCE = 0d;
+        public static final double TOLERANCE = 10d;
 
         // Min and Max arm angles in degrees
+        // TODO: change to actual values
         public static final double MAX_ANGLE = 90d;
-        public static final double MIN_ANGLE = -90d;
+        public static final double MIN_ANGLE = -111d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
-        public static final double LENGTH = 30; // arm length in inches
+        public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
-        public static final double ENCODER_OFFSET_BLACKOUT = 0;
+        public static final double ENCODER_OFFSET_BLACKOUT = 196.5;
 
         // robot lengths
         // TODO: get accurate measurements
         public static final double ROBOT_BODY_LENGTH = 27.7;
 
-        // TODO: replace with actual values
-        public static final double GEAR_RATIO = 1d;
-        public static final double DEGREES_PER_REV = 1d;
-        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
+        public static final double GEAR_RATIO = 60 / 1d;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / 8192 * 360;
+
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
+
+
+        public static InterpolationMap ARM_UP_KF_MAP = new InterpolationMap() {
+            {
+                put(-110d, -0.0001);
+                put(-90d, 0.0002);
+                put(-60d, 0.00028);
+                put(-30d, 0.00065);
+
+                put(0d, 0.00075);
+
+                put(30d, 0.0005);
+                put(60d, 0.00028);
+
+                put(90d, 0.0);
+
+                put(130d, -0.00065);
+                put(150d, -0.00070);
+                put(180d, -0.00075);
+                put(210d, 0.00065);
+                put(240d, 0.00028);
+            }
+        };
     }
 
     public static final class WristConstants {
-        public static final boolean MOTOR_INVERT = false;
+        public static final boolean MOTOR_INVERT = true;
 
-        public static final int CURRENT_LIMIT = 20;
+        // TODO: make 20 for comp
+        public static final int CURRENT_LIMIT = 15;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double kP = 0d;
-        public static final double kI = 0d;
-        public static final double kD = 0d;
-        public static final double kF = 0d;
+        public static final double UP_kP = 0.001d;
+        public static final double UP_kI = 0d;
+        public static final double UP_kD = 0d;
+        public static final double UP_kF = 0.0004d;
 
-        public static final double TOLERANCE = 0d;
+        public static final double DOWN_kP = 0.002d;
+        public static final double DOWN_kI = 0d;
+        public static final double DOWN_kD = 0d;
+        public static final double DOWN_kF = 0.00008d;
+
+        public static final double TOLERANCE = 10d;
 
         // min/max angles in degrees
-        public static final double MAX_ANGLE = 90d;
-        public static final double MIN_ANGLE = -90d;
+        public static final double MAX_ANGLE = -20d;
+        public static final double MIN_ANGLE = -146d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -231,12 +278,16 @@ public final class Constants {
 
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
-        public static final double ENCODER_OFFSET_BLACKOUT = 0;
+        public static final double ENCODER_OFFSET_BLACKOUT = 285.86;
 
-        // TODO: replace with actual values
-        public static final double GEAR_RATIO = 1d;
-        public static final double DEGREES_PER_REV = 1d;
-        public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO * DEGREES_PER_REV;
+        public static final double GEAR_RATIO = 38.5 / 1d;
+        public static final double POSITION_CONVERSION_FACTOR = 360;
+
+
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
+                SparkMaxLimitSwitch.Type.kNormallyOpen;
     }
 
     public static final class RobotMap {
@@ -285,7 +336,7 @@ public final class Constants {
         }
 
         public static final class PWM {
-            public static final int SERVO = 0;
+            public static final int SERVO = 3;
         }
     }
 
@@ -312,17 +363,17 @@ public final class Constants {
 
         public static final class Colors {
             // lightning colors
-            public static final int[] lightningOrange = { 255, 71, 15 };
-            public static final int[] lightningBlue = { 0, 0, 255 };
+            public static final int[] lightningOrange = {255, 71, 15};
+            public static final int[] lightningBlue = {0, 0, 255};
 
             // misc colors
-            public static final int[] cyan = { 96, 209, 149 };
-            public static final int[] yellow = { 255, 230, 20 };
-            public static final int[] purple = { 220, 30, 240 };
-            public static final int[] green = { 0, 255, 0 };
-            public static final int[] red = { 255, 0, 0 };
-            public static final int[] white = { 255, 255, 255 };
-            public static final int[] off = { 0, 0, 0 };
+            public static final int[] cyan = {96, 209, 149};
+            public static final int[] yellow = {255, 230, 20};
+            public static final int[] purple = {220, 30, 240};
+            public static final int[] green = {0, 255, 0};
+            public static final int[] red = {255, 0, 0};
+            public static final int[] white = {255, 255, 255};
+            public static final int[] off = {0, 0, 0};
         }
     }
 
@@ -333,38 +384,26 @@ public final class Constants {
         // Arbitrary value for how close the robot needs to be to the target (in angles)
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
-        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
+        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX =
+                VecBuilder.fill(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
     }
 
     public static final class LiftConstants {
         public enum LiftState {
-            ground(new Translation2d(0d, 0d)), doubleSubstationCollect(
-                    new Translation2d(0d, 0d)),
-            reverseSubstationCollect(new Translation2d(0d, 0d)),
+            ground,
 
-            mediumCubeScore(new Translation2d(0d, 0d)), highCubeScore(
-                    new Translation2d(0d, 0d)),
-            mediumConeScore(
-                    new Translation2d(0d, 0d)),
-            highConeScore(new Translation2d(0d, 0d)),
+            doubleSubstationCollect, reverseSubstationCollect,
 
-            elevatorDeployed(new Translation2d(0d, 0d)), armDeployed(new Translation2d(0d, 0d)),
+            midCubeScore, highCubeScore, midConeScore, highConeScore,
 
-            stowed(new Translation2d(0d, 0d));
+            transition,
 
-            private Translation2d pose;
-
-            LiftState(Translation2d pose) {
-                this.pose = pose;
-            }
-
-            public Translation2d pose() {
-                return pose;
-            }
+            stowed, undetermined
         }
 
-        // TODO: replace with actual bounding box values
-        public static final Polygon BOUNDING_BOX = new Polygon(new int[] { 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0 }, 4);
+        public enum LiftPlan {
+            parallel, armPriority, elevatorPriority, elevatorLast
+        }
     }
 
     public static final class ManualLiftConstants {
@@ -378,5 +417,8 @@ public final class Constants {
         public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0);
         public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7, 0, 0);
         public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
+
+        public static final double MAX_VELOCITY = 3;
+        public static final double MAX_ACCELERATION = 3;
     }
 }
