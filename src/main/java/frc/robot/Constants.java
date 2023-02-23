@@ -129,13 +129,13 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double kP = .45d;
+        public static final double kP = .35d;
         public static final double kI = 0d;
         public static final double kD = 0d;
-        public static final double kF = 0d;
+        public static final double kF = 0.007d;
 
         // TODO: set a tolerance
-        public static final double TOLERANCE = 0.5d;
+        public static final double TOLERANCE = 1d;
 
         // TOOD: replace with actual values
         public static final int TICKS_PER_REV = 42;
@@ -191,7 +191,7 @@ public final class Constants {
         public static final double kD = 0d;
         public static final double kF = 0d;
 
-        public static final double TOLERANCE = 0d;
+        public static final double TOLERANCE = 10d;
 
         // Min and Max arm angles in degrees
         // TODO: change to actual values
@@ -227,7 +227,19 @@ public final class Constants {
                 put(-90d, 0.0002);
                 put(-60d, 0.00028);
                 put(-30d, 0.00065);
-                put(0d, 0.00037);
+
+                put(0d, 0.00075);
+
+                put(30d, 0.0005);
+                put(60d, 0.00028);
+
+                put(90d, 0.0);
+
+                put(130d, -0.00065);
+                put(150d, -0.00070);
+                put(180d, -0.00075);
+                put(210d, 0.00065);
+                put(240d, 0.00028);
             }
         };
     }
@@ -236,7 +248,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = true;
 
         // TODO: make 20 for comp
-        public static final int CURRENT_LIMIT = 10;
+        public static final int CURRENT_LIMIT = 15;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
@@ -250,7 +262,7 @@ public final class Constants {
         public static final double DOWN_kD = 0d;
         public static final double DOWN_kF = 0.00008d;
 
-        public static final double TOLERANCE = 0d;
+        public static final double TOLERANCE = 10d;
 
         // min/max angles in degrees
         public static final double MAX_ANGLE = -20d;
@@ -378,31 +390,20 @@ public final class Constants {
 
     public static final class LiftConstants {
         public enum LiftState {
-            ground(new Translation2d(0d, 0d)), doubleSubstationCollect(
-                    new Translation2d(0d, 0d)), reverseSubstationCollect(new Translation2d(0d, 0d)),
+            ground,
 
-            mediumCubeScore(new Translation2d(0d, 0d)), highCubeScore(
-                    new Translation2d(0d, 0d)), mediumConeScore(
-                            new Translation2d(0d, 0d)), highConeScore(new Translation2d(0d, 0d)),
+            doubleSubstationCollect, reverseSubstationCollect,
 
-            elevatorDeployed(new Translation2d(0d, 0d)), armDeployed(new Translation2d(0d, 0d)),
+            midCubeScore, highCubeScore, midConeScore, highConeScore,
 
-            stowed(new Translation2d(0d, 0d));
+            transition,
 
-            private Translation2d pose;
-
-            LiftState(Translation2d pose) {
-                this.pose = pose;
-            }
-
-            public Translation2d pose() {
-                return pose;
-            }
+            stowed, undetermined
         }
 
-        // TODO: replace with actual bounding box values
-        public static final Polygon BOUNDING_BOX =
-                new Polygon(new int[] {0, 0, 0, 0}, new int[] {0, 0, 0, 0}, 4);
+        public enum LiftPlan {
+            parallel, armPriority, elevatorPriority, elevatorLast
+        }
     }
 
     public static final class ManualLiftConstants {
@@ -415,7 +416,7 @@ public final class Constants {
         // Path planner PIDConstants
         public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0);
         public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7, 0, 0);
-        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0,0, 0);
+        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
 
         public static final double MAX_VELOCITY = 3;
         public static final double MAX_ACCELERATION = 3;

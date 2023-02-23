@@ -130,6 +130,16 @@ public class Arm extends SubsystemBase {
         return Math.abs(getAngle().getDegrees() - targetAngle) < ArmConstants.TOLERANCE;
     }
 
+    /**
+     * onTarget
+     * 
+     * @param target the target to check against
+     * @return true if the arm is within the tolerance of the target angle
+     */
+    public boolean onTarget(double target) {
+        return Math.abs(getAngle().getDegrees() - target) < ArmConstants.TOLERANCE;
+    }
+
     public boolean isReachable(Rotation2d angle) {
         return angle.getDegrees() >= ArmConstants.MIN_ANGLE
                 && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
@@ -139,16 +149,19 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         LightningShuffleboard.setBool("Arm", "fwd Limit", getForwardLimitSwitch());
         LightningShuffleboard.setBool("Arm", "rev Limit", getReverseLimitSwitch());
-        LightningShuffleboard.setDouble("Arm", "absolute encoder", getAngle().getDegrees());
 
-        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint", -90)));
+        LightningShuffleboard.setDouble("Lift", "arm angle", getAngle().getDegrees());
 
-        // double kf = LightningShuffleboard.getDouble("Arm", "kF", ArmConstants.kF);
-        // double kp = LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.kP);
-        // controller.setP(kp, 1);
+        // LightningShuffleboard.setBool("Lift", "Arm on target", onTarget());
+        // LightningShuffleboard.setDouble("Lift", "Arm target", targetAngle);
+
+
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "arm setpoint", -90)));
+
+        // double kf = LightningShuffleboard.getDouble("Lift", "kF", ArmConstants.kF);
+        // double kp = LightningShuffleboard.getDouble("Lift", "kP", ArmConstants.kP);
         // controller.setP(kp, 0);
-        // controller.setFF(kf, 1);
-        // controller.setFF(kf, 0);
+        // System.out.println(controller.setFF(kf, 0));
 
         controller.setFF(ArmConstants.ARM_UP_KF_MAP.get(getAngle().getDegrees()), 0);
     }

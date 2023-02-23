@@ -20,7 +20,7 @@ public class Elevator extends SubsystemBase {
     private CANSparkMax motor;
     private SparkMaxPIDController controller;
     private RelativeEncoder encoder;
-    private double targetHeight;
+    private double targetExtension;
 
     public Elevator() {
         motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT,
@@ -58,7 +58,7 @@ public class Elevator extends SubsystemBase {
 
     public void initLogging() {
         DataLogger.addDataElement("Elevator Extension", () -> getExtension());
-        DataLogger.addDataElement("Elevator Target Height", () -> targetHeight);
+        DataLogger.addDataElement("Elevator Target Height", () -> targetExtension);
         DataLogger.addDataElement("Elevator on Target", () -> onTarget() ? 1 : 0);
         DataLogger.addDataElement("bottom limit switch", () -> getBottomLimitSwitch() ? 1 : 0);
         DataLogger.addDataElement("top limit switch", () -> getTopLimitSwitch() ? 1 : 0);
@@ -88,10 +88,10 @@ public class Elevator extends SubsystemBase {
      */
     public void setExtension(double target) {
         // if the target is reachable, set the target and enable the controller
-        if (isReachable(target)) {
-            controller.setReference(MathUtil.clamp(target, ElevatorConstants.MIN_EXTENSION,
-                    ElevatorConstants.MAX_EXTENSION), CANSparkMax.ControlType.kPosition, 0);
-        }
+        targetExtension = MathUtil.clamp(target, ElevatorConstants.MIN_EXTENSION,
+                ElevatorConstants.MAX_EXTENSION);
+        controller.setReference(targetExtension, CANSparkMax.ControlType.kPosition, 0);
+
         // otherwise, do nothing
     }
 
@@ -117,7 +117,16 @@ public class Elevator extends SubsystemBase {
      * @return true if the elevator is within the tolerance of the target
      */
     public boolean onTarget() {
-        return Math.abs(targetHeight - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+        return Math.abs(targetExtension - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+    }
+
+    /**
+     * onTarget
+     * @param target the target to check against
+     * @return true if the elevator is within the tolerance of the target
+     */
+    public boolean onTarget(double target) {
+        return Math.abs(target - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
     }
 
     /**
@@ -175,6 +184,10 @@ public class Elevator extends SubsystemBase {
         LightningShuffleboard.setBool("Elevator", "Top Limit", getTopLimitSwitch());
         LightningShuffleboard.setBool("Elevator", "Bottom Limit", getBottomLimitSwitch());
         LightningShuffleboard.setDouble("Elevator", "Elevator Height", getExtension());
+
+        LightningShuffleboard.setBool("Lift", "Elevator on target", onTarget());
+        LightningShuffleboard.setDouble("Lift", "Elevator target", targetExtension);
+
 
         // setExtension(LightningShuffleboard.getDouble("Elevator", "target elevator height", 0));
         // controller.setP(LightningShuffleboard.getDouble("Elevator", "KP", controller.getP()));
