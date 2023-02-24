@@ -15,39 +15,51 @@ import frc.robot.Constants.RobotMap.*;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.logging.DataLogger;
 
+/**
+ * The collector subsystem
+ */
 public class Collector extends SubsystemBase {
+    // The collector motor
     private CANSparkMax motor;
+
+    // The color sensor
     private ColorSensorV3 colorSensor;
+
+    // The rev color matcher
     private final ColorMatch colorMatch;
 
+    // Enum of possible game pieces
     public enum GamePiece {
         CONE, CUBE, NONE
     }
 
     public Collector() {
-        motor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, CollectorConstants.MOTOR_INVERT, CollectorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
-                MotorType.kBrushless, IdleMode.kCoast);
+        // Create the motor and configure it
+        motor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, CollectorConstants.MOTOR_INVERT, CollectorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMPENSATION, MotorType.kBrushless,
+                IdleMode.kCoast);
+
+        // Create the color sensor
         colorSensor = new ColorSensorV3(i2c.COLOR_SENSOR);
 
+        // Create the color matcher
         colorMatch = new ColorMatch();
 
+        // Add the optimal colors to the color matcher
         colorMatch.addColorMatch(CollectorConstants.CONE_OPTIMAL);
         colorMatch.addColorMatch(CollectorConstants.CUBE_OPTIMAL);
 
+        // Starts logging
         initLogging();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void initLogging() {
-        DataLogger.addDataElement("Collector Motor Temperature",
-                () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Collector Motor Controller Input Voltage",
-                () -> motor.getBusVoltage());
-        DataLogger.addDataElement("Collector Motor Controller Output (Amps)",
-                () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Collector Motor Controller Output (Volts)",
-                () -> motor.getAppliedOutput());
+    // Method to start logging
+    private void initLogging() {
+        DataLogger.addDataElement("Collector Motor Temperature", () -> motor.getMotorTemperature());
+        DataLogger.addDataElement("Collector Motor Controller Input Voltage", () -> motor.getBusVoltage());
+        DataLogger.addDataElement("Collector Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
+        DataLogger.addDataElement("Collector Motor Controller Output (Volts)", () -> motor.getAppliedOutput());
         DataLogger.addDataElement("Color Sensor Raw Color", () -> colorSensor.getColor().toString());
         DataLogger.addDataElement("Color Sensor Detected Game Piece", () -> getGamePiece().toString());
         DataLogger.addDataElement("Color Sensor Confidence", () -> getConfidence());
@@ -55,10 +67,11 @@ public class Collector extends SubsystemBase {
     }
 
     /**
-     * getGamePiece
+     * Gets the game piece detected by the color sensor
      * 
      * @return the game piece detected by the color sensor (Either CUBE, CONE, or NONE)
      */
+
     public GamePiece getGamePiece() {
         Color detectedColor = colorSensor.getColor();
         ColorMatchResult match = colorMatch.matchClosestColor(detectedColor);
@@ -73,7 +86,8 @@ public class Collector extends SubsystemBase {
     }
 
     /**
-     * getConfidence
+     * Gets the confidence of the color sensor
+     * 
      * @return the confidence of the color sensor as a decimal (0 - 1)
      */
     public double getConfidence() {
@@ -84,7 +98,8 @@ public class Collector extends SubsystemBase {
     }
 
     /**
-     * hasPiece
+     * Checks if the color sensor detects a game piece
+     * 
      * @return true if the color sensor detects a game piece
      */
     public boolean hasPiece() {
@@ -92,7 +107,8 @@ public class Collector extends SubsystemBase {
     }
 
     /**
-     * setPower
+     * Sets the power of the collector motor
+     * 
      * @param power the percent speed to set the elevator motor to
      */
     public void setPower(double power) {
@@ -100,8 +116,7 @@ public class Collector extends SubsystemBase {
     }
 
     /**
-     * stop
-     * Sets the power of the collector motor to 0
+     * stop Sets the power of the collector motor to 0
      */
     public void stop() {
         setPower(0d);

@@ -33,38 +33,31 @@ import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
-import frc.thunder.math.LightningMath;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
- * Our drivetrain subsystem
+ * The drivetrain subsystem
  */
 public class Drivetrain extends SubsystemBase {
 
     // Creates our swerve kinematics using the robots track width and wheel base
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front left
-            new Translation2d(DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                    DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
             // Front right
-            new Translation2d(DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                    -DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
             // Back left
-            new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                    DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
             // Back right
-            new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                    -DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
+            new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
-    // Creating new pigeon2 gyro
+    // Creating new pigeon2 IMU
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
     // Creating our list of module states and module positions
-    private SwerveModuleState[] states = { new SwerveModuleState(), new SwerveModuleState(),
-            new SwerveModuleState(), new SwerveModuleState() };
-    private SwerveModulePosition[] modulePositions = { new SwerveModulePosition(),
-            new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition() };
+    private SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
+    private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
 
     // Creating new pose, odometry, cahssis speeds
     private Pose2d pose = new Pose2d();
@@ -83,9 +76,8 @@ public class Drivetrain extends SubsystemBase {
     private double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
     private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
-    private SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(kinematics, getHeading(), modulePositions,
-            pose,
-            DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
+    private SwerveDrivePoseEstimator estimator =
+            new SwerveDrivePoseEstimator(kinematics, getHeading(), modulePositions, pose, DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
 
     Path gridlockFile = Paths.get("home/lvuser/gridlock");
     Path blackoutFile = Paths.get("home/lvuser/blackout");
@@ -98,13 +90,17 @@ public class Drivetrain extends SubsystemBase {
 
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
-    private final PIDController headingController = new PIDController(HeadingGains.kP, HeadingGains.kI,
-            HeadingGains.kD);
+    private final PIDController headingController = new PIDController(HeadingGains.kP, HeadingGains.kI, HeadingGains.kD);
 
     private boolean updatedHeading = false;
     private double lastGoodheading = 0d;
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
+    /**
+     * Creates a new Drivetrain.
+     * 
+     * @param vision the vision subsystem
+     */
     public Drivetrain(Vision vision) {
         this.vision = vision;
 
@@ -120,46 +116,28 @@ public class Drivetrain extends SubsystemBase {
         swerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
         swerveConfiguration.setSteerCurrentLimit(DrivetrainConstants.STEER_CURRENT_LIMIT);
         swerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
-        swerveConfiguration
-                .setDrivePIDGains(new SparkMaxPIDGains(Gains.kP, Gains.kI, Gains.kD, Gains.kF));
+        swerveConfiguration.setDrivePIDGains(new SparkMaxPIDGains(Gains.kP, Gains.kI, Gains.kD, Gains.kF));
 
         blSwerveConfiguration.setDriveCurrentLimit(DrivetrainConstants.DRIVE_CURRENT_LIMIT);
         blSwerveConfiguration.setSteerCurrentLimit(DrivetrainConstants.STEER_CURRENT_LIMIT);
         blSwerveConfiguration.setNominalVoltage(DrivetrainConstants.NOMINAL_VOLTAGE);
-        blSwerveConfiguration
-                .setDrivePIDGains(new SparkMaxPIDGains(Gains.kP, Gains.kI, Gains.kD, Gains.kF));
+        blSwerveConfiguration.setDrivePIDGains(new SparkMaxPIDGains(Gains.kP, Gains.kI, Gains.kD, Gains.kF));
 
         // Making front left module
-        frontLeftModule = Mk4iSwerveModuleHelper.createNeo(
-                tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4)
-                        .withPosition(0, 0),
-                swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
-                RobotMap.CAN.FRONT_LEFT_DRIVE_MOTOR, RobotMap.CAN.FRONT_LEFT_AZIMUTH_MOTOR,
-                RobotMap.CAN.FRONT_LEFT_CANCODER, FRONT_LEFT_STEER_OFFSET);
+        frontLeftModule = Mk4iSwerveModuleHelper.createNeo(tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0), swerveConfiguration,
+                Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.FRONT_LEFT_DRIVE_MOTOR, RobotMap.CAN.FRONT_LEFT_AZIMUTH_MOTOR, RobotMap.CAN.FRONT_LEFT_CANCODER, FRONT_LEFT_STEER_OFFSET);
 
         // Making front right module
-        frontRightModule = Mk4iSwerveModuleHelper.createNeo(
-                tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4)
-                        .withPosition(2, 0),
-                swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
-                RobotMap.CAN.FRONT_RIGHT_DRIVE_MOTOR, RobotMap.CAN.FRONT_RIGHT_AZIMUTH_MOTOR,
-                RobotMap.CAN.FRONT_RIGHT_CANCODER, FRONT_RIGHT_STEER_OFFSET);
+        frontRightModule = Mk4iSwerveModuleHelper.createNeo(tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(2, 0), swerveConfiguration,
+                Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.FRONT_RIGHT_DRIVE_MOTOR, RobotMap.CAN.FRONT_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.FRONT_RIGHT_CANCODER, FRONT_RIGHT_STEER_OFFSET);
 
         // Making backleft module
-        backLeftModule = Mk4iSwerveModuleHelper.createNeo(
-                tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(
-                        4, 0),
-                blSwerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
-                RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR, RobotMap.CAN.BACK_LEFT_AZIMUTH_MOTOR,
-                RobotMap.CAN.BACK_LEFT_CANCODER, BACK_LEFT_STEER_OFFSET);
+        backLeftModule = Mk4iSwerveModuleHelper.createNeo(tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(4, 0), blSwerveConfiguration,
+                Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.BACK_LEFT_DRIVE_MOTOR, RobotMap.CAN.BACK_LEFT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_LEFT_CANCODER, BACK_LEFT_STEER_OFFSET);
 
         // Making back right module
-        backRightModule = Mk4iSwerveModuleHelper.createNeo(
-                tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4)
-                        .withPosition(6, 0),
-                swerveConfiguration, Mk4iSwerveModuleHelper.GearRatio.L2,
-                RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR,
-                RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
+        backRightModule = Mk4iSwerveModuleHelper.createNeo(tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0), swerveConfiguration,
+                Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
         // Setting states of the modules
         updateOdomtery();
@@ -178,83 +156,67 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update our module positions, odometery
+        // Update our module position and odometery
         updateModulePositions();
         updateOdomtery();
-        resetOdymetyFVision(getYaw2d(), vision.getRobotPose());
+        resetOdymetyFVision(getYaw2d(), vision.getRobotPoseBlue());
 
-        var board = LightningShuffleboard.getDouble("Autonomous", "pee", 0.015);
-
-        if (headingController.getP() != board) {
-            headingController.setP(board);
-        }
-
-        resetOdymetyFVision(pose.getRotation(), vision.getRobotPose());
-
-        LightningShuffleboard.setString("Drivetrain", "Pose", getPose().toString());
-
-        double pitchAngle = getPitch2d().getDegrees();
-        double rollAngle = getRoll2d().getDegrees();
-        double theta = Math.atan2(rollAngle, pitchAngle);
-        double magnitude = Math.sqrt((pitchAngle * pitchAngle) + (rollAngle * rollAngle));
-        LightningShuffleboard.setDouble("autobalance", "pitch angle", pitchAngle);
-        LightningShuffleboard.setDouble("autobalance", "roll angle", rollAngle);
-        LightningShuffleboard.setDouble("autobalance", "theta",
-                LightningMath.inputModulus((theta + Math.PI), -Math.PI, Math.PI));
-        LightningShuffleboard.setDouble("autobalance", "magnitude", magnitude);
-
+        // Puts our pose on the dashboard
         LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
         LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
-        LightningShuffleboard.setDouble("Autonomous", "Current Z",
-                odometry.getPoseMeters().getRotation().getDegrees());
+        LightningShuffleboard.setDouble("Autonomous", "Current Z", odometry.getPoseMeters().getRotation().getDegrees());
     }
 
+    /**
+     * Method to return the heading controller
+     * 
+     * @return the heading PIDController
+     */
     public PIDController getHeadingController() {
         return headingController;
     }
 
-    public boolean checkModuleStates() {
-        return Math.abs(states[0].speedMetersPerSecond + states[1].speedMetersPerSecond
-                + states[2].speedMetersPerSecond + states[3].speedMetersPerSecond) == 0;
+    // Checks if all the modules states speeds are 0
+    private boolean checkModuleStates() {
+        return Math.abs(states[0].speedMetersPerSecond + states[1].speedMetersPerSecond + states[2].speedMetersPerSecond + states[3].speedMetersPerSecond) == 0;
     }
 
     /**
-     * This takes chassis speeds and converts them to module states and then sets
-     * states.
+     * This takes chassis speeds and converts them to module states and then sets states.
      * 
      * @param chassisSpeeds the chassis speeds to convert to module states
      */
     public void drive(ChassisSpeeds chassisSpeeds) {
         outputChassisSpeeds = chassisSpeeds;
 
+        // If we havent updated the heading last known good heading, update it
         if (!updatedHeading) {
             lastGoodheading = pose.getRotation().getDegrees();
             updatedHeading = true;
         }
 
+        // If we are not command a rotation for the robot and are moudle states are not 0 comensate for any rotational drift
         if (chassisSpeeds.omegaRadiansPerSecond == 0 && !checkModuleStates()) {
             // outputChassisSpeeds.omegaRadiansPerSecond =
             //         headingController.calculate(pose.getRotation().getDegrees(), lastGoodheading);
         } else {
+            // If we are command a rotation then our updated heading is no longer valid so this will help reset it 
             updatedHeading = false;
         }
 
-        if (states != null && chassisSpeeds.vxMetersPerSecond == 0
-                && chassisSpeeds.vyMetersPerSecond == 0
-                && chassisSpeeds.omegaRadiansPerSecond == 0) {
-
+        // If were not commanding any thing to the motors, make sure our states speeds are 0
+        if (states != null && chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0 && chassisSpeeds.omegaRadiansPerSecond == 0) {
             states[0].speedMetersPerSecond = 0;
             states[1].speedMetersPerSecond = 0;
             states[2].speedMetersPerSecond = 0;
             states[3].speedMetersPerSecond = 0;
 
         } else {
+            // If not set the states to the commanded chassis speeds
             states = kinematics.toSwerveModuleStates(outputChassisSpeeds);
         }
 
-        LightningShuffleboard.setDouble("Autonomous", "omegaradpersec",
-                outputChassisSpeeds.omegaRadiansPerSecond);
-
+        // Sets the states to the modules
         setStates(states);
     }
 
@@ -270,17 +232,14 @@ public class Drivetrain extends SubsystemBase {
             SwerveModuleState backLeftState = states[2];
             SwerveModuleState backRightState = states[3];
 
-            SwerveDriveKinematics.desaturateWheelSpeeds(states,
-                    DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
+            // Normalize the wheel speeds if the magnitude of any wheel is greater than max velocity
+            SwerveDriveKinematics.desaturateWheelSpeeds(states, DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
 
-            frontLeftModule.set(frontLeftState.speedMetersPerSecond,
-                    frontLeftState.angle.getRadians());
-            frontRightModule.set(frontRightState.speedMetersPerSecond,
-                    frontRightState.angle.getRadians());
-            backLeftModule.set(backLeftState.speedMetersPerSecond,
-                    backLeftState.angle.getRadians());
-            backRightModule.set(backRightState.speedMetersPerSecond,
-                    backRightState.angle.getRadians());
+            // Sets the states to the modules
+            frontLeftModule.set(frontLeftState.speedMetersPerSecond, frontLeftState.angle.getRadians());
+            frontRightModule.set(frontRightState.speedMetersPerSecond, frontRightState.angle.getRadians());
+            backLeftModule.set(backLeftState.speedMetersPerSecond, backLeftState.angle.getRadians());
+            backRightModule.set(backRightState.speedMetersPerSecond, backRightState.angle.getRadians());
         }
     }
 
@@ -293,10 +252,9 @@ public class Drivetrain extends SubsystemBase {
 
         ESpose = estimator.update(getHeading(), modulePositions);
 
-        var visionPose = vision.getRobotPose();
+        var visionPose = vision.getRobotPoseBlue();
         if (visionPose != null) {
-            estimator.addVisionMeasurement(visionPose,
-                    Timer.getFPGATimestamp() - vision.getLatencyBotPoseBlue());
+            estimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp() - vision.getLatencyBotPoseBlue());
 
         }
     }
@@ -324,45 +282,29 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Method to start logging data.
      */
-    public void initLogging() {
-        DataLogger.addDataElement("fl steer angle",
-                () -> Math.toDegrees(frontLeftModule.getSteerAngle()));
+    private void initLogging() {
+        DataLogger.addDataElement("fl steer angle", () -> Math.toDegrees(frontLeftModule.getSteerAngle()));
         DataLogger.addDataElement("fl drive velocity", () -> frontLeftModule.getDriveVelocity());
-        DataLogger.addDataElement("fr steer angle",
-                () -> Math.toDegrees(frontRightModule.getSteerAngle()));
+        DataLogger.addDataElement("fr steer angle", () -> Math.toDegrees(frontRightModule.getSteerAngle()));
         DataLogger.addDataElement("fr drive velocity", () -> frontRightModule.getDriveVelocity());
-        DataLogger.addDataElement("bl steer angle",
-                () -> Math.toDegrees(backLeftModule.getSteerAngle()));
+        DataLogger.addDataElement("bl steer angle", () -> Math.toDegrees(backLeftModule.getSteerAngle()));
         DataLogger.addDataElement("bl drive velocity", () -> backLeftModule.getDriveVelocity());
-        DataLogger.addDataElement("br steer angle",
-                () -> Math.toDegrees(backRightModule.getSteerAngle()));
+        DataLogger.addDataElement("br steer angle", () -> Math.toDegrees(backRightModule.getSteerAngle()));
         DataLogger.addDataElement("br drive velocity", () -> backRightModule.getDriveVelocity());
 
-        DataLogger.addDataElement("fl module position",
-                () -> frontLeftModule.getPosition().distanceMeters);
-        DataLogger.addDataElement("fr module position",
-                () -> frontRightModule.getPosition().distanceMeters);
-        DataLogger.addDataElement("bl module position",
-                () -> backLeftModule.getPosition().distanceMeters);
-        DataLogger.addDataElement("br module position",
-                () -> backRightModule.getPosition().distanceMeters);
+        DataLogger.addDataElement("fl module position", () -> frontLeftModule.getPosition().distanceMeters);
+        DataLogger.addDataElement("fr module position", () -> frontRightModule.getPosition().distanceMeters);
+        DataLogger.addDataElement("bl module position", () -> backLeftModule.getPosition().distanceMeters);
+        DataLogger.addDataElement("br module position", () -> backRightModule.getPosition().distanceMeters);
 
-        DataLogger.addDataElement("fl drive Temperature",
-                () -> frontLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("fl azimuth Temperature",
-                () -> frontLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("fr drive Temperature",
-                () -> frontRightModule.getDriveTemperature());
-        DataLogger.addDataElement("fr azimuth Temperature",
-                () -> frontRightModule.getSteerTemperature());
-        DataLogger.addDataElement("bl drive Temperature",
-                () -> backLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("bl azimuth Temperature",
-                () -> backLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("br drive Temperature",
-                () -> backRightModule.getDriveTemperature());
-        DataLogger.addDataElement("br azimuth Temperature",
-                () -> backRightModule.getSteerTemperature());
+        DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.getDriveTemperature());
+        DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.getSteerTemperature());
+        DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.getDriveTemperature());
+        DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.getSteerTemperature());
+        DataLogger.addDataElement("br drive Temperature", () -> backRightModule.getDriveTemperature());
+        DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.getSteerTemperature());
 
         DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
         DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
@@ -378,8 +320,7 @@ public class Drivetrain extends SubsystemBase {
         DataLogger.addDataElement("bl drive voltage", () -> backLeftModule.getDriveVoltage());
         DataLogger.addDataElement("br drive voltage", () -> backRightModule.getDriveVoltage());
 
-        DataLogger.addDataElement("Heading",
-                () -> odometry.getPoseMeters().getRotation().getDegrees());
+        DataLogger.addDataElement("Heading", () -> odometry.getPoseMeters().getRotation().getDegrees());
         DataLogger.addDataElement("poseX", () -> odometry.getPoseMeters().getX());
         DataLogger.addDataElement("poseY", () -> odometry.getPoseMeters().getY());
 
@@ -418,10 +359,11 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("od Z", () -> pose.getRotation().getDegrees());
     }
 
+    /**
+     * Gets the current pathplanner path point of the robot in meters using
+     */
     public PathPoint getCurrentPathPoint() {
-        return new PathPoint(
-                new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()),
-                odometry.getPoseMeters().getRotation());
+        return new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()), odometry.getPoseMeters().getRotation());
     }
 
     /**
@@ -437,32 +379,35 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
+    /**
+     * Gets the heading of the robot from odometry in degrees from 0 to 360
+     */
     public Rotation2d getHeading() {
         return odometry.getPoseMeters().getRotation();
     }
 
     /**
-     * Gets the current pose of the robot.
+     * Gets the current rotation from the pigeon
      * 
-     * @return the current heading of the robot in meters
+     * @return the current heading of the robot in degrees from 0 to 360
      */
     public Rotation2d getYaw2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
     }
 
     /**
-     * Gets the current pitch of the robot.
+     * Gets the current pitch of the robot from the pigeon
      * 
-     * @return the current pitch of the robot in meters
+     * @return the current pitch of the robot in degrees from -180 to 180
      */
     public Rotation2d getPitch2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getPitch(), -180, 180));
     }
 
     /**
-     * Gets the current roll of the robot.
+     * Gets the current roll of the robot from the pigeon
      * 
-     * @return the current roll of the robot in meters
+     * @return the current roll of the robot in degrees from -180 to 180
      */
     public Rotation2d getRoll2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getRoll(), -180, 180));
@@ -474,8 +419,7 @@ public class Drivetrain extends SubsystemBase {
      * @return the current state of the specified module
      */
     public SwerveModuleState stateFromModule(SwerveModule swerveModule) {
-        return new SwerveModuleState(swerveModule.getDriveVelocity(),
-                new Rotation2d(swerveModule.getSteerAngle()));
+        return new SwerveModuleState(swerveModule.getDriveVelocity(), new Rotation2d(swerveModule.getSteerAngle()));
     }
 
     /**
@@ -490,8 +434,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Converts percent output of joystick to a rotational velocity in omega radians
-     * per second.
+     * Converts percent output of joystick to a rotational velocity in omega radians per second.
      * 
      * @param percentOutput the percent output of the joystick
      * 
@@ -525,12 +468,11 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Takes pose2d from vision and resets odometry to that pose. Sets module
-     * positions to the
-     * current module positions.
+     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the current
+     * module positions.
      * 
      * @param gyroAngle the current yaw of the robot
-     * @param pose      the pose from Vision of the robot
+     * @param pose the pose from Vision of the robot
      */
     public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
         // if (pose != null) {
@@ -611,8 +553,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Sets all motor speeds to 0 and sets the modules to their respective resting
-     * angles
+     * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */
     public void stop() {
         frontLeftModule.set(0, DrivetrainConstants.FRONT_LEFT_RESTING_ANGLE);
