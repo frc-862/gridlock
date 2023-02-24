@@ -33,7 +33,6 @@ import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
-import frc.thunder.math.LightningMath;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
@@ -97,6 +96,12 @@ public class Drivetrain extends SubsystemBase {
     private double lastGoodheading = 0d;
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
+    
+    /**
+     * Creates a new Drivetrain.
+     * 
+     * @param vision the vision subsystem
+     */
     public Drivetrain(Vision vision) {
         this.vision = vision;
 
@@ -152,40 +157,28 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update our module positions, odometery
+        // Update our module position and odometery
         updateModulePositions();
         updateOdomtery();
         resetOdymetyFVision(getYaw2d(), vision.getRobotPose());
 
-        var board = LightningShuffleboard.getDouble("Autonomous", "pee", 0.015);
-
-        if (headingController.getP() != board) {
-            headingController.setP(board);
-        }
-
-        resetOdymetyFVision(pose.getRotation(), vision.getRobotPose());
-
-        LightningShuffleboard.setString("Drivetrain", "Pose", getPose().toString());
-
-        double pitchAngle = getPitch2d().getDegrees();
-        double rollAngle = getRoll2d().getDegrees();
-        double theta = Math.atan2(rollAngle, pitchAngle);
-        double magnitude = Math.sqrt((pitchAngle * pitchAngle) + (rollAngle * rollAngle));
-        LightningShuffleboard.setDouble("autobalance", "pitch angle", pitchAngle);
-        LightningShuffleboard.setDouble("autobalance", "roll angle", rollAngle);
-        LightningShuffleboard.setDouble("autobalance", "theta", LightningMath.inputModulus((theta + Math.PI), -Math.PI, Math.PI));
-        LightningShuffleboard.setDouble("autobalance", "magnitude", magnitude);
-
+        // Puts our pose on the dashboard
         LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
         LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
         LightningShuffleboard.setDouble("Autonomous", "Current Z", odometry.getPoseMeters().getRotation().getDegrees());
     }
 
+    /**
+     * Method to return the heading controller
+     * 
+     * @return the heading PIDController
+     */
     public PIDController getHeadingController() {
         return headingController;
     }
 
-    public boolean checkModuleStates() {
+    // Checks if all the modules states speeds are 0
+    private boolean checkModuleStates() {
         return Math.abs(states[0].speedMetersPerSecond + states[1].speedMetersPerSecond + states[2].speedMetersPerSecond + states[3].speedMetersPerSecond) == 0;
     }
 
@@ -197,31 +190,34 @@ public class Drivetrain extends SubsystemBase {
     public void drive(ChassisSpeeds chassisSpeeds) {
         outputChassisSpeeds = chassisSpeeds;
 
+        // If we havent updated the heading last known good heading, update it
         if (!updatedHeading) {
             lastGoodheading = pose.getRotation().getDegrees();
             updatedHeading = true;
         }
 
+        // If we are not command a rotation for the robot and are moudle states are not 0 comensate for any rotational drift
         if (chassisSpeeds.omegaRadiansPerSecond == 0 && !checkModuleStates()) {
             // outputChassisSpeeds.omegaRadiansPerSecond =
             //         headingController.calculate(pose.getRotation().getDegrees(), lastGoodheading);
         } else {
+            // If we are command a rotation then our updated heading is no longer valid so this will help reset it 
             updatedHeading = false;
         }
 
+        // If were not commanding any thing to the motors, make sure our states speeds are 0
         if (states != null && chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0 && chassisSpeeds.omegaRadiansPerSecond == 0) {
-
             states[0].speedMetersPerSecond = 0;
             states[1].speedMetersPerSecond = 0;
             states[2].speedMetersPerSecond = 0;
             states[3].speedMetersPerSecond = 0;
 
         } else {
+            // If not set the states to the commanded chassis speeds
             states = kinematics.toSwerveModuleStates(outputChassisSpeeds);
         }
 
-        LightningShuffleboard.setDouble("Autonomous", "omegaradpersec", outputChassisSpeeds.omegaRadiansPerSecond);
-
+        // Sets the states to the modules
         setStates(states);
     }
 
@@ -237,8 +233,10 @@ public class Drivetrain extends SubsystemBase {
             SwerveModuleState backLeftState = states[2];
             SwerveModuleState backRightState = states[3];
 
+            // Normalize the wheel speeds if the magnitude of any wheel is greater than max velocity
             SwerveDriveKinematics.desaturateWheelSpeeds(states, DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
 
+            // Sets the states to the modules
             frontLeftModule.set(frontLeftState.speedMetersPerSecond, frontLeftState.angle.getRadians());
             frontRightModule.set(frontRightState.speedMetersPerSecond, frontRightState.angle.getRadians());
             backLeftModule.set(backLeftState.speedMetersPerSecond, backLeftState.angle.getRadians());
@@ -362,6 +360,10 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("od Z", () -> pose.getRotation().getDegrees());
     }
 
+
+    /**
+     * Gets the current pathplanner path point of the robot in meters using 
+     */
     public PathPoint getCurrentPathPoint() {
         return new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()), odometry.getPoseMeters().getRotation());
     }
@@ -379,32 +381,35 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
+    /** 
+     * Gets the heading of the robot from odometry in degrees from 0 to 360
+     */
     public Rotation2d getHeading() {
         return odometry.getPoseMeters().getRotation();
     }
 
     /**
-     * Gets the current pose of the robot.
+     * Gets the current rotation from the pigeon
      * 
-     * @return the current heading of the robot in meters
+     * @return the current heading of the robot in degrees from 0 to 360
      */
     public Rotation2d getYaw2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
     }
 
     /**
-     * Gets the current pitch of the robot.
+     * Gets the current pitch of the robot from the pigeon
      * 
-     * @return the current pitch of the robot in meters
+     * @return the current pitch of the robot in degrees from -180 to 180
      */
     public Rotation2d getPitch2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getPitch(), -180, 180));
     }
 
     /**
-     * Gets the current roll of the robot.
+     * Gets the current roll of the robot from the pigeon
      * 
-     * @return the current roll of the robot in meters
+     * @return the current roll of the robot in degrees from -180 to 180
      */
     public Rotation2d getRoll2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getRoll(), -180, 180));

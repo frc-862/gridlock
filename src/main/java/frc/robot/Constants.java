@@ -1,6 +1,5 @@
 package frc.robot;
 
-import java.awt.Polygon;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -8,7 +7,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Num;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,6 +17,9 @@ import frc.thunder.math.InterpolationMap;
 import frc.thunder.pathplanner.com.pathplanner.lib.auto.PIDConstants;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 
+/**
+ * Class to hold all of the constants for the robot
+ */
 public final class Constants {
 
     public static final double VOLTAGE_COMP_VOLTAGE = 12d;

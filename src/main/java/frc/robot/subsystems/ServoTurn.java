@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 
+/**
+ * The servo subsystem
+ */
 public class ServoTurn extends SubsystemBase {
     Servo servo = new Servo(RobotMap.PWM.SERVO);
 

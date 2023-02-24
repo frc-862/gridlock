@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedConstants;
 
+/**
+ * LED subsystem
+ */
 public class LEDs extends SubsystemBase {
     /** Creates a new LED subsystem. */
     // Establish the led variables
@@ -32,6 +35,9 @@ public class LEDs extends SubsystemBase {
         initDashboard();
     }
 
+    /**
+     * Swirls orange and blue
+     */
     public void swirl() {
         // swirl pattern wooooooo (swirls orange and blue)
         leds.setLEDs(0, 0, 255);
@@ -46,6 +52,9 @@ public class LEDs extends SubsystemBase {
         currentState = "swirl";
     }
 
+    /**
+     * Flashes between blue and orange
+     */
     public void readyScore() {
         // flashes between blue and orange
         if ((System.currentTimeMillis() % 1000) < 500) {
@@ -57,18 +66,27 @@ public class LEDs extends SubsystemBase {
         currentState = "readyScore";
     }
 
+    /**
+     * Sets LEDS to Purple
+     */
     public void wantsCube() {
         // purple
         leds.setLEDs(220, 30, 240);
         currentState = "wantsCube";
     }
 
+    /**
+     * Sets LEDS to Yellow
+     */
     public void wantsCone() {
         // yellow
         leds.setLEDs(255, 230, 20);
         currentState = "wantsCone";
     }
 
+    /**
+     * Flashes leds green
+     */
     public void hasGamePiece() {
         // flashes green
         if ((System.currentTimeMillis() % 1000) < 500) {
@@ -79,6 +97,9 @@ public class LEDs extends SubsystemBase {
         currentState = "hasGamePiece";
     }
 
+    /**
+     * Turns of leds
+     */
     public void off() {
         leds.setLEDs(0, 0, 0);
     }
@@ -108,12 +129,18 @@ public class LEDs extends SubsystemBase {
 
     }
 
+    /**
+     * Sets full strip to white
+     */
     public void fullStripWhite() {
         for (int i = 0; i < LedConstants.ledLength; i += 1) {
             leds.setLEDs(255, 255, 255, 0, i, 1);
         }
     }
 
+    /**
+     * Sets LEDS to rainbow
+     */
     public void autoAligned() {
         RainbowAnimation rainbowAnim = new RainbowAnimation(0, LedConstants.ledSpeed, LedConstants.ledLength);
         leds.animate(rainbowAnim);

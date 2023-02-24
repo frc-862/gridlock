@@ -114,7 +114,7 @@ public class Arm extends SubsystemBase {
      * 
      * @return true if the bottom limit switch is pressed
      */
-    public boolean getReverseLimitSwitch() {
+    public boolean getBottomLimitSwitch() {
         return motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).isPressed();
     }
 
@@ -123,7 +123,7 @@ public class Arm extends SubsystemBase {
      * 
      * @return true if the top limit switch is pressed
      */
-    public boolean getForwardLimitSwitch() {
+    public boolean getTopLimitSwitch() {
         return motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).isPressed();
     }
 
@@ -159,8 +159,8 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
 
-        LightningShuffleboard.setBool("Arm", "Bottom Limit", getReverseLimitSwitch());
-        LightningShuffleboard.setBool("Arm", "Top Limit", getForwardLimitSwitch());
+        LightningShuffleboard.setBool("Arm", "Bottom Limit", getBottomLimitSwitch());
+        LightningShuffleboard.setBool("Arm", "Top Limit", getTopLimitSwitch());
         LightningShuffleboard.setDouble("Arm", "Angle", getAngle().getDegrees());
         LightningShuffleboard.setDouble("Arm", "Target Angle", targetAngle + OFFSET);
 

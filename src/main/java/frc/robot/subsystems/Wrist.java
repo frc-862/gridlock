@@ -14,36 +14,50 @@ import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
-import frc.thunder.tuning.PIDDashboardTuner;
 
 public class Wrist extends SubsystemBase {
+
+    // The motor, encoder, and PID controller
     private CANSparkMax motor;
     private SparkMaxPIDController controller;
     private SparkMaxAbsoluteEncoder encoder;
+
+    // The encoder offset
     private double OFFSET;
+
+    // The target angle to be set to the wrist
     private double targetAngle;
 
     public Wrist() {
+        // If blackout, use the blackout offset
         if (Constants.isBlackout()) {
             OFFSET = WristConstants.ENCODER_OFFSET_BLACKOUT;
         } else {
+            // Otherwise, assume gridlock offset
             OFFSET = WristConstants.ENCODER_OFFSET_GRIDLOCK;
         }
 
+        // Create the motor and configure it
         motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, WristConstants.MOTOR_INVERT, WristConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, WristConstants.MOTOR_TYPE,
                 WristConstants.NEUTRAL_MODE);
-        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
-        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(WristConstants.DOWN_kP, WristConstants.DOWN_kI, WristConstants.DOWN_kD, WristConstants.DOWN_kF),
-                new SparkMaxPIDGains(WristConstants.UP_kP, WristConstants.UP_kI, WristConstants.UP_kD, WristConstants.UP_kF), encoder);
-        encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
-        controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
         motor.setClosedLoopRampRate(2);
 
+        // Create the absolute encoder and sets the conversion factor
+        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
+        encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
+
+        // Create the PID controller and set the output range
+        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(WristConstants.DOWN_kP, WristConstants.DOWN_kI, WristConstants.DOWN_kD, WristConstants.DOWN_kF),
+                new SparkMaxPIDGains(WristConstants.UP_kP, WristConstants.UP_kI, WristConstants.UP_kD, WristConstants.UP_kF), encoder);
+        controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
+
+        // Starts logging
         initLogging();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
+    // Method to start logging
     private void initLogging() {
         DataLogger.addDataElement("Target angle", () -> targetAngle);
         DataLogger.addDataElement("Wrist angle", () -> getAngle().getDegrees());
@@ -54,6 +68,7 @@ public class Wrist extends SubsystemBase {
     }
 
     /**
+     * Gets the angle of the wrist from the encoder
      * 
      * @return Rotation2d of the wrist from encoder
      */
@@ -70,63 +85,72 @@ public class Wrist extends SubsystemBase {
         targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
     }
 
+    /**
+     * Sets the raw power to the wrist from -1 to 1
+     */
     public void setPower(double power) {
         motor.set(MathUtil.clamp(power, WristConstants.MIN_POWER, WristConstants.MAX_POWER));
     }
 
+    /**
+     * stops the writs motor
+     */
     public void stop() {
         motor.set(0d);
     }
 
     /**
-     * getBottomLimitSwitch
+     * Gets the bottom limit switch
      * 
-     * @return true if the bottom limit switch is pressed
+     * @return true if the top limit switch is pressed
      */
-    public boolean getReverseLimitSwitch() {
+    public boolean getBottomLimitSwitch() {
         return motor.getReverseLimitSwitch(WristConstants.BOTTOM_LIMIT_SWITCH_TYPE).isPressed();
     }
 
     /**
-     * getTopLimitSwitch
+     * Gets the top limit switch
      * 
      * @return true if the top limit switch is pressed
      */
-    public boolean getForwardLimitSwitch() {
+    public boolean getTopLimitSwitch() {
         return motor.getForwardLimitSwitch(WristConstants.TOP_LIMIT_SWITCH_TYPE).isPressed();
     }
 
+    /**
+     * Checks if the wrist is on target with the set angle
+     * 
+     * @return the encoder position
+     */
     public boolean onTarget() {
         return Math.abs(getAngle().getDegrees() - targetAngle) < WristConstants.TOLERANCE;
     }
 
+    /**
+    * Checks if the wrist is within the tolerance of the target angle
+    * 
+    * @param target the target to check against
+    * 
+    * @return true if the wrist is within the tolerance of the target angle
+    */
     public boolean onTarget(double target) {
         return Math.abs(getAngle().getDegrees() - target) < WristConstants.TOLERANCE;
     }
 
     @Override
     public void periodic() {
-        LightningShuffleboard.setBool("Wrist", "fwd Limit", getForwardLimitSwitch());
-        LightningShuffleboard.setBool("Wrist", "rev Limit", getReverseLimitSwitch());
+        LightningShuffleboard.setBool("Wrist", "fwd Limit", getTopLimitSwitch());
+        LightningShuffleboard.setBool("Wrist", "rev Limit", getBottomLimitSwitch());
         LightningShuffleboard.setDouble("Lift", "Wrist Angle", getAngle().getDegrees());
 
-        // LightningShuffleboard.setBool("Lift", "Wrist on target", onTarget());
-        // LightningShuffleboard.setDouble("Lift", "Wrist target", targetAngle);
-
-        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -20)));
-
-        // controller.setP(LightningShuffleboard.getDouble("Lift", "up kP", WristConstants.UP_kP), 1);
-        // controller.setFF(LightningShuffleboard.getDouble("Lift", "up kF", WristConstants.UP_kF),
-        //         1);
-        // controller.setP(LightningShuffleboard.getDouble("Lift", "down kP", WristConstants.DOWN_kP),
-        //         0);
-        // controller.setFF(
-        //         LightningShuffleboard.getDouble("Lift", "down kF", WristConstants.DOWN_kF), 0);
-
+        // If were not on target
         if (!onTarget()) {
+            // Checks if wrist is going up or down
             if (targetAngle - getAngle().getDegrees() > 2) {
+                // Uses the up gains
                 controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
             } else {
+                // Uses the down gains
                 controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
             }
         }
