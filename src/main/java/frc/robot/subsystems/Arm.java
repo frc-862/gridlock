@@ -13,7 +13,6 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.RobotMap;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
@@ -55,20 +54,18 @@ public class Arm extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
         controller.setOutputRange(ArmConstants.MIN_POWER, ArmConstants.MAX_POWER);
 
-        // Starts logging
-        initLogging();
-
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    // Method to log data
-    private void initLogging() {
-        DataLogger.addDataElement("Arm target angle", () -> targetAngle);
-        DataLogger.addDataElement("Arm angle", () -> getAngle().getDegrees());
-        DataLogger.addDataElement("Arm on target", () -> onTarget() ? 1 : 0);
-        DataLogger.addDataElement("Arm motor temperature", () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Arm Motor Controller Input Voltage", () -> motor.getBusVoltage());
-        DataLogger.addDataElement("Arm Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
+    // Metod to starts logging and updates the shuffleboard
+    private void updateShuffleboard() {
+        LightningShuffleboard.setBool("Arm", "Arm Bottom Limit", getBottomLimitSwitch());
+        LightningShuffleboard.setBool("Arm", "Arm Top Limit", getTopLimitSwitch());
+        LightningShuffleboard.setDouble("Arm", "Arm angle", getAngle().getDegrees());
+        LightningShuffleboard.setDouble("Arm", "Arm Target Angle", targetAngle + OFFSET);
+        LightningShuffleboard.setDouble("Arm", "Arm motor controller input voltage", motor.getBusVoltage());
+        LightningShuffleboard.setDouble("Arm", "Arm motor controller output (Amps)", motor.getOutputCurrent());
+        LightningShuffleboard.setDouble("Arm", "Arm motor controller output (volts)", motor.getAppliedOutput());
     }
 
     /**
@@ -158,13 +155,10 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        LightningShuffleboard.setBool("Arm", "Bottom Limit", getBottomLimitSwitch());
-        LightningShuffleboard.setBool("Arm", "Top Limit", getTopLimitSwitch());
-        LightningShuffleboard.setDouble("Arm", "Angle", getAngle().getDegrees());
-        LightningShuffleboard.setDouble("Arm", "Target Angle", targetAngle + OFFSET);
-
         // Sets the feedforward gains based on the current angle of the arm
         controller.setFF(ArmConstants.ARM_UP_KF_MAP.get(getAngle().getDegrees()), 0);
+
+        // Starts logging and updates the shuffleboard
+        updateShuffleboard();
     }
 }

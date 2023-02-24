@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
  * The servo subsystem
@@ -19,5 +20,6 @@ public class ServoTurn extends SubsystemBase {
      */
     public void turnServo(double position) {
         servo.set(position);
+        LightningShuffleboard.setDouble("Servo", "Servo Position", position);
     }
 }
