@@ -42,14 +42,14 @@ public class Arm extends SubsystemBase {
         }
 
         // Create the motor and configure it
-        motor = NeoConfig.createMotor(RobotMap.CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT, ArmConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, ArmConstants.MOTOR_TYPE,
+        motor = NeoConfig.createMotor(RobotMap.CAN.ARM_MOTOR, ArmConstants.MOTOR_INVERT, ArmConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMPENSATION, ArmConstants.MOTOR_TYPE,
                 ArmConstants.NEUTRAL_MODE);
         // Sets the ramp rate for the motor
         motor.setClosedLoopRampRate(2);
 
         // Create the absolute encoder and sets the conversion factor
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-        encoder.setPositionConversionFactor(360);
+        encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
         // Create the PID controller and set the output range
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);

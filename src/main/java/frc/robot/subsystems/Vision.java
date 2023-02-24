@@ -89,10 +89,40 @@ public class Vision extends SubsystemBase {
         DataLogger.addDataElement("Vision bot pose Red latency", () -> getLatencyBotPoseRed());
     }
 
-    // Returns the robot pose as a Pose2d from vision data
+    /**
+     * Gets the robot pose relative to the april tag
+     * 
+     * @return Pose2d of the robot
+     */
     public Pose2d getRobotPose() {
         if (getHasVision()) {
+            return new Pose2d(new Translation2d(getBotPose()[0], getBotPose()[1]), Rotation2d.fromDegrees(getBotPose()[5]));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the robot pose relative to the blue side of the field
+     * 
+     * @return Pose2d of the robot
+     */
+    public Pose2d getRobotPoseBlue() {
+        if (getHasVision()) {
             return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]), Rotation2d.fromDegrees(getBotPoseBlue()[5]));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the robot pose relative to the red side of the field
+     * 
+     * @return Pose2d of the robot
+     */
+    public Pose2d getRobotPoseRed() {
+        if (getHasVision()) {
+            return new Pose2d(new Translation2d(getBotPoseRed()[0], getBotPoseRed()[1]), Rotation2d.fromDegrees(getBotPoseRed()[5]));
         } else {
             return null;
         }

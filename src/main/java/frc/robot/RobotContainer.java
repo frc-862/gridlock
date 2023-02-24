@@ -7,12 +7,9 @@ import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.Collect;
@@ -47,9 +44,6 @@ public class RobotContainer extends LightningContainer {
     private static final ServoTurn servoturn = new ServoTurn();
     private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
-
-    // Creates new LED controller
-    private static final LEDs underglow = new LEDs();
 
     // Creates our controllers and deadzones
     private static final XboxController driver = new XboxController(XboxControllerConstants.DRIVER_CONTROLLER_PORT);
@@ -139,10 +133,7 @@ public class RobotContainer extends LightningContainer {
     protected void releaseDefaultCommands() {}
 
     @Override
-    protected void initializeDashboardCommands() {
-        ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
-        ShuffleboardTab ledTab = Shuffleboard.getTab("LEDs");
-    }
+    protected void initializeDashboardCommands() {}
 
     @Override
     protected void configureFaultCodes() {}

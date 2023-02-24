@@ -38,7 +38,7 @@ public class Wrist extends SubsystemBase {
         }
 
         // Create the motor and configure it
-        motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, WristConstants.MOTOR_INVERT, WristConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, WristConstants.MOTOR_TYPE,
+        motor = NeoConfig.createMotor(CAN.WRIST_MOTOR, WristConstants.MOTOR_INVERT, WristConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMPENSATION, WristConstants.MOTOR_TYPE,
                 WristConstants.NEUTRAL_MODE);
         motor.setClosedLoopRampRate(2);
 
@@ -127,12 +127,12 @@ public class Wrist extends SubsystemBase {
     }
 
     /**
-    * Checks if the wrist is within the tolerance of the target angle
-    * 
-    * @param target the target to check against
-    * 
-    * @return true if the wrist is within the tolerance of the target angle
-    */
+     * Checks if the wrist is within the tolerance of the target angle
+     * 
+     * @param target the target to check against
+     * 
+     * @return true if the wrist is within the tolerance of the target angle
+     */
     public boolean onTarget(double target) {
         return Math.abs(getAngle().getDegrees() - target) < WristConstants.TOLERANCE;
     }

@@ -96,7 +96,6 @@ public class Drivetrain extends SubsystemBase {
     private double lastGoodheading = 0d;
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
-    
     /**
      * Creates a new Drivetrain.
      * 
@@ -160,7 +159,7 @@ public class Drivetrain extends SubsystemBase {
         // Update our module position and odometery
         updateModulePositions();
         updateOdomtery();
-        resetOdymetyFVision(getYaw2d(), vision.getRobotPose());
+        resetOdymetyFVision(getYaw2d(), vision.getRobotPoseBlue());
 
         // Puts our pose on the dashboard
         LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
@@ -253,7 +252,7 @@ public class Drivetrain extends SubsystemBase {
 
         ESpose = estimator.update(getHeading(), modulePositions);
 
-        var visionPose = vision.getRobotPose();
+        var visionPose = vision.getRobotPoseBlue();
         if (visionPose != null) {
             estimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp() - vision.getLatencyBotPoseBlue());
 
@@ -360,9 +359,8 @@ public class Drivetrain extends SubsystemBase {
         tab.addDouble("od Z", () -> pose.getRotation().getDegrees());
     }
 
-
     /**
-     * Gets the current pathplanner path point of the robot in meters using 
+     * Gets the current pathplanner path point of the robot in meters using
      */
     public PathPoint getCurrentPathPoint() {
         return new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()), odometry.getPoseMeters().getRotation());
@@ -381,7 +379,7 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
-    /** 
+    /**
      * Gets the heading of the robot from odometry in degrees from 0 to 360
      */
     public Rotation2d getHeading() {

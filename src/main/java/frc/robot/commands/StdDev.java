@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Vision;
 
@@ -32,9 +31,9 @@ public class StdDev extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        x.add(vision.getBotPose()[0]);
-        y.add(vision.getBotPose()[1]);
-        z.add(Rotation2d.fromDegrees(vision.getBotPose()[5]).getRadians());
+        x.add(vision.getRobotPose().getX());
+        y.add(vision.getRobotPose().getY());
+        z.add(vision.getRobotPose().getRotation().getDegrees());
     }
 
     // Called once the command ends or is interrupted.

@@ -30,7 +30,7 @@ public class Elevator extends SubsystemBase {
     public Elevator() {
 
         // Create the motor and configure it
-        motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT, ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE, ElevatorConstants.MOTOR_TYPE,
+        motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT, ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMPENSATION, ElevatorConstants.MOTOR_TYPE,
                 ElevatorConstants.NEUTRAL_MODE);
 
         // Create the relative encoder and sets the conversion factor
@@ -163,11 +163,11 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         if (getTopLimitSwitch()) {
-        encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
+            encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
         }
 
         if (getBottomLimitSwitch()) {
-        encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
+            encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
         }
 
         LightningShuffleboard.setBool("Elevator", "Top Limit", getTopLimitSwitch());
