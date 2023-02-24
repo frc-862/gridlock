@@ -71,6 +71,10 @@ public class Lift extends SubsystemBase {
         }
     }
 
+    public boolean goalReached() {
+        return currentState == goalState;
+    }
+
     @Override
     public void periodic() {
         // Checks if were on target or if the next state is null
