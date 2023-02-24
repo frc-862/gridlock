@@ -8,8 +8,6 @@ import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -204,7 +202,6 @@ public final class Constants {
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
-
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap ARM_UP_KF_MAP = new InterpolationMap() {
             {
@@ -232,7 +229,6 @@ public final class Constants {
     public static final class CollectorConstants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
-
 
         //TODO: tune these
         //Cube Theoretical: #3a01b2 (58, 1, 178)
