@@ -3,26 +3,13 @@ package frc.robot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Vision;
-import java.util.HashMap;
-import javax.security.auth.AuthPermission;
-import org.ejml.sparse.csc.misc.ApplyFillReductionPermutation_FSCC;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
-import frc.robot.Constants.LiftConstants.LiftState;
-import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
@@ -31,15 +18,12 @@ import frc.robot.commands.Lift.HighScore;
 import frc.robot.commands.Lift.MidScore;
 import frc.robot.commands.Lift.ReverseDoubleSubstationCollect;
 import frc.robot.commands.Lift.Stow;
-import frc.robot.commands.ManualLift;
 import frc.robot.commands.StdDev;
-import frc.robot.commands.StdDevOdo;
 import frc.robot.commands.tests.DriveTrainSystemTest;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.thunder.LightningContainer;
 import frc.robot.Constants.AutonomousConstants;
-import frc.robot.Constants.DrivetrainConstants;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
@@ -48,10 +32,10 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final Vision targetting = new Vision();
+    private static final Vision vision = new Vision();
 
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain(targetting);
+    private static final Drivetrain drivetrain = new Drivetrain(vision);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
@@ -59,40 +43,27 @@ public class RobotContainer extends LightningContainer {
     private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
 
-    // Creates new LED controller
-    private static final LEDs underglow = new LEDs();
-
     // Creates our controllers and deadzones
-    private static final XboxController driver =
-            new XboxController(XboxControllerConstants.DRIVER_CONTROLLER_PORT);
-    private static final XboxController copilot =
-            new XboxController(XboxControllerConstants.COPILOT_CONTROLLER_PORT);
-    private static final JoystickFilter joystickFilter =
-            new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER,
-                    XboxControllerConstants.MAX_POWER, Mode.CUBED);
+    private static final XboxController driver = new XboxController(XboxControllerConstants.DRIVER_CONTROLLER_PORT);
+    private static final XboxController copilot = new XboxController(XboxControllerConstants.COPILOT_CONTROLLER_PORT);
+    private static final JoystickFilter joystickFilter = new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER, XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
     // creates Autonomous Command
-    private static final AutonomousCommandFactory autoFactory =
-            new AutonomousCommandFactory(drivetrain::getPose, drivetrain::resetOdometry,
-                    drivetrain.getDriveKinematics(), AutonomousConstants.DRIVE_PID_CONSTANTS,
-                    AutonomousConstants.THETA_PID_CONSTANTS, AutonomousConstants.POSE_PID_CONSTANTS,
-                    drivetrain::setStates, drivetrain::resetNeoAngle, drivetrain);
+    private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(drivetrain::getPose, drivetrain::resetOdometry, drivetrain.getDriveKinematics(),
+            AutonomousConstants.DRIVE_PID_CONSTANTS, AutonomousConstants.THETA_PID_CONSTANTS, AutonomousConstants.POSE_PID_CONSTANTS, drivetrain::setStates, drivetrain::resetNeoAngle, drivetrain);
 
     @Override
     protected void configureButtonBindings() {
         // Back button to reset field centeric driving to current heading of the robot
-        new Trigger(driver::getBackButton)
-                .onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+        new Trigger(driver::getBackButton).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
-        new Trigger(driver::getXButton)
-                .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
-                        drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+        new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
-        new Trigger(driver::getYButton).whileTrue(new StdDev(targetting));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
 
         // copilot controls 
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
@@ -133,14 +104,12 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void configureDefaultCommands() {
         /*
-         * Set up the default command for the drivetrain. The controls are for field-oriented
-         * driving: Left stick Y axis -> forward and backwards movement Left stick X axis -> left
-         * and right movement Right stick X axis -> rotation
+         * Set up the default command for the drivetrain. The controls are for field-oriented driving: Left
+         * stick Y axis -> forward and backwards movement Left stick X axis -> left and right movement Right
+         * stick X axis -> rotation
          */
         drivetrain.setDefaultCommand(
-                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()),
-                        () -> joystickFilter.filter(driver.getLeftY()),
-                        () -> -joystickFilter.filter(driver.getRightX())));
+                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()), () -> joystickFilter.filter(driver.getLeftY()), () -> -joystickFilter.filter(driver.getRightX())));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
@@ -151,27 +120,20 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureSystemTests() {
-        SystemTest.registerTest("fl drive test",
-                new DriveTrainSystemTest(drivetrain, drivetrain.getFrontLeftModule(), 0.25));
+        SystemTest.registerTest("fl drive test", new DriveTrainSystemTest(drivetrain, drivetrain.getFrontLeftModule(), 0.25));
 
-        SystemTest.registerTest("fr drive test",
-                new DriveTrainSystemTest(drivetrain, drivetrain.getFrontRightModule(), 0.25));
+        SystemTest.registerTest("fr drive test", new DriveTrainSystemTest(drivetrain, drivetrain.getFrontRightModule(), 0.25));
 
-        SystemTest.registerTest("bl drive test",
-                new DriveTrainSystemTest(drivetrain, drivetrain.getBackLeftModule(), 0.25));
+        SystemTest.registerTest("bl drive test", new DriveTrainSystemTest(drivetrain, drivetrain.getBackLeftModule(), 0.25));
 
-        SystemTest.registerTest("br drive test",
-                new DriveTrainSystemTest(drivetrain, drivetrain.getBackRightModule(), 0.25));
+        SystemTest.registerTest("br drive test", new DriveTrainSystemTest(drivetrain, drivetrain.getBackRightModule(), 0.25));
     }
 
     @Override
     protected void releaseDefaultCommands() {}
 
     @Override
-    protected void initializeDashboardCommands() {
-        ShuffleboardTab drivetrainTab = Shuffleboard.getTab("Drivetrain");
-        ShuffleboardTab ledTab = Shuffleboard.getTab("LEDs");
-    }
+    protected void initializeDashboardCommands() {}
 
     @Override
     protected void configureFaultCodes() {}

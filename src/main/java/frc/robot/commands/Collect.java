@@ -4,20 +4,32 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
 
+/**
+ * Command for running the collector with a triggers
+ */
 public class Collect extends CommandBase {
     Collector collector;
-    DoubleSupplier input;
+    DoubleSupplier leftTrigger;
+    DoubleSupplier rightTrigger;
 
-    public Collect(Collector collector, DoubleSupplier input) {
+    /**
+     * Creates a new Collect command
+     * 
+     * @param collector    the collector subsystem
+     * @param leftTrigger  the left trigger
+     * @param rightTrigger the right trigger
+     */
+    public Collect(Collector collector, DoubleSupplier leftTrigger, DoubleSupplier rightTrigger) {
         this.collector = collector;
-        this.input = input;
+        this.leftTrigger = leftTrigger;
+        this.rightTrigger = rightTrigger;
 
         addRequirements(collector);
     }
 
     @Override
     public void execute() {
-        collector.runCollector(input.getAsDouble());
+        collector.setPower(rightTrigger.getAsDouble() - leftTrigger.getAsDouble());
     }
 
     @Override
