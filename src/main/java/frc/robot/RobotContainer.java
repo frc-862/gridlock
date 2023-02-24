@@ -37,10 +37,10 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final Vision targetting = new Vision();
+    private static final Vision vision = new Vision();
 
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain(targetting);
+    private static final Drivetrain drivetrain = new Drivetrain(vision);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
@@ -71,7 +71,7 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
-        new Trigger(driver::getYButton).whileTrue(new StdDev(targetting));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
 
         // copilot controls 
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
