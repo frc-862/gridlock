@@ -62,18 +62,9 @@ public class Vision extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    @Override
-    public void periodic() {
-        // if (botPose.length != 0) {
-        // updateShuffleboard();
-
-        // }
-
-    }
-
     // Adds logging for vision so we can look at values when the robot is off and
     // check them
-    public void initLogging() {
+    private void initLogging() {
         DataLogger.addDataElement("Has Vision", () -> getHasVision() ? 1 : 0);
         DataLogger.addDataElement("Vision bot pose TX", () -> getBotPose()[0]);
         DataLogger.addDataElement("Vision bot pose TY", () -> getBotPose()[1]);
@@ -89,7 +80,7 @@ public class Vision extends SubsystemBase {
 
         DataLogger.addDataElement("Vision retro reflective TX", () -> getHorizontalOffset());
         DataLogger.addDataElement("Vision retro reflective TY", () -> getVerticalOffset());
-        DataLogger.addDataElement("Vision retro reflective TA", () -> getTargetVertical());
+        DataLogger.addDataElement("Vision retro reflective TA", () -> getTargetArea());
 
         DataLogger.addDataElement("Vision latency pipeline", () -> getLatencyPipline());
         DataLogger.addDataElement("Vision latency capture", () -> getLatencyCapture());
@@ -107,6 +98,11 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the horizontal offset of the target from the center of the screen
+     * 
+     * @return double base on the horizontal FOV of the limelight
+     */
     public double getHorizontalOffset() {
         if (getHasVision()) {
             horizontalOffset = LimelightHelpers.getTX(limelightName);
@@ -116,18 +112,28 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the vertical offset of the target from the center of the screen
+     * 
+     * @return double base on the vertical FOV of the limelight
+     */
     public double getVerticalOffset() {
         if (getHasVision()) {
-            verticalOffset = LimelightHelpers.getTX(limelightName);
+            verticalOffset = LimelightHelpers.getTY(limelightName);
             return verticalOffset;
         } else {
             return 0;
         }
     }
 
-    public double getTargetVertical() {
+    /**
+     * Gets the area on the screen that the target takes up as a percentage
+     * 
+     * @return double between 0 and 100 percent of the image
+     */
+    public double getTargetArea() {
         if (getHasVision()) {
-            targetVertical = LimelightHelpers.getTX(limelightName);
+            targetVertical = LimelightHelpers.getTA(limelightName);
             return targetVertical;
         } else {
             return 0;
@@ -135,11 +141,11 @@ public class Vision extends SubsystemBase {
     }
 
     /**
-     * Gets botpose on field (x,y,z,rx,ry,rz)
+     * Gets botpose on field (x,y,z,rx,ry,rz) relative to the limelight
      * 
-     * @return 3d bot pose
+     * @return 7 element array of doubles
      */
-    public double[] getBotPose() {
+    private double[] getBotPose() {
         if (getHasVision()) {
             botPose = LimelightHelpers.getBotPose(limelightName);
             return botPose;
@@ -148,7 +154,12 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    public double[] getBotPoseRed() {
+    /**
+     * Gets botpose on field (x,y,z,rx,ry,rz) relative to red side of the field
+     * 
+     * @return 7 element array of doubles
+     */
+    private double[] getBotPoseRed() {
         if (getHasVision()) {
             botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
             return botPoseRed;
@@ -157,7 +168,12 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    public double[] getBotPoseBlue() {
+    /**
+     * Gets botpose on field (x,y,z,rx,ry,rz) relative to blue side of the field
+     * 
+     * @return 7 element array of doubles
+     */
+    private double[] getBotPoseBlue() {
         if (getHasVision()) {
             botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
             return botPoseBlue;
@@ -166,6 +182,11 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    /**
+     * Checks if we have a valid vision target
+     * 
+     * @return true if we have a valid vision target
+     */
     public boolean getHasVision() {
         hasVision = LimelightHelpers.getTV(limelightName);
         if (hasVision == true) {
@@ -177,6 +198,11 @@ public class Vision extends SubsystemBase {
 
     }
 
+    /**
+     * Gets the latency of the pipeline
+     * 
+     * @return latency of pipeline
+     */
     public double getLatencyPipline() {
         if (getHasVision()) {
             latencyPipline = LimelightHelpers.getLatency_Pipeline(limelightName);
@@ -186,6 +212,11 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the latency of the capture
+     * 
+     * @return latency of capture
+     */
     public double getLatencyCapture() {
         if (getHasVision()) {
             latencyCapture = LimelightHelpers.getLatency_Capture(limelightName);
@@ -195,6 +226,11 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the latency of the bot pose
+     * 
+     * @return latency of bot pose
+     */
     public double getLatencyBotPose() {
         if (getHasVision()) {
             var pose = LimelightHelpers.getBotPose(limelightName);
@@ -209,6 +245,11 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the latency of the blue bot pose
+     * 
+     * @return latency of blue bot pose
+     */
     public double getLatencyBotPoseBlue() {
         if (getHasVision()) {
             var pose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
@@ -222,6 +263,11 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the latency of the red bot pose
+     * 
+     * @return latency of red bot pose
+     */
     public double getLatencyBotPoseRed() {
         if (getHasVision()) {
             var pose = LimelightHelpers.getBotPose_wpiRed(limelightName);
@@ -235,6 +281,7 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    // Method to update shuffleboard with vision data
     private void updateShuffleboard() {
         if (getHasVision()) {
             if (pipelineNum == 0 || pipelineNum == 1) {
@@ -252,7 +299,7 @@ public class Vision extends SubsystemBase {
             } else if (pipelineNum == 2 || pipelineNum == 3) {
                 LightningShuffleboard.setDouble("Autonomous", "RR Tape Horizontal Offset", getHorizontalOffset());
                 LightningShuffleboard.setDouble("Autonomous", "RR Tape Vertical Offset", getVerticalOffset());
-                LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area", getTargetVertical());
+                LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area", getTargetArea());
             }
         }
     }
@@ -284,7 +331,7 @@ public class Vision extends SubsystemBase {
      */
     public boolean validTarget() {
         // 29.8d represents the LL2+'s max FOV, from center of camera to edge of frame.
-        return Math.abs(this.horizAngleToTarget) < Constants.VisionConstants.HORIZ_CAMERA_FOV;
+        return Math.abs(getHorizontalOffset()) < Constants.VisionConstants.HORIZ_CAMERA_FOV;
     }
 
     /**
@@ -293,25 +340,14 @@ public class Vision extends SubsystemBase {
      * @return degree offset from target.
      */
     public double autoAlign() {
-        if (getHasVision()) {
-            // Set pipeline num to 2, should be retroreflective tape pipeline.
-            setPipelineNum(2);
+        // Set pipeline num to 2, should be retroreflective tape pipeline.
+        setPipelineNum(2);
 
-            this.horizAngleToTarget = LimelightHelpers.getTX(limelightName);
-
-            boolean isOnTarget = isOnTarget(this.horizAngleToTarget);
-
-            // Checks if we have vision
-            hasVision = LimelightHelpers.getTV(limelightName);
-
-            // Checks our current angle on the target
-            if (hasVision && !isOnTarget && validTarget()) {
-                return horizAngleToTarget;
-            } else {
-                return 0d;
-            }
+        // Checks our current angle on the target
+        if (getHasVision() && !isOnTarget(getHorizontalOffset()) && validTarget()) {
+            return horizAngleToTarget;
         } else {
-            return 0;
+            return 0d;
         }
     }
 
@@ -328,29 +364,31 @@ public class Vision extends SubsystemBase {
     }
 
     private void setCameraPose() {
-        if (getHasVision()) {
-            if (limelightName == "limelight-front") {
-                LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, 0.14224, 0.9398, 0, 0, 0);
-            } else {
-                LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, -0.14224, 0.9398, 0, 0, 0);
-            }
+        if (limelightName == "limelight-front") {
+            LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, 0.14224, 0.9398, 0, 0, 0);
+        } else {
+            LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, -0.14224, 0.9398, 0, 0, 0);
         }
     }
 
     // Sets the pipeline based on what is put in shuffleboard
     private void setPipeline() {
-        if (getHasVision()) {
+        // Gets the current shuffleboard value for the Pipeline entry
+        pipelineNum = (int) LimelightHelpers.getLimelightNTDouble("limelight", "pipeline");
 
-            // Gets the current shuffleboard value for the Pipeline entry
-            pipelineNum = (int) LimelightHelpers.getLimelightNTDouble("limelight", "pipeline");
-
-            // Updates the Limelight pipeline accordingly if pipelineNum is different than
-            // the current
-            // pipeline
-            if (pipelineNum != getPipelineNum()) {
-                LimelightHelpers.setLimelightNTDouble("limelight", "pipeline", pipelineNum);
-            }
+        // Updates the Limelight pipeline accordingly if pipelineNum is different than
+        // the current
+        // pipeline
+        if (pipelineNum != getPipelineNum()) {
+            LimelightHelpers.setLimelightNTDouble("limelight", "pipeline", pipelineNum);
         }
+    }
+
+    @Override
+    public void periodic() {
+        updateShuffleboard();
+        setPipeline();
+
     }
 
 }
