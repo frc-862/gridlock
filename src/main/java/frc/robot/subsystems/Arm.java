@@ -152,8 +152,8 @@ public class Arm extends SubsystemBase {
 
         LightningShuffleboard.setDouble("Lift", "arm angle", getAngle().getDegrees());
 
-        // LightningShuffleboard.setBool("Lift", "Arm on target", onTarget());
-        // LightningShuffleboard.setDouble("Lift", "Arm target", targetAngle);
+        LightningShuffleboard.setBool("Lift", "Arm on target", onTarget());
+        LightningShuffleboard.setDouble("Lift", "Arm target", targetAngle);
 
 
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "arm setpoint", -90)));

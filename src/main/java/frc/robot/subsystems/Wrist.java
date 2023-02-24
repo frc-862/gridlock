@@ -118,8 +118,8 @@ public class Wrist extends SubsystemBase {
         LightningShuffleboard.setBool("Wrist", "rev Limit", getReverseLimitSwitch());
         LightningShuffleboard.setDouble("Lift", "Wrist Angle", getAngle().getDegrees());
 
-        // LightningShuffleboard.setBool("Lift", "Wrist on target", onTarget());
-        // LightningShuffleboard.setDouble("Lift", "Wrist target", targetAngle);
+        LightningShuffleboard.setBool("Lift", "Wrist on target", onTarget());
+        LightningShuffleboard.setDouble("Lift", "Wrist target", targetAngle);
 
 
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -20)));

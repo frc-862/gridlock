@@ -46,9 +46,9 @@ public class StateTable {
             public static StateTransition get(LiftState current, LiftState goal) {
                 //if we're stowed, always go to transition
                 if(current == LiftState.stowed) {
-                    return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-20), LiftPlan.elevatorPriority, LiftState.transition);
+                    return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-15), LiftPlan.elevatorPriority, LiftState.transition);
                 } else if (goal == LiftState.stowed) {
-                    return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-20), LiftPlan.elevatorLast, LiftState.stowed);
+                    return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-15), LiftPlan.elevatorLast, LiftState.stowed);
                 } else {
                     return stateTable.get(current).get(goal);
                 }

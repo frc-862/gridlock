@@ -83,7 +83,7 @@ public class Maps {
         return eventMap;
     }
 
-    public static HashMap<String, Command> getPath6ChargeMap(Drivetrain drivetrain,
+    public static HashMap<String, Command> getPath6ChargeMapLift(Drivetrain drivetrain,
             ServoTurn servoturn, Lift lift, Collector collector) {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("Score-Game-Piece-Servo",
@@ -100,6 +100,17 @@ public class Maps {
                 new Collect(collector, () -> .5d).until(() -> collector.isPieceCollected()));
         eventMap.put("Store-For-Moving-2",
                 new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
+        eventMap.put("Auto-balance", new AutoBalance(drivetrain));
+        return eventMap;
+    }
+
+    public static HashMap<String, Command> getPath6ChargeMap(Drivetrain drivetrain,
+            ServoTurn servoturn) {
+        HashMap<String, Command> eventMap = new HashMap<>();
+        eventMap.put("Score-Game-Piece-Servo",
+                new InstantCommand(() -> servoturn.turnServo(.25), servoturn));
+        eventMap.put("Collect-Game-Piece", new PrintCommand("Collect-Game-Piece"));
+        eventMap.put("Score-Game-Piece", new PrintCommand("Score-Game-Piece"));
         eventMap.put("Auto-balance", new AutoBalance(drivetrain));
         return eventMap;
     }

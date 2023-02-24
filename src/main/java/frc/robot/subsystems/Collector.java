@@ -33,9 +33,9 @@ public class Collector extends SubsystemBase {
         // rightMotor.getBusVoltage());
         // DataLogger.addDataElement("R Collector Motor Controller Output (Amps)", () ->
         // rightMotor.getOutputCurrent());
-        DataLogger.addDataElement("L Collector Motor Controller Input Voltage",
+        DataLogger.addDataElement("Collector Motor Controller Input Voltage",
                 () -> leftMotor.getBusVoltage());
-        DataLogger.addDataElement("L Collector Motor Controller Output (Amps)",
+        DataLogger.addDataElement("Collector Motor Controller Output (Amps)",
                 () -> leftMotor.getOutputCurrent());
 
     }
