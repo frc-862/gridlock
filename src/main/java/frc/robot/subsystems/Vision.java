@@ -74,31 +74,28 @@ public class Vision extends SubsystemBase {
     // Adds logging for vision so we can look at values when the robot is off and
     // check them
     public void initLogging() {
-        // DataLogger.addDataElement("Has vision", () -> hasVision);
-        if (getHasVision()) {
-            DataLogger.addDataElement("Vision bot pose TX", () -> getBotPose()[0]);
-            DataLogger.addDataElement("Vision bot pose TY", () -> getBotPose()[1]);
-            DataLogger.addDataElement("Vision bot pose RZ", () -> getBotPose()[5]);
+        DataLogger.addDataElement("Has Vision", () -> getHasVision() ? 1 : 0);
+        DataLogger.addDataElement("Vision bot pose TX", () -> getBotPose()[0]);
+        DataLogger.addDataElement("Vision bot pose TY", () -> getBotPose()[1]);
+        DataLogger.addDataElement("Vision bot pose RZ", () -> getBotPose()[5]);
 
-            DataLogger.addDataElement("Vision bot pose Blue TX", () -> getBotPoseBlue()[0]);
-            DataLogger.addDataElement("Vision bot pose Blue TY", () -> getBotPoseBlue()[1]);
-            DataLogger.addDataElement("Vision bot pose Blue RZ", () -> getBotPoseBlue()[5]);
+        DataLogger.addDataElement("Vision bot pose Blue TX", () -> getBotPoseBlue()[0]);
+        DataLogger.addDataElement("Vision bot pose Blue TY", () -> getBotPoseBlue()[1]);
+        DataLogger.addDataElement("Vision bot pose Blue RZ", () -> getBotPoseBlue()[5]);
 
-            DataLogger.addDataElement("Vision bot pose Red TX", () -> getBotPoseRed()[0]);
-            DataLogger.addDataElement("Vision bot pose Red TY", () -> getBotPoseRed()[1]);
-            DataLogger.addDataElement("Vision bot pose Red RZ", () -> getBotPoseRed()[5]);
+        DataLogger.addDataElement("Vision bot pose Red TX", () -> getBotPoseRed()[0]);
+        DataLogger.addDataElement("Vision bot pose Red TY", () -> getBotPoseRed()[1]);
+        DataLogger.addDataElement("Vision bot pose Red RZ", () -> getBotPoseRed()[5]);
 
-            DataLogger.addDataElement("Vision retro reflective TX", () -> getHorizontalOffset());
-            DataLogger.addDataElement("Vision retro reflective TY", () -> getVerticalOffset());
-            DataLogger.addDataElement("Vision retro reflective TA", () -> getTargetVertical());
+        DataLogger.addDataElement("Vision retro reflective TX", () -> getHorizontalOffset());
+        DataLogger.addDataElement("Vision retro reflective TY", () -> getVerticalOffset());
+        DataLogger.addDataElement("Vision retro reflective TA", () -> getTargetVertical());
 
-            DataLogger.addDataElement("Vision latency pipeline", () -> getLatencyPipline());
-            DataLogger.addDataElement("Vision latency capture", () -> getLatencyCapture());
-            DataLogger.addDataElement("Vision bot pose latency", () -> getLatencyBotPose());
-            DataLogger.addDataElement("Vision bot pose Blue latency",
-                    () -> getLatencyBotPoseBlue());
-            DataLogger.addDataElement("Vision bot pose Red latency", () -> getLatencyBotPoseRed());
-        }
+        DataLogger.addDataElement("Vision latency pipeline", () -> getLatencyPipline());
+        DataLogger.addDataElement("Vision latency capture", () -> getLatencyCapture());
+        DataLogger.addDataElement("Vision bot pose latency", () -> getLatencyBotPose());
+        DataLogger.addDataElement("Vision bot pose Blue latency", () -> getLatencyBotPoseBlue());
+        DataLogger.addDataElement("Vision bot pose Red latency", () -> getLatencyBotPoseRed());
     }
 
     // Returns the robot pose as a Pose2d from vision data

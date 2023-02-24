@@ -94,7 +94,7 @@ public class Drivetrain extends SubsystemBase {
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
-    private Vision vision = new Vision();
+    private Vision vision;
 
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
