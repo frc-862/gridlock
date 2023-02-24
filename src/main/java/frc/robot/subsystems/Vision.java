@@ -56,7 +56,7 @@ public class Vision extends SubsystemBase {
         // Sets the appropriate camera position
         setCameraPose();
 
-        getVision();
+        getHasVision();
 
         // Registers this as a proper Subsystem
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -75,7 +75,7 @@ public class Vision extends SubsystemBase {
     // check them
     public void initLogging() {
         // DataLogger.addDataElement("Has vision", () -> hasVision);
-        if (getVision()){
+        if (getHasVision()) {
             DataLogger.addDataElement("Vision bot pose TX", () -> getBotPose()[0]);
             DataLogger.addDataElement("Vision bot pose TY", () -> getBotPose()[1]);
             DataLogger.addDataElement("Vision bot pose RZ", () -> getBotPose()[5]);
@@ -92,22 +92,18 @@ public class Vision extends SubsystemBase {
             DataLogger.addDataElement("Vision retro reflective TY", () -> getVerticalOffset());
             DataLogger.addDataElement("Vision retro reflective TA", () -> getTargetVertical());
 
-            // DataLogger.addDataElement("Vision latency pipeline", () ->
-            // getLatencyPipline());
-            // DataLogger.addDataElement("Vision latency capture", () ->
-            // getLatencyCapture());
-            // DataLogger.addDataElement("Vision bot pose latency", () ->
-            // getLatencyBotPose());
-            // DataLogger.addDataElement("Vision bot pose Blue latency", () ->
-            // getLatencyBotPoseBlue());
-            // DataLogger.addDataElement("Vision bot pose Red latency", () ->
-            // getLatencyBotPoseRed());
+            DataLogger.addDataElement("Vision latency pipeline", () -> getLatencyPipline());
+            DataLogger.addDataElement("Vision latency capture", () -> getLatencyCapture());
+            DataLogger.addDataElement("Vision bot pose latency", () -> getLatencyBotPose());
+            DataLogger.addDataElement("Vision bot pose Blue latency",
+                    () -> getLatencyBotPoseBlue());
+            DataLogger.addDataElement("Vision bot pose Red latency", () -> getLatencyBotPoseRed());
         }
     }
 
     // Returns the robot pose as a Pose2d from vision data
     public Pose2d getRobotPose() {
-        if (getVision()) {
+        if (getHasVision()) {
             return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]),
                     Rotation2d.fromDegrees(getBotPoseBlue()[5]));
         } else {
@@ -116,7 +112,7 @@ public class Vision extends SubsystemBase {
     }
 
     public double getHorizontalOffset() {
-        if (getVision()){
+        if (getHasVision()) {
             horizontalOffset = LimelightHelpers.getTX(limelightName);
             return horizontalOffset;
         } else {
@@ -125,7 +121,7 @@ public class Vision extends SubsystemBase {
     }
 
     public double getVerticalOffset() {
-        if (getVision()){
+        if (getHasVision()) {
             verticalOffset = LimelightHelpers.getTX(limelightName);
             return verticalOffset;
         } else {
@@ -134,7 +130,7 @@ public class Vision extends SubsystemBase {
     }
 
     public double getTargetVertical() {
-        if (getVision()){
+        if (getHasVision()) {
             targetVertical = LimelightHelpers.getTX(limelightName);
             return targetVertical;
         } else {
@@ -148,77 +144,63 @@ public class Vision extends SubsystemBase {
      * @return 3d bot pose
      */
     public double[] getBotPose() {
-        if (getVision()){
+        if (getHasVision()) {
             botPose = LimelightHelpers.getBotPose(limelightName);
-            if (botPose != null && botPose.length != 0) {
-                return botPose;
-            } else {
-                return new double[] { 0, 0, 0, 0, 0, 0, 0 };
-            }
+            return botPose;
         } else {
-            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
+            return new double[] {0, 0, 0, 0, 0, 0, 0};
         }
     }
 
     public double[] getBotPoseRed() {
-        if (getVision()){
+        if (getHasVision()) {
             botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
-            if (botPoseRed != null && botPoseRed.length != 0) {
-                return botPoseRed;
-            } else {
-                return new double[] { 0, 0, 0, 0, 0, 0, 0 };
-            }
+            return botPoseRed;
         } else {
-            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
+            return new double[] {0, 0, 0, 0, 0, 0, 0};
         }
     }
 
     public double[] getBotPoseBlue() {
-        if (getVision()){
+        if (getHasVision()) {
             botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-            if (botPoseBlue != null && botPoseBlue.length != 0) {
-                return botPoseBlue;
-            } else {
-                return new double[] { 0, 0, 0, 0, 0, 0, 0 };
-            }
+            return botPoseBlue;
         } else {
-            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
+            return new double[] {0, 0, 0, 0, 0, 0, 0};
         }
     }
 
-    public boolean getVision() {
+    public boolean getHasVision() {
         hasVision = LimelightHelpers.getTV(limelightName);
-        if (hasVision == true){
+        if (hasVision == true) {
             return hasVision;
         } else {
             hasVision = false;
             return hasVision;
         }
-        
+
     }
 
     public double getLatencyPipline() {
-        if (getVision()){
+        if (getHasVision()) {
             latencyPipline = LimelightHelpers.getLatency_Pipeline(limelightName);
             return latencyPipline;
-        }
-        else{
+        } else {
             return 0;
         }
     }
 
     public double getLatencyCapture() {
-        if (getVision()){
+        if (getHasVision()) {
             latencyCapture = LimelightHelpers.getLatency_Capture(limelightName);
             return latencyCapture;
-        }
-        else {
+        } else {
             return 0;
         }
     }
 
     public double getLatencyBotPose() {
-        if (getVision()){
+        if (getHasVision()) {
             var pose = LimelightHelpers.getBotPose(limelightName);
             if (pose.length != 0) {
                 botPoseTotalLatency = LimelightHelpers.getBotPose(limelightName)[6];
@@ -226,13 +208,13 @@ public class Vision extends SubsystemBase {
             }
             return 0;
 
-        }else {
+        } else {
             return 0;
         }
     }
 
     public double getLatencyBotPoseBlue() {
-        if (getVision()){
+        if (getHasVision()) {
             var pose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
             if (pose.length != 0) {
                 botPoseBlueTotalLatency = LimelightHelpers.getBotPose_wpiBlue(limelightName)[6];
@@ -245,7 +227,7 @@ public class Vision extends SubsystemBase {
     }
 
     public double getLatencyBotPoseRed() {
-        if (getVision()){
+        if (getHasVision()) {
             var pose = LimelightHelpers.getBotPose_wpiRed(limelightName);
             if (pose.length != 0) {
                 botPoseRedTotalLatency = LimelightHelpers.getBotPose_wpiRed(limelightName)[6];
@@ -258,11 +240,14 @@ public class Vision extends SubsystemBase {
     }
 
     private void updateShuffleboard() {
-        if (getVision()){
+        if (getHasVision()) {
             if (pipelineNum == 0 || pipelineNum == 1) {
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TX", getBotPose()[0]);
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TY", getBotPose()[1]);
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose RZ", getBotPose()[5]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TX",
+                        getBotPose()[0]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TY",
+                        getBotPose()[1]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose RZ",
+                        getBotPose()[5]);
 
                 LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TX",
                         getBotPoseBlue()[0]);
@@ -289,8 +274,7 @@ public class Vision extends SubsystemBase {
     }
 
     /**
-     * Sets the pipeline we're using on the limelight. The first is for april tag
-     * targetting The
+     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The
      * second is for retroreflective tape.
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
@@ -300,7 +284,7 @@ public class Vision extends SubsystemBase {
     }
 
     public double getPipelineNum() {
-        if (getVision()){
+        if (getHasVision()) {
             curPipeline = LimelightHelpers.getCurrentPipelineIndex(limelightName);
             return this.curPipeline;
         } else {
@@ -309,8 +293,7 @@ public class Vision extends SubsystemBase {
     }
 
     /**
-     * Ensures that what we're receiving is actually a valid target (if it's outside
-     * of FOV, it
+     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it
      * can't be)
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
@@ -326,7 +309,7 @@ public class Vision extends SubsystemBase {
      * @return degree offset from target.
      */
     public double autoAlign() {
-        if (getVision()){
+        if (getHasVision()) {
             // Set pipeline num to 2, should be retroreflective tape pipeline.
             setPipelineNum(2);
 
@@ -351,9 +334,8 @@ public class Vision extends SubsystemBase {
     /**
      * Function to tell us whether or not we're on target (centered on vision tape)
      * 
-     * @param expectedAngle Angle we're supposed to be at according to offset of
-     *                      target supplied by
-     *                      Limelight
+     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
+     *        Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle) {
@@ -361,19 +343,21 @@ public class Vision extends SubsystemBase {
         return expectedAngle < Constants.VisionConstants.HORIZ_DEGREE_TOLERANCE;
     }
 
-    private void setCameraPose(){
-        if (getVision()){
-            if (limelightName == "limelight-front"){
-                LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, 0.14224, 0.9398, 0, 0, 0);
+    private void setCameraPose() {
+        if (getHasVision()) {
+            if (limelightName == "limelight-front") {
+                LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, 0.14224, 0.9398, 0,
+                        0, 0);
             } else {
-                LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, -0.14224, 0.9398, 0, 0, 0);
+                LimelightHelpers.setCameraPose_RobotSpace(limelightName, 0.1524, -0.14224, 0.9398,
+                        0, 0, 0);
             }
         }
     }
 
     // Sets the pipeline based on what is put in shuffleboard
     private void setPipeline() {
-        if (getVision()){
+        if (getHasVision()) {
 
             // Gets the current shuffleboard value for the Pipeline entry
             pipelineNum = (int) LimelightHelpers.getLimelightNTDouble("limelight", "pipeline");
