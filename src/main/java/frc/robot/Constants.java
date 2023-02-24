@@ -420,5 +420,6 @@ public final class Constants {
 
         public static final double MAX_VELOCITY = 3;
         public static final double MAX_ACCELERATION = 3;
+
     }
 }

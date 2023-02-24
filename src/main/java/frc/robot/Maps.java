@@ -17,7 +17,7 @@ import frc.robot.subsystems.ServoTurn;
  * Class for creating all auton HasMaps
  */
 public class Maps {
-
+    //Use for all paths 
     public static HashMap<String, Command> getPathMapLift(Drivetrain drivetrain,
             ServoTurn servoturn, Lift lift, Collector collector) {
         HashMap<String, Command> eventMap = new HashMap<>();
@@ -38,7 +38,8 @@ public class Maps {
         eventMap.put("Auto-balance", new AutoBalance(drivetrain));
         return eventMap;
     }
-
+    
+    //use when lift isn't supposed to move
     public static HashMap<String, Command> getPathMap(Drivetrain drivetrain,
             ServoTurn servoturn) {
         HashMap<String, Command> eventMap = new HashMap<>();
