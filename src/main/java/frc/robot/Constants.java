@@ -10,6 +10,7 @@ import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Num;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -169,6 +170,14 @@ public final class Constants {
         public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
         // X = distance from arm pivot point to front of bot at bottom limit (negative)
         // Y = height of arm pivot point from ground at bottom limit
+    }
+
+    public static final class LimelightConstants {
+        public static final String FRONT_NAME = "limelight-front";
+        public static final String BACK_NAME = "limelight-back";
+        public static final Pose3d FRONT_POSE = new Pose3d();
+        public static final Pose3d BACK_POSE = new Pose3d();
+
     }
 
     public static final class ArmConstants {

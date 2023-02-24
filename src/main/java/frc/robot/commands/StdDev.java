@@ -8,18 +8,18 @@ import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Limelight;
 
 public class StdDev extends CommandBase {
 
-    private Vision vision;
+    private Limelight vision;
 
 
     private ArrayList<Double> x;
     private ArrayList<Double> y;
     private ArrayList<Double> z;
 
-    public StdDev(Vision vision) {
+    public StdDev(Limelight vision) {
         this.vision = vision;
 
         addRequirements(vision);

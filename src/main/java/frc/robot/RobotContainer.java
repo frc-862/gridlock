@@ -2,7 +2,7 @@ package frc.robot;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Limelight;
 import java.util.HashMap;
 import javax.security.auth.AuthPermission;
 
@@ -39,6 +39,7 @@ import frc.robot.subsystems.Elevator;
 import frc.thunder.LightningContainer;
 import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
@@ -47,10 +48,12 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final Vision vision = new Vision();
+    private static final Limelight frontLimelight = new Limelight(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
+    private static final Limelight backLimelight = new Limelight(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
+
 
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain(vision);
+    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
@@ -91,7 +94,7 @@ public class RobotContainer extends LightningContainer {
                 .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
                         drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
-        new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
 
         // copilot controls 
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift));

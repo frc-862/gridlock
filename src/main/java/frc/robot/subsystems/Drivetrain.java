@@ -94,7 +94,7 @@ public class Drivetrain extends SubsystemBase {
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
-    private Vision vision;
+    private Limelight vision;
 
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
@@ -105,7 +105,7 @@ public class Drivetrain extends SubsystemBase {
     private double lastGoodheading = 0d;
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
-    public Drivetrain(Vision vision) {
+    public Drivetrain(Limelight vision) {
         this.vision = vision;
 
         if (Files.exists(blackoutFile)) {
