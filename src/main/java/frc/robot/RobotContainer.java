@@ -123,7 +123,7 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("Path4StartACharge", Maps.getPath4StartAChargeMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("Path5StartC", Maps.getPath5StartCMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("Path6StartC", Maps.getPath6StartCMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path6StartCCharge", Maps.getPath6ChargeMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path6StartCCharge", Maps.getPath6ChargeMap(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("Path7StartA", Maps.getPath7StartAMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("Path8StartC", Maps.getPath8StartCMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("Path9StartB", Maps.getPath9StartBMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));

@@ -5,8 +5,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.AutoBalance;
+import frc.robot.commands.Collect;
+import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
 
 /**
@@ -65,11 +69,15 @@ public class Maps {
         return eventMap;
     }
 
-    public static HashMap<String, Command> getPath6ChargeMap(Drivetrain drivetrain, ServoTurn servoturn) {
+    public static HashMap<String, Command> getPath6ChargeMap(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector) {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(.25), servoturn));
-        eventMap.put("Collect-Game-Piece", new PrintCommand("Collect-Game-Piece"));
-        eventMap.put("Score-Game-Piece", new PrintCommand("Score-Game-Piece"));
+        eventMap.put("Set-Groud-Collect", new InstantCommand(() -> lift.setGoalState(LiftState.ground), lift));
+        eventMap.put("Collect-Game-Piece", new RunCommand(() -> collector.runCollector(-1d), collector).until(() -> collector.isBallCollected()));
+        eventMap.put("Store-For-Moving", new InstantCommand(() -> lift.setGoalState(LiftState.stowed), lift));
+        eventMap.put("Set-Ground-Score", new InstantCommand(() -> lift.setGoalState(LiftState.ground), lift));
+        eventMap.put("Score-Game-Piece", new RunCommand(() -> collector.runCollector(1d), collector).until(() -> collector.isBallCollected()));
+        eventMap.put("Store-For-Moving-2", new InstantCommand(() -> lift.setGoalState(LiftState.stowed), lift));
         eventMap.put("Auto-balance", new AutoBalance(drivetrain));
         return eventMap;
     }
