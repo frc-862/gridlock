@@ -31,7 +31,6 @@ import frc.robot.commands.Lift.HighScore;
 import frc.robot.commands.Lift.MidScore;
 import frc.robot.commands.Lift.ReverseDoubleSubstationCollect;
 import frc.robot.commands.Lift.Stow;
-import frc.robot.commands.ManualLift;
 import frc.robot.commands.StdDev;
 import frc.robot.commands.StdDevOdo;
 import frc.robot.commands.tests.DriveTrainSystemTest;
