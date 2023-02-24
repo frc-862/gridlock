@@ -83,15 +83,27 @@ public class Collector extends SubsystemBase {
         return match.confidence;
     }
 
+    /**
+     * hasPiece
+     * @return true if the color sensor detects a game piece
+     */
     public boolean hasPiece() {
         return getGamePiece() != GamePiece.NONE;
     }
 
+    /**
+     * setPower
+     * @param power the percent speed to set the elevator motor to
+     */
     public void setPower(double power) {
         motor.set(power);
     }
 
+    /**
+     * stop
+     * Sets the power of the collector motor to 0
+     */
     public void stop() {
-        setPower(0);
+        setPower(0d);
     }
 }
