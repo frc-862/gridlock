@@ -54,6 +54,10 @@ public class Collector extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
+    public void runCollector(double power) {
+        motor.set(power);
+    }
+
     // Method to start logging
     private void initLogging() {
         LightningShuffleboard.setDouble("Collector", "Collector motor temperature", motor.getMotorTemperature());
