@@ -19,7 +19,7 @@ public class Collect extends CommandBase {
 
     @Override
     public void execute() {
-        collector.runCollector(rightTrigger.getAsDouble() - leftTrigger.getAsDouble());
+        collector.setPower(rightTrigger.getAsDouble() - leftTrigger.getAsDouble());
     }
 
     @Override

@@ -15,6 +15,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.thunder.math.InterpolationMap;
 import frc.thunder.pathplanner.com.pathplanner.lib.auto.PIDConstants;
 import frc.thunder.swervelib.SdsModuleConfigurations;
@@ -244,6 +246,18 @@ public final class Constants {
         };
     }
 
+    public static final class CollectorConstants {
+        public static final boolean MOTOR_INVERT = false;
+        public static final int CURRENT_LIMIT = 30;
+
+
+        //TODO: tune these
+        //Cube Theoretical: #3a01b2 (58, 1, 178)
+        public static final Color CUBE_OPTIMAL = new Color(58, 1, 178);
+        //Cone Theretical: #cb6200 (203,98,0)
+        public static final Color CONE_OPTIMAL = new Color(203, 98, 0);
+    }
+
     public static final class WristConstants {
         public static final boolean MOTOR_INVERT = true;
 
@@ -337,6 +351,10 @@ public final class Constants {
 
         public static final class PWM {
             public static final int SERVO = 3;
+        }
+
+        public static final class i2c { //Lowercase to avoid conflict with wpilib's I2C class
+            public static final I2C.Port COLOR_SENSOR = I2C.Port.kOnboard;
         }
     }
 
