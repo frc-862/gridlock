@@ -6,6 +6,7 @@ import frc.robot.Constants;
 import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -96,7 +97,8 @@ public class Vision extends SubsystemBase {
      */
     public Pose2d getRobotPose() {
         if (getHasVision()) {
-            return new Pose2d(new Translation2d(getBotPose()[0], getBotPose()[1]), Rotation2d.fromDegrees(getBotPose()[5]));
+            return new Pose2d(new Translation2d(getBotPose()[0], getBotPose()[1]),
+                    Rotation2d.fromDegrees(getBotPose()[5]));
         } else {
             return null;
         }
@@ -109,7 +111,8 @@ public class Vision extends SubsystemBase {
      */
     public Pose2d getRobotPoseBlue() {
         if (getHasVision()) {
-            return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]), Rotation2d.fromDegrees(getBotPoseBlue()[5]));
+            return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]),
+                    Rotation2d.fromDegrees(getBotPoseBlue()[5]));
         } else {
             return null;
         }
@@ -122,7 +125,8 @@ public class Vision extends SubsystemBase {
      */
     public Pose2d getRobotPoseRed() {
         if (getHasVision()) {
-            return new Pose2d(new Translation2d(getBotPoseRed()[0], getBotPoseRed()[1]), Rotation2d.fromDegrees(getBotPoseRed()[5]));
+            return new Pose2d(new Translation2d(getBotPoseRed()[0], getBotPoseRed()[1]),
+                    Rotation2d.fromDegrees(getBotPoseRed()[5]));
         } else {
             return null;
         }
@@ -180,7 +184,7 @@ public class Vision extends SubsystemBase {
             botPose = LimelightHelpers.getBotPose(limelightName);
             return botPose;
         } else {
-            return new double[] {0, 0, 0, 0, 0, 0, 0};
+            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
         }
     }
 
@@ -194,7 +198,7 @@ public class Vision extends SubsystemBase {
             botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
             return botPoseRed;
         } else {
-            return new double[] {0, 0, 0, 0, 0, 0, 0};
+            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
         }
     }
 
@@ -208,7 +212,7 @@ public class Vision extends SubsystemBase {
             botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
             return botPoseBlue;
         } else {
-            return new double[] {0, 0, 0, 0, 0, 0, 0};
+            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
         }
     }
 
@@ -219,13 +223,7 @@ public class Vision extends SubsystemBase {
      */
     public boolean getHasVision() {
         hasVision = LimelightHelpers.getTV(limelightName);
-        if (hasVision == true) {
-            return hasVision;
-        } else {
-            hasVision = false;
-            return hasVision;
-        }
-
+        return hasVision;
     }
 
     /**
@@ -335,7 +333,8 @@ public class Vision extends SubsystemBase {
     }
 
     /**
-     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The second
+     * Sets the pipeline we're using on the limelight. The first is for april tag
+     * targetting The second
      * is for retroreflective tape.
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
@@ -354,7 +353,8 @@ public class Vision extends SubsystemBase {
     }
 
     /**
-     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it can't
+     * Ensures that what we're receiving is actually a valid target (if it's outside
+     * of FOV, it can't
      * be)
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
@@ -384,8 +384,9 @@ public class Vision extends SubsystemBase {
     /**
      * Function to tell us whether or not we're on target (centered on vision tape)
      * 
-     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
-     *        Limelight
+     * @param expectedAngle Angle we're supposed to be at according to offset of
+     *                      target supplied by
+     *                      Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle) {
