@@ -12,7 +12,6 @@ import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class Wrist extends SubsystemBase {
@@ -51,20 +50,19 @@ public class Wrist extends SubsystemBase {
                 new SparkMaxPIDGains(WristConstants.UP_kP, WristConstants.UP_kI, WristConstants.UP_kD, WristConstants.UP_kF), encoder);
         controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
 
-        // Starts logging
-        initLogging();
-
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    // Method to start logging
-    private void initLogging() {
-        DataLogger.addDataElement("Target angle", () -> targetAngle);
-        DataLogger.addDataElement("Wrist angle", () -> getAngle().getDegrees());
-        DataLogger.addDataElement("on target", () -> onTarget() ? 1 : 0);
-        DataLogger.addDataElement("Wrist motor temperature", () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Wrist Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Wrist Motor Controller Input Voltage", () -> motor.getBusVoltage());
+    // Method to update the shuffleboard
+    private void updateShuffleboard() {
+        LightningShuffleboard.setDouble("Wrist", "Wrist Target angle", targetAngle);
+        LightningShuffleboard.setDouble("Wrist", "Wrist angle", getAngle().getDegrees());
+        LightningShuffleboard.setBool("Wrist", "Wrist on target", onTarget());
+        LightningShuffleboard.setDouble("Wrist", "Wrist motor temperature", motor.getMotorTemperature());
+        LightningShuffleboard.setDouble("Wrist", "Wrist Motor Controller Output (Amps)", motor.getOutputCurrent());
+        LightningShuffleboard.setDouble("Wrist", "Wrist Motor Controller Input Voltage", motor.getBusVoltage());
+        LightningShuffleboard.setBool("Wrist", "Wrist fwd Limit", getTopLimitSwitch());
+        LightningShuffleboard.setBool("Wrist", "Wrist rev Limit", getBottomLimitSwitch());
     }
 
     /**
@@ -139,9 +137,6 @@ public class Wrist extends SubsystemBase {
 
     @Override
     public void periodic() {
-        LightningShuffleboard.setBool("Wrist", "fwd Limit", getTopLimitSwitch());
-        LightningShuffleboard.setBool("Wrist", "rev Limit", getBottomLimitSwitch());
-        LightningShuffleboard.setDouble("Lift", "Wrist Angle", getAngle().getDegrees());
 
         // If were not on target
         if (!onTarget()) {
@@ -155,7 +150,8 @@ public class Wrist extends SubsystemBase {
             }
         }
 
-        LightningShuffleboard.setDouble("Wrist", "curr speed", motor.get());
+        // Starts logging and updates the shuffleboard
+        updateShuffleboard();
 
     }
 }

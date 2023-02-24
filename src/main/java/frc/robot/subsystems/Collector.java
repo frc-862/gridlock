@@ -13,7 +13,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.RobotMap.*;
 import frc.thunder.config.NeoConfig;
-import frc.thunder.logging.DataLogger;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
  * The collector subsystem
@@ -56,13 +56,13 @@ public class Collector extends SubsystemBase {
 
     // Method to start logging
     private void initLogging() {
-        DataLogger.addDataElement("Collector Motor Temperature", () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Collector Motor Controller Input Voltage", () -> motor.getBusVoltage());
-        DataLogger.addDataElement("Collector Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Collector Motor Controller Output (Volts)", () -> motor.getAppliedOutput());
-        DataLogger.addDataElement("Color Sensor Raw Color", () -> colorSensor.getColor().toString());
-        DataLogger.addDataElement("Color Sensor Detected Game Piece", () -> getGamePiece().toString());
-        DataLogger.addDataElement("Color Sensor Confidence", () -> getConfidence());
+        LightningShuffleboard.setDouble("Collector", "Collector motor temperature", motor.getMotorTemperature());
+        LightningShuffleboard.setDouble("Collector", "Collector motor controller input voltage", motor.getBusVoltage());
+        LightningShuffleboard.setDouble("Collector", "Collector motor controller output (amps)", motor.getOutputCurrent());
+        LightningShuffleboard.setDouble("Collector", "Collector motor controller output (volts)", motor.getAppliedOutput());
+        LightningShuffleboard.setString("Collector", "Color sensor raw color", colorSensor.getColor().toString());
+        LightningShuffleboard.setString("Collector", "Color sensor detected game piece", getGamePiece().toString());
+        LightningShuffleboard.setDouble("Collector", "Color sensor confidence", getConfidence());
 
     }
 

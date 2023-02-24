@@ -41,13 +41,19 @@ public class Lift extends SubsystemBase {
         arm.setAngle(arm.getAngle());
         wrist.setAngle(wrist.getAngle());
 
-        // Starts logging
-        initLogging();
-
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    private void initLogging() {}
+    private void updateShuffleboard() {
+        LightningShuffleboard.setString("Lift", "Lift current state", currentState.toString());
+        LightningShuffleboard.setString("Lift", "Lift goal state", goalState.toString());
+        LightningShuffleboard.setBool("Lift", "Lift on target", onTarget());
+        LightningShuffleboard.setDouble("Lift", "Lift next state elevator extension", nextState.getElevatorExtension());
+        LightningShuffleboard.setDouble("Lift", "Lift next state arm angle", nextState.getArmAngle().getDegrees());
+        LightningShuffleboard.setDouble("Lift", "Lift next state wrist angle", nextState.getWristAngle().getDegrees());
+        LightningShuffleboard.setString("Lift", "Lift next state plan", nextState.getPlan().toString());
+        LightningShuffleboard.set("Lift", "Lift next state", nextState);
+    }
 
     /**
      * Sets the goal state of the lift
@@ -128,8 +134,7 @@ public class Lift extends SubsystemBase {
             }
         }
 
-        LightningShuffleboard.setString("Lift", "current state", currentState.toString());
-        LightningShuffleboard.setString("Lift", "goal state", goalState.toString());
-        LightningShuffleboard.setBool("Lift", "on target", onTarget());
+        // Starts logging and updates the shuffleboard
+        updateShuffleboard();
     }
 }
