@@ -26,13 +26,13 @@ public class Maps {
         eventMap.put("Set-Groud-Collect",
                 new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
         eventMap.put("Collect-Game-Piece",
-                new Collect(collector, () -> -.5d).until(() -> collector.isPieceCollected()));
+                new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
         eventMap.put("Store-For-Moving",
                 new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
         eventMap.put("Set-Ground-Score",
                 new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
         eventMap.put("Score-Game-Piece",
-                new Collect(collector, () -> .5d).until(() -> collector.isPieceCollected()));
+                new Collect(collector, () -> .5d).until(() -> collector.hasPiece()));
         eventMap.put("Store-For-Moving-2",
                 new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
         eventMap.put("Auto-balance", new AutoBalance(drivetrain));

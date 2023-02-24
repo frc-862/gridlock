@@ -260,10 +260,9 @@ public final class Constants {
         // Tolernace for our wrist
         public static final double TOLERANCE = 10d; // TODO: set a better tolerance
 
-        // min/max angles in degrees
-        public static final double MAX_ANGLE = -5d;
+        
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = -20d;
+        public static final double MAX_ANGLE = -5d;
         public static final double MIN_ANGLE = -146d;
 
         // Min and Max power

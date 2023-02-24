@@ -42,30 +42,6 @@ public class StateTable {
         } else if (goal == LiftState.stowed) {
             return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-20), LiftPlan.elevatorLast, LiftState.stowed);
 
-    // index is current state, goal state; outputs a StateTransition
-    private static Map<LiftState, Map<LiftState, StateTransition>> stateTable = Map.of(
-            LiftState.transition, nextStateTable,
-            LiftState.ground, nextStateTable,
-            LiftState.midCubeScore, nextStateTable,
-            LiftState.midConeScore, nextStateTable,
-            LiftState.highCubeScore, nextStateTable,
-            LiftState.highConeScore, nextStateTable,
-            LiftState.doubleSubstationCollect, nextStateTable,
-            LiftState.reverseSubstationCollect, nextStateTable
-            );
-
-            
-
-            public static StateTransition get(LiftState current, LiftState goal) {
-                //if we're stowed, always go to transition
-                if(current == LiftState.stowed) {
-                    return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-15), LiftPlan.elevatorPriority, LiftState.transition);
-                } else if (goal == LiftState.stowed) {
-                    return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-15), LiftPlan.elevatorLast, LiftState.stowed);
-                } else {
-                    return stateTable.get(current).get(goal);
-                }
-            }
             // If no special case return state from the map
         } else {
             return stateTable.get(current).get(goal);

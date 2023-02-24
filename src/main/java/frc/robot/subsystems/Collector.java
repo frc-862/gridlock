@@ -54,30 +54,10 @@ public class Collector extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void initLogging() {
-        DataLogger.addDataElement("Collector Left Motor Temperature",
-                () -> leftMotor.getMotorTemperature());
-        // DataLogger.addDataElement("Collector Right Motor Temperature", () ->
-        // rightMotor.getMotorTemperature());
-        // DataLogger.addDataElement("R Collector Motor Controller Input Voltage", () ->
-        // rightMotor.getBusVoltage());
-        // DataLogger.addDataElement("R Collector Motor Controller Output (Amps)", () ->
-        // rightMotor.getOutputCurrent());
-        DataLogger.addDataElement("Collector Motor Controller Input Voltage",
-                () -> leftMotor.getBusVoltage());
-        DataLogger.addDataElement("Collector Motor Controller Output (Amps)",
-                () -> leftMotor.getOutputCurrent());
-
-    }
-
-    // TODO add ball sensor and actual logic
-    public boolean isPieceCollected() {
-        return true;
-    }
-
     public void runCollector(double power) {
-        leftMotor.set(power);
-        // rightMotor.set(power);
+        motor.set(power);
+    }
+
     // Method to start logging
     private void initLogging() {
         DataLogger.addDataElement("Collector Motor Temperature", () -> motor.getMotorTemperature());
