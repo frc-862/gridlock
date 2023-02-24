@@ -6,6 +6,7 @@ import frc.robot.Constants;
 import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,7 +50,7 @@ public class Limelight extends SubsystemBase {
 
         DataLogger.addDataElement("Vision retro reflective TX", () -> getHorizontalOffset());
         DataLogger.addDataElement("Vision retro reflective TY", () -> getVerticalOffset());
-        DataLogger.addDataElement("Vision retro reflective TA", () -> getTargetVertical());
+        DataLogger.addDataElement("Vision retro reflective TA", () -> getTargetArea());
 
         DataLogger.addDataElement("Vision latency pipeline", () -> getLatencyPipline());
         DataLogger.addDataElement("Vision latency capture", () -> getLatencyCapture());
@@ -58,7 +59,11 @@ public class Limelight extends SubsystemBase {
         DataLogger.addDataElement("Vision bot pose Red latency", () -> getLatencyBotPoseRed());
     }
 
-    // Returns the robot pose as a Pose2d from vision data
+    /**
+     * Gets the robot pose relative to the april tag
+     * 
+     * @return Pose2d of the robot
+     */
     public Pose2d getRobotPose() {
         if (hasVision()) {
             return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]),
@@ -68,6 +73,25 @@ public class Limelight extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the robot pose relative to the red side of the field
+     * 
+     * @return Pose2d of the robot
+     */
+    public Pose2d getRobotPoseRed() {
+        if (hasVision()) {
+            return new Pose2d(new Translation2d(getBotPoseRed()[0], getBotPoseRed()[1]),
+                    Rotation2d.fromDegrees(getBotPoseRed()[5]));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the horizontal offset of the target from the center of the screen
+     * 
+     * @return double base on the horizontal FOV of the limelight
+     */
     public double getHorizontalOffset() {
         if (hasVision()) {
             return LimelightHelpers.getTX(limelightName);
@@ -76,7 +100,25 @@ public class Limelight extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the vertical offset of the target from the center of the screen
+     * 
+     * @return double base on the vertical FOV of the limelight
+     */
     public double getVerticalOffset() {
+        if (hasVision()) {
+            return LimelightHelpers.getTX(limelightName);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Gets the area of the target
+     * 
+     * @return double base on the area of the target
+     */
+    public double getTargetArea() {
         if (hasVision()) {
             return LimelightHelpers.getTX(limelightName);
         } else {
@@ -93,15 +135,15 @@ public class Limelight extends SubsystemBase {
     }
 
     /**
-     * Gets botpose on field (x,y,z,rx,ry,rz)
+     * Gets botpose on field (x,y,z,rx,ry,rz) relative to the limelight
      * 
-     * @return 3d bot pose
+     * @return 7 element array of doubles
      */
     public double[] getBotPose() {
         if (hasVision()) {
             return LimelightHelpers.getBotPose(limelightName);
         } else {
-            return new double[] {0, 0, 0, 0, 0, 0, 0};
+            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
         }
     }
 
@@ -109,7 +151,7 @@ public class Limelight extends SubsystemBase {
         if (hasVision()) {
             return LimelightHelpers.getBotPose_wpiRed(limelightName);
         } else {
-            return new double[] {0, 0, 0, 0, 0, 0, 0};
+            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
         }
     }
 
@@ -117,7 +159,7 @@ public class Limelight extends SubsystemBase {
         if (hasVision()) {
             return LimelightHelpers.getBotPose_wpiBlue(limelightName);
         } else {
-            return new double[] {0, 0, 0, 0, 0, 0, 0};
+            return new double[] { 0, 0, 0, 0, 0, 0, 0 };
         }
     }
 
@@ -125,6 +167,11 @@ public class Limelight extends SubsystemBase {
         return LimelightHelpers.getTV(limelightName);
     }
 
+    /**
+     * Gets the latency of the pipeline
+     * 
+     * @return latency of pipeline
+     */
     public double getLatencyPipline() {
         if (hasVision()) {
             return LimelightHelpers.getLatency_Pipeline(limelightName);
@@ -133,6 +180,11 @@ public class Limelight extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the latency of the capture
+     * 
+     * @return latency of capture
+     */
     public double getLatencyCapture() {
         if (hasVision()) {
             return LimelightHelpers.getLatency_Capture(limelightName);
@@ -141,6 +193,11 @@ public class Limelight extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the latency of the bot pose
+     * 
+     * @return latency of bot pose
+     */
     public double getLatencyBotPose() {
         double[] pose = LimelightHelpers.getBotPose(limelightName);
         if (hasVision() && pose.length != 0) {
@@ -150,6 +207,11 @@ public class Limelight extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the latency of the blue bot pose
+     * 
+     * @return latency of blue bot pose
+     */
     public double getLatencyBotPoseBlue() {
         double[] pose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
         if (hasVision() && pose.length != 0) {
@@ -159,6 +221,11 @@ public class Limelight extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the latency of the red bot pose
+     * 
+     * @return latency of red bot pose
+     */
     public double getLatencyBotPoseRed() {
         double[] pose = LimelightHelpers.getBotPose_wpiRed(limelightName);
         if (hasVision() && pose.length != 0) {
@@ -172,40 +239,29 @@ public class Limelight extends SubsystemBase {
         double pipelineNum = getPipelineNum();
         if (hasVision()) {
             if (pipelineNum == 0 || pipelineNum == 1) {
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TX",
-                        getBotPose()[0]);
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TY",
-                        getBotPose()[1]);
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose RZ",
-                        getBotPose()[5]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TX", getBotPose()[0]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose TY", getBotPose()[1]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose RZ", getBotPose()[5]);
 
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TX",
-                        getBotPoseBlue()[0]);
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TY",
-                        getBotPoseBlue()[1]);
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue RZ",
-                        getBotPoseBlue()[5]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TX", getBotPoseBlue()[0]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue TY", getBotPoseBlue()[1]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Blue RZ", getBotPoseBlue()[5]);
 
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TX",
-                        getBotPoseRed()[0]);
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TY",
-                        getBotPoseRed()[1]);
-                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red RZ",
-                        getBotPoseRed()[5]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TX", getBotPoseRed()[0]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red TY", getBotPoseRed()[1]);
+                LightningShuffleboard.setDouble("Autonomous", "Vision bot pose Red RZ", getBotPoseRed()[5]);
             } else if (pipelineNum == 2 || pipelineNum == 3) {
-                LightningShuffleboard.setDouble("Autonomous", "RR Tape Horizontal Offset",
-                        getHorizontalOffset());
-                LightningShuffleboard.setDouble("Autonomous", "RR Tape Vertical Offset",
-                        getVerticalOffset());
-                LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area",
-                        getTargetVertical());
+                LightningShuffleboard.setDouble("Autonomous", "RR Tape Horizontal Offset", getHorizontalOffset());
+                LightningShuffleboard.setDouble("Autonomous", "RR Tape Vertical Offset", getVerticalOffset());
+                LightningShuffleboard.setDouble("Autonomous", "RR Tape Target Area", getTargetArea());
             }
         }
     }
 
     /**
-     * Sets the pipeline we're using on the limelight. The first is for april tag targetting The
-     * second is for retroreflective tape.
+     * Sets the pipeline we're using on the limelight. The first is for april tag
+     * targetting The second
+     * is for retroreflective tape.
      * 
      * @param pipelineNum The pipeline number being used on the limelight.
      */
@@ -222,8 +278,9 @@ public class Limelight extends SubsystemBase {
     }
 
     /**
-     * Ensures that what we're receiving is actually a valid target (if it's outside of FOV, it
-     * can't be)
+     * Ensures that what we're receiving is actually a valid target (if it's outside
+     * of FOV, it can't
+     * be)
      * 
      * @return Whether or not target offset is more than 29.8 degrees.
      */
@@ -235,8 +292,9 @@ public class Limelight extends SubsystemBase {
     /**
      * Function to tell us whether or not we're on target (centered on vision tape)
      * 
-     * @param expectedAngle Angle we're supposed to be at according to offset of target supplied by
-     *        Limelight
+     * @param expectedAngle Angle we're supposed to be at according to offset of
+     *                      target supplied by
+     *                      Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
     public boolean isOnTarget(double expectedAngle) {
@@ -263,6 +321,13 @@ public class Limelight extends SubsystemBase {
                 LimelightHelpers.setLimelightNTDouble("limelight", "pipeline", pipelineNum);
             }
         }
+    }
+
+    @Override
+    public void periodic() {
+        updateShuffleboard();
+        setPipeline();
+
     }
 
 }

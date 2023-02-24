@@ -1,6 +1,5 @@
 package frc.robot;
 
-import java.awt.Polygon;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -8,11 +7,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Num;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -22,30 +18,41 @@ import frc.thunder.math.InterpolationMap;
 import frc.thunder.pathplanner.com.pathplanner.lib.auto.PIDConstants;
 import frc.thunder.swervelib.SdsModuleConfigurations;
 
+/**
+ * Class to hold all of the constants for the robot
+ */
 public final class Constants {
 
-    public static final double VOLTAGE_COMP_VOLTAGE = 12d;
+    // Spark max voltage compensation
+    public static final double VOLTAGE_COMPENSATION = 12d;
 
-    public static final Path BLACKOUT_FILE = Paths.get("home/lvuser/blackout");
+    // Path to the blackout directory
+    public static final Path BLACKOUT_PATH = Paths.get("home/lvuser/blackout");
 
+    // Check if we're on blackout
     public static final boolean isBlackout() {
-        return BLACKOUT_FILE.toFile().exists();
+        return BLACKOUT_PATH.toFile().exists();
     }
 
+    // Check if we're on gridlock
     public static final boolean isGridlock() {
         return !isBlackout();
     }
 
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
+        // Ports for the controllers
         public static final int DRIVER_CONTROLLER_PORT = 0;
         public static final int COPILOT_CONTROLLER_PORT = 1;
+
+        // Deadband, min, and max power for the controllers
         public static final double DEADBAND = 0.05;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 0.9d;
 
     }
 
+    // Constants for our system tests    
     public static final class SystemTestConstants {
         // Drive Test Variables
         public static final int DEGREES_INTERVAL_INCREASE = 30;
@@ -53,9 +60,10 @@ public final class Constants {
         public static final int MAX_ROTATIONS_PER_DIRECTION = 2;
     }
 
+    // COnstants for our drivetrain
     public static final class DrivetrainConstants {
-
         // Our drivetrain and track width
+        // TODO: remeasure these
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.8125d);
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
@@ -67,23 +75,17 @@ public final class Constants {
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12;
-        public static final double MAX_VELOCITY_METERS_PER_SECOND =
-                5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction()
-                        * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
-        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-                MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                        DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND =
-                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+        public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
         public static final int STEER_CURRENT_LIMIT = 30;
         public static final double NOMINAL_VOLTAGE = 12d;
 
-        // // Standard dev for robot pose
-        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX =
-                VecBuilder.fill(0.3313838876, 0.2642363651, 0.03681853519);
+        // Standard dev for robot pose
+        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(0.3313838876, 0.2642363651, 0.03681853519);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -102,13 +104,16 @@ public final class Constants {
 
         }
 
+        // PID gains for our heading compensation
         public static final class HeadingGains {
             public static final double kP = 0.005d;
             public static final double kI = 0d;
             public static final double kD = 0d;
         }
 
+        // Steer offsets for our modules
         public static final class Offsets {
+            // Gridlocks steer offsets
             public static final class Gridlock {
                 public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(193.535);
                 public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(145.547);
@@ -116,6 +121,7 @@ public final class Constants {
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(210.938);
             }
 
+            // Blackouts steer offsets
             public static final class Blackout {
                 public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(253.916);
                 public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(222.451);
@@ -125,13 +131,15 @@ public final class Constants {
         }
     }
 
+    // Constants for our elevator
     public static final class ElevatorConstants {
+        // Motor configuration constants
         public static final boolean MOTOR_INVERT = false;
-
         public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
+        // PID gains for our elevator
         public static final double kP = .35d;
         public static final double kI = 0d;
         public static final double kD = 0d;
@@ -140,36 +148,22 @@ public final class Constants {
         // TODO: set a tolerance
         public static final double TOLERANCE = 1d;
 
-        // TOOD: replace with actual values
-        public static final int TICKS_PER_REV = 42;
-        public static final double GEAR_RATIO = 16d / 1d;
+        // Conversion factor for our elevator
+        public static final double GEAR_RATIO = 16d / 1d; // Motor gear reduction / output shaft gear reduction
         public static final double SPROCKET_DIAMETER = 1.440d;
-        public static final double POSITION_CONVERSION_FACTOR =
-                1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / GEAR_RATIO * SPROCKET_DIAMETER * Math.PI;
 
-        // min/max height in inches
+        // Min/max height in inches
         public static final double MAX_EXTENSION = 23.287d;
         public static final double MIN_EXTENSION = 0d;
-
-        // the height of the elevator from the ground, use as an offset for our math
-        public static final double ELEVATOR_HEIGHT_OFFSET = 40d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
-        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
-        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
-
-        public static final Rotation2d ANGLE = Rotation2d.fromDegrees(55d);
-        // Acute Elevator mount angle in degrees
-
-        // horiz/vert offset from ground (See below)
-        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
-        // X = distance from arm pivot point to front of bot at bottom limit (negative)
-        // Y = height of arm pivot point from ground at bottom limit
+        // Elevator limit switch types
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
     }
 
     public static final class LimelightConstants {
@@ -181,22 +175,13 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
+        // Motor configuration constants
         public static final boolean MOTOR_INVERT = true;
-
         public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        // public static final double UP_kP = 0.0062d;
-        // public static final double UP_kI = 0d;
-        // public static final double UP_kD = 0d;
-        // public static final double UP_kF = 0.00025d;
-
-        // public static final double DOWN_kP = 0.004d;
-        // public static final double DOWN_kI = 0d;
-        // public static final double DOWN_kD = 0d;
-        // public static final double DOWN_kF = 0.0002d;
-
+        // PID gains for our arm
         public static final double kP = 0.0062d;
         public static final double kI = 0d;
         public static final double kD = 0d;
@@ -219,19 +204,14 @@ public final class Constants {
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 196.5;
 
-        // robot lengths
-        // TODO: get accurate measurements
-        public static final double ROBOT_BODY_LENGTH = 27.7;
+        // Conversion factor for our arm, multiply this by the navite units to get degrees
+        public static final double POSITION_CONVERSION_FACTOR = 360;
 
-        public static final double GEAR_RATIO = 60 / 1d;
-        public static final double POSITION_CONVERSION_FACTOR = 1 / 8192 * 360;
+        // Arm limit switch types
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
-        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
-        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
-
-
+        // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap ARM_UP_KF_MAP = new InterpolationMap() {
             {
                 put(-110d, -0.0001);
@@ -259,7 +239,6 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
 
-
         //TODO: tune these
         //Cube Theoretical: #3a01b2 (58, 1, 178)
         public static final Color CUBE_OPTIMAL = new Color(58, 1, 178);
@@ -268,26 +247,29 @@ public final class Constants {
     }
 
     public static final class WristConstants {
-        public static final boolean MOTOR_INVERT = true;
 
-        // TODO: make 20 for comp
-        public static final int CURRENT_LIMIT = 15;
+        // Motor configuration constants
+        public static final boolean MOTOR_INVERT = true;
+        public static final int CURRENT_LIMIT = 15; // TODO: make 20 for comp
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
+        // PID gains for our wrist going up
         public static final double UP_kP = 0.001d;
         public static final double UP_kI = 0d;
         public static final double UP_kD = 0d;
         public static final double UP_kF = 0.0004d;
 
+        // PID gains for our wrist going down
         public static final double DOWN_kP = 0.002d;
         public static final double DOWN_kI = 0d;
         public static final double DOWN_kD = 0d;
         public static final double DOWN_kF = 0.00008d;
 
-        public static final double TOLERANCE = 10d;
+        // Tolernace for our wrist
+        public static final double TOLERANCE = 10d; // TODO: set a better tolerance
 
-        // min/max angles in degrees
+        // Min/max angles in degrees
         public static final double MAX_ANGLE = -20d;
         public static final double MIN_ANGLE = -146d;
 
@@ -295,25 +277,21 @@ public final class Constants {
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
-        public static final Translation2d POSE_OFFSET = new Translation2d(0, 0);
-
-        public static final double LENGTH = 0; // wrist length in inches
-
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
         public static final double ENCODER_OFFSET_BLACKOUT = 285.86;
 
-        public static final double GEAR_RATIO = 38.5 / 1d;
+        // Conversion factor for our wrist, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;
 
-
-        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
-        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE =
-                SparkMaxLimitSwitch.Type.kNormallyOpen;
+        // Wrist limit switch types
+        public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+        public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
     }
 
+    // RobotMap Constants
     public static final class RobotMap {
+        // CAN IDs
         public static final class CAN {
             // Pigeon IMU ID
             public static final int PIGEON_ID = 23;
@@ -367,33 +345,44 @@ public final class Constants {
         }
     }
 
+    // Constants used for auto balancing
     public static final class AutoBalanceConstants {
-        public static final double MAGNITUDE_SCALER = 0.09;
+        // Magnitude for being balance
         public static final double BALANCED_MAGNITUDE = 2.5;
+
+        // Upper and lower magnitude thresholds for checking if we are on the charge station at all
         public static final double UPPER_MAGNITUDE_THRESHOLD = 11;
         public static final double LOWER_MAGNITUDE_THRESHOLD = 3;
-        public static final double MAGNITUDE_RATE_OF_CHANGE_THRESHOLD = 0.05;
+
+        // Min and max speeds for our auto balance
         public static final double MIN_SPEED_THRESHOLD = 0.35;
         public static final double MAX_SPEED_THRESHOLD = 3;
+
+        // Delay time for our auto balance after falling
         public static final double DELAY_TIME = 2;
 
+        // Target X position for the middle of the charge station
         public static final double TARGET_X = 3.93;
+
+        // Gains for our auto balance
         public static final double kP = 2;
         public static final double kI = 0;
         public static final double kD = 0;
     }
 
+    // Constants for the LEDs
     public static final class LedConstants {
         public static final int ledPort = 22;
         public static final int ledLength = 170;
         public static final double ledSpeed = .5;
 
+        // Color constants for the LEDs
         public static final class Colors {
-            // lightning colors
+            // Lightning colors
             public static final int[] lightningOrange = {255, 71, 15};
             public static final int[] lightningBlue = {0, 0, 255};
 
-            // misc colors
+            // Misc colors
             public static final int[] cyan = {96, 209, 149};
             public static final int[] yellow = {255, 230, 20};
             public static final int[] purple = {220, 30, 240};
@@ -404,6 +393,7 @@ public final class Constants {
         }
     }
 
+    // Constants for vision
     public static final class VisionConstants {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;
@@ -411,11 +401,13 @@ public final class Constants {
         // Arbitrary value for how close the robot needs to be to the target (in angles)
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
-        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX =
-                VecBuilder.fill(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
+        // Standard deviation for vision
+        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
     }
 
+    // Constants for the lift
     public static final class LiftConstants {
+        // All of the different states the lift can be in
         public enum LiftState {
             ground,
 
@@ -428,23 +420,20 @@ public final class Constants {
             stowed, undetermined
         }
 
+        // All of the different plans the lift can follow
         public enum LiftPlan {
             parallel, armPriority, elevatorPriority, elevatorLast
         }
     }
 
-    public static final class ManualLiftConstants {
-        public static final double ELEVATOR_SPEED_REDUCTION = 1;
-        public static final double ARM_SPEED_REDUCTION = 0.01;
-        public static final double WRIST_SPEED_REDUCTION = 0.01;
-    }
-
+    // Constants for autonomous
     public static final class AutonomousConstants {
         // Path planner PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0);
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7, 0, 0);
-        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0);
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0); // Drive velocity PID
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7, 0, 0); // Rotation PID
+        public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0); // X and Y position PID
 
+        // Max velocity and acceleration for the path planner
         public static final double MAX_VELOCITY = 3;
         public static final double MAX_ACCELERATION = 3;
     }

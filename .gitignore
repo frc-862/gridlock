@@ -105,6 +105,7 @@ Temporary Items
 
 ### VisualStudioCode ###
 .vscode/*
+!.vscode/java_formatter.xml
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
