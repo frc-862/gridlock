@@ -39,8 +39,9 @@ public class Collector extends SubsystemBase {
                 () -> leftMotor.getOutputCurrent());
 
     }
-    //TODO add ball sensor and actual logic
-    public boolean isBallCollected(){
+
+    // TODO add ball sensor and actual logic
+    public boolean isPieceCollected() {
         return true;
     }
 

@@ -6,20 +6,18 @@ import frc.robot.subsystems.Collector;
 
 public class Collect extends CommandBase {
     Collector collector;
-    DoubleSupplier leftTrigger;
-    DoubleSupplier rightTrigger;
+    DoubleSupplier input;
 
-    public Collect(Collector collector, DoubleSupplier leftTrigger, DoubleSupplier rightTrigger) {
+    public Collect(Collector collector, DoubleSupplier input) {
         this.collector = collector;
-        this.leftTrigger = leftTrigger;
-        this.rightTrigger = rightTrigger;
+        this.input = input;
 
         addRequirements(collector);
     }
 
     @Override
     public void execute() {
-        collector.runCollector(rightTrigger.getAsDouble() - leftTrigger.getAsDouble());
+        collector.runCollector(input.getAsDouble());
     }
 
     @Override

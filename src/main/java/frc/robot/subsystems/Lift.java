@@ -57,7 +57,9 @@ public class Lift extends SubsystemBase {
         }
     }
 
-
+    public boolean goalReached() {
+        return currentState == goalState;
+    }
 
     @Override
     public void periodic() {

@@ -97,7 +97,6 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Set-Ground-Score",
           "Score-Game-Piece",
           "Store-For-Moving-2"
         ],
@@ -161,6 +160,12 @@
       "position": 1.3818181818181654,
       "names": [
         "Set-Groud-Collect"
+      ]
+    },
+    {
+      "position": 2.7636363636362598,
+      "names": [
+        "Set-Ground-Score"
       ]
     }
   ]
