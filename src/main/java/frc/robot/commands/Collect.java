@@ -9,27 +9,24 @@ import frc.robot.subsystems.Collector;
  */
 public class Collect extends CommandBase {
     Collector collector;
-    DoubleSupplier leftTrigger;
-    DoubleSupplier rightTrigger;
+    DoubleSupplier input;
 
     /**
      * Creates a new Collect command
      * 
      * @param collector    the collector subsystem
-     * @param leftTrigger  the left trigger
-     * @param rightTrigger the right trigger
+     * @param input        the input speed for the collector
      */
-    public Collect(Collector collector, DoubleSupplier leftTrigger, DoubleSupplier rightTrigger) {
+    public Collect(Collector collector, DoubleSupplier input) {
         this.collector = collector;
-        this.leftTrigger = leftTrigger;
-        this.rightTrigger = rightTrigger;
+        this.input = input;
 
         addRequirements(collector);
     }
 
     @Override
     public void execute() {
-        collector.setPower(rightTrigger.getAsDouble() - leftTrigger.getAsDouble());
+        collector.runCollector(input.getAsDouble());
     }
 
     @Override

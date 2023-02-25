@@ -3,7 +3,6 @@ package frc.robot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Limelight;
-import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -26,7 +25,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.thunder.LightningContainer;
 import frc.robot.Constants.AutonomousConstants;
-import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
@@ -84,25 +82,27 @@ public class RobotContainer extends LightningContainer {
     // Creates the autonomous commands
     @Override
     protected void configureAutonomousCommands() {
-        // Test paths
-        autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(1, 0.25));
-        autoFactory.makeTrajectory("Straight", new HashMap<>(), new PathConstraints(11, 3));
-        autoFactory.makeTrajectory("StraightButRotate", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, 1));
-        autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("jitter", new HashMap<>(), new PathConstraints(5, 1));
-        autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        //Test paths 
+        // autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(1, 0.25));
+        // autoFactory.makeTrajectory("Straight", new HashMap<>(), new PathConstraints(11, 3));
+        // autoFactory.makeTrajectory("StraightButRotate", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, 1));
+        // autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("jitter", new HashMap<>(), new PathConstraints(5, 1));
+        // autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // Game paths
-        autoFactory.makeTrajectory("Path1StartB", Maps.getPath1StartBMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path2StartB", Maps.getPath2StartBMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path3StartA", Maps.getPath3StartAMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path4StartA", Maps.getPath4StartAMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path5StartC", Maps.getPath5StartCMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path6StartC", Maps.getPath6StartCMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path6StartCCharge", Maps.getPath6ChargeMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path7StartA", Maps.getPath7StartAMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path8StartC", Maps.getPath8StartCMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path9StartB", Maps.getPath9StartBMap(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path1StartB", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("Path2StartB", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY,AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        // autoFactory.makeTrajectory("Path3StartA", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        autoFactory.makeTrajectory("Path4StartA", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path4StartACharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("Path5StartC", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        autoFactory.makeTrajectory("Path6StartC", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path6StartCCharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("Path7StartA", Maps.getPathMapPiece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        // autoFactory.makeTrajectory("Path8StartC", Maps.getPathMapPiece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        autoFactory.makeTrajectory("Path9StartB", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path9StartBCharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
     }
 
     @Override
@@ -119,7 +119,7 @@ public class RobotContainer extends LightningContainer {
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
 
-        collector.setDefaultCommand(new Collect(collector, copilot::getLeftTriggerAxis, copilot::getRightTriggerAxis));
+        collector.setDefaultCommand(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
     }
 
     @Override

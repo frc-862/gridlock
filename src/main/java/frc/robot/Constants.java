@@ -269,8 +269,9 @@ public final class Constants {
         // Tolernace for our wrist
         public static final double TOLERANCE = 10d; // TODO: set a better tolerance
 
+        
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = -20d;
+        public static final double MAX_ANGLE = -5d;
         public static final double MIN_ANGLE = -146d;
 
         // Min and Max power
@@ -436,5 +437,6 @@ public final class Constants {
         // Max velocity and acceleration for the path planner
         public static final double MAX_VELOCITY = 3;
         public static final double MAX_ACCELERATION = 3;
+
     }
 }

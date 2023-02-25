@@ -1,8 +1,5 @@
 package frc.robot.subsystems;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.playingwithfusion.TimeOfFlight;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
@@ -25,6 +22,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.Offsets;
 import frc.robot.Constants.RobotMap;
@@ -32,7 +30,6 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.logging.DataLogger;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
@@ -71,16 +68,15 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule backLeftModule;
     private final SwerveModule backRightModule;
 
+    // Module steer offsets
     private double FRONT_LEFT_STEER_OFFSET = Offsets.Gridlock.FRONT_LEFT_STEER_OFFSET;
     private double BACK_LEFT_STEER_OFFSET = Offsets.Gridlock.BACK_LEFT_STEER_OFFSET;
     private double FRONT_RIGHT_STEER_OFFSET = Offsets.Gridlock.FRONT_RIGHT_STEER_OFFSET;
     private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
+    // Swerve pose esitmator for odometry
     private SwerveDrivePoseEstimator estimator =
             new SwerveDrivePoseEstimator(kinematics, getHeading(), modulePositions, pose, DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
-
-    Path gridlockFile = Paths.get("home/lvuser/gridlock");
-    Path blackoutFile = Paths.get("home/lvuser/blackout");
 
     // Creates our drivetrain shuffleboard tab for displaying module data
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -88,12 +84,17 @@ public class Drivetrain extends SubsystemBase {
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
     private Limelight vision;
 
+    // Time of flight sensor
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
+    // PIDController for heading compenstation
     private final PIDController headingController = new PIDController(HeadingGains.kP, HeadingGains.kI, HeadingGains.kD);
 
+    // Heading compenstaion variables
     private boolean updatedHeading = false;
     private double lastGoodheading = 0d;
+
+    // Chassis speeds for the robot
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
     public Drivetrain(Limelight vision) {
@@ -104,7 +105,7 @@ public class Drivetrain extends SubsystemBase {
      */
         this.vision = vision;
 
-        if (Files.exists(blackoutFile)) {
+        if (Constants.isBlackout()) {
             FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;
             FRONT_RIGHT_STEER_OFFSET = Offsets.Blackout.FRONT_RIGHT_STEER_OFFSET;
             BACK_LEFT_STEER_OFFSET = Offsets.Blackout.BACK_LEFT_STEER_OFFSET;
@@ -140,15 +141,11 @@ public class Drivetrain extends SubsystemBase {
                 Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
         // Setting states of the modules
-        updateOdomtery();
+        updateOdometry();
         updateDriveStates(states);
 
         // Zero our gyro
         zeroHeading();
-
-        // Start logging data and adding data to the dashboard
-        initLogging();
-        initDashboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
 
@@ -156,15 +153,13 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update our module position and odometery
+        // Update our module position and odometry
         updateModulePositions();
-        updateOdomtery();
         resetOdymetyFVision(getYaw2d(), vision.getBotPoseBlue());
+        updateOdometry();
 
-        // Puts our pose on the dashboard
-        LightningShuffleboard.setDouble("Autonomous", "Current X", odometry.getPoseMeters().getX());
-        LightningShuffleboard.setDouble("Autonomous", "Current Y", odometry.getPoseMeters().getY());
-        LightningShuffleboard.setDouble("Autonomous", "Current Z", odometry.getPoseMeters().getRotation().getDegrees());
+        // Starts logging and updates the shuffleboard
+        updateShufflebaord();
     }
 
     /**
@@ -246,7 +241,7 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Updates odometry using the current yaw and module states.
      */
-    public void updateOdomtery() {
+    public void updateOdometry() {
         updateModulePositions();
         pose = odometry.update(getYaw2d(), modulePositions);
 
@@ -265,7 +260,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void setStates(SwerveModuleState[] newStates) {
         states = newStates;
-        updateOdomtery();
+        updateOdometry();
         updateDriveStates(states);
 
     }
@@ -280,84 +275,42 @@ public class Drivetrain extends SubsystemBase {
         modulePositions[3] = backRightModule.getPosition();
     }
 
-    /**
-     * Method to start logging data.
-     */
-    private void initLogging() {
-        DataLogger.addDataElement("fl steer angle", () -> Math.toDegrees(frontLeftModule.getSteerAngle()));
-        DataLogger.addDataElement("fl drive velocity", () -> frontLeftModule.getDriveVelocity());
-        DataLogger.addDataElement("fr steer angle", () -> Math.toDegrees(frontRightModule.getSteerAngle()));
-        DataLogger.addDataElement("fr drive velocity", () -> frontRightModule.getDriveVelocity());
-        DataLogger.addDataElement("bl steer angle", () -> Math.toDegrees(backLeftModule.getSteerAngle()));
-        DataLogger.addDataElement("bl drive velocity", () -> backLeftModule.getDriveVelocity());
-        DataLogger.addDataElement("br steer angle", () -> Math.toDegrees(backRightModule.getSteerAngle()));
-        DataLogger.addDataElement("br drive velocity", () -> backRightModule.getDriveVelocity());
+    // Method to start sending values to the dashboard and start logging
+    private void updateShufflebaord() {
+        LightningShuffleboard.setDouble("Drivetrain", "Front left angle", frontLeftModule.getSteerAngle());
+        LightningShuffleboard.setDouble("Drivetrain", "Front right angle", frontRightModule.getSteerAngle());
+        LightningShuffleboard.setDouble("Drivetrain", "Back left angle", backLeftModule.getSteerAngle());
+        LightningShuffleboard.setDouble("Drivetrain", "Back right angle", backRightModule.getSteerAngle());
 
-        DataLogger.addDataElement("fl module position", () -> frontLeftModule.getPosition().distanceMeters);
-        DataLogger.addDataElement("fr module position", () -> frontRightModule.getPosition().distanceMeters);
-        DataLogger.addDataElement("bl module position", () -> backLeftModule.getPosition().distanceMeters);
-        DataLogger.addDataElement("br module position", () -> backRightModule.getPosition().distanceMeters);
+        LightningShuffleboard.setDouble("Drivetrain", "Front left drive velocity", frontLeftModule.getDriveVelocity());
+        LightningShuffleboard.setDouble("Drivetrain", "Front right drive velocity", frontRightModule.getDriveVelocity());
+        LightningShuffleboard.setDouble("Drivetrain", "Back left drive velocity", backLeftModule.getDriveVelocity());
+        LightningShuffleboard.setDouble("Drivetrain", "Back right drive velocity", backRightModule.getDriveVelocity());
 
-        DataLogger.addDataElement("fl drive Temperature", () -> frontLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("fl azimuth Temperature", () -> frontLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("fr drive Temperature", () -> frontRightModule.getDriveTemperature());
-        DataLogger.addDataElement("fr azimuth Temperature", () -> frontRightModule.getSteerTemperature());
-        DataLogger.addDataElement("bl drive Temperature", () -> backLeftModule.getDriveTemperature());
-        DataLogger.addDataElement("bl azimuth Temperature", () -> backLeftModule.getSteerTemperature());
-        DataLogger.addDataElement("br drive Temperature", () -> backRightModule.getDriveTemperature());
-        DataLogger.addDataElement("br azimuth Temperature", () -> backRightModule.getSteerTemperature());
+        LightningShuffleboard.setDouble("Drivetrain", "Front left drive voltage", frontLeftModule.getDriveVoltage());
+        LightningShuffleboard.setDouble("Drivetrain", "Front right drive voltage", frontRightModule.getDriveVoltage());
+        LightningShuffleboard.setDouble("Drivetrain", "Back left drive voltage", backLeftModule.getDriveVoltage());
+        LightningShuffleboard.setDouble("Drivetrain", "Back right drive voltage", backRightModule.getDriveVoltage());
 
-        DataLogger.addDataElement("fl target angle", () -> states[0].angle.getDegrees());
-        DataLogger.addDataElement("fl target velocity", () -> states[0].speedMetersPerSecond);
-        DataLogger.addDataElement("fr target angle", () -> states[1].angle.getDegrees());
-        DataLogger.addDataElement("fr target velocity", () -> states[1].speedMetersPerSecond);
-        DataLogger.addDataElement("bl target angle", () -> states[2].angle.getDegrees());
-        DataLogger.addDataElement("bl target velocity", () -> states[2].speedMetersPerSecond);
-        DataLogger.addDataElement("br target angle", () -> states[3].angle.getDegrees());
-        DataLogger.addDataElement("br target velocity", () -> states[3].speedMetersPerSecond);
+        LightningShuffleboard.setDouble("Drivetrain", "Front left target angle", states[0].angle.getDegrees());
+        LightningShuffleboard.setDouble("Drivetrain", "Front right target angle", states[1].angle.getDegrees());
+        LightningShuffleboard.setDouble("Drivetrain", "Back left target angle", states[2].angle.getDegrees());
+        LightningShuffleboard.setDouble("Drivetrain", "Back right target angle", states[3].angle.getDegrees());
 
-        DataLogger.addDataElement("fl drive voltage", () -> frontLeftModule.getDriveVoltage());
-        DataLogger.addDataElement("fr drive voltage", () -> frontRightModule.getDriveVoltage());
-        DataLogger.addDataElement("bl drive voltage", () -> backLeftModule.getDriveVoltage());
-        DataLogger.addDataElement("br drive voltage", () -> backRightModule.getDriveVoltage());
+        LightningShuffleboard.setDouble("Drivetrain", "Front left target velocity", states[0].speedMetersPerSecond);
+        LightningShuffleboard.setDouble("Drivetrain", "Front right target velocity", states[1].speedMetersPerSecond);
+        LightningShuffleboard.setDouble("Drivetrain", "Back left target velocity", states[2].speedMetersPerSecond);
+        LightningShuffleboard.setDouble("Drivetrain", "Back right target velocity", states[3].speedMetersPerSecond);
 
-        DataLogger.addDataElement("Heading", () -> odometry.getPoseMeters().getRotation().getDegrees());
-        DataLogger.addDataElement("poseX", () -> odometry.getPoseMeters().getX());
-        DataLogger.addDataElement("poseY", () -> odometry.getPoseMeters().getY());
+        LightningShuffleboard.setDouble("Drivetrain", "Pigeon heading", getYaw2d().getDegrees());
+        LightningShuffleboard.setDouble("Drivetrain", "Odometry heading", getHeading().getDegrees());
+        LightningShuffleboard.setDouble("Drivetrain", "Odometry X", pose.getX());
+        LightningShuffleboard.setDouble("Drivetrain", "Odometry Y", pose.getY());
+        LightningShuffleboard.setDouble("Drivetrain", "Odometry Z", pose.getRotation().getDegrees());
+        LightningShuffleboard.setDouble("Drivetrain", "ES X", ESpose.getX());
+        LightningShuffleboard.setDouble("Drivetrain", "ES Y", ESpose.getY());
+        LightningShuffleboard.setDouble("Drivetrain", "ES Z", ESpose.getRotation().getDegrees());
 
-    }
-
-    /**
-     * Method to start sending values to the dashboard
-     */
-    private void initDashboard() {
-        tab.addDouble("fl angle", () -> frontLeftModule.getSteerAngle());
-        tab.addDouble("fr angle", () -> frontRightModule.getSteerAngle());
-        tab.addDouble("bl angle", () -> backLeftModule.getSteerAngle());
-        tab.addDouble("br angle", () -> backRightModule.getSteerAngle());
-
-        tab.addDouble("target fl angle", () -> states[0].angle.getDegrees());
-        tab.addDouble("target fr angle", () -> states[1].angle.getDegrees());
-        tab.addDouble("target bl angle", () -> states[2].angle.getDegrees());
-        tab.addDouble("target br angle", () -> states[3].angle.getDegrees());
-
-        tab.addDouble("fl drive vel", () -> frontLeftModule.getDriveVelocity());
-        tab.addDouble("bl drive vel", () -> frontLeftModule.getDriveVelocity());
-        tab.addDouble("fr drive vel", () -> frontLeftModule.getDriveVelocity());
-        tab.addDouble("br drive vel", () -> frontLeftModule.getDriveVelocity());
-
-        tab.addDouble("heading", () -> getYaw2d().getDegrees());
-        tab.addDouble("roll", () -> getRoll2d().getDegrees());
-        tab.addDouble("pitch", () -> getPitch2d().getDegrees());
-
-        tab.addDouble("fl drive voltage", () -> frontLeftModule.getDriveVoltage());
-
-        tab.addDouble("es X", () -> ESpose.getX());
-        tab.addDouble("es Y", () -> ESpose.getY());
-        tab.addDouble("es Z", () -> ESpose.getRotation().getDegrees());
-        tab.addDouble("od X", () -> pose.getX());
-        tab.addDouble("od Y", () -> pose.getY());
-        tab.addDouble("od Z", () -> pose.getRotation().getDegrees());
     }
 
     /**

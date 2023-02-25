@@ -11,7 +11,6 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
@@ -42,24 +41,20 @@ public class Elevator extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF), encoder);
         controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
-        // Starts logging
-        initLogging();
-
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    // Metod to start logging
-    private void initLogging() {
-        DataLogger.addDataElement("Elevator Extension", () -> getExtension());
-        DataLogger.addDataElement("Elevator Target Height", () -> targetExtension);
-        DataLogger.addDataElement("Elevator on Target", () -> onTarget() ? 1 : 0);
-        DataLogger.addDataElement("bottom limit switch", () -> getBottomLimitSwitch() ? 1 : 0);
-        DataLogger.addDataElement("top limit switch", () -> getTopLimitSwitch() ? 1 : 0);
-
-        DataLogger.addDataElement("Elevator Motor Temperature", () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Elevator Motor Output Current", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Input Voltage", () -> motor.getBusVoltage());
+    // Metod to starts logging and updates the shuffleboard
+    private void updateShuffleboard() {
+        LightningShuffleboard.setBool("Elevator", "Top limit", getTopLimitSwitch());
+        LightningShuffleboard.setBool("Elevator", "Bottom limit", getBottomLimitSwitch());
+        LightningShuffleboard.setDouble("Elevator", "Elevator target height", targetExtension);
+        LightningShuffleboard.setDouble("Elevator", "Elevator height", getExtension());
+        LightningShuffleboard.setBool("Elevator", "Elevator on target", onTarget());
+        LightningShuffleboard.setDouble("Elevator", "Elevator motor temperature", motor.getMotorTemperature());
+        LightningShuffleboard.setDouble("Elevator", "Elevator motor controller output (volts)", motor.getAppliedOutput());
+        LightningShuffleboard.setDouble("Elevator", "Elevator motor controller output (Amps)", motor.getOutputCurrent());
+        LightningShuffleboard.setDouble("Elevator", "Elevator motor controller input voltage", motor.getBusVoltage());
 
     }
 
@@ -170,12 +165,7 @@ public class Elevator extends SubsystemBase {
             encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
         }
 
-        LightningShuffleboard.setBool("Elevator", "Top Limit", getTopLimitSwitch());
-        LightningShuffleboard.setBool("Elevator", "Bottom Limit", getBottomLimitSwitch());
-        LightningShuffleboard.setDouble("Elevator", "Elevator Height", getExtension());
-        LightningShuffleboard.setBool("Lift", "Elevator on target", onTarget());
-        LightningShuffleboard.setDouble("Lift", "Elevator target", targetExtension);
-        LightningShuffleboard.setDouble("Elevator", "curr speed", motor.get());
-
+        // Method to log data 
+        updateShuffleboard();
     }
 }
