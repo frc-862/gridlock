@@ -16,7 +16,7 @@ public class Limelight extends SubsystemBase {
 
     // Change "limelight" to whatever the name of the limelight you are using
     // we should rename the limelight names to something consistent later
-    private String limelightName;
+    public String limelightName;
 
     public Limelight(String limelightName, Pose3d cameraPose) {
         this.limelightName = limelightName;
@@ -35,26 +35,31 @@ public class Limelight extends SubsystemBase {
     // Adds logging for vision so we can look at values when the robot is off and
     // check them
     public void initLogging() {
+        double[] botPose = LimelightHelpers.getBotPose(limelightName);
         DataLogger.addDataElement("Has Vision", () -> hasVision() ? 1 : 0);
-        DataLogger.addDataElement("Vision bot pose TX", () -> getBotPose()[0]);
-        DataLogger.addDataElement("Vision bot pose TY", () -> getBotPose()[1]);
-        DataLogger.addDataElement("Vision bot pose RZ", () -> getBotPose()[5]);
+        DataLogger.addDataElement("Vision bot pose TX", () -> botPose[0]);
+        DataLogger.addDataElement("Vision bot pose TY", () -> botPose[1]);
+        DataLogger.addDataElement("Vision bot pose RZ", () -> botPose[5]);
     }
 
     // Method to update shuffleboard with vision data
     private void updateShuffleboard() {
         if (hasVision()) {
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose TX", getBotPose()[0]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose TY", getBotPose()[1]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose RZ", getBotPose()[5]);
+            double[] botPose = LimelightHelpers.getBotPose(limelightName);
+            double[] botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
+            double[] botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
 
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TX", getBotPoseBlue()[0]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TY", getBotPoseBlue()[1]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue RZ", getBotPoseBlue()[5]);
+            LightningShuffleboard.setDouble("Vision", "Vision bot pose TX", botPose[0]);
+            LightningShuffleboard.setDouble("Vision", "Vision bot pose TY", botPose[1]);
+            LightningShuffleboard.setDouble("Vision", "Vision bot pose RZ", botPose[5]);
 
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TX", getBotPoseRed()[0]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TY", getBotPoseRed()[1]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red RZ", getBotPoseRed()[5]);
+            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TX", botPoseBlue[0]);
+            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TY", botPoseBlue[1]);
+            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue RZ", botPoseBlue[5]);
+
+            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TX", botPoseRed[0]);
+            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TY", botPoseRed[1]);
+            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red RZ", botPoseRed[5]);
 
             LightningShuffleboard.set("Vision", "Vision robot bot pose", getRobotPose());
             LightningShuffleboard.set("Vision", "Vision robot bot pose blue", getRobotPoseBlue());
@@ -79,8 +84,9 @@ public class Limelight extends SubsystemBase {
      */
     public Pose2d getRobotPose() {
         if (hasVision()) {
-            return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]),
-                    Rotation2d.fromDegrees(getBotPoseBlue()[5]));
+            double[] botPose = LimelightHelpers.getBotPose(limelightName);
+            return new Pose2d(new Translation2d(botPose[0], botPose[1]),
+                    Rotation2d.fromDegrees(botPose[5]));
         } else {
             return null;
         }
@@ -93,8 +99,9 @@ public class Limelight extends SubsystemBase {
      */
     public Pose2d getRobotPoseRed() {
         if (hasVision()) {
-            return new Pose2d(new Translation2d(getBotPoseRed()[0], getBotPoseRed()[1]),
-                    Rotation2d.fromDegrees(getBotPoseRed()[5]));
+            double[] botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
+            return new Pose2d(new Translation2d(botPoseRed[0], botPoseRed[1]),
+                    Rotation2d.fromDegrees(botPoseRed[5]));
         } else {
             return null;
         }
@@ -107,8 +114,9 @@ public class Limelight extends SubsystemBase {
      */
     public Pose2d getRobotPoseBlue() {
         if (hasVision()) {
-            return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]),
-                    Rotation2d.fromDegrees(getBotPoseBlue()[5]));
+            double[] botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
+            return new Pose2d(new Translation2d(botPoseBlue[0], botPoseBlue[1]),
+                    Rotation2d.fromDegrees(botPoseBlue[5]));
         } else {
             return null;
         }
@@ -158,35 +166,6 @@ public class Limelight extends SubsystemBase {
             return LimelightHelpers.getTX(limelightName);
         } else {
             return 0;
-        }
-    }
-
-    /**
-     * Gets botpose on field (x,y,z,rx,ry,rz) relative to the limelight
-     * 
-     * @return 7 element array of doubles
-     */
-    public double[] getBotPose() {
-        if (hasVision()) {
-            return LimelightHelpers.getBotPose(limelightName);
-        } else {
-            return new double[] {0, 0, 0, 0, 0, 0, 0};
-        }
-    }
-
-    public double[] getBotPoseRed() {
-        if (hasVision()) {
-            return LimelightHelpers.getBotPose_wpiRed(limelightName);
-        } else {
-            return new double[] {0, 0, 0, 0, 0, 0, 0};
-        }
-    }
-
-    public double[] getBotPoseBlue() {
-        if (hasVision()) {
-            return LimelightHelpers.getBotPose_wpiBlue(limelightName);
-        } else {
-            return new double[] {0, 0, 0, 0, 0, 0, 0};
         }
     }
 

@@ -30,6 +30,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
 import frc.thunder.config.SparkMaxPIDGains;
+import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
@@ -155,7 +156,7 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         // Update our module position and odometry
         updateModulePositions();
-        resetOdymetyFVision(getYaw2d(), vision.getBotPoseBlue());
+        resetOdymetyFVision(getYaw2d(), LimelightHelpers.getBotPose_wpiBlue(vision.limelightName));
         updateOdometry();
 
         // Starts logging and updates the shuffleboard
@@ -247,7 +248,7 @@ public class Drivetrain extends SubsystemBase {
 
         ESpose = estimator.update(getHeading(), modulePositions);
 
-        double[] visionPose = vision.getBotPoseBlue();
+        double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(vision.limelightName);
         Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
         if (visionPose != null) {
             estimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - vision.getLatencyBotPoseBlue());
