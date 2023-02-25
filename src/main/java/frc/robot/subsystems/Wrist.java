@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +19,8 @@ public class Wrist extends SubsystemBase {
 
     // The motor, encoder, and PID controller
     private CANSparkMax motor;
-    private SparkMaxPIDController controller;
+    private PIDController controller = new PIDController(WristConstants.kP, WristConstants.kI, WristConstants.kD);
+
     private SparkMaxAbsoluteEncoder encoder;
 
     // The encoder offset
@@ -44,11 +46,6 @@ public class Wrist extends SubsystemBase {
         // Create the absolute encoder and sets the conversion factor
         encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
-
-        // Create the PID controller and set the output range
-        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(WristConstants.DOWN_kP, WristConstants.DOWN_kI, WristConstants.DOWN_kD, WristConstants.DOWN_kF),
-                new SparkMaxPIDGains(WristConstants.UP_kP, WristConstants.UP_kI, WristConstants.UP_kD, WristConstants.UP_kF), encoder);
-        controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
 
         initializeShuffleboard();
 
@@ -83,6 +80,9 @@ public class Wrist extends SubsystemBase {
      */
     public void setAngle(Rotation2d angle) {
         targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
+        double currentAngle = getAngle().getDegrees();
+
+        motor.set(controller.calculate(currentAngle, targetAngle) + WristConstants.WRIST_KF_MAP.get(currentAngle) * currentAngle);
     }
 
     /**
@@ -135,22 +135,5 @@ public class Wrist extends SubsystemBase {
      */
     public boolean onTarget(double target) {
         return Math.abs(getAngle().getDegrees() - target) < WristConstants.TOLERANCE;
-    }
-
-    @Override
-    public void periodic() {
-
-        // If were not on target
-        if (!onTarget()) {
-            // Checks if wrist is going up or down
-            if (targetAngle - getAngle().getDegrees() > 2) {
-                // Uses the up gains
-                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
-            } else {
-                // Uses the down gains
-                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
-            }
-        }
-
     }
 }

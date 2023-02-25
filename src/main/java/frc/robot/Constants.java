@@ -203,7 +203,7 @@ public final class Constants {
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
-        public static InterpolationMap ARM_UP_KF_MAP = new InterpolationMap() {
+        public static InterpolationMap ARM_KF_MAP = new InterpolationMap() {
             {
                 put(-110d, -0.0001);
                 put(-90d, 0.0002);
@@ -246,21 +246,13 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double UP_kP = 0.001d;
-        public static final double UP_kI = 0d;
-        public static final double UP_kD = 0d;
-        public static final double UP_kF = 0.0004d;
-
-        // PID gains for our wrist going down
-        public static final double DOWN_kP = 0.002d;
-        public static final double DOWN_kI = 0d;
-        public static final double DOWN_kD = 0d;
-        public static final double DOWN_kF = 0.00008d;
+        public static final double kP = 0.001d;
+        public static final double kI = 0d;
+        public static final double kD = 0d;
 
         // Tolernace for our wrist
         public static final double TOLERANCE = 10d; // TODO: set a better tolerance
 
-        
         // Min/max angles in degrees
         public static final double MAX_ANGLE = -5d;
         public static final double MIN_ANGLE = -146d;
@@ -279,6 +271,13 @@ public final class Constants {
         // Wrist limit switch types
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+
+        // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
+        public static InterpolationMap WRIST_KF_MAP = new InterpolationMap() {
+            {
+                put(0d, 0d);
+            }
+        };
     }
 
     // RobotMap Constants

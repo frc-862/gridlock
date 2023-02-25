@@ -5,6 +5,8 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,7 +24,7 @@ public class Arm extends SubsystemBase {
 
     // The motor, encoder, and PID controller
     private CANSparkMax motor;
-    private SparkMaxPIDController controller;
+    private PIDController controller = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
     private SparkMaxAbsoluteEncoder encoder;
 
     // The encoder offset 
@@ -50,11 +52,6 @@ public class Arm extends SubsystemBase {
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
-        // Create the PID controller and set the output range
-        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
-        controller.setOutputRange(ArmConstants.MIN_POWER, ArmConstants.MAX_POWER);
-
-
         // Starts logging and updates the shuffleboard
         initializeShuffleboard();
 
@@ -66,9 +63,9 @@ public class Arm extends SubsystemBase {
         LightningShuffleboard.setBoolSupplier("Arm", "Arm Bottom Limit", () -> getBottomLimitSwitch());
         LightningShuffleboard.setBoolSupplier("Arm", "Arm Top Limit", () -> getTopLimitSwitch());
         LightningShuffleboard.setDoubleSupplier("Arm", "Arm angle", () -> getAngle().getDegrees());
-        LightningShuffleboard.setDoubleSupplier("Arm", "Arm Target Angle", () ->  targetAngle + OFFSET);
+        LightningShuffleboard.setDoubleSupplier("Arm", "Arm Target Angle", () -> targetAngle + OFFSET);
         LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller input voltage", () -> motor.getBusVoltage());
-        LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller output (Amps)", () ->  motor.getOutputCurrent());
+        LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller output (Amps)", () -> motor.getOutputCurrent());
         LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller output (volts)", () -> motor.getAppliedOutput());
     }
 
@@ -80,9 +77,9 @@ public class Arm extends SubsystemBase {
      */
     public void setAngle(Rotation2d angle) {
         targetAngle = MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
+        double currentAngle = getAngle().getDegrees();
 
-        controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
-
+        motor.set(controller.calculate(currentAngle, targetAngle) + ArmConstants.ARM_KF_MAP.get(currentAngle) * currentAngle);
     }
 
     /**
@@ -155,11 +152,5 @@ public class Arm extends SubsystemBase {
      */
     public boolean isReachable(Rotation2d angle) {
         return angle.getDegrees() >= ArmConstants.MIN_ANGLE && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
-    }
-
-    @Override
-    public void periodic() {
-        // Sets the feedforward gains based on the current angle of the arm
-        controller.setFF(ArmConstants.ARM_UP_KF_MAP.get(getAngle().getDegrees()), 0);
     }
 }
