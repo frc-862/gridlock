@@ -52,7 +52,7 @@ public class Vision extends SubsystemBase {
 
     public Vision() {
         // Inits logging for vision
-        initLogging();
+        // initLogging();
 
         // Sets the appropriate camera position
         setCameraPose();
@@ -272,12 +272,14 @@ public class Vision extends SubsystemBase {
         // Set pipeline num to 2, should be retroreflective tape pipeline.
         setPipelineNum(2);
 
+        // Checks if we have vision
+        hasVision = LimelightHelpers.getTV(limelightName);
+
         this.horizAngleToTarget = LimelightHelpers.getTX(limelightName);
 
         boolean isOnTarget = isOnTarget(this.horizAngleToTarget);
 
-        // Checks if we have vision
-        hasVision = LimelightHelpers.getTV(limelightName);
+        setPipelineNum(0);
 
         // Checks our current angle on the target
         if (hasVision && !isOnTarget && validTarget()) {
@@ -323,11 +325,11 @@ public class Vision extends SubsystemBase {
     }
 
     public double calculateRetroReflectiveDistance(){
-        //top tape
+        // top tape
         if(curPipeline == 2){
             return(5.969/Math.tanh(verticalOffset));
         }
-        //bottom tape
+        // bottom tape
         else if(curPipeline == 3){
             return(13.781/Math.tanh(verticalOffset));
         }

@@ -35,6 +35,10 @@ import frc.thunder.shuffleboard.LightningShuffleboard;
         // THis is kinda dumb
 
         drivetrain.setChassisSpeeds(new ChassisSpeeds(0d, distance, 0d));
+
+        if (isFinished()){
+            end(false);
+        }
     }
 
     // Called once the command ends or is interrupted.
@@ -46,6 +50,12 @@ import frc.thunder.shuffleboard.LightningShuffleboard;
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        double horizAngleToTarget = vision.autoAlign();
+        boolean isOnTarget = vision.isOnTarget(horizAngleToTarget);
+        if (isOnTarget){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

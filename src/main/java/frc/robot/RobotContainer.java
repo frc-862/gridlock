@@ -21,6 +21,7 @@ import frc.robot.subsystems.ServoTurn;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
+import frc.robot.commands.AutoAlign;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
@@ -47,10 +48,10 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final Vision targetting = new Vision();
+    private static final Vision vision = new Vision();
 
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain(targetting);
+    private static final Drivetrain drivetrain = new Drivetrain(vision);
     private static final ServoTurn servoturn = new ServoTurn();
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
@@ -92,7 +93,10 @@ public class RobotContainer extends LightningContainer {
                 .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
                         drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
     
-        new Trigger(driver::getYButton).whileTrue(new StdDev(targetting));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
+
+        new Trigger(driver::getLeftBumper).whileTrue(new AutoAlign(drivetrain, vision));
+
         /*
          * //copilot controls new Trigger(copilot::getAButton).whileTrue(new Ground(lift)); new
          * Trigger(copilot::getBButton).whileTrue(new Stow(lift)); //TODO: implement color sensors
