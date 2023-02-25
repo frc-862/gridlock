@@ -56,11 +56,6 @@ public class Collector extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    @Override
-    public void periodic(){
-        //updateLogging();
-    }
-
     public void runCollector(double power) {
         motor.set(power);
     }

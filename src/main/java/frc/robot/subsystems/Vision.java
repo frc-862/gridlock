@@ -72,11 +72,11 @@ public class Vision extends SubsystemBase {
             LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TY", getBotPoseRed()[1]);
             LightningShuffleboard.setDouble("Vision", "Vision bot pose Red RZ", getBotPoseRed()[5]);
 
-            LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose", new double[] {getRobotPose().getX(), getRobotPose().getY(), getRobotPose().getRotation().getDegrees()});
+            LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose", () -> new double[] {getRobotPose().getX(), getRobotPose().getY(), getRobotPose().getRotation().getDegrees()});
             LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose blue",
-                    new double[] {getRobotPoseBlue().getX(), getRobotPoseBlue().getY(), getRobotPoseBlue().getRotation().getDegrees()});
+                    () -> new double[] {getRobotPoseBlue().getX(), getRobotPoseBlue().getY(), getRobotPoseBlue().getRotation().getDegrees()});
             LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose red",
-                    new double[] {getRobotPoseRed().getX(), getRobotPoseRed().getY(), getRobotPoseRed().getRotation().getDegrees()});
+                    () -> new double[] {getRobotPoseRed().getX(), getRobotPoseRed().getY(), getRobotPoseRed().getRotation().getDegrees()});
 
             LightningShuffleboard.setDouble("Vision", "RR Tape Horizontal Offset", getHorizontalOffset());
             LightningShuffleboard.setDouble("Vision", "RR Tape Vertical Offset", getVerticalOffset());

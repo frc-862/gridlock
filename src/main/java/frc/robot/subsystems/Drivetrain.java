@@ -163,7 +163,7 @@ public class Drivetrain extends SubsystemBase {
 
         // Starts logging and updates the shuffleboard
         // updateShu4fflebaord();
-        LightningShuffleboard.setDoubleArray("Drivetrain", "odo pose", new double[]{pose.getX(), pose.getY(), pose.getRotation().getRadians()});
+        LightningShuffleboard.setDoubleArray("Drivetrain", "odo pose", () -> new double[]{pose.getX(), pose.getY(), pose.getRotation().getRadians()});
     }
 
     /**
