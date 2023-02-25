@@ -333,7 +333,7 @@ public final class Constants {
         }
 
         public static final class PWM {
-            public static final int SERVO = 3;
+            public static final int SERVO = 0;
         }
 
         public static final class i2c { //Lowercase to avoid conflict with wpilib's I2C class
