@@ -50,7 +50,7 @@ public class Arm extends SubsystemBase {
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
         // Starts logging and updates the shuffleboard
-        initializeShuffleboard();
+        // initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
