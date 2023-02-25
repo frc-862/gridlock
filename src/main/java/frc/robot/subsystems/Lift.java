@@ -41,6 +41,7 @@ public class Lift extends SubsystemBase {
         arm.setAngle(arm.getAngle());
         wrist.setAngle(wrist.getAngle());
 
+        // Initialize the shuffleboard values and start logging data
         initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);

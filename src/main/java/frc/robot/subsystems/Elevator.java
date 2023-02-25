@@ -51,12 +51,12 @@ public class Elevator extends SubsystemBase {
         LightningShuffleboard.setBoolSupplier("Elevator", "Top limit", () -> getTopLimitSwitch());
         LightningShuffleboard.setBoolSupplier("Elevator", "Bottom limit", () -> getBottomLimitSwitch());
         LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator target height", () -> targetExtension);
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator height",() ->getExtension());
-        LightningShuffleboard.setBoolSupplier("Elevator", "Elevator on target", ()-> onTarget());
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator height", () -> getExtension());
+        LightningShuffleboard.setBoolSupplier("Elevator", "Elevator on target", () -> onTarget());
         LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor temperature", () -> motor.getMotorTemperature());
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (volts)",() -> motor.getAppliedOutput());
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (Amps)", () ->motor.getOutputCurrent());
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller input voltage", () ->motor.getBusVoltage());
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (volts)", () -> motor.getAppliedOutput());
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (Amps)", () -> motor.getOutputCurrent());
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller input voltage", () -> motor.getBusVoltage());
 
     }
 

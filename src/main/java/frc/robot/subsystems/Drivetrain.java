@@ -144,6 +144,7 @@ public class Drivetrain extends SubsystemBase {
         updateOdometry();
         updateDriveStates(states);
 
+        // Initialize the shuffleboard values and start logging data
         initializeShuffleboard();
 
         // Zero our gyro

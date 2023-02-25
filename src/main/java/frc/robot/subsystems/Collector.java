@@ -48,7 +48,7 @@ public class Collector extends SubsystemBase {
         colorMatch.addColorMatch(CollectorConstants.CONE_OPTIMAL);
         colorMatch.addColorMatch(CollectorConstants.CUBE_OPTIMAL);
 
-        // Starts logging
+        // Initialize the shuffleboard values and start logging data
         initialiizeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
