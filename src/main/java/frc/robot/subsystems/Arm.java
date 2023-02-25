@@ -54,18 +54,22 @@ public class Arm extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD, ArmConstants.kF), encoder);
         controller.setOutputRange(ArmConstants.MIN_POWER, ArmConstants.MAX_POWER);
 
+
+        // Starts logging and updates the shuffleboard
+        initializeShuffleboard();
+
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
     // Metod to starts logging and updates the shuffleboard
-    private void updateShuffleboard() {
-        LightningShuffleboard.setBool("Arm", "Arm Bottom Limit", getBottomLimitSwitch());
-        LightningShuffleboard.setBool("Arm", "Arm Top Limit", getTopLimitSwitch());
-        LightningShuffleboard.setDouble("Arm", "Arm angle", getAngle().getDegrees());
-        LightningShuffleboard.setDouble("Arm", "Arm Target Angle", targetAngle + OFFSET);
-        LightningShuffleboard.setDouble("Arm", "Arm motor controller input voltage", motor.getBusVoltage());
-        LightningShuffleboard.setDouble("Arm", "Arm motor controller output (Amps)", motor.getOutputCurrent());
-        LightningShuffleboard.setDouble("Arm", "Arm motor controller output (volts)", motor.getAppliedOutput());
+    private void initializeShuffleboard() {
+        LightningShuffleboard.setBoolSupplier("Arm", "Arm Bottom Limit", () -> getBottomLimitSwitch());
+        LightningShuffleboard.setBoolSupplier("Arm", "Arm Top Limit", () -> getTopLimitSwitch());
+        LightningShuffleboard.setDoubleSupplier("Arm", "Arm angle", () -> getAngle().getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Arm", "Arm Target Angle", () ->  targetAngle + OFFSET);
+        LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller input voltage", () -> motor.getBusVoltage());
+        LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller output (Amps)", () ->  motor.getOutputCurrent());
+        LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller output (volts)", () -> motor.getAppliedOutput());
     }
 
     /**
@@ -157,8 +161,5 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         // Sets the feedforward gains based on the current angle of the arm
         controller.setFF(ArmConstants.ARM_UP_KF_MAP.get(getAngle().getDegrees()), 0);
-
-        // Starts logging and updates the shuffleboard
-        updateShuffleboard();
     }
 }
