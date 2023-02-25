@@ -49,7 +49,7 @@
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "deadline",
-        "waitTime": 5.0
+        "waitTime": 7.0
       }
     },
     {
@@ -179,8 +179,8 @@
           "Store-For-Moving-3"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "after",
+        "waitTime": 7.0
       }
     },
     {

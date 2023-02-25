@@ -424,13 +424,14 @@ public final class Constants {
     // Constants for autonomous
     public static final class AutonomousConstants {
         // Path planner PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(5.25, 0, 0); // Drive velocity PID 10.5
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(3.5, 0, 0); // Rotation PID 7
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(2.5, 0, 0); // Drive velocity PID 10.5
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(4, 0, 0); // Rotation PID 7
         public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0); // X and Y position PID
 
         // Max velocity and acceleration for the path planner
-        public static final double MAX_VELOCITY = 3;
-        public static final double MAX_ACCELERATION = 1;
+        public static final double MAX_VELOCITY = 1.5;
+        public static final double MAX_ACCELERATION = .5
+        ;
 
     }
 }

@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -95,7 +96,7 @@ public class Drivetrain extends SubsystemBase {
     // Chassis speeds for the robot
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
-    private Pose2d visionPose = new Pose2d();
+    private Pose2d visionBotPose = new Pose2d();
 
     /**
      * Creates a new Drivetrain.
@@ -151,7 +152,6 @@ public class Drivetrain extends SubsystemBase {
         zeroHeading();
 
         CommandScheduler.getInstance().registerSubsystem(this);
-
     }
 
     @Override
@@ -163,7 +163,7 @@ public class Drivetrain extends SubsystemBase {
 
         // Starts logging and updates the shuffleboard
         // updateShu4fflebaord();
-        LightningShuffleboard.setDoubleArray("Drivetrain", "odo pose", () -> new double[]{pose.getX(), pose.getY(), pose.getRotation().getRadians()});
+        LightningShuffleboard.setDoubleArray("Drivetrain", "odo pose", () -> new double[] {ESpose.getX(), ESpose.getY(), ESpose.getRotation().getRadians()});
     }
 
     /**
@@ -249,20 +249,24 @@ public class Drivetrain extends SubsystemBase {
         updateModulePositions();
         ESpose = estimator.update(getYaw2d().plus(DrivetrainConstants.HEADING_OFFSET), modulePositions);
 
-        visionPose = vision.getRobotPoseBlue();
+        visionBotPose = vision.getRobotPoseBlue();
 
-        LightningShuffleboard.setBool("Drivetrain", "bool value", visionPose.getTranslation().getDistance(ESpose.getTranslation()) < 1);
-        LightningShuffleboard.setDouble("Drivetrain", "distance", visionPose.getTranslation().getDistance(ESpose.getTranslation()));
+        LightningShuffleboard.setBool("Drivetrain", "bool value", visionBotPose.getTranslation().getDistance(ESpose.getTranslation()) < 1);
+        LightningShuffleboard.setDouble("Drivetrain", "distance", visionBotPose.getTranslation().getDistance(ESpose.getTranslation()));
 
-        if (vision.getHasVision() && visionPose.getTranslation().getDistance(ESpose.getTranslation()) < 1) {
-            estimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp() - vision.getLatencyBotPoseBlue() / 1000);
-            ESpose = estimator.update(getHeading(), modulePositions);
+        LightningShuffleboard.setDouble("Drivetrain", "distance from tag", vision.getTagDistance());
+
+        if (vision.getHasVision() && !DriverStation.isAutonomousEnabled()) {
+            if (visionBotPose.getTranslation().getDistance(ESpose.getTranslation()) < 1 && vision.getTagDistance() < 4) {
+                estimator.addVisionMeasurement(visionBotPose, Timer.getFPGATimestamp() - vision.getLatencyBotPoseBlue() / 1000);
+                ESpose = estimator.update(getYaw2d().plus(DrivetrainConstants.HEADING_OFFSET), modulePositions);
+            }
         }
 
     }
 
     /**
-     * Method to set states of modules.
+     * 2 Method to set states of modules.
      */
     public void setStates(SwerveModuleState[] newStates) {
         states = newStates;
@@ -316,8 +320,6 @@ public class Drivetrain extends SubsystemBase {
 
         LightningShuffleboard.setDouble("Drivetrain", "Pitch angle", pigeon.getPitch());
         LightningShuffleboard.setDouble("Drivetrain", "Roll angle", pigeon.getRoll());
-
-        
 
     }
 
@@ -426,7 +428,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        estimator.resetPosition(getYaw2d(), modulePositions, pose);
+        estimator.resetPosition(getYaw2d().plus(DrivetrainConstants.HEADING_OFFSET), modulePositions, pose);
     }
 
     /**
