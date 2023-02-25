@@ -302,9 +302,25 @@ public class Limelight extends SubsystemBase {
         return expectedAngle < Constants.VisionConstants.HORIZ_DEGREE_TOLERANCE;
     }
 
+    /**
+     * setCameraPose
+     *
+     * @param pose the pose of the camera in the robot's coordinate space
+     */
     private void setCameraPose(Pose3d pose) {
+        //single use variable to avoid a comically long function call :)
+
+        double[] entries = new double[6];
+        entries[0] = pose.getTranslation().getX();
+        entries[1] = pose.getTranslation().getY();
+        entries[2] = pose.getTranslation().getZ();
+        entries[3] = pose.getRotation().getX();
+        entries[4] = pose.getRotation().getY();
+        entries[5] = pose.getRotation().getZ();
+
         if (hasVision()) {
-            LimelightHelpers.setCameraPose_RobotSpace(limelightName, pose);
+            LimelightHelpers.setCameraPose_RobotSpace(limelightName, entries[0], entries[1], entries[2], entries[3],
+                    entries[4], entries[5]);
         }
     }
 
