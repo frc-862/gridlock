@@ -46,7 +46,7 @@ public final class Constants {
         public static final int COPILOT_CONTROLLER_PORT = 1;
 
         // Deadband, min, and max power for the controllers
-        public static final double DEADBAND = 0.05;
+        public static final double DEADBAND = 0.1d;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 0.9d;
 

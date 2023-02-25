@@ -55,6 +55,8 @@ public class SwerveDrive extends CommandBase {
 
         double yOut = Math.pow(mag, 3) * theta.getSin();
 
+        double zOut = Math.pow(m_rotationSupplier.getAsDouble(), 3);
+
         // Call drive method from drivetrain
         // drivetrain.drive(
         //         // Supply chassie speeds from the translation suppliers using feild relative control
@@ -65,7 +67,7 @@ public class SwerveDrive extends CommandBase {
         drivetrain.drive(
                 // Supply chassie speeds from the translation suppliers using feild relative control
                 ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
-                        drivetrain.percentOutputToRadiansPerSecond(m_rotationSupplier.getAsDouble()), drivetrain.getYaw2d()));
+                        drivetrain.percentOutputToRadiansPerSecond(zOut), drivetrain.getYaw2d()));
 
         LightningShuffleboard.setDouble("joysticks", "X", m_translationXSupplier.getAsDouble());
 
