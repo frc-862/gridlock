@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.subsystems.Lift;
 
+/**
+ * Sets the lift position to the ground position
+ */
 public class Ground extends InstantCommand {
     private Lift lift;
 
@@ -14,6 +17,6 @@ public class Ground extends InstantCommand {
 
     @Override
     public void initialize() {
-        lift.setNextState(LiftState.ground);
+        lift.setGoalState(LiftState.ground);
     }
 }

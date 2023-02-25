@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.subsystems.Lift;
 
+/**
+ * Sets the lift position to the mid score position for cubes or cones depending on readings from
+ * the color sensor
+ */
 public class MidScore extends InstantCommand {
     private Lift lift;
     private boolean isCone;
@@ -18,9 +22,9 @@ public class MidScore extends InstantCommand {
     @Override
     public void initialize() {
         if (isCone) {
-            lift.setNextState(LiftState.mediumConeScore);
+            lift.setGoalState(LiftState.midConeScore);
         } else {
-            lift.setNextState(LiftState.mediumConeScore);
+            lift.setGoalState(LiftState.midConeScore);
         }
     }
 }
