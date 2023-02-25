@@ -142,6 +142,6 @@ public class Lift extends SubsystemBase {
         }
 
         // Starts logging and updates the shuffleboard
-        updateShuffleboard();
+        // updateShuffleboard();
     }
 }
