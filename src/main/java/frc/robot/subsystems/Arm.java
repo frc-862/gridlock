@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
 
 
         // Starts logging and updates the shuffleboard
-        initializeShuffleboard();
+        // initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
