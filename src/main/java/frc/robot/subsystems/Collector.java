@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.time.Period;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
@@ -48,10 +50,12 @@ public class Collector extends SubsystemBase {
         colorMatch.addColorMatch(CollectorConstants.CONE_OPTIMAL);
         colorMatch.addColorMatch(CollectorConstants.CUBE_OPTIMAL);
 
-        // Starts logging
-        initLogging();
-
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+
+    @Override
+    public void periodic(){
+        //updateLogging();
     }
 
     public void runCollector(double power) {
@@ -59,7 +63,7 @@ public class Collector extends SubsystemBase {
     }
 
     // Method to start logging
-    private void initLogging() {
+    private void updateLogging() {
         LightningShuffleboard.setDouble("Collector", "Collector motor temperature", motor.getMotorTemperature());
         LightningShuffleboard.setDouble("Collector", "Collector motor controller input voltage", motor.getBusVoltage());
         LightningShuffleboard.setDouble("Collector", "Collector motor controller output (amps)", motor.getOutputCurrent());
@@ -107,7 +111,7 @@ public class Collector extends SubsystemBase {
      * @return true if the color sensor detects a game piece
      */
     public boolean hasPiece() {
-        return getGamePiece() != GamePiece.NONE;
+        return true;// getGamePiece() != GamePiece.NONE;
     }
 
     /**

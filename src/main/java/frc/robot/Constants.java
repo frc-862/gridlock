@@ -344,8 +344,7 @@ public final class Constants {
 
         // Upper and lower magnitude thresholds for checking if we are on the charge station at all
         public static final double UPPER_MAGNITUDE_THRESHOLD = 11;
-        public static final double LOWER_MAGNITUDE_THRESHOLD = 3;
-
+        public static final double LOWER_MAGNITUDE_THRESHOLD = 7; // TODO RESET Value if possible was 2.5 If mag jumps during Auton
         // Min and max speeds for our auto balance
         public static final double MIN_SPEED_THRESHOLD = 0.35;
         public static final double MAX_SPEED_THRESHOLD = 3;
@@ -427,7 +426,7 @@ public final class Constants {
 
         // Max velocity and acceleration for the path planner
         public static final double MAX_VELOCITY = 3;
-        public static final double MAX_ACCELERATION = 3;
+        public static final double MAX_ACCELERATION = 1;
 
     }
 }

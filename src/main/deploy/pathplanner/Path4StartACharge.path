@@ -48,8 +48,8 @@
           "Store-For-Moving"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
-        "waitTime": 3.0
+        "waitBehavior": "deadline",
+        "waitTime": 5.0
       }
     },
     {
@@ -85,12 +85,12 @@
         "y": 4.4
       },
       "prevControl": {
-        "x": 1.6113692533597235,
-        "y": 4.4
+        "x": 1.9757844680090186,
+        "y": 4.602787822242324
       },
       "nextControl": {
-        "x": 2.088630746640277,
-        "y": 4.4
+        "x": 1.6033845477106068,
+        "y": 4.002410287274212
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -103,18 +103,18 @@
           "Store-For-Moving-2"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
+        "waitBehavior": "deadline",
         "waitTime": 5.0
       }
     },
     {
       "anchorPoint": {
-        "x": 2.952768587420199,
-        "y": 3.293411893528494
+        "x": 2.8727203816747147,
+        "y": 3.304847351492134
       },
       "prevControl": {
-        "x": 2.9070267555656364,
-        "y": 3.304847351492135
+        "x": 2.8264370515841306,
+        "y": 3.295850783481203
       },
       "nextControl": null,
       "holonomicAngle": 180.0,

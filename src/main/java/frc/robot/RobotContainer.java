@@ -10,6 +10,7 @@ import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
@@ -59,7 +60,7 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
-        // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
+        new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
         new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 

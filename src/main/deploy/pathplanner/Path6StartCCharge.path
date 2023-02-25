@@ -51,16 +51,16 @@
     },
     {
       "anchorPoint": {
-        "x": 7.094795920361074,
-        "y": 0.7515240030480062
+        "x": 6.75,
+        "y": 0.85
       },
       "prevControl": {
-        "x": 7.176003204319162,
-        "y": 0.7728258533435917
+        "x": 6.831207283958088,
+        "y": 0.8713018502955855
       },
       "nextControl": {
-        "x": 7.176003204319162,
-        "y": 0.7728258533435917
+        "x": 6.831207283958088,
+        "y": 0.8713018502955855
       },
       "holonomicAngle": 8.503746518376957,
       "isReversal": true,
@@ -73,8 +73,8 @@
           "Store-For-Moving"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
-        "waitTime": 3.0
+        "waitBehavior": "deadline",
+        "waitTime": 6.0
       }
     },
     {
@@ -159,7 +159,7 @@
     {
       "position": 1.3818181818181654,
       "names": [
-        "Set-Groud-Collect"
+        "Set-Ground-Collect"
       ]
     },
     {
