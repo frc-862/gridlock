@@ -77,6 +77,7 @@ public class Arm extends SubsystemBase {
         double currentAngle = getAngle().getDegrees();
 
         motor.set(controller.calculate(currentAngle, targetAngle) + ArmConstants.ARM_KF_MAP.get(currentAngle) * currentAngle);
+        // motor.set(controller.calculate(currentAngle, targetAngle) +  LightningShuffleboard.getDouble("Arm", "kF", 0) * currentAngle);
     }
 
     /**
@@ -149,5 +150,12 @@ public class Arm extends SubsystemBase {
      */
     public boolean isReachable(Rotation2d angle) {
         return angle.getDegrees() >= ArmConstants.MIN_ANGLE && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
+    }
+
+    @Override
+    public void periodic() {
+        controller.setP(LightningShuffleboard.getDouble("Arm", "kP", 0));
+        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint", 0)));
+        LightningShuffleboard.setDouble("Arm", "Wrist angle", getAngle().getDegrees());
     }
 }

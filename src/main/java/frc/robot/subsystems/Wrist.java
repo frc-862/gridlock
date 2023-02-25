@@ -45,7 +45,7 @@ public class Wrist extends SubsystemBase {
         encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
 
-        initializeShuffleboard();
+        // initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -68,7 +68,7 @@ public class Wrist extends SubsystemBase {
      * @return Rotation2d of the wrist from encoder
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(encoder.getPosition() - OFFSET);
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -360, 0));
     }
 
     /**
@@ -81,6 +81,7 @@ public class Wrist extends SubsystemBase {
         double currentAngle = getAngle().getDegrees();
 
         motor.set(controller.calculate(currentAngle, targetAngle) + WristConstants.WRIST_KF_MAP.get(currentAngle) * currentAngle);
+        // motor.set(controller.calculate(currentAngle, targetAngle) +  LightningShuffleboard.getDouble("Wrist", "kF", 0) * currentAngle);
     }
 
     /**
@@ -133,5 +134,13 @@ public class Wrist extends SubsystemBase {
      */
     public boolean onTarget(double target) {
         return Math.abs(getAngle().getDegrees() - target) < WristConstants.TOLERANCE;
+    }
+
+    @Override
+    public void periodic() {
+    
+        controller.setP(LightningShuffleboard.getDouble("Wrist", "kP", 0));
+        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Wrist", "setpoint", 0)));
+        LightningShuffleboard.setDouble("Wrist", "Wrist angle", getAngle().getDegrees());
     }
 }

@@ -3,8 +3,11 @@ package frc.robot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Vision;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
@@ -39,7 +42,7 @@ public class RobotContainer extends LightningContainer {
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
     private static final ServoTurn servoturn = new ServoTurn();
-    private static final Lift lift = new Lift(elevator, wrist, arm);
+    // private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
     private static final Drivetrain drivetrain = new Drivetrain(vision);
 
@@ -59,19 +62,30 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
+        // new Trigger(copilot::getAButton).onTrue(new InstantCommand(() -> elevator.setExtension(4)));
+        // new Trigger(copilot::getBButton).onTrue(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-75))));
+        // new Trigger(copilot::getXButton).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-90))));
+
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
         new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
         new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
 
+        // new Trigger(copilot::getAButton)
+        //         .whileTrue(new ParallelCommandGroup(new RunCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-80))), new RunCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-40)))));
+        // new Trigger(copilot::getBButton)
+        //         .whileTrue(new ParallelCommandGroup(new RunCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-45))), new RunCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-90)))));
+        // new Trigger(copilot::getXButton)
+        //         .whileTrue(new ParallelCommandGroup(new RunCommand(() -> arm.setAngle(Rotation2d.fromDegrees(0))), new RunCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-120)))));
+
         // copilot controls 
-        new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
-        new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
-        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
-        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
-        new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
-        new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
+        // new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
+        // new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
+        // new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
+        // new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
+        // new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
+        // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
 
     }
 
@@ -87,28 +101,18 @@ public class RobotContainer extends LightningContainer {
         // autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // Game paths
-        autoFactory.makeTrajectory("Path1StartB", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        // autoFactory.makeTrajectory("Path2StartB", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY,AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
-        // autoFactory.makeTrajectory("Path3StartA", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
-        autoFactory.makeTrajectory("Path4StartA", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path4StartACharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        // autoFactory.makeTrajectory("Path5StartC", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
-        autoFactory.makeTrajectory("Path6StartC", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path6StartCCharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        // autoFactory.makeTrajectory("Path7StartA", Maps.getPathMapPiece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
-        // autoFactory.makeTrajectory("Path8StartC", Maps.getPathMapPiece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
-        autoFactory.makeTrajectory("Path9StartB", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path9StartBCharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("stay", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("corner", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
-        new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("Path1StartB", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // // autoFactory.makeTrajectory("Path2StartB", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY,AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        // // autoFactory.makeTrajectory("Path3StartA", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        // autoFactory.makeTrajectory("Path4StartA", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("Path4StartACharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // // autoFactory.makeTrajectory("Path5StartC", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        // autoFactory.makeTrajectory("Path6StartC", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("Path6StartCCharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // // autoFactory.makeTrajectory("Path7StartA", Maps.getPathMapPiece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        // // autoFactory.makeTrajectory("Path8StartC", Maps.getPathMapPiece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
+        // autoFactory.makeTrajectory("Path9StartB", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("Path9StartBCharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
     }
 
     @Override
@@ -125,7 +129,7 @@ public class RobotContainer extends LightningContainer {
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
 
-        collector.setDefaultCommand(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
+        // collector.setDefaultCommand(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
     }
 
     @Override

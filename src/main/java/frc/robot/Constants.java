@@ -196,7 +196,7 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 0;
+        public static final double ENCODER_OFFSET_GRIDLOCK = 263.42;
         public static final double ENCODER_OFFSET_BLACKOUT = 196.5;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
@@ -209,23 +209,31 @@ public final class Constants {
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap ARM_KF_MAP = new InterpolationMap() {
             {
-                put(-110d, -0.0001);
-                put(-90d, 0.0002);
-                put(-60d, 0.00028);
-                put(-30d, 0.00065);
+                // put(-110d, -0.0001);
+                // put(-90d, 0.0002);
+                // put(-60d, 0.00028);
+                // put(-30d, 0.00065);
 
-                put(0d, 0.00075);
+                // put(0d, 0.00075);
 
-                put(30d, 0.0005);
-                put(60d, 0.00028);
+                // put(30d, 0.0005);
+                // put(60d, 0.00028);
 
-                put(90d, 0.0);
+                // put(90d, 0.0);
 
-                put(130d, -0.00065);
-                put(150d, -0.00070);
-                put(180d, -0.00075);
-                put(210d, 0.00065);
-                put(240d, 0.00028);
+                // put(130d, -0.00065);
+                // put(150d, -0.00070);
+                // put(180d, -0.00075);
+                // put(210d, 0.00065);
+                // put(240d, 0.00028);
+
+                put(-90d,0d);
+                put(-45d,-0.001);
+                put(-25d,-0.0025);
+                put(0d,-0.006);
+
+
+
             }
         };
     }
@@ -244,7 +252,7 @@ public final class Constants {
     public static final class WristConstants {
 
         // Motor configuration constants
-        public static final boolean MOTOR_INVERT = true;
+        public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 15; // TODO: make 20 for comp
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
@@ -266,7 +274,7 @@ public final class Constants {
         public static final double MAX_POWER = 1d;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 0;
+        public static final double ENCODER_OFFSET_GRIDLOCK = 57.22;
         public static final double ENCODER_OFFSET_BLACKOUT = 285.86;
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
@@ -279,7 +287,9 @@ public final class Constants {
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap WRIST_KF_MAP = new InterpolationMap() {
             {
-                put(0d, 0d);
+                put(-120d, 0.0001);
+                put(-90d, 0.0002);
+                put(-40d, 0.0003);
             }
         };
     }
