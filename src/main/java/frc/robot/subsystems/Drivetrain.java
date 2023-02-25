@@ -144,6 +144,8 @@ public class Drivetrain extends SubsystemBase {
         updateOdometry();
         updateDriveStates(states);
 
+        initializeShuffleboard();
+
         // Zero our gyro
         zeroHeading();
 
@@ -157,9 +159,6 @@ public class Drivetrain extends SubsystemBase {
         updateModulePositions();
         updateOdometry();
         resetOdymetyFVision(getYaw2d(), vision.getRobotPoseBlue());
-
-        // Starts logging and updates the shuffleboard
-        updateShufflebaord();
     }
 
     /**
@@ -275,40 +274,40 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Method to start sending values to the dashboard and start logging
-    private void updateShufflebaord() {
-        LightningShuffleboard.setDouble("Drivetrain", "Front left angle", frontLeftModule.getSteerAngle());
-        LightningShuffleboard.setDouble("Drivetrain", "Front right angle", frontRightModule.getSteerAngle());
-        LightningShuffleboard.setDouble("Drivetrain", "Back left angle", backLeftModule.getSteerAngle());
-        LightningShuffleboard.setDouble("Drivetrain", "Back right angle", backRightModule.getSteerAngle());
+    private void initializeShuffleboard() {
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left angle", () -> frontLeftModule.getSteerAngle());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right angle", () -> frontRightModule.getSteerAngle());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left angle", () -> backLeftModule.getSteerAngle());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right angle", () -> backRightModule.getSteerAngle());
 
-        LightningShuffleboard.setDouble("Drivetrain", "Front left drive velocity", frontLeftModule.getDriveVelocity());
-        LightningShuffleboard.setDouble("Drivetrain", "Front right drive velocity", frontRightModule.getDriveVelocity());
-        LightningShuffleboard.setDouble("Drivetrain", "Back left drive velocity", backLeftModule.getDriveVelocity());
-        LightningShuffleboard.setDouble("Drivetrain", "Back right drive velocity", backRightModule.getDriveVelocity());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left drive velocity", () -> frontLeftModule.getDriveVelocity());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right drive velocity", () -> frontRightModule.getDriveVelocity());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left drive velocity", () -> backLeftModule.getDriveVelocity());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right drive velocity", () -> backRightModule.getDriveVelocity());
 
-        LightningShuffleboard.setDouble("Drivetrain", "Front left drive voltage", frontLeftModule.getDriveVoltage());
-        LightningShuffleboard.setDouble("Drivetrain", "Front right drive voltage", frontRightModule.getDriveVoltage());
-        LightningShuffleboard.setDouble("Drivetrain", "Back left drive voltage", backLeftModule.getDriveVoltage());
-        LightningShuffleboard.setDouble("Drivetrain", "Back right drive voltage", backRightModule.getDriveVoltage());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left drive voltage", () -> frontLeftModule.getDriveVoltage());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right drive voltage", () -> frontRightModule.getDriveVoltage());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left drive voltage", () -> backLeftModule.getDriveVoltage());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right drive voltage", () -> backRightModule.getDriveVoltage());
 
-        LightningShuffleboard.setDouble("Drivetrain", "Front left target angle", states[0].angle.getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Front right target angle", states[1].angle.getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Back left target angle", states[2].angle.getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Back right target angle", states[3].angle.getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left target angle", () -> states[0].angle.getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right target angle", () -> states[1].angle.getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left target angle", () -> states[2].angle.getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right target angle", () -> states[3].angle.getDegrees());
 
-        LightningShuffleboard.setDouble("Drivetrain", "Front left target velocity", states[0].speedMetersPerSecond);
-        LightningShuffleboard.setDouble("Drivetrain", "Front right target velocity", states[1].speedMetersPerSecond);
-        LightningShuffleboard.setDouble("Drivetrain", "Back left target velocity", states[2].speedMetersPerSecond);
-        LightningShuffleboard.setDouble("Drivetrain", "Back right target velocity", states[3].speedMetersPerSecond);
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left target velocity", () -> states[0].speedMetersPerSecond);
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right target velocity", () -> states[1].speedMetersPerSecond);
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left target velocity", () -> states[2].speedMetersPerSecond);
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right target velocity", () -> states[3].speedMetersPerSecond);
 
-        LightningShuffleboard.setDouble("Drivetrain", "Pigeon heading", getYaw2d().getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Odometry heading", getHeading().getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Odometry X", pose.getX());
-        LightningShuffleboard.setDouble("Drivetrain", "Odometry Y", pose.getY());
-        LightningShuffleboard.setDouble("Drivetrain", "Odometry Z", pose.getRotation().getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "ES X", ESpose.getX());
-        LightningShuffleboard.setDouble("Drivetrain", "ES Y", ESpose.getY());
-        LightningShuffleboard.setDouble("Drivetrain", "ES Z", ESpose.getRotation().getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Pigeon heading", () -> getYaw2d().getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Odometry heading", () -> getHeading().getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Odometry X", () -> pose.getX());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Odometry Y", () -> pose.getY());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Odometry Z", () -> pose.getRotation().getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES X", () -> ESpose.getX());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Y", () -> ESpose.getY());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Z", () -> ESpose.getRotation().getDegrees());
 
     }
 

@@ -55,11 +55,11 @@ public class AutoBalance extends CommandBase {
     public AutoBalance(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
 
-        DataLogger.addDataElement("magnitude", () -> magnitude);
-        DataLogger.addDataElement("magnitudeROC", () -> magnitudeRateOfChange);
-        DataLogger.addDataElement("filtered magnitudeROC", () -> filteredMagnitudeRateOfChange);
-        DataLogger.addDataElement("pitch", () -> pitchAngle);
-        DataLogger.addDataElement("roll", () -> rollAngle);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance", "magnitude", () -> magnitude);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance","magnitudeROC", () -> magnitudeRateOfChange);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance","filtered magnitudeROC", () -> filteredMagnitudeRateOfChange);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance","pitch", () -> pitchAngle);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance","roll", () -> rollAngle);
 
         addRequirements(drivetrain);
     }
