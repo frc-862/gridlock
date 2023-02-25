@@ -41,6 +41,9 @@ public class Lift extends SubsystemBase {
         arm.setAngle(arm.getAngle());
         wrist.setAngle(wrist.getAngle());
 
+        // Initialize the shuffleboard values and start logging data
+        initializeShuffleboard();
+
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
@@ -48,14 +51,11 @@ public class Lift extends SubsystemBase {
         LightningShuffleboard.setString("Lift", "Lift current state", currentState.toString());
         LightningShuffleboard.setString("Lift", "Lift goal state", goalState.toString());
         LightningShuffleboard.setBool("Lift", "Lift on target", onTarget());
-
-        if(nextState != null) {
-            LightningShuffleboard.setDouble("Lift", "Lift next state elevator extension", nextState.getElevatorExtension());
-            LightningShuffleboard.setDouble("Lift", "Lift next state arm angle", nextState.getArmAngle().getDegrees());
-            LightningShuffleboard.setDouble("Lift", "Lift next state wrist angle", nextState.getWristAngle().getDegrees());
-            LightningShuffleboard.setString("Lift", "Lift next state plan", nextState.getPlan().toString());
-            LightningShuffleboard.set("Lift", "Lift next state", nextState);
-        }
+        LightningShuffleboard.setDouble("Lift", "Lift next state elevator extension", nextState.getElevatorExtension());
+        LightningShuffleboard.setDouble("Lift", "Lift next state arm angle", nextState.getArmAngle().getDegrees());
+        LightningShuffleboard.setDouble("Lift", "Lift next state wrist angle", nextState.getWristAngle().getDegrees());
+        LightningShuffleboard.setString("Lift", "Lift next state plan", nextState.getPlan().toString());
+        LightningShuffleboard.set("Lift", "Lift next state", nextState);
     }
 
     /**
@@ -142,6 +142,6 @@ public class Lift extends SubsystemBase {
         }
 
         // Starts logging and updates the shuffleboard
-        // updateShuffleboard();
+        updateShuffleboard();
     }
 }

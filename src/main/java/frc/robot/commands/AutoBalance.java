@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoBalanceConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.thunder.logging.DataLogger;
 import frc.thunder.math.LightningMath;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
@@ -55,11 +54,11 @@ public class AutoBalance extends CommandBase {
     public AutoBalance(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
 
-        DataLogger.addDataElement("magnitude", () -> magnitude);
-        DataLogger.addDataElement("magnitudeROC", () -> magnitudeRateOfChange);
-        DataLogger.addDataElement("filtered magnitudeROC", () -> filteredMagnitudeRateOfChange);
-        DataLogger.addDataElement("pitch", () -> pitchAngle);
-        DataLogger.addDataElement("roll", () -> rollAngle);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance", "magnitude", () -> magnitude);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance","magnitudeROC", () -> magnitudeRateOfChange);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance","filtered magnitudeROC", () -> filteredMagnitudeRateOfChange);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance","pitch", () -> pitchAngle);
+        LightningShuffleboard.setDoubleSupplier("AutoBalance","roll", () -> rollAngle);
 
         addRequirements(drivetrain);
     }
