@@ -159,7 +159,8 @@ public class Drivetrain extends SubsystemBase {
         resetOdymetyFVision(getYaw2d(), vision.getRobotPoseBlue());
 
         // Starts logging and updates the shuffleboard
-        // updateShufflebaord();
+        // updateShu4fflebaord();
+        LightningShuffleboard.setDoubleArray("Drivetrain", "odo pose", new double[]{pose.getX(), pose.getY(), pose.getRotation().getRadians()});
     }
 
     /**
@@ -312,6 +313,8 @@ public class Drivetrain extends SubsystemBase {
 
         LightningShuffleboard.setDouble("Drivetrain", "Pitch angle", pigeon.getPitch());
         LightningShuffleboard.setDouble("Drivetrain", "Roll angle", pigeon.getRoll());
+
+        
 
     }
 

@@ -7,7 +7,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3900241028727411,
+        "x": 1.390024102872741,
         "y": 4.45
       },
       "holonomicAngle": 0.0,
@@ -26,41 +26,16 @@
     },
     {
       "anchorPoint": {
-        "x": 5.3427793018210865,
-        "y": 4.894376008438179
-      },
-      "prevControl": {
-        "x": 4.244975337311588,
-        "y": 4.905811466401819
-      },
-      "nextControl": {
-        "x": 6.059169824167046,
-        "y": 4.886913607163742
-      },
-      "holonomicAngle": 0.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
         "x": 6.634986051712475,
-        "y": 4.585618643419883
+        "y": 4.59
       },
       "prevControl": {
         "x": 5.834503994257632,
-        "y": 4.6313604752744455
+        "y": 4.6357418318545625
       },
       "nextControl": {
         "x": 5.834503994257632,
-        "y": 4.6313604752744455
+        "y": 4.6357418318545625
       },
       "holonomicAngle": 0.0,
       "isReversal": true,
@@ -69,25 +44,26 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Game-Piece-One"
+          "Collect-Game-Piece",
+          "Store-For-Moving"
         ],
-        "executionBehavior": "parallelDeadline",
+        "executionBehavior": "sequential",
         "waitBehavior": "deadline",
-        "waitTime": 0
+        "waitTime": 5.0
       }
     },
     {
       "anchorPoint": {
         "x": 4.119185299711541,
-        "y": 4.597054101383524
+        "y": 4.6
       },
       "prevControl": {
-        "x": 5.3656502177483665,
-        "y": 4.597054101383524
+        "x": 4.553732702329884,
+        "y": 4.691697915492835
       },
       "nextControl": {
-        "x": 2.8865935744829008,
-        "y": 4.597054101383524
+        "x": 3.7275684950518553,
+        "y": 4.517361271882235
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -121,8 +97,34 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece-One"
+          "Score-Game-Piece",
+          "Store-For-Moving-2"
         ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "deadline",
+        "waitTime": 5.0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.75,
+        "y": 4.49
+      },
+      "prevControl": {
+        "x": 2.8155430918565116,
+        "y": 4.3797804000743525
+      },
+      "nextControl": {
+        "x": 4.182451458274545,
+        "y": 4.541007838138818
+      },
+      "holonomicAngle": 90.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -130,16 +132,16 @@
     },
     {
       "anchorPoint": {
-        "x": 5.6286657509121,
-        "y": 4.299732194328867
+        "x": 5.63,
+        "y": 4.3
       },
       "prevControl": {
-        "x": 5.537182087202976,
-        "y": 4.8829405504745385
+        "x": 5.634338461164516,
+        "y": 4.784258632006472
       },
       "nextControl": {
-        "x": 5.69614635211927,
-        "y": 3.869543361633158
+        "x": 5.6286657509121,
+        "y": 4.1510712408015396
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -173,8 +175,34 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Game-Piece-Two"
+          "Collect-Game-Piece-2",
+          "Store-For-Moving-3"
         ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.136941058475554,
+        "y": 4.45
+      },
+      "prevControl": {
+        "x": 5.883331765937219,
+        "y": 4.439483414793242
+      },
+      "nextControl": {
+        "x": 4.439378122693478,
+        "y": 4.459828605819836
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -182,16 +210,16 @@
     },
     {
       "anchorPoint": {
-        "x": 5.182682890330118,
-        "y": 4.482699521747118
+        "x": 3.2615259524384945,
+        "y": 4.45
       },
       "prevControl": {
-        "x": 5.925987657966758,
-        "y": 4.414086773965274
+        "x": 3.9947393815154353,
+        "y": 4.482278844992625
       },
       "nextControl": {
-        "x": 4.478317801207518,
-        "y": 4.547717837666127
+        "x": 2.015061034401669,
+        "y": 4.395125871564153
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -208,11 +236,11 @@
     {
       "anchorPoint": {
         "x": 1.8549646229107004,
-        "y": 4.45
+        "y": 3.85
       },
       "prevControl": {
-        "x": 3.1297008508690736,
-        "y": 4.45
+        "x": 2.335253857383606,
+        "y": 4.322603110256149
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -222,13 +250,39 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece-Two"
+          "Score-Game-Piece-2",
+          "Store-For-Moving-4"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.75,
+      "names": [
+        "Set-Ground-Collect"
+      ]
+    },
+    {
+      "position": 2.4872727272725847,
+      "names": [
+        "Set-High-Score"
+      ]
+    },
+    {
+      "position": 5.432727272726913,
+      "names": [
+        "Set-Ground-Collect-2"
+      ]
+    },
+    {
+      "position": 8.181818181817746,
+      "names": [
+        "Set-High-Score-2"
+      ]
+    }
+  ]
 }
