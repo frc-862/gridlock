@@ -50,7 +50,7 @@ public class Wrist extends SubsystemBase {
                 new SparkMaxPIDGains(WristConstants.UP_kP, WristConstants.UP_kI, WristConstants.UP_kD, WristConstants.UP_kF), encoder);
         controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
 
-        initializeShuffleboard();
+        // initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
