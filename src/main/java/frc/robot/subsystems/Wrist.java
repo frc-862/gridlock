@@ -152,8 +152,5 @@ public class Wrist extends SubsystemBase {
             }
         }
 
-        // Starts logging and updates the shuffleboard
-        initializeShuffleboard();
-
     }
 }
