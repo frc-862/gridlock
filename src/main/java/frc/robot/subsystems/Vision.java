@@ -100,9 +100,9 @@ public class Vision extends SubsystemBase {
     }
 
     public void setDriverCam() {
-        if (driverCam == true) {
+        if (driverCam) {
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-        } else if (driverCam == false) {
+        } else if (!driverCam) {
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
         }
     }
