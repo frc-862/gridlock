@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,68 +11,57 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboard;
-import frc.thunder.tuning.PIDDashboardTuner;
 
+/**
+ * The elevator subsystem
+ */
 public class Elevator extends SubsystemBase {
+
+    // The motor, encoder, and PID controller
     private CANSparkMax motor;
     private SparkMaxPIDController controller;
     private RelativeEncoder encoder;
+
+    // The target extension to be set to the elevator
     private double targetExtension;
 
     public Elevator() {
-        motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT,
-                ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMP_VOLTAGE,
-                ElevatorConstants.MOTOR_TYPE, ElevatorConstants.NEUTRAL_MODE);
-        encoder = NeoConfig.createBuiltinEncoder(motor);
-        controller =
-                NeoConfig.createPIDController(
-                        motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP,
-                                ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF),
-                        encoder);
-        encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
-        controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
+        // Create the motor and configure it
+        motor = NeoConfig.createMotor(CAN.ELEVATOR_MOTOR, ElevatorConstants.MOTOR_INVERT, ElevatorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMPENSATION, ElevatorConstants.MOTOR_TYPE,
+                ElevatorConstants.NEUTRAL_MODE);
+
+        // Create the relative encoder and sets the conversion factor
+        encoder = NeoConfig.createBuiltinEncoder(motor);
+        encoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
         encoder.setPosition(0);
 
-        // input inches per second
-        double maxVelocity = 0.003;
-        // ((1 / (ElevatorConstants.SPROCKET_DIAMETER * Math.PI) / ElevatorConstants.GEAR_RATIO)
-        // / 60) * 10;
-        controller.setSmartMotionMaxVelocity(maxVelocity, 0);
-        controller.setSmartMotionMaxAccel(maxVelocity * 2, 0);
-        controller.setSmartMotionAllowedClosedLoopError(0.05, 0);
-        controller.setSmartMotionMinOutputVelocity(0, 0);
-        controller.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+        // Create the PID controller and set the output range
+        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF), encoder);
+        controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
-        motor.setClosedLoopRampRate(.3);
-
-        initLogging();
-
-        // PIDDashboardTuner tuner = new PIDDashboardTuner("Elevator", controller);
+        initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    public void initLogging() {
-        DataLogger.addDataElement("Elevator Extension", () -> getExtension());
-        DataLogger.addDataElement("Elevator Target Height", () -> targetExtension);
-        DataLogger.addDataElement("Elevator on Target", () -> onTarget() ? 1 : 0);
-        DataLogger.addDataElement("bottom limit switch", () -> getBottomLimitSwitch() ? 1 : 0);
-        DataLogger.addDataElement("top limit switch", () -> getTopLimitSwitch() ? 1 : 0);
-
-        DataLogger.addDataElement("Elevator Motor Temperature", () -> motor.getMotorTemperature());
-        DataLogger.addDataElement("Elevator Motor Output Current", () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Output (Amps)",
-                () -> motor.getOutputCurrent());
-        DataLogger.addDataElement("Elevator Motor Controller Input Voltage",
-                () -> motor.getBusVoltage());
+    // Metod to starts logging and updates the shuffleboard
+    private void initializeShuffleboard() {
+        LightningShuffleboard.setBoolSupplier("Elevator", "Top limit", () -> getTopLimitSwitch());
+        LightningShuffleboard.setBoolSupplier("Elevator", "Bottom limit", () -> getBottomLimitSwitch());
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator target height", () -> targetExtension);
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator height", () -> getExtension());
+        LightningShuffleboard.setBoolSupplier("Elevator", "Elevator on target", () -> onTarget());
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor temperature", () -> motor.getMotorTemperature());
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (volts)", () -> motor.getAppliedOutput());
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (Amps)", () -> motor.getOutputCurrent());
+        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller input voltage", () -> motor.getBusVoltage());
 
     }
 
     /**
-     * getExtension
+     * Method to get the current extension of the elevator
      * 
      * @return the extension distance of the elevator in inches
      */
@@ -82,23 +70,22 @@ public class Elevator extends SubsystemBase {
     }
 
     /**
-     * setExtension
+     * Method to set Extension of the elevator to a target
      * 
      * @param target the target distance in inches
      */
     public void setExtension(double target) {
         // if the target is reachable, set the target and enable the controller
-        targetExtension = MathUtil.clamp(target, ElevatorConstants.MIN_EXTENSION,
-                ElevatorConstants.MAX_EXTENSION);
+        targetExtension = MathUtil.clamp(target, ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION);
         controller.setReference(targetExtension, CANSparkMax.ControlType.kPosition, 0);
 
         // otherwise, do nothing
     }
 
     /**
-     * setPower
+     * Method to set the power to the elvevator
      * 
-     * @param power the percent speed to set the elevator motor to
+     * @param power the percent power from -1 to 1
      */
     public void setPower(double power) {
         motor.set(MathUtil.clamp(power, ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER));
@@ -112,34 +99,36 @@ public class Elevator extends SubsystemBase {
     }
 
     /**
-     * onTarget
+     * Checks if the elevator is within the tolerance of the target extension
      * 
-     * @return true if the elevator is within the tolerance of the target
+     * @return true if the elevator is within the tolerance of the target extension
      */
     public boolean onTarget() {
         return Math.abs(targetExtension - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
     }
 
     /**
-     * onTarget
+     * Checks if the elevator is within the tolerance of the target extension
+     * 
      * @param target the target to check against
-     * @return true if the elevator is within the tolerance of the target
+     * 
+     * @return true if the elevator is within the tolerance of the target extension
      */
     public boolean onTarget(double target) {
         return Math.abs(target - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
     }
 
     /**
-     * getBottomLimitSwitch
+     * Gets the bottom limit switch
      * 
-     * @return true if the bottom limit switch is pressed
+     * @return true if the top limit switch is pressed
      */
     public boolean getBottomLimitSwitch() {
         return motor.getReverseLimitSwitch(ElevatorConstants.BOTTOM_LIMIT_SWITCH_TYPE).isPressed();
     }
 
     /**
-     * getTopLimitSwitch
+     * Gets the top limit switch
      * 
      * @return true if the top limit switch is pressed
      */
@@ -148,7 +137,7 @@ public class Elevator extends SubsystemBase {
     }
 
     /**
-     * setEncoderPosition
+     * Sets the encoder position
      *
      * @param position the position to set the encoder to in inches
      */
@@ -157,60 +146,25 @@ public class Elevator extends SubsystemBase {
     }
 
     /**
-     * isReachable
+     * Checks if the target height is reachable by the elevator based on min and max heights of the
+     * elevator
      * 
      * @param targetHeight the target height in inches
      * 
      * @return true if the target height is reachable by the elevator
      */
     public boolean isReachable(double targetHeight) {
-        // return targetHeight >= (ElevatorConstants.MIN_EXTENSION
-        // + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET)
-        // && targetHeight <= (ElevatorConstants.MAX_EXTENSION
-        // + ElevatorConstants.ELEVATOR_HEIGHT_OFFSET);
-        return true;
+        return targetHeight >= ElevatorConstants.MIN_EXTENSION && targetHeight <= ElevatorConstants.MAX_EXTENSION;
     }
 
     @Override
     public void periodic() {
-        // if (getTopLimitSwitch()) {
-        // encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
-        // }
+        if (getTopLimitSwitch()) {
+            encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
+        }
 
-        // if (getBottomLimitSwitch()) {
-        // encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
-        // }
-
-        LightningShuffleboard.setBool("Elevator", "Top Limit", getTopLimitSwitch());
-        LightningShuffleboard.setBool("Elevator", "Bottom Limit", getBottomLimitSwitch());
-        LightningShuffleboard.setDouble("Elevator", "Elevator Height", getExtension());
-
-        LightningShuffleboard.setBool("Lift", "Elevator on target", onTarget());
-        LightningShuffleboard.setDouble("Lift", "Elevator target", targetExtension);
-
-
-        // setExtension(LightningShuffleboard.getDouble("Elevator", "target elevator height", 0));
-        // controller.setP(LightningShuffleboard.getDouble("Elevator", "KP", controller.getP()));
-        // controller.setFF(LightningShuffleboard.getDouble("Elevator", "KF", controller.getFF()));
-
-        // controller.setSmartMotionMaxVelocity(
-        // LightningShuffleboard.getDouble("Elevator", "max velocity set", 0.02), 0);
-
-        // LightningShuffleboard.setString("Elevator", "strategy",
-        // controller.getSmartMotionAccelStrategy(0).toString());
-        // LightningShuffleboard.setDouble("Elevator", "mac veloc",
-        // controller.getSmartMotionMaxVelocity(0));
-        // LightningShuffleboard.setDouble("Elevator", "min veloc",
-        // controller.getSmartMotionMinOutputVelocity(0));
-        // LightningShuffleboard.setDouble("Elevator", "max accel",
-        // controller.getSmartMotionMaxAccel(0));
-        // LightningShuffleboard.setDouble("Elevator", "max error",
-        // controller.getSmartMotionAllowedClosedLoopError(0));
-
-        // motor.setClosedLoopRampRate(LightningShuffleboard.getDouble("Elevator", "ramp rate",
-        // .3));
-
-        LightningShuffleboard.setDouble("Elevator", "curr speed", motor.get());
-
+        if (getBottomLimitSwitch()) {
+            encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
+        }
     }
 }
