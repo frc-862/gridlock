@@ -26,8 +26,13 @@ public class Wrist extends SubsystemBase {
 
     // The target angle to be set to the wrist
     private double targetAngle;
+    private double minPower;
 
-    public Wrist() {
+    private Arm arm;
+
+    public Wrist(Arm arm) {
+        this.arm = arm;
+
         // If blackout, use the blackout offset
         if (Constants.isBlackout()) {
             OFFSET = WristConstants.ENCODER_OFFSET_BLACKOUT;
@@ -45,7 +50,7 @@ public class Wrist extends SubsystemBase {
         encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
 
-        // initializeShuffleboard();
+        initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -68,7 +73,11 @@ public class Wrist extends SubsystemBase {
      * @return Rotation2d of the wrist from encoder
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -360, 0));
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -180, 180));
+    }
+
+    public Rotation2d getGroundRelativeAngle(Rotation2d armAngle) {
+        return armAngle.plus(getAngle());
     }
 
     /**
@@ -77,11 +86,8 @@ public class Wrist extends SubsystemBase {
      * @param angle Rotation2d to set the wrist to
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
-        double currentAngle = getAngle().getDegrees();
-
-        motor.set(controller.calculate(currentAngle, targetAngle) + WristConstants.WRIST_KF_MAP.get(currentAngle) * currentAngle);
-        // motor.set(controller.calculate(currentAngle, targetAngle) +  LightningShuffleboard.getDouble("Wrist", "kF", 0) * currentAngle);
+        targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);        
+        // motor.set(controller.calculate(getAngle().getDegrees(), targetAngle) +  LightningShuffleboard.getDouble("Wrist", "kF", 0) * getGroundRelativeAngle(arm.getAngle()).getDegrees());
     }
 
     /**
@@ -138,9 +144,19 @@ public class Wrist extends SubsystemBase {
 
     @Override
     public void periodic() {
-    
-        controller.setP(LightningShuffleboard.getDouble("Wrist", "kP", 0));
-        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Wrist", "setpoint", 0)));
-        LightningShuffleboard.setDouble("Wrist", "Wrist angle", getAngle().getDegrees());
+
+        // controller.setP(LightningShuffleboard.getDouble("Lift", "wrist kP", WristConstants.kP));
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -90)));
+        LightningShuffleboard.setDouble("Lift", "ground relative wrist angle", getGroundRelativeAngle(arm.getAngle()).getDegrees());
+        LightningShuffleboard.setDouble("Lift", "wrist relative wrist angle", getAngle().getDegrees());
+
+        if (Math.abs(controller.getPositionError()) > 2) {
+            minPower = Math.signum(controller.getPositionError()) * -0.035;
+        } else {
+            minPower = 0;
+        }
+
+        motor.set(controller.calculate(getAngle().getDegrees(), targetAngle) + minPower
+                + WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees()) * getGroundRelativeAngle(arm.getAngle()).getDegrees());
     }
 }

@@ -159,12 +159,15 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (getTopLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
-        }
+        // if (getTopLimitSwitch()) {
+        //     encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
+        // }
 
-        if (getBottomLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
-        }
+        // if (getBottomLimitSwitch()) {
+        //     encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
+        // }
+
+
+        // setExtension(LightningShuffleboard.getDouble("Lift", "ele targ", 0));
     }
 }

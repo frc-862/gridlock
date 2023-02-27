@@ -50,7 +50,7 @@ public class Arm extends SubsystemBase {
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
         // Starts logging and updates the shuffleboard
-        // initializeShuffleboard();
+        initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -60,10 +60,11 @@ public class Arm extends SubsystemBase {
         LightningShuffleboard.setBoolSupplier("Arm", "Arm Bottom Limit", () -> getBottomLimitSwitch());
         LightningShuffleboard.setBoolSupplier("Arm", "Arm Top Limit", () -> getTopLimitSwitch());
         LightningShuffleboard.setDoubleSupplier("Arm", "Arm angle", () -> getAngle().getDegrees());
-        LightningShuffleboard.setDoubleSupplier("Arm", "Arm Target Angle", () -> targetAngle + OFFSET);
+        LightningShuffleboard.setDoubleSupplier("Arm", "Arm Target Angle", () -> targetAngle);
         LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller input voltage", () -> motor.getBusVoltage());
         LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller output (Amps)", () -> motor.getOutputCurrent());
         LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller output (volts)", () -> motor.getAppliedOutput());
+        LightningShuffleboard.setBoolSupplier("Arm", "Arm on target", () -> onTarget());
     }
 
     /**
@@ -74,9 +75,6 @@ public class Arm extends SubsystemBase {
      */
     public void setAngle(Rotation2d angle) {
         targetAngle = MathUtil.clamp(angle.getDegrees(), ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE);
-        double currentAngle = getAngle().getDegrees();
-
-        motor.set(controller.calculate(currentAngle, targetAngle) + ArmConstants.ARM_KF_MAP.get(currentAngle) * currentAngle);
         // motor.set(controller.calculate(currentAngle, targetAngle) +  LightningShuffleboard.getDouble("Arm", "kF", 0) * currentAngle);
     }
 
@@ -154,8 +152,12 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        controller.setP(LightningShuffleboard.getDouble("Arm", "kP", 0));
-        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "setpoint", 0)));
-        LightningShuffleboard.setDouble("Arm", "Wrist angle", getAngle().getDegrees());
+        // controller.setP(LightningShuffleboard.getDouble("Lift", "arm kP", ArmConstants.kP));
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "arm setpoint", -90)));
+        LightningShuffleboard.setDouble("Lift", "arm angle", getAngle().getDegrees());
+
+
+        double currentAngle = getAngle().getDegrees();
+        motor.set(controller.calculate(currentAngle, targetAngle) + ArmConstants.ARM_KF_MAP.get(currentAngle) * currentAngle);
     }
 }

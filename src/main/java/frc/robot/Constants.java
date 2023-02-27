@@ -187,7 +187,7 @@ public final class Constants {
         // Min and Max arm angles in degrees
         // TODO: change to actual values
         public static final double MAX_ANGLE = 90d;
-        public static final double MIN_ANGLE = -111d;
+        public static final double MIN_ANGLE = -120d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -227,12 +227,10 @@ public final class Constants {
                 // put(210d, 0.00065);
                 // put(240d, 0.00028);
 
-                put(-90d,0d);
-                put(-45d,-0.001);
-                put(-25d,-0.0025);
-                put(0d,-0.006);
-
-
+                put(-90d, 0d);
+                put(-45d, -0.001);
+                put(-25d, -0.0025);
+                put(0d, -0.006);
 
             }
         };
@@ -258,7 +256,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double kP = 0.001d;
+        public static final double kP = -0.003d;
         public static final double kI = 0d;
         public static final double kD = 0d;
 
@@ -266,16 +264,16 @@ public final class Constants {
         public static final double TOLERANCE = 10d; // TODO: set a better tolerance
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = -5d;
-        public static final double MIN_ANGLE = -146d;
+        public static final double MAX_ANGLE = 111d;
+        public static final double MIN_ANGLE = -59d;
 
         // Min and Max power
-        public static final double MIN_POWER = -1d;
-        public static final double MAX_POWER = 1d;
+        public static final double MIN_POWER = -0.5d;
+        public static final double MAX_POWER = 0.5d;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 57.22;
-        public static final double ENCODER_OFFSET_BLACKOUT = 285.86;
+        public static final double ENCODER_OFFSET_GRIDLOCK = 292.05;
+        public static final double ENCODER_OFFSET_BLACKOUT = 285.86; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;
@@ -287,9 +285,14 @@ public final class Constants {
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap WRIST_KF_MAP = new InterpolationMap() {
             {
-                put(-120d, 0.0001);
-                put(-90d, 0.0002);
-                put(-40d, 0.0003);
+                put(-90d, 0d);
+                put(-45d, 0.0005d);
+                put(-25d, 0.001d);
+                put(0d, 0.0025d);
+                put(25d, -0.001d);
+                put(45d, -0.0005d);
+                put(90d, 0d);
+                put(110d, 0d);
             }
         };
     }
@@ -429,6 +432,14 @@ public final class Constants {
         public enum LiftPlan {
             parallel, armPriority, elevatorPriority, elevatorLast
         }
+
+        public static final double ELEVATOR_STOWED_POS = 1;
+        public static final double ARM_STOWED_ANGLE = -120;
+        public static final double WRIST_STOWED_ANGLE = 112;
+
+        public static final double ELEVATOR_TRANSITION_POS = 8;
+        public static final double ARM_TRANSITION_ANGLE = -90;
+        public static final double WRIST_TRANSITION_ANGLE = 112;
     }
 
     // Constants for autonomous
