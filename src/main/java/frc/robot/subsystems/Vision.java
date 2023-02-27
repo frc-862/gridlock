@@ -9,6 +9,7 @@ import frc.thunder.shuffleboard.LightningShuffleboard;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 /**
  * The vision subsystem
@@ -49,6 +50,9 @@ public class Vision extends SubsystemBase {
     private double botPoseBlueTotalLatency;
     private double botPoseRedTotalLatency;
 
+    //initial drivercam settings
+    boolean driverCam = true;
+
     private double llForward = 0.1524;
     private double llRight = 0.14224;
 
@@ -58,6 +62,8 @@ public class Vision extends SubsystemBase {
 
         // Registers this as a proper Subsystem
         CommandScheduler.getInstance().registerSubsystem(this);
+
+        setDriverCam();
     }
 
     // Method to update shuffleboard with vision data
@@ -89,10 +95,22 @@ public class Vision extends SubsystemBase {
             LightningShuffleboard.setDouble("Vision", "Vision bot pose latency", getLatencyBotPose());
             LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue latency", getLatencyBotPoseBlue());
             LightningShuffleboard.setDouble("Vision", "Vision bot pose Red latency", getLatencyBotPoseRed());
-
+            
             LightningShuffleboard.setBool("Vision", "Vision", getHasVision());
     }
 
+    public void setDriverCam() {
+        if (driverCam) {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+        } else if (!driverCam) {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+        }
+    }
+
+    public boolean getCamMode(){
+        return driverCam;
+    }
+    
     /**
      * Gets the robot pose relative to the april tag
      * 
