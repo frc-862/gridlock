@@ -10,6 +10,7 @@ import frc.thunder.shuffleboard.LightningShuffleboard;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 /**
  * The vision subsystem
@@ -50,17 +51,24 @@ public class Vision extends SubsystemBase {
     private double botPoseBlueTotalLatency;
     private double botPoseRedTotalLatency;
 
+    //initial drivercam settings
+    boolean driverCam = true;
+
+    private double llForward = 0.1524;
+    private double llRight = 0.14224;
+
     public Vision() {
         // Sets the appropriate camera position
         setCameraPose();
 
         // Registers this as a proper Subsystem
         CommandScheduler.getInstance().registerSubsystem(this);
+
+        setDriverCam();
     }
 
     // Method to update shuffleboard with vision data
     private void updateShuffleboard() {
-        if (getHasVision()) {
             LightningShuffleboard.setDouble("Vision", "Vision bot pose TX", getBotPose()[0]);
             LightningShuffleboard.setDouble("Vision", "Vision bot pose TY", getBotPose()[1]);
             LightningShuffleboard.setDouble("Vision", "Vision bot pose RZ", getBotPose()[5]);
@@ -73,11 +81,11 @@ public class Vision extends SubsystemBase {
             LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TY", getBotPoseRed()[1]);
             LightningShuffleboard.setDouble("Vision", "Vision bot pose Red RZ", getBotPoseRed()[5]);
 
-            LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose", new double[] {getRobotPose().getX(), getRobotPose().getY(), getRobotPose().getRotation().getDegrees()});
+            LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose", () -> new double[] {getRobotPose().getX(), getRobotPose().getY(), getRobotPose().getRotation().getDegrees()});
             LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose blue",
-                    new double[] {getRobotPoseBlue().getX(), getRobotPoseBlue().getY(), getRobotPoseBlue().getRotation().getDegrees()});
+                    () -> new double[] {getRobotPoseBlue().getX(), getRobotPoseBlue().getY(), getRobotPoseBlue().getRotation().getDegrees()});
             LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose red",
-                    new double[] {getRobotPoseRed().getX(), getRobotPoseRed().getY(), getRobotPoseRed().getRotation().getDegrees()});
+                    () -> new double[] {getRobotPoseRed().getX(), getRobotPoseRed().getY(), getRobotPoseRed().getRotation().getDegrees()});
 
             LightningShuffleboard.setDouble("Vision", "RR Tape Horizontal Offset", getHorizontalOffset());
             LightningShuffleboard.setDouble("Vision", "RR Tape Vertical Offset", getVerticalOffset());
@@ -88,9 +96,22 @@ public class Vision extends SubsystemBase {
             LightningShuffleboard.setDouble("Vision", "Vision bot pose latency", getLatencyBotPose());
             LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue latency", getLatencyBotPoseBlue());
             LightningShuffleboard.setDouble("Vision", "Vision bot pose Red latency", getLatencyBotPoseRed());
+            
+            LightningShuffleboard.setBool("Vision", "Vision", getHasVision());
+    }
+
+    public void setDriverCam() {
+        if (driverCam) {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+        } else if (!driverCam) {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
         }
     }
 
+    public boolean getCamMode(){
+        return driverCam;
+    }
+    
     /**
      * Gets the robot pose relative to the april tag
      * 
@@ -98,9 +119,9 @@ public class Vision extends SubsystemBase {
      */
     public Pose2d getRobotPose() {
         if (getHasVision()) {
-            return new Pose2d(new Translation2d(getBotPose()[0], getBotPose()[1]), Rotation2d.fromDegrees(getBotPose()[5]));
+            return new Pose2d(new Translation2d(getBotPose()[0] - llForward, getBotPose()[1] - llRight), Rotation2d.fromDegrees(getBotPose()[5]));
         } else {
-            return null;
+            return new Pose2d();
         }
     }
 
@@ -111,9 +132,9 @@ public class Vision extends SubsystemBase {
      */
     public Pose2d getRobotPoseBlue() {
         if (getHasVision()) {
-            return new Pose2d(new Translation2d(getBotPoseBlue()[0], getBotPoseBlue()[1]), Rotation2d.fromDegrees(getBotPoseBlue()[5]));
+            return new Pose2d(new Translation2d(getBotPoseBlue()[0] - llForward, getBotPoseBlue()[1] - llRight), Rotation2d.fromDegrees(getBotPoseBlue()[5]));
         } else {
-            return null;
+            return new Pose2d();
         }
     }
 
@@ -124,9 +145,9 @@ public class Vision extends SubsystemBase {
      */
     public Pose2d getRobotPoseRed() {
         if (getHasVision()) {
-            return new Pose2d(new Translation2d(getBotPoseRed()[0], getBotPoseRed()[1]), Rotation2d.fromDegrees(getBotPoseRed()[5]));
+            return new Pose2d(new Translation2d(getBotPoseRed()[0] - llForward, getBotPoseRed()[1] - llRight), Rotation2d.fromDegrees(getBotPoseRed()[5]));
         } else {
-            return null;
+            return new Pose2d();
         }
     }
 

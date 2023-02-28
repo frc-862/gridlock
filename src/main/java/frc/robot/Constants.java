@@ -8,6 +8,7 @@ import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -45,7 +46,7 @@ public final class Constants {
         public static final int COPILOT_CONTROLLER_PORT = 1;
 
         // Deadband, min, and max power for the controllers
-        public static final double DEADBAND = 0.05;
+        public static final double DEADBAND = 0.1d;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 0.9d;
 
@@ -83,8 +84,11 @@ public final class Constants {
         public static final int STEER_CURRENT_LIMIT = 30;
         public static final double NOMINAL_VOLTAGE = 12d;
 
+        // Pigeon heading offset 
+        public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
+
         // Standard dev for robot pose
-        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(0.3313838876, 0.2642363651, 0.03681853519);
+        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(1, 1, 0.0368); // (0.3313838876, 0.2642363651, 0.03681853519);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -393,8 +397,8 @@ public final class Constants {
         // Arbitrary value for how close the robot needs to be to the target (in angles)
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
-        // Standard deviation for vision
-        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
+        // Standard deviation for vision, heading is 1000 becuase were using pigeon, so i dont want to use vision heading
+        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(2, 1.4, 1000); //(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
     }
 
     // Constants for the lift
