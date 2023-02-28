@@ -43,9 +43,9 @@ public class RobotContainer extends LightningContainer {
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(frontLimelight, backLimelight);
-    private static final Arm arm = new Arm();
-    private static final Wrist wrist = new Wrist();
-    private static final Elevator elevator = new Elevator();
+    // private static final Arm arm = new Arm();
+    // private static final Wrist wrist = new Wrist();
+    // private static final Elevator elevator = new Elevator();
     private static final ServoTurn servoturn = new ServoTurn();
     // private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
