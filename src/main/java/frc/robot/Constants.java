@@ -443,4 +443,16 @@ public final class Constants {
         public static final double MAX_ACCELERATION = 3;
 
     }
+
+    //Constants for autoAlign
+    public static final class AutoAlignConstants {
+        // PID constants for auto align
+        public static final PIDConstants AUTO_ALIGN_PID_CONSTANTS = new PIDConstants(0.05, 0, 0);
+
+        // Tolerance for auto align
+        public static final double TOLERANCE = 3d;
+
+        //Offset limelight off center
+        public static final double OFFSET = -4.5; //TODO determine for gridlock
+    }
 }

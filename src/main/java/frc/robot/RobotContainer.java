@@ -42,7 +42,7 @@ public class RobotContainer extends LightningContainer {
     private static final Limelight backLimelight = new Limelight(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight,backLimelight);
+    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight, backLimelight);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
@@ -73,33 +73,20 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
         new Trigger(driver::getYButton).whileTrue(new StdDev(backLimelight));
         
+        new Trigger(driver::getRightBumper).whileTrue(new AutoAlign(drivetrain, frontLimelight, 2)); // Retroreflective tape
+        new Trigger(driver::getLeftBumper).whileTrue(new AutoAlign(drivetrain, backLimelight, 0)); //April tag
 
+        AutoAlign(drivetrain, frontLimelight, 2);
         // copilot controls 
         // new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
         // new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
         // new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
         // new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
         // new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
-        // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
-
-        new Trigger(driver::getXButton)
-                .whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3),
-                        drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
-    
-        new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
-
-        new Trigger(driver::getLeftStickButton).whileTrue(new AutoAlign(drivetrain, vision));
-
-        /*
-         * //copilot controls new Trigger(copilot::getAButton).whileTrue(new Ground(lift)); new
-         * Trigger(copilot::getBButton).whileTrue(new Stow(lift)); //TODO: implement color sensors
-         * into the commands themselves new Trigger(copilot::getYButton).whileTrue(new
-         * HighScore(lift, false)); new Trigger(copilot::getXButton).whileTrue(new MidScore(lift,
-         * false)); new Trigger(copilot::getRightBumper).whileTrue(new
-         * ReverseDoubleSubstationCollect(lift)); new Trigger(copilot::getLeftBumper).whileTrue(new
-         * DoubleSubstationCollect(lift));
-         */
+        // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));    
     }
+
+    private void AutoAlign(Drivetrain drivetrain2, Limelight frontlimelight2, int i) {}
 
     // Creates the autonomous commands
     @Override
@@ -146,8 +133,8 @@ public class RobotContainer extends LightningContainer {
          */
         // drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX() * Math.sqrt(2)), () -> joystickFilter.filter(driver.getLeftY() * Math.sqrt(2)),
         //         () -> -joystickFilter.filter(driver.getRightX())));
-        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> MathUtil.applyDeadband(-driver.getLeftX(), XboxControllerConstants.DEADBAND), () -> MathUtil.applyDeadband(driver.getLeftY(), XboxControllerConstants.DEADBAND),
-                () -> -MathUtil.applyDeadband(driver.getRightX(), XboxControllerConstants.DEADBAND)));
+        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> MathUtil.applyDeadband(-driver.getLeftX(), XboxControllerConstants.DEADBAND),
+                () -> MathUtil.applyDeadband(driver.getLeftY(), XboxControllerConstants.DEADBAND), () -> -MathUtil.applyDeadband(driver.getRightX(), XboxControllerConstants.DEADBAND)));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
