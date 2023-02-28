@@ -2,7 +2,8 @@ package frc.robot;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Limelight;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.thunder.LightningContainer;
 import frc.robot.Constants.AutonomousConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
@@ -34,16 +36,17 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final Vision vision = new Vision();
+    private static final Limelight frontLimelight = new Limelight(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
+    private static final Limelight backLimelight = new Limelight(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
-    // private static final Arm arm = new Arm();
-    // private static final Wrist wrist = new Wrist();
-    // private static final Elevator elevator = new Elevator();
+    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight,backLimelight);
+    private static final Arm arm = new Arm();
+    private static final Wrist wrist = new Wrist();
+    private static final Elevator elevator = new Elevator();
     private static final ServoTurn servoturn = new ServoTurn();
     // private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
-    private static final Drivetrain drivetrain = new Drivetrain(vision);
 
     // Creates our controllers and deadzones
     private static final XboxController driver = new XboxController(XboxControllerConstants.DRIVER_CONTROLLER_PORT);
@@ -65,7 +68,9 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
-        new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(backLimelight));
+        
 
         // copilot controls 
         // new Trigger(copilot::getAButton).whileTrue(new Ground(lift));

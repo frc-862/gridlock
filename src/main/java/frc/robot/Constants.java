@@ -8,6 +8,7 @@ import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -167,6 +168,14 @@ public final class Constants {
         // Elevator limit switch types
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+    }
+
+    public static final class LimelightConstants {
+        public static final String FRONT_NAME = "limelight-front";
+        public static final String BACK_NAME = "limelight-back";
+        public static final Pose3d FRONT_POSE = new Pose3d();
+        public static final Pose3d BACK_POSE = new Pose3d();
+
     }
 
     public static final class ArmConstants {
