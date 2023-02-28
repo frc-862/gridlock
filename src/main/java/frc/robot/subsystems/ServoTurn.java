@@ -18,8 +18,9 @@ public class ServoTurn extends SubsystemBase {
      * 
      * @param position the position to turn the servo to, between 0 and 1
      */
+
     public void turnServo(double position) {
         servo.set(position);
-        LightningShuffleboard.setDouble("Servo", "Servo Position", position);
+        // LightningShuffleboard.setDouble("Servo", "Servo Position", position);
     }
 }

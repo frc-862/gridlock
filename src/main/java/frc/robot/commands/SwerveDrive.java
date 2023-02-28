@@ -69,9 +69,9 @@ public class SwerveDrive extends CommandBase {
                 ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
                         drivetrain.percentOutputToRadiansPerSecond(zOut), drivetrain.getYaw2d()));
 
-        LightningShuffleboard.setDouble("joysticks", "X", m_translationXSupplier.getAsDouble());
+        // LightningShuffleboard.setDouble("joysticks", "X", m_translationXSupplier.getAsDouble());
 
-        LightningShuffleboard.setDouble("joysticks", "Y", m_translationYSupplier.getAsDouble());
+        // LightningShuffleboard.setDouble("joysticks", "Y", m_translationYSupplier.getAsDouble());
     }
 
     @Override

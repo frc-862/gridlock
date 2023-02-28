@@ -5,7 +5,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -53,6 +59,9 @@ public class Vision extends SubsystemBase {
     //initial drivercam settings
     boolean driverCam = true;
 
+    // Periodic Shuffleboard 
+    private LightningShuffleboardPeriodic periodicShuffleboard;
+
     private double llForward = 0.1524;
     private double llRight = 0.14224;
 
@@ -64,39 +73,65 @@ public class Vision extends SubsystemBase {
         CommandScheduler.getInstance().registerSubsystem(this);
 
         setDriverCam();
+
+        updateShuffleboard();
     }
 
     // Method to update shuffleboard with vision data
     private void updateShuffleboard() {
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose TX", getBotPose()[0]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose TY", getBotPose()[1]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose RZ", getBotPose()[5]);
 
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TX", getBotPoseBlue()[0]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TY", getBotPoseBlue()[1]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue RZ", getBotPoseBlue()[5]);
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Vision", .2d, new Pair<String, Object>("Vision bot pose TX", (DoubleSupplier) () -> getBotPose()[0]),
+                new Pair<String, Object>("Vision bot pose TY", (DoubleSupplier) () -> getBotPose()[1]), new Pair<String, Object>("Vision bot pose RZ", (DoubleSupplier) () -> getBotPose()[5]),
+                new Pair<String, Object>("Vision bot pose Blue TX", (DoubleSupplier) () -> getBotPoseBlue()[0]),
+                new Pair<String, Object>("Vision bot pose Blue TY", (DoubleSupplier) () -> getBotPoseBlue()[1]),
+                new Pair<String, Object>("Vision bot pose Blue RZ", (DoubleSupplier) () -> getBotPoseBlue()[5]),
+                new Pair<String, Object>("Vision bot pose Red TX", (DoubleSupplier) () -> getBotPoseRed()[0]),
+                new Pair<String, Object>("Vision bot pose Red TY", (DoubleSupplier) () -> getBotPoseRed()[1]),
+                new Pair<String, Object>("Vision bot pose Red RZ", (DoubleSupplier) () -> getBotPoseRed()[5]),
+                new Pair<String, Object>("Vision robot bot pose", (Supplier<double[]>) () -> new double[] {getRobotPose().getX(), getRobotPose().getY(), getRobotPose().getRotation().getDegrees()}),
+                new Pair<String, Object>("Vision robot bot pose blue",
+                        (Supplier<double[]>) () -> new double[] {getRobotPoseBlue().getX(), getRobotPoseBlue().getY(), getRobotPoseBlue().getRotation().getDegrees()}),
+                new Pair<String, Object>("Vision robot bot pose red",
+                        (Supplier<double[]>) () -> new double[] {getRobotPoseRed().getX(), getRobotPoseRed().getY(), getRobotPoseRed().getRotation().getDegrees()}),
+                new Pair<String, Object>("RR Tape Horizontal Offset", (DoubleSupplier) () -> getHorizontalOffset()),
+                new Pair<String, Object>("RR Tape Vertical Offset", (DoubleSupplier) () -> getVerticalOffset()),
+                new Pair<String, Object>("RR Tape Target Area", (DoubleSupplier) () -> getTargetArea()),
+                new Pair<String, Object>("Vision latency pipeline", (DoubleSupplier) () -> getLatencyPipline()),
+                new Pair<String, Object>("Vision latency capture", (DoubleSupplier) () -> getLatencyCapture()),
+                new Pair<String, Object>("Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
+                new Pair<String, Object>("Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
+                new Pair<String, Object>("Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
+                new Pair<String, Object>("Vision has vision", (BooleanSupplier) () -> getHasVision()));
 
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TX", getBotPoseRed()[0]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TY", getBotPoseRed()[1]);
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red RZ", getBotPoseRed()[5]);
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose TX", getBotPose()[0]);
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose TY", getBotPose()[1]);
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose RZ", getBotPose()[5]);
 
-            LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose", () -> new double[] {getRobotPose().getX(), getRobotPose().getY(), getRobotPose().getRotation().getDegrees()});
-            LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose blue",
-                    () -> new double[] {getRobotPoseBlue().getX(), getRobotPoseBlue().getY(), getRobotPoseBlue().getRotation().getDegrees()});
-            LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose red",
-                    () -> new double[] {getRobotPoseRed().getX(), getRobotPoseRed().getY(), getRobotPoseRed().getRotation().getDegrees()});
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TX", getBotPoseBlue()[0]);
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TY", getBotPoseBlue()[1]);
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue RZ", getBotPoseBlue()[5]);
 
-            LightningShuffleboard.setDouble("Vision", "RR Tape Horizontal Offset", getHorizontalOffset());
-            LightningShuffleboard.setDouble("Vision", "RR Tape Vertical Offset", getVerticalOffset());
-            LightningShuffleboard.setDouble("Vision", "RR Tape Target Area", getTargetArea());
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TX", getBotPoseRed()[0]);
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TY", getBotPoseRed()[1]);
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose Red RZ", getBotPoseRed()[5]);
 
-            LightningShuffleboard.setDouble("Vision", "Vision latency pipeline", getLatencyPipline());
-            LightningShuffleboard.setDouble("Vision", "Vision latency capture", getLatencyCapture());
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose latency", getLatencyBotPose());
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue latency", getLatencyBotPoseBlue());
-            LightningShuffleboard.setDouble("Vision", "Vision bot pose Red latency", getLatencyBotPoseRed());
-            
-            LightningShuffleboard.setBool("Vision", "Vision", getHasVision());
+        // LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose", () -> new double[] {getRobotPose().getX(), getRobotPose().getY(), getRobotPose().getRotation().getDegrees()});
+        // LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose blue",
+        // () -> new double[] {getRobotPoseBlue().getX(), getRobotPoseBlue().getY(), getRobotPoseBlue().getRotation().getDegrees()});
+        // LightningShuffleboard.setDoubleArray("Vision", "Vision robot bot pose red",
+        // () -> new double[] {getRobotPoseRed().getX(), getRobotPoseRed().getY(), getRobotPoseRed().getRotation().getDegrees()});
+
+        // LightningShuffleboard.setDouble("Vision", "RR Tape Horizontal Offset", getHorizontalOffset());
+        // LightningShuffleboard.setDouble("Vision", "RR Tape Vertical Offset", getVerticalOffset());
+        // LightningShuffleboard.setDouble("Vision", "RR Tape Target Area", getTargetArea());
+
+        // LightningShuffleboard.setDouble("Vision", "Vision latency pipeline", getLatencyPipline());
+        // LightningShuffleboard.setDouble("Vision", "Vision latency capture", getLatencyCapture());
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose latency", getLatencyBotPose());
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue latency", getLatencyBotPoseBlue());
+        // LightningShuffleboard.setDouble("Vision", "Vision bot pose Red latency", getLatencyBotPoseRed());
+
+        // LightningShuffleboard.setBool("Vision", "Vision", getHasVision());
     }
 
     public void setDriverCam() {
@@ -107,10 +142,10 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    public boolean getCamMode(){
+    public boolean getCamMode() {
         return driverCam;
     }
-    
+
     /**
      * Gets the robot pose relative to the april tag
      * 

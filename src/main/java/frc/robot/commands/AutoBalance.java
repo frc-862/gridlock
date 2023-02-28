@@ -1,6 +1,9 @@
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,6 +15,7 @@ import frc.robot.Constants.AutoBalanceConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.thunder.math.LightningMath;
 import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
  * This command is used to balance the robot on the climb. It uses the IMU to determine the pitch
@@ -44,6 +48,9 @@ public class AutoBalance extends CommandBase {
     // Current state of the climb
     private climbStates climbState;
 
+    // Periodic Shuffleboard
+    private LightningShuffleboardPeriodic periodicShuffleboard;
+
     /**
      * This command is used to balance the robot on the climb. It uses the IMU to determine the pitch
      * and roll of the robot. It then uses a PID controller to determine the speed of the robot to keep
@@ -54,13 +61,25 @@ public class AutoBalance extends CommandBase {
     public AutoBalance(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
 
-        LightningShuffleboard.setDoubleSupplier("AutoBalance", "magnitude", () -> magnitude);
-        LightningShuffleboard.setDoubleSupplier("AutoBalance","magnitudeROC", () -> magnitudeRateOfChange);
-        LightningShuffleboard.setDoubleSupplier("AutoBalance","filtered magnitudeROC", () -> filteredMagnitudeRateOfChange);
-        LightningShuffleboard.setDoubleSupplier("AutoBalance","pitch", () -> pitchAngle);
-        LightningShuffleboard.setDoubleSupplier("AutoBalance","roll", () -> rollAngle);
+        initializeShuffleboard();
+
+        // LightningShuffleboard.setDoubleSupplier("AutoBalance", "magnitude", () -> magnitude);
+        // LightningShuffleboard.setDoubleSupplier("AutoBalance","magnitudeROC", () -> magnitudeRateOfChange);
+        // LightningShuffleboard.setDoubleSupplier("AutoBalance","filtered magnitudeROC", () -> filteredMagnitudeRateOfChange);
+        // LightningShuffleboard.setDoubleSupplier("AutoBalance","pitch", () -> pitchAngle);
+        // LightningShuffleboard.setDoubleSupplier("AutoBalance","roll", () -> rollAngle);
 
         addRequirements(drivetrain);
+    }
+
+    /**
+     * Initializes the shuffleboard
+     */
+    private void initializeShuffleboard() {
+        periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", 0.2, new Pair<String, Object>("magnitude", (DoubleSupplier) () -> magnitude),
+                new Pair<String, Object>("magnitudeROC", (DoubleSupplier) () -> magnitudeRateOfChange),
+                new Pair<String, Object>("filtered magnitudeROC", (DoubleSupplier) () -> filteredMagnitudeRateOfChange), new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle),
+                new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle));
     }
 
     @Override
@@ -73,6 +92,8 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public void execute() {
+
+        periodicShuffleboard.loop();
 
         // Get the pitch and roll of the robot
         pitchAngle = drivetrain.getPitch2d().getDegrees();
@@ -95,8 +116,8 @@ public class AutoBalance extends CommandBase {
                     AutoBalanceConstants.MAX_SPEED_THRESHOLD);
         }
 
-        LightningShuffleboard.setDouble("autoBalance", "speed", speedMetersPerSecond);
-        LightningShuffleboard.setDouble("autoBalance", "error", controller.getPositionError());
+        // LightningShuffleboard.setDouble("autoBalance", "speed", speedMetersPerSecond);
+        // LightningShuffleboard.setDouble("autoBalance", "error", controller.getPositionError());
 
         // Set the states of the swerve modules
         for (int i = 0; i < moduleStates.length; i++) {

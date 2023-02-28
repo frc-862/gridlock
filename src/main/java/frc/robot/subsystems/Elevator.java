@@ -1,9 +1,13 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -12,6 +16,7 @@ import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
  * The elevator subsystem
@@ -25,6 +30,9 @@ public class Elevator extends SubsystemBase {
 
     // The target extension to be set to the elevator
     private double targetExtension;
+
+    // Periodic Shuffleboard 
+    private LightningShuffleboardPeriodic periodicShuffleboard;
 
     public Elevator() {
 
@@ -48,15 +56,24 @@ public class Elevator extends SubsystemBase {
 
     // Metod to starts logging and updates the shuffleboard
     private void initializeShuffleboard() {
-        LightningShuffleboard.setBoolSupplier("Elevator", "Top limit", () -> getTopLimitSwitch());
-        LightningShuffleboard.setBoolSupplier("Elevator", "Bottom limit", () -> getBottomLimitSwitch());
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator target height", () -> targetExtension);
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator height", () -> getExtension());
-        LightningShuffleboard.setBoolSupplier("Elevator", "Elevator on target", () -> onTarget());
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor temperature", () -> motor.getMotorTemperature());
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (volts)", () -> motor.getAppliedOutput());
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (Amps)", () -> motor.getOutputCurrent());
-        LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller input voltage", () -> motor.getBusVoltage());
+
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Elevator", .2d, new Pair<String, Object>("Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()),
+                new Pair<String, Object>("Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()), new Pair<String, Object>("Elevator target height", (DoubleSupplier) () -> targetExtension),
+                new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()),
+                new Pair<String, Object>("Elevator motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
+                new Pair<String, Object>("Elevator motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
+                new Pair<String, Object>("Elevator motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("Elevator motor controller voltage", (DoubleSupplier) () -> motor.getBusVoltage()));
+
+        // LightningShuffleboard.setBoolSupplier("Elevator", "Top limit", () -> getTopLimitSwitch());
+        // LightningShuffleboard.setBoolSupplier("Elevator", "Bottom limit", () -> getBottomLimitSwitch());
+        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator target height", () -> targetExtension);
+        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator height", () -> getExtension());
+        // LightningShuffleboard.setBoolSupplier("Elevator", "Elevator on target", () -> onTarget());
+        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor temperature", () -> motor.getMotorTemperature());
+        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (volts)", () -> motor.getAppliedOutput());
+        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (Amps)", () -> motor.getOutputCurrent());
+        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller input voltage", () -> motor.getBusVoltage());
 
     }
 
@@ -159,6 +176,9 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        periodicShuffleboard.loop();
+
         if (getTopLimitSwitch()) {
             encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
         }
