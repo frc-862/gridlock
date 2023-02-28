@@ -304,28 +304,9 @@ public class Limelight extends SubsystemBase {
         }
     }
 
-    // Sets the pipeline based on what is put in shuffleboard
-    public void setPipeline() {
-        if (hasVision()) {
-            // Gets the current shuffleboard value for the Pipeline entry
-            int pipelineNum = (int) LimelightHelpers.getLimelightNTDouble("limelight", "pipeline");
-
-            // Updates the Limelight pipeline accordingly if pipelineNum is different than
-            // the current
-            // pipeline
-            if (pipelineNum != getPipelineNum()) {
-                LimelightHelpers.setLimelightNTDouble("limelight", "pipeline", pipelineNum);
-            }
-        }
-    }
-
     @Override
     public void periodic() {
-        setPipeline();
-
-        // Starts logging and updates the shuffleboard
         updateShuffleboard();
-
     }
 
 }
