@@ -30,6 +30,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
 import frc.thunder.config.SparkMaxPIDGains;
+import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
@@ -80,7 +81,9 @@ public class Drivetrain extends SubsystemBase {
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
-    private Vision vision;
+
+    private Limelight visionFront;
+    private Limelight visionBack;
 
     // Time of flight sensor
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
@@ -95,15 +98,14 @@ public class Drivetrain extends SubsystemBase {
     // Chassis speeds for the robot
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
-    private Pose2d visionPose = new Pose2d();
-
+    public Drivetrain(Limelight visionFront, Limelight visionBack) {
     /**
      * Creates a new Drivetrain.
      * 
      * @param vision the vision subsystem
      */
-    public Drivetrain(Vision vision) {
-        this.vision = vision;
+        this.visionFront = visionFront;
+        this.visionBack = visionBack;
 
         if (Constants.isBlackout()) {
             FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;
@@ -156,10 +158,11 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update our module position and odometry
+        // Update our module position
         updateModulePositions();
+
+        // Update our odometry
         updateOdometry();
-        resetOdymetyFVision(getYaw2d(), vision.getRobotPoseBlue());
     }
 
     /**
@@ -245,16 +248,23 @@ public class Drivetrain extends SubsystemBase {
         updateModulePositions();
         ESpose = estimator.update(getYaw2d().plus(DrivetrainConstants.HEADING_OFFSET), modulePositions);
 
-        visionPose = vision.getRobotPoseBlue();
-
-        LightningShuffleboard.setBool("Drivetrain", "bool value", visionPose.getTranslation().getDistance(ESpose.getTranslation()) < 1);
-        LightningShuffleboard.setDouble("Drivetrain", "distance", visionPose.getTranslation().getDistance(ESpose.getTranslation()));
-
-        if (vision.getHasVision() && visionPose.getTranslation().getDistance(ESpose.getTranslation()) < 1) {
-            estimator.addVisionMeasurement(visionPose, Timer.getFPGATimestamp() - vision.getLatencyBotPoseBlue() / 1000);
-            ESpose = estimator.update(getHeading(), modulePositions);
+        ESpose = estimator.update(getHeading(), modulePositions);
+        if(visionFront.hasVision()){
+            double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(visionFront.limelightName);
+            Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
+            if (visionPose != null) {
+                estimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - visionFront.getLatencyBotPoseBlue());
+            }
         }
-
+        else if(visionBack.hasVision()){
+            double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(visionBack.limelightName);
+            Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
+            if (visionPose != null) {
+                estimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - visionBack.getLatencyBotPoseBlue());
+            }
+        }
+        
+        
     }
 
     /**
@@ -418,19 +428,6 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose) {
         estimator.resetPosition(getYaw2d(), modulePositions, pose);
-    }
-
-    /**
-     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the current
-     * module positions.
-     * 
-     * @param gyroAngle the current yaw of the robot
-     * @param pose the pose from Vision of the robot
-     */
-    public void resetOdymetyFVision(Rotation2d gyroAngle, Pose2d pose) {
-        // if (pose != null) {
-        // odometry.resetPosition(gyroAngle, modulePositions, pose);
-        // }
     }
 
     /**
