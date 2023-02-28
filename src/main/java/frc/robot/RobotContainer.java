@@ -37,9 +37,8 @@ public class RobotContainer extends LightningContainer {
     private static final Limelight frontLimelight = new Limelight(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
     private static final Limelight backLimelight = new Limelight(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
-
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight);
+    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight,backLimelight);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
@@ -68,6 +67,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
         new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(backLimelight));
+        
 
         // copilot controls 
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift));

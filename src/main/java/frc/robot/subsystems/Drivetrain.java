@@ -83,7 +83,9 @@ public class Drivetrain extends SubsystemBase {
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
-    private Limelight vision;
+
+    private Limelight visionFront;
+    private Limelight visionBack;
 
     // Time of flight sensor
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
@@ -98,13 +100,14 @@ public class Drivetrain extends SubsystemBase {
     // Chassis speeds for the robot
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
-    public Drivetrain(Limelight vision) {
+    public Drivetrain(Limelight visionFront, Limelight visionBack) {
     /**
      * Creates a new Drivetrain.
      * 
      * @param vision the vision subsystem
      */
-        this.vision = vision;
+        this.visionFront = visionFront;
+        this.visionBack = visionBack;
 
         if (Constants.isBlackout()) {
             FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;
@@ -156,7 +159,13 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         // Update our module position and odometry
         updateModulePositions();
-        resetOdymetyFVision(getYaw2d(), LimelightHelpers.getBotPose_wpiBlue(vision.limelightName));
+        if(visionFront.hasVision()){
+            resetOdymetyFVision(getYaw2d(), LimelightHelpers.getBotPose_wpiBlue(visionFront.limelightName));
+        }
+        else if(visionBack.hasVision()){
+            resetOdymetyFVision(getYaw2d(), LimelightHelpers.getBotPose_wpiBlue(visionBack.limelightName));
+        }
+        
         updateOdometry();
 
         // Starts logging and updates the shuffleboard
@@ -247,13 +256,22 @@ public class Drivetrain extends SubsystemBase {
         pose = odometry.update(getYaw2d(), modulePositions);
 
         ESpose = estimator.update(getHeading(), modulePositions);
-
-        double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(vision.limelightName);
-        Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
-        if (visionPose != null) {
-            estimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - vision.getLatencyBotPoseBlue());
-
+        if(visionFront.hasVision()){
+            double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(visionFront.limelightName);
+            Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
+            if (visionPose != null) {
+                estimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - visionFront.getLatencyBotPoseBlue());
+            }
         }
+        else if(visionBack.hasVision()){
+            double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(visionBack.limelightName);
+            Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
+            if (visionPose != null) {
+                estimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - visionBack.getLatencyBotPoseBlue());
+            }
+        }
+        
+        
     }
 
     /**
