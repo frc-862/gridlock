@@ -18,7 +18,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.RobotMap.*;
 import frc.thunder.config.NeoConfig;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -77,14 +76,6 @@ public class Collector extends SubsystemBase {
                 new Pair<String, Object>("Color sensor raw color", (Supplier<String>) () -> colorSensor.getColor().toString()),
                 new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> getGamePiece().toString()),
                 new Pair<String, Object>("Color sensor confidence", (DoubleSupplier) () -> getConfidence()));
-
-        // LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor temperature", () -> motor.getMotorTemperature());
-        // LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor controller input voltage", () -> motor.getBusVoltage());
-        // LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor controller output (amps)", () -> motor.getOutputCurrent());
-        // LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor controller output (volts)", () -> motor.getAppliedOutput());
-        // LightningShuffleboard.setStringSupplier("Collector", "Color sensor raw color", () ->  colorSensor.getColor().toString());
-        // LightningShuffleboard.setStringSupplier("Collector", "Color sensor detected game piece", () -> getGamePiece().toString());
-        // LightningShuffleboard.setDoubleSupplier("Collector", "Color sensor confidence", () -> getConfidence());
 
     }
 

@@ -16,7 +16,6 @@ import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 public class Wrist extends SubsystemBase {
@@ -71,15 +70,6 @@ public class Wrist extends SubsystemBase {
                 new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
                 new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
                 new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
-
-        // LightningShuffleboard.setDoubleSupplier("Wrist", "Wrist Target angle", () -> targetAngle);
-        // LightningShuffleboard.setDoubleSupplier("Wrist", "Wrist angle", () -> getAngle().getDegrees());
-        // LightningShuffleboard.setBoolSupplier("Wrist", "Wrist on target", () -> onTarget());
-        // LightningShuffleboard.setDoubleSupplier("Wrist", "Wrist motor temperature", () -> motor.getMotorTemperature());
-        // LightningShuffleboard.setDoubleSupplier("Wrist", "Wrist Motor Controller Output (Amps)", () -> motor.getOutputCurrent());
-        // LightningShuffleboard.setDoubleSupplier("Wrist", "Wrist Motor Controller Input Voltage", () -> motor.getBusVoltage());
-        // LightningShuffleboard.setBoolSupplier("Wrist", "Wrist fwd Limit", () -> getTopLimitSwitch());
-        // LightningShuffleboard.setBoolSupplier("Wrist", "Wrist rev Limit", () -> getBottomLimitSwitch());
     }
 
     /**

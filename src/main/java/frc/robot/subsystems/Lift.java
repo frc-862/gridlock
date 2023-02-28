@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Lift.StateTable;
 import frc.robot.commands.Lift.StateTransition;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -61,21 +60,12 @@ public class Lift extends SubsystemBase {
 
         periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", .2d, new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
                 new Pair<String, Object>("Lift goal state", (Supplier<String>) () -> goalState.toString()), new Pair<String, Object>("Lift on target", (BooleanSupplier) () -> onTarget()));
-
-        // LightningShuffleboard.setString("Lift", "Lift current state", currentState.toString());
-        // LightningShuffleboard.setString("Lift", "Lift goal state", goalState.toString());
-        // LightningShuffleboard.setBool("Lift", "Lift on target", onTarget());
         if (nextState != null) {
             periodicShuffleboardNextState =
                     new LightningShuffleboardPeriodic("Lift", .2d, new Pair<String, Object>("Lift next state elevator extension", (DoubleSupplier) () -> nextState.getElevatorExtension()),
                             new Pair<String, Object>("Lift next state arm angle", (DoubleSupplier) () -> nextState.getArmAngle().getDegrees()),
                             new Pair<String, Object>("Lift next state wrist angle", (DoubleSupplier) () -> nextState.getWristAngle().getDegrees()),
                             new Pair<String, Object>("Lift next state plan", (Supplier<String>) () -> nextState.getPlan().toString()));
-            // LightningShuffleboard.setDouble("Lift", "Lift next state elevator extension", nextState.getElevatorExtension());
-            // LightningShuffleboard.setDouble("Lift", "Lift next state arm angle", nextState.getArmAngle().getDegrees());
-            // LightningShuffleboard.setDouble("Lift", "Lift next state wrist angle", nextState.getWristAngle().getDegrees());
-            // LightningShuffleboard.setString("Lift", "Lift next state plan", nextState.getPlan().toString());
-            // // LightningShuffleboard.set("Lift", "Lift next state", nextState);
         }
 
         // mech_elevator.setLength(elevator.getExtension());

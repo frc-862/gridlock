@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
@@ -11,8 +10,6 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -20,7 +17,6 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.RobotMap;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -80,14 +76,6 @@ public class Arm extends SubsystemBase {
                 new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
                 new Pair<String, Object>("Arm motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
                 new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
-
-        // LightningShuffleboard.setBoolSupplier("Arm", "Arm Bottom Limit", () -> getBottomLimitSwitch());
-        // LightningShuffleboard.setBoolSupplier("Arm", "Arm Top Limit", () -> getTopLimitSwitch());
-        // LightningShuffleboard.setDoubleSupplier("Arm", "Arm angle", () -> getAngle().getDegrees());
-        // LightningShuffleboard.setDoubleSupplier("Arm", "Arm Target Angle", () ->  targetAngle + OFFSET);
-        // LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller input voltage", () -> motor.getBusVoltage());
-        // LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller output (Amps)", () ->  motor.getOutputCurrent());
-        // LightningShuffleboard.setDoubleSupplier("Arm", "Arm motor controller output (volts)", () -> motor.getAppliedOutput());
     }
 
     /**

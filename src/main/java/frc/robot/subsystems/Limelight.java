@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.logging.DataLogger;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 import java.util.function.BooleanSupplier;

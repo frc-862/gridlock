@@ -1,17 +1,25 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
-import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
  * The servo subsystem
  */
 public class ServoTurn extends SubsystemBase {
-    Servo servo = new Servo(RobotMap.PWM.SERVO);
+    private Servo servo = new Servo(RobotMap.PWM.SERVO);
+    private double position = 0;
 
-    public ServoTurn() {}
+    private LightningShuffleboardPeriodic periodicShuffleboard;
+
+    public ServoTurn() {
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Servo", 0.2d, new Pair<String, Object>("Servo position", (DoubleSupplier) () -> position));
+    }
 
     /**
      * Turns the servo to the specified position
@@ -20,7 +28,12 @@ public class ServoTurn extends SubsystemBase {
      */
 
     public void turnServo(double position) {
+        this.position = position;
         servo.set(position);
-        // LightningShuffleboard.setDouble("Servo", "Servo Position", position);
+    }
+
+    @Override
+    public void periodic() {
+        periodicShuffleboard.loop();
     }
 }

@@ -15,7 +15,6 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -64,16 +63,6 @@ public class Elevator extends SubsystemBase {
                 new Pair<String, Object>("Elevator motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
                 new Pair<String, Object>("Elevator motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
                 new Pair<String, Object>("Elevator motor controller voltage", (DoubleSupplier) () -> motor.getBusVoltage()));
-
-        // LightningShuffleboard.setBoolSupplier("Elevator", "Top limit", () -> getTopLimitSwitch());
-        // LightningShuffleboard.setBoolSupplier("Elevator", "Bottom limit", () -> getBottomLimitSwitch());
-        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator target height", () -> targetExtension);
-        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator height", () -> getExtension());
-        // LightningShuffleboard.setBoolSupplier("Elevator", "Elevator on target", () -> onTarget());
-        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor temperature", () -> motor.getMotorTemperature());
-        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (volts)", () -> motor.getAppliedOutput());
-        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller output (Amps)", () -> motor.getOutputCurrent());
-        // LightningShuffleboard.setDoubleSupplier("Elevator", "Elevator motor controller input voltage", () -> motor.getBusVoltage());
 
     }
 
