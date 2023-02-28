@@ -6,39 +6,48 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Collector.GamePiece;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class AutoAlign extends CommandBase {
     private Drivetrain drivetrain;
     private Limelight limelight;
-    private int pipeline = 0;
+    private GamePiece pieceType;
     private PIDController controller = new PIDController(0.002, 0, 0);
-
-    public AutoAlign(Drivetrain drivetrain, Limelight limelight, int pipeline) {
+    public AutoAlign(Drivetrain drivetrain, Limelight limelight, GamePiece pieceType) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.drivetrain = drivetrain;
         this.limelight = limelight;
-        this.pipeline = pipeline;
+        this.pieceType = pieceType;
 
-        addRequirements(drivetrain);
+        addRequirements(drivetrain, limelight);
     }
 
     @Override
     public void initialize() {
-        limelight.setPipelineNum(pipeline);
+        switch (pieceType) {
+            case CONE:
+                limelight.setPipelineNum(0);
+                break;
+            case CUBE:
+                limelight.setPipelineNum(1);
+                break;
+            default:
+                limelight.setPipelineNum(0);
+                break;
+        }
         controller.setSetpoint(AutoAlignConstants.OFFSET);
         controller.setTolerance(AutoAlignConstants.TOLERANCE);
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         controller.setP(LightningShuffleboard.getDouble("Auto align", "kP", controller.getP()));
         controller.setI(LightningShuffleboard.getDouble("Auto align", "kI", controller.getI()));
         controller.setD(LightningShuffleboard.getDouble("Auto align", "kD", controller.getD()));
-        
 
-        if (!isOnTarget(limelight.getHorizontalOffset()) && limelight.hasVision()) {
+
+        if (limelight.hasVision()) {
             drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
                     drivetrain.percentOutputToMetersPerSecond(
                             controller.calculate(limelight.getHorizontalOffset())),
@@ -55,10 +64,13 @@ public class AutoAlign extends CommandBase {
         return Math.abs(currentAngle) < AutoAlignConstants.TOLERANCE;
     }
 
-    // Called once the command ends or is interrupted.
+    @Override
+    public boolean isFinished() {
+        return isOnTarget(limelight.getHorizontalOffset());
+    }
+
     @Override
     public void end(boolean interrupted) {
         drivetrain.stop();
-        limelight.setPipelineNum(0);  
     }
 }

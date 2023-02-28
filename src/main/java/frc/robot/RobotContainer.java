@@ -73,10 +73,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
         new Trigger(driver::getYButton).whileTrue(new StdDev(backLimelight));
         
-        new Trigger(driver::getRightBumper).whileTrue(new AutoAlign(drivetrain, frontLimelight, 2)); // Retroreflective tape
-        new Trigger(driver::getLeftBumper).whileTrue(new AutoAlign(drivetrain, backLimelight, 0)); //April tag
-
-        AutoAlign(drivetrain, frontLimelight, 2);
+        new Trigger(driver::getRightBumper).whileTrue(new AutoAlign(drivetrain, frontLimelight, collector.getGamePiece()));
         // copilot controls 
         // new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
         // new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
