@@ -58,9 +58,7 @@ public class Drivetrain extends SubsystemBase {
     private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()};
 
     // Creating new pose, odometry, cahssis speeds
-    private Pose2d pose = new Pose2d();
     private Pose2d ESpose = new Pose2d();
-    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our modules
@@ -77,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Swerve pose esitmator for odometry
     private SwerveDrivePoseEstimator estimator =
-            new SwerveDrivePoseEstimator(kinematics, getHeading(), modulePositions, pose, DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
+            new SwerveDrivePoseEstimator(kinematics, getHeading(), modulePositions, ESpose, DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
 
     // Creates our drivetrain shuffleboard tab for displaying module data
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -148,6 +146,9 @@ public class Drivetrain extends SubsystemBase {
         updateOdometry();
         updateDriveStates(states);
 
+        // Initialize the shuffleboard values and start logging data
+        initializeShuffleboard();
+
         // Zero our gyro
         zeroHeading();
 
@@ -162,9 +163,6 @@ public class Drivetrain extends SubsystemBase {
 
         // Update our odometry
         updateOdometry();
-
-        // Starts logging and updates the shuffleboard
-        updateShufflebaord();
     }
 
     /**
@@ -191,7 +189,7 @@ public class Drivetrain extends SubsystemBase {
 
         // If we havent updated the heading last known good heading, update it
         if (!updatedHeading) {
-            lastGoodheading = pose.getRotation().getDegrees();
+            lastGoodheading = ESpose.getRotation().getDegrees();
             updatedHeading = true;
         }
 
@@ -248,7 +246,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void updateOdometry() {
         updateModulePositions();
-        pose = odometry.update(getYaw2d(), modulePositions);
+        ESpose = estimator.update(getYaw2d().plus(DrivetrainConstants.HEADING_OFFSET), modulePositions);
 
         ESpose = estimator.update(getHeading(), modulePositions);
         if(visionFront.hasVision()){
@@ -290,40 +288,37 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Method to start sending values to the dashboard and start logging
-    private void updateShufflebaord() {
-        LightningShuffleboard.setDouble("Drivetrain", "Front left angle", frontLeftModule.getSteerAngle());
-        LightningShuffleboard.setDouble("Drivetrain", "Front right angle", frontRightModule.getSteerAngle());
-        LightningShuffleboard.setDouble("Drivetrain", "Back left angle", backLeftModule.getSteerAngle());
-        LightningShuffleboard.setDouble("Drivetrain", "Back right angle", backRightModule.getSteerAngle());
+    private void initializeShuffleboard() {
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left angle", () -> frontLeftModule.getSteerAngle());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right angle", () -> frontRightModule.getSteerAngle());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left angle", () -> backLeftModule.getSteerAngle());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right angle", () -> backRightModule.getSteerAngle());
 
-        LightningShuffleboard.setDouble("Drivetrain", "Front left drive velocity", frontLeftModule.getDriveVelocity());
-        LightningShuffleboard.setDouble("Drivetrain", "Front right drive velocity", frontRightModule.getDriveVelocity());
-        LightningShuffleboard.setDouble("Drivetrain", "Back left drive velocity", backLeftModule.getDriveVelocity());
-        LightningShuffleboard.setDouble("Drivetrain", "Back right drive velocity", backRightModule.getDriveVelocity());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left drive velocity", () -> frontLeftModule.getDriveVelocity());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right drive velocity", () -> frontRightModule.getDriveVelocity());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left drive velocity", () -> backLeftModule.getDriveVelocity());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right drive velocity", () -> backRightModule.getDriveVelocity());
 
-        LightningShuffleboard.setDouble("Drivetrain", "Front left drive voltage", frontLeftModule.getDriveVoltage());
-        LightningShuffleboard.setDouble("Drivetrain", "Front right drive voltage", frontRightModule.getDriveVoltage());
-        LightningShuffleboard.setDouble("Drivetrain", "Back left drive voltage", backLeftModule.getDriveVoltage());
-        LightningShuffleboard.setDouble("Drivetrain", "Back right drive voltage", backRightModule.getDriveVoltage());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left drive voltage", () -> frontLeftModule.getDriveVoltage());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right drive voltage", () -> frontRightModule.getDriveVoltage());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left drive voltage", () -> backLeftModule.getDriveVoltage());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right drive voltage", () -> backRightModule.getDriveVoltage());
 
-        LightningShuffleboard.setDouble("Drivetrain", "Front left target angle", states[0].angle.getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Front right target angle", states[1].angle.getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Back left target angle", states[2].angle.getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Back right target angle", states[3].angle.getDegrees());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left target angle", () -> states[0].angle.getDegrees());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right target angle", () -> states[1].angle.getDegrees());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left target angle", () -> states[2].angle.getDegrees());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right target angle", () -> states[3].angle.getDegrees());
 
-        LightningShuffleboard.setDouble("Drivetrain", "Front left target velocity", states[0].speedMetersPerSecond);
-        LightningShuffleboard.setDouble("Drivetrain", "Front right target velocity", states[1].speedMetersPerSecond);
-        LightningShuffleboard.setDouble("Drivetrain", "Back left target velocity", states[2].speedMetersPerSecond);
-        LightningShuffleboard.setDouble("Drivetrain", "Back right target velocity", states[3].speedMetersPerSecond);
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left target velocity", () -> states[0].speedMetersPerSecond);
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right target velocity", () -> states[1].speedMetersPerSecond);
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left target velocity", () -> states[2].speedMetersPerSecond);
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right target velocity", () -> states[3].speedMetersPerSecond);
 
-        LightningShuffleboard.setDouble("Drivetrain", "Pigeon heading", getYaw2d().getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Odometry heading", getHeading().getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "Odometry X", pose.getX());
-        LightningShuffleboard.setDouble("Drivetrain", "Odometry Y", pose.getY());
-        LightningShuffleboard.setDouble("Drivetrain", "Odometry Z", pose.getRotation().getDegrees());
-        LightningShuffleboard.setDouble("Drivetrain", "ES X", ESpose.getX());
-        LightningShuffleboard.setDouble("Drivetrain", "ES Y", ESpose.getY());
-        LightningShuffleboard.setDouble("Drivetrain", "ES Z", ESpose.getRotation().getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Pigeon heading", () -> getYaw2d().getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Odometry heading", () -> getHeading().getDegrees());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES X", () -> ESpose.getX());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Y", () -> ESpose.getY());
+        LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Z", () -> ESpose.getRotation().getDegrees());
 
     }
 
@@ -331,7 +326,7 @@ public class Drivetrain extends SubsystemBase {
      * Gets the current pathplanner path point of the robot in meters using
      */
     public PathPoint getCurrentPathPoint() {
-        return new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()), odometry.getPoseMeters().getRotation());
+        return new PathPoint(ESpose.getTranslation(), ESpose.getRotation());
     }
 
     /**
@@ -342,8 +337,8 @@ public class Drivetrain extends SubsystemBase {
      */
     public void setInitialPose(Pose2d initalPosition, Rotation2d initalRotation) {
         pigeon.setYaw(initalRotation.getDegrees());
-        pose = new Pose2d(initalPosition.getTranslation(), initalRotation);
-        odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions, pose);
+        ESpose = new Pose2d(initalPosition.getTranslation(), initalRotation);
+        estimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, ESpose);
 
     }
 
@@ -351,7 +346,7 @@ public class Drivetrain extends SubsystemBase {
      * Gets the heading of the robot from odometry in degrees from 0 to 360
      */
     public Rotation2d getHeading() {
-        return odometry.getPoseMeters().getRotation();
+        return ESpose.getRotation();
     }
 
     /**
@@ -423,7 +418,7 @@ public class Drivetrain extends SubsystemBase {
      * Gets the current pose of the robot.
      */
     public Pose2d getPose() {
-        return pose;
+        return ESpose;
     }
 
     /**
@@ -432,7 +427,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(getYaw2d(), modulePositions, pose);
+        estimator.resetPosition(getYaw2d(), modulePositions, pose);
     }
 
     /**

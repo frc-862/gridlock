@@ -48,8 +48,8 @@ public class Collector extends SubsystemBase {
         colorMatch.addColorMatch(CollectorConstants.CONE_OPTIMAL);
         colorMatch.addColorMatch(CollectorConstants.CUBE_OPTIMAL);
 
-        // Starts logging
-        initLogging();
+        // Initialize the shuffleboard values and start logging data
+        initialiizeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -59,14 +59,14 @@ public class Collector extends SubsystemBase {
     }
 
     // Method to start logging
-    private void initLogging() {
-        LightningShuffleboard.setDouble("Collector", "Collector motor temperature", motor.getMotorTemperature());
-        LightningShuffleboard.setDouble("Collector", "Collector motor controller input voltage", motor.getBusVoltage());
-        LightningShuffleboard.setDouble("Collector", "Collector motor controller output (amps)", motor.getOutputCurrent());
-        LightningShuffleboard.setDouble("Collector", "Collector motor controller output (volts)", motor.getAppliedOutput());
-        LightningShuffleboard.setString("Collector", "Color sensor raw color", colorSensor.getColor().toString());
-        LightningShuffleboard.setString("Collector", "Color sensor detected game piece", getGamePiece().toString());
-        LightningShuffleboard.setDouble("Collector", "Color sensor confidence", getConfidence());
+    private void initialiizeShuffleboard() {
+        LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor temperature", () -> motor.getMotorTemperature());
+        LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor controller input voltage", () -> motor.getBusVoltage());
+        LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor controller output (amps)", () -> motor.getOutputCurrent());
+        LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor controller output (volts)", () -> motor.getAppliedOutput());
+        LightningShuffleboard.setStringSupplier("Collector", "Color sensor raw color", () ->  colorSensor.getColor().toString());
+        LightningShuffleboard.setStringSupplier("Collector", "Color sensor detected game piece", () -> getGamePiece().toString());
+        LightningShuffleboard.setDoubleSupplier("Collector", "Color sensor confidence", () -> getConfidence());
 
     }
 
