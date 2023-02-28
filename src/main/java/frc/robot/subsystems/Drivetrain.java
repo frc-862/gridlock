@@ -157,15 +157,10 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update our module position and odometry
+        // Update our module position
         updateModulePositions();
-        if(visionFront.hasVision()){
-            resetOdymetyFVision(getYaw2d(), LimelightHelpers.getBotPose_wpiBlue(visionFront.limelightName));
-        }
-        else if(visionBack.hasVision()){
-            resetOdymetyFVision(getYaw2d(), LimelightHelpers.getBotPose_wpiBlue(visionBack.limelightName));
-        }
-        
+
+        // Update our odometry
         updateOdometry();
 
         // Starts logging and updates the shuffleboard
@@ -438,19 +433,6 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(getYaw2d(), modulePositions, pose);
-    }
-
-    /**
-     * Takes pose2d from vision and resets odometry to that pose. Sets module positions to the current
-     * module positions.
-     * 
-     * @param gyroAngle the current yaw of the robot
-     * @param ds the pose from Vision of the robot
-     */
-    public void resetOdymetyFVision(Rotation2d gyroAngle, double[] ds) {
-        // if (pose != null) {
-        // odometry.resetPosition(gyroAngle, modulePositions, pose);
-        // }
     }
 
     /**
