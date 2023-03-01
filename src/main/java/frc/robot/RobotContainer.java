@@ -80,6 +80,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> copilot.getPOV() == 90).whileTrue(new RunCommand(() -> lift.addArmBias(1), lift));
         new Trigger(() -> copilot.getPOV() == 270).whileTrue(new RunCommand(() -> lift.addArmBias(-1), lift));
 
+        new Trigger(() -> copilot.getLeftStickButtonPressed()).onTrue(new InstantCommand(lift::resetBias, lift));
+
         // copilot controls 
         // new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
         // new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves

@@ -63,14 +63,18 @@ public class Lift extends SubsystemBase {
         LightningShuffleboard.setStringSupplier("Lift", "Lift next state plan", () -> nextState.getPlan().toString());
     }
 
-    public void addWristBias(double bias) {
-        wristBias += bias / 50;
+    public void addWristBias(double biasToAdd) {
+        wristBias += biasToAdd / 50;
     }
 
-    public void addArmBias(double bias) {
-        armBias += bias / 50;
+    public void addArmBias(double biasToAdd) {
+        armBias += biasToAdd / 50;
     }
 
+    public void resetBias() {
+        wristBias = 0;
+        armBias = 0;
+    }
     /**
      * Sets the goal state of the lift
      * 
