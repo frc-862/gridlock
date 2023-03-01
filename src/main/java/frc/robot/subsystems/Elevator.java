@@ -107,6 +107,7 @@ public class Elevator extends SubsystemBase {
      */
     public boolean onTarget() {
         return Math.abs(targetExtension - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+        // return true;
     }
 
     /**
@@ -118,6 +119,7 @@ public class Elevator extends SubsystemBase {
      */
     public boolean onTarget(double target) {
         return Math.abs(target - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+        // return true;
     }
 
     /**

@@ -86,7 +86,7 @@ public class Arm extends SubsystemBase {
      * @return the angle of the arm as a Rotation2d object
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(encoder.getPosition() - OFFSET);
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -180, 180));
     }
 
     /**
@@ -130,6 +130,7 @@ public class Arm extends SubsystemBase {
      */
     public boolean onTarget() {
         return Math.abs(getAngle().getDegrees() - targetAngle) < ArmConstants.TOLERANCE;
+        // return true;
     }
 
     /**
@@ -141,6 +142,7 @@ public class Arm extends SubsystemBase {
      */
     public boolean onTarget(double target) {
         return Math.abs(getAngle().getDegrees() - target) < ArmConstants.TOLERANCE;
+        // return true;
     }
 
     /**

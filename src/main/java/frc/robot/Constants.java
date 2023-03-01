@@ -251,7 +251,7 @@ public final class Constants {
 
         // Motor configuration constants
         public static final boolean MOTOR_INVERT = false;
-        public static final int CURRENT_LIMIT = 15; // TODO: make 20 for comp
+        public static final int CURRENT_LIMIT = 20; // TODO: make 20 for comp
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
@@ -272,8 +272,8 @@ public final class Constants {
         public static final double MAX_POWER = 0.5d;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -167.55;
-        public static final double ENCODER_OFFSET_BLACKOUT = 43.1; //TODO: change
+        public static final double ENCODER_OFFSET_GRIDLOCK = -42.1;
+        public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;
