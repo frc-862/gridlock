@@ -85,6 +85,8 @@ public final class Constants {
         public static final int STEER_CURRENT_LIMIT = 30;
         public static final double NOMINAL_VOLTAGE = 12d;
 
+        public static final double LOG_PERIOD = 0.18;
+
         // Pigeon heading offset 
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
 
@@ -165,6 +167,8 @@ public final class Constants {
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
+        public static final double LOG_PERIOD = 0.19;
+
         // Elevator limit switch types
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
@@ -215,6 +219,8 @@ public final class Constants {
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
+        public static final double LOG_PERIOD = 0.21;
+
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap ARM_UP_KF_MAP = new InterpolationMap() {
             {
@@ -242,6 +248,9 @@ public final class Constants {
     public static final class CollectorConstants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
+        public static final double HOLD_POWER = 0.1;
+
+        public static final double LOG_PERIOD = 0.22;
 
         //TODO: tune these
         //Cube Theoretical: #3a01b2 (58, 1, 178)
@@ -273,7 +282,6 @@ public final class Constants {
         // Tolernace for our wrist
         public static final double TOLERANCE = 10d; // TODO: set a better tolerance
 
-        
         // Min/max angles in degrees
         public static final double MAX_ANGLE = -5d;
         public static final double MIN_ANGLE = -146d;
@@ -281,6 +289,8 @@ public final class Constants {
         // Min and Max power
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
+
+        public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
@@ -429,6 +439,8 @@ public final class Constants {
         public enum LiftPlan {
             parallel, armPriority, elevatorPriority, elevatorLast
         }
+
+        public static final double LOG_PERIOD = 0.23;
     }
 
     // Constants for autonomous

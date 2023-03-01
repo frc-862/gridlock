@@ -17,6 +17,7 @@ import frc.robot.commands.AutoAlign;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.HoldPower;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
 import frc.robot.commands.Lift.Ground;
 import frc.robot.commands.Lift.HighScore;
@@ -72,6 +73,8 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
         new Trigger(driver::getYButton).whileTrue(new StdDev(backLimelight));
+
+        new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
         
         new Trigger(driver::getRightBumper).whileTrue(new AutoAlign(drivetrain, frontLimelight, collector.getGamePiece()));
         // copilot controls 
@@ -136,8 +139,7 @@ public class RobotContainer extends LightningContainer {
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
-
-        collector.setDefaultCommand(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
+        collector.setDefaultCommand(new HoldPower(collector));
     }
 
     @Override
