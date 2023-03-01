@@ -251,7 +251,7 @@ public final class Constants {
 
         // Motor configuration constants
         public static final boolean MOTOR_INVERT = false;
-        public static final int CURRENT_LIMIT = 20; // TODO: make 20 for comp
+        public static final int CURRENT_LIMIT = 15; // TODO: make 20 for comp
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 

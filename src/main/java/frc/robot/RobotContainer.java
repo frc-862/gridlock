@@ -130,7 +130,7 @@ public class RobotContainer extends LightningContainer {
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
 
-        collector.setDefaultCommand(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
+        collector.setDefaultCommand(new Collect(collector, () -> copilot.getLeftTriggerAxis() - copilot.getRightTriggerAxis()));
     }
 
     @Override
