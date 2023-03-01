@@ -1,14 +1,9 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 
 import java.util.function.DoubleSupplier;
 
@@ -69,9 +64,9 @@ public class SwerveDrive extends CommandBase {
                 ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
                         drivetrain.percentOutputToRadiansPerSecond(zOut), drivetrain.getYaw2d()));
 
-        LightningShuffleboard.setDouble("joysticks", "X", m_translationXSupplier.getAsDouble());
+        // LightningShuffleboard.setDouble("joysticks", "X", m_translationXSupplier.getAsDouble());
 
-        LightningShuffleboard.setDouble("joysticks", "Y", m_translationYSupplier.getAsDouble());
+        // LightningShuffleboard.setDouble("joysticks", "Y", m_translationYSupplier.getAsDouble());
     }
 
     @Override
