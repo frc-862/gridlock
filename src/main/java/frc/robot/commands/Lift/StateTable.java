@@ -11,17 +11,19 @@ import frc.robot.Constants.LiftConstants.LiftState;
  */
 public class StateTable {
     // A map of all possible state transitions
-    private static Map<LiftState, StateTransition> nextStateTable =
-            Map.of(
-                    LiftState.stowed, new StateTransition(LiftConstants.ELEVATOR_STOWED_POS, Rotation2d.fromDegrees(LiftConstants.ARM_STOWED_ANGLE), Rotation2d.fromDegrees(LiftConstants.WRIST_STOWED_ANGLE), LiftPlan.elevatorLast, LiftState.stowed), 
-                    LiftState.transition, new StateTransition(LiftConstants.ELEVATOR_TRANSITION_POS, Rotation2d.fromDegrees(LiftConstants.ARM_TRANSITION_ANGLE), Rotation2d.fromDegrees(LiftConstants.WRIST_TRANSITION_ANGLE), LiftPlan.parallel, LiftState.transition), 
-                    LiftState.ground, new StateTransition(0, Rotation2d.fromDegrees(-70.5), Rotation2d.fromDegrees(30.0), LiftPlan.armPriority, LiftState.ground), 
-                    LiftState.midCubeScore, new StateTransition(10, Rotation2d.fromDegrees(-45), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.midCubeScore), 
-                    LiftState.midConeScore, new StateTransition(10, Rotation2d.fromDegrees(-45), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.midConeScore), 
-                    LiftState.highCubeScore, new StateTransition(20, Rotation2d.fromDegrees(-45), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.highCubeScore), 
-                    LiftState.highConeScore, new StateTransition(18.96, Rotation2d.fromDegrees(12.0), Rotation2d.fromDegrees(-70), LiftPlan.parallel, LiftState.highConeScore), 
-                    LiftState.doubleSubstationCollect, new StateTransition(5, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.doubleSubstationCollect),
-                    LiftState.reverseSubstationCollect, new StateTransition(5, Rotation2d.fromDegrees(60), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.reverseSubstationCollect));
+    private static Map<LiftState, StateTransition> nextStateTable = Map.of(LiftState.stowed,
+            new StateTransition(LiftConstants.ELEVATOR_STOWED_POS, Rotation2d.fromDegrees(LiftConstants.ARM_STOWED_ANGLE), Rotation2d.fromDegrees(LiftConstants.WRIST_STOWED_ANGLE),
+                    LiftPlan.elevatorLast, LiftState.stowed),
+            LiftState.transition,
+            new StateTransition(LiftConstants.ELEVATOR_TRANSITION_POS, Rotation2d.fromDegrees(LiftConstants.ARM_TRANSITION_ANGLE), Rotation2d.fromDegrees(LiftConstants.WRIST_TRANSITION_ANGLE),
+                    LiftPlan.parallel, LiftState.transition),
+            LiftState.ground, new StateTransition(0, Rotation2d.fromDegrees(-70.5), Rotation2d.fromDegrees(30.0), LiftPlan.wristPriority, LiftState.ground), LiftState.midCubeScore,
+            new StateTransition(10, Rotation2d.fromDegrees(-45), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.midCubeScore), LiftState.midConeScore,
+            new StateTransition(0, Rotation2d.fromDegrees(20), Rotation2d.fromDegrees(-75), LiftPlan.parallel, LiftState.midConeScore), LiftState.highCubeScore,
+            new StateTransition(20, Rotation2d.fromDegrees(-45), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.highCubeScore), LiftState.highConeScore,
+            new StateTransition(24, Rotation2d.fromDegrees(10), Rotation2d.fromDegrees(-75), LiftPlan.parallel, LiftState.highConeScore), LiftState.doubleSubstationCollect,
+            new StateTransition(5, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.doubleSubstationCollect), LiftState.reverseSubstationCollect,
+            new StateTransition(5, Rotation2d.fromDegrees(60), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.reverseSubstationCollect));
 
     // Index is current state, goal state; outputs a StateTransition
     private static Map<LiftState, Map<LiftState, StateTransition>> stateTable =
@@ -38,14 +40,9 @@ public class StateTable {
      */
     public static StateTransition get(LiftState current, LiftState goal) {
         // If we're stowed, always go to transition
-        if (current == LiftState.stowed) {
-            return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-20), LiftPlan.elevatorPriority, LiftState.transition);
-
-            // If we're going to stowed from any other state, go to transition first
-        } else if (goal == LiftState.stowed) {
-            return new StateTransition(4, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(-20), LiftPlan.elevatorLast, LiftState.stowed);
-
-            // If no special case return state from the map
+        if (current == LiftState.stowed || (goal == LiftState.stowed && current != LiftState.transition)) {
+            return new StateTransition(LiftConstants.ELEVATOR_TRANSITION_POS, Rotation2d.fromDegrees(LiftConstants.ARM_TRANSITION_ANGLE), Rotation2d.fromDegrees(LiftConstants.WRIST_TRANSITION_ANGLE),
+                    LiftPlan.elevatorPriority, LiftState.transition);
         } else {
             return stateTable.get(current).get(goal);
         }

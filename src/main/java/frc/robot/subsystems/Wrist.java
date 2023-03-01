@@ -165,7 +165,7 @@ public class Wrist extends SubsystemBase {
 
         // controller.setP(LightningShuffleboard.getDouble("Lift", "wrist kP", WristConstants.kP));
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -90)));
-        LightningShuffleboard.setDouble("Lift", "ground relative wrist angle", getGroundRelativeAngle(arm.getAngle()).getDegrees());
+        // LightningShuffleboard.setDouble("Lift", "ground relative wrist angle", getGroundRelativeAngle(arm.getAngle()).getDegrees());
         LightningShuffleboard.setDouble("Lift", "wrist relative wrist angle", getAngle().getDegrees());
 
         if (Math.abs(controller.getPositionError()) > 2) {
@@ -179,9 +179,9 @@ public class Wrist extends SubsystemBase {
         double power = POutput + FOutput + minPower;
         motor.set(power);
 
-        LightningShuffleboard.setDouble("Wrist", "FF output", FOutput);
-        LightningShuffleboard.setDouble("Wrist", "PID output", POutput);
-        LightningShuffleboard.setDouble("Wrist", "minpower", minPower);
+        // LightningShuffleboard.setDouble("Wrist", "FF output", FOutput);
+        // LightningShuffleboard.setDouble("Wrist", "PID output", POutput);
+        // LightningShuffleboard.setDouble("Wrist", "minpower", minPower);
         LightningShuffleboard.setDouble("Wrist", "wrist output power", power);
     }
 }

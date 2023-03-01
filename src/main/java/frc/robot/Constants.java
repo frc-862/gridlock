@@ -177,7 +177,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our arm
-        public static final double kP = 0.0062d;
+        public static final double kP = 0.008d;
         public static final double kI = 0d;
         public static final double kD = 0d;
         public static final double kF = 0d;
@@ -227,10 +227,12 @@ public final class Constants {
                 // put(210d, 0.00065);
                 // put(240d, 0.00028);
 
+                put(-120d, -0.012d);
                 put(-90d, 0d);
-                put(-45d, -0.001);
-                put(-25d, -0.0025);
-                put(0d, -0.006);
+                put(-45d, 0.02);
+                put(0d,   0.04);
+                put(45d,  0.02);
+                put(90d,  0d);
 
             }
         };
@@ -251,7 +253,7 @@ public final class Constants {
 
         // Motor configuration constants
         public static final boolean MOTOR_INVERT = false;
-        public static final int CURRENT_LIMIT = 15; // TODO: make 20 for comp
+        public static final int CURRENT_LIMIT = 20; 
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
@@ -265,7 +267,7 @@ public final class Constants {
 
         // Min/max angles in degrees
         public static final double MAX_ANGLE = 111d;
-        public static final double MIN_ANGLE = -59d;
+        public static final double MIN_ANGLE = -75d;
 
         // Min and Max power
         public static final double MIN_POWER = -0.5d;
@@ -430,7 +432,7 @@ public final class Constants {
 
         // All of the different plans the lift can follow
         public enum LiftPlan {
-            parallel, armPriority, elevatorPriority, elevatorLast
+            parallel, armPriority, elevatorPriority, wristPriority, elevatorLast
         }
 
         public static final double ELEVATOR_STOWED_POS = 1;
@@ -438,7 +440,7 @@ public final class Constants {
         public static final double WRIST_STOWED_ANGLE = 112;
 
         public static final double ELEVATOR_TRANSITION_POS = 8;
-        public static final double ARM_TRANSITION_ANGLE = -90;
+        public static final double ARM_TRANSITION_ANGLE = -70;
         public static final double WRIST_TRANSITION_ANGLE = 112;
     }
 

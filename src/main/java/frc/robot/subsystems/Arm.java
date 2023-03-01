@@ -156,12 +156,24 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // controller.setP(LightningShuffleboard.getDouble("Lift", "arm kP", ArmConstants.kP));
+        // controller.setP(LightningShuffleboard.getDouble("Arm", "arm kP", ArmConstants.kP));
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "arm setpoint", -90)));
         LightningShuffleboard.setDouble("Lift", "arm angle", getAngle().getDegrees());
 
-
         double currentAngle = getAngle().getDegrees();
-        motor.set(controller.calculate(currentAngle, targetAngle) + ArmConstants.ARM_KF_MAP.get(currentAngle) * currentAngle);
+        // double kFOut = LightningShuffleboard.getDouble("Arm", "kF in", 0);
+        double kFOut = ArmConstants.ARM_KF_MAP.get(currentAngle);
+        double PIDOUT = controller.calculate(currentAngle, targetAngle);
+        double power = kFOut + PIDOUT;
+
+        LightningShuffleboard.setDouble("Arm", "kf output", kFOut);
+        LightningShuffleboard.setDouble("Arm", "PID output", PIDOUT);
+        LightningShuffleboard.setDouble("Arm", "power", power);
+        motor.set(power);
+
+        LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
+        // motor.set(power);
+
+        // LightningShuffleboard.setDouble("Arm", "power", power);
     }
 }

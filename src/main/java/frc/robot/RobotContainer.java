@@ -82,10 +82,10 @@ public class RobotContainer extends LightningContainer {
 
         // copilot controls 
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
-        // new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
-        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
-        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
-        // new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
+        new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
+        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, true));
+        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, true));
+        new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
         // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
 
     }
