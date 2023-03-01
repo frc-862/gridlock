@@ -57,7 +57,7 @@ public class Elevator extends SubsystemBase {
     // Metod to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Elevator", .2d, new Pair<String, Object>("Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Elevator", ElevatorConstants.LOG_PERIOD, new Pair<String, Object>("Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()),
                 new Pair<String, Object>("Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()), new Pair<String, Object>("Elevator target height", (DoubleSupplier) () -> targetExtension),
                 new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Elevator motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),

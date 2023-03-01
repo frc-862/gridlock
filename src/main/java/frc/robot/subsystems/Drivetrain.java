@@ -295,7 +295,7 @@ public class Drivetrain extends SubsystemBase {
     // Method to start sending values to the dashboard and start logging
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", .2d, new Pair<String, Object>("Front left angle", (DoubleSupplier) () -> frontLeftModule.getSteerAngle()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", DrivetrainConstants.LOG_PERIOD, new Pair<String, Object>("Front left angle", (DoubleSupplier) () -> frontLeftModule.getSteerAngle()),
                 new Pair<String, Object>("Front right angle", (DoubleSupplier) () -> frontRightModule.getSteerAngle()),
                 new Pair<String, Object>("Back left angle", (DoubleSupplier) () -> backLeftModule.getSteerAngle()),
                 new Pair<String, Object>("Back right angle", (DoubleSupplier) () -> backRightModule.getSteerAngle()),

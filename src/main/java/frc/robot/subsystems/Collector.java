@@ -69,7 +69,7 @@ public class Collector extends SubsystemBase {
     // Method to start logging
     @SuppressWarnings("unchecked")
     private void initialiizeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Collector", .2d, new Pair<String, Object>("Collector motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Collector", CollectorConstants.LOG_PERIOD, new Pair<String, Object>("Collector motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
                 new Pair<String, Object>("Collector motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
                 new Pair<String, Object>("Collector motor controller output (amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
                 new Pair<String, Object>("Collector motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
