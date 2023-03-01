@@ -1,11 +1,17 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Lift.StateTable;
 import frc.robot.commands.Lift.StateTransition;
-import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
  * The lift subsystem
@@ -23,6 +29,10 @@ public class Lift extends SubsystemBase {
 
     // The next state to transition to
     public StateTransition nextState;
+
+    // Periodic Shuffleboard 
+    private LightningShuffleboardPeriodic periodicShuffleboard;
+    private LightningShuffleboardPeriodic periodicShuffleboardNextState;
 
     /**
      * Creates a new lift subsystem
@@ -42,19 +52,27 @@ public class Lift extends SubsystemBase {
         wrist.setAngle(wrist.getAngle());
 
         // Initialize the shuffleboard values and start logging data
-        // initializeShuffleboard();
+        initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
+    @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        LightningShuffleboard.setStringSupplier("Lift", "Lift current state", () -> currentState.toString());
-        LightningShuffleboard.setStringSupplier("Lift", "Lift goal state", () -> goalState.toString());
-        LightningShuffleboard.setBoolSupplier("Lift", "Lift on target", () -> onTarget());
-        LightningShuffleboard.setDoubleSupplier("Lift", "Lift next state elevator extension", () -> nextState.getElevatorExtension());
-        LightningShuffleboard.setDoubleSupplier("Lift", "Lift next state arm angle", () -> nextState.getArmAngle().getDegrees());
-        LightningShuffleboard.setDoubleSupplier("Lift", "Lift next state wrist angle", () -> nextState.getWristAngle().getDegrees());
-        LightningShuffleboard.setStringSupplier("Lift", "Lift next state plan", () -> nextState.getPlan().toString());
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
+                new Pair<String, Object>("Lift goal state", (Supplier<String>) () -> goalState.toString()), new Pair<String, Object>("Lift on target", (BooleanSupplier) () -> onTarget()));
+        if (nextState != null) {
+            periodicShuffleboardNextState =
+                    new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift next state elevator extension", (DoubleSupplier) () -> nextState.getElevatorExtension()),
+                            new Pair<String, Object>("Lift next state arm angle", (DoubleSupplier) () -> nextState.getArmAngle().getDegrees()),
+                            new Pair<String, Object>("Lift next state wrist angle", (DoubleSupplier) () -> nextState.getWristAngle().getDegrees()),
+                            new Pair<String, Object>("Lift next state plan", (Supplier<String>) () -> nextState.getPlan().toString()));
+        }
+
+        // mech_elevator.setLength(elevator.getExtension());
+        // mech_arm.setAngle(arm.getAngle());
+        // mech_wrist.setAngle(wrist.getAngle());
+        // LightningShuffleboard.set("Lift", "mechanism 2D", armMech);
     }
 
     /**
@@ -83,8 +101,17 @@ public class Lift extends SubsystemBase {
         return currentState == goalState;
     }
 
+    public void runPeriodicShuffleboardLoop() {
+        periodicShuffleboard.loop();
+        periodicShuffleboardNextState.loop();
+    }
+
     @Override
     public void periodic() {
+
+        // Updates the shuffleboard values
+        runPeriodicShuffleboardLoop();
+
         // Checks if were on target or if the next state is null
         if (onTarget() || nextState == null) {
             // Checks if the current state is not the goal state
