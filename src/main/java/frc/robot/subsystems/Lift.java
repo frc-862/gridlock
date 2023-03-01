@@ -51,13 +51,13 @@ public class Lift extends SubsystemBase {
         wrist.setAngle(wrist.getAngle());
 
         // Initialize the shuffleboard values and start logging data
-        updateShuffleboard();
+        initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    private void updateShuffleboard() {
-
+    @SuppressWarnings("unchecked")
+    private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", .2d, new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
                 new Pair<String, Object>("Lift goal state", (Supplier<String>) () -> goalState.toString()), new Pair<String, Object>("Lift on target", (BooleanSupplier) () -> onTarget()));
         if (nextState != null) {

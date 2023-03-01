@@ -68,8 +68,8 @@ public class Arm extends SubsystemBase {
     }
 
     // Metod to starts logging and updates the shuffleboard
+    @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-
         periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", .2d, new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
                 new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle + OFFSET),

@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.thunder.limelightlib.LimelightHelpers;
-import frc.thunder.logging.DataLogger;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 import java.util.function.BooleanSupplier;
@@ -27,31 +26,21 @@ public class Limelight extends SubsystemBase {
 
     public Limelight(String limelightName, Pose3d cameraPose) {
         this.limelightName = limelightName;
-        // Inits logging for vision
-        initLogging();
 
         // Sets the appropriate camera position
         setCameraPose(cameraPose);
 
         hasVision();
 
+        // Initialize the shuffleboard values and start logging data
         initializeShuffleboard();
 
         // Registers this as a proper Subsystem
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    // Adds logging for vision so we can look at values when the robot is off and
-    // check them
-    public void initLogging() {
-        double[] botPose = LimelightHelpers.getBotPose(limelightName);
-        DataLogger.addDataElement("Has Vision", () -> hasVision() ? 1 : 0);
-        DataLogger.addDataElement("Vision bot pose TX", () -> botPose[0]);
-        DataLogger.addDataElement("Vision bot pose TY", () -> botPose[1]);
-        DataLogger.addDataElement("Vision bot pose RZ", () -> botPose[5]);
-    }
-
-    // Method to initialize shuffleboard with vision data
+    // Method to initialize shuffleboard with vision data\
+    @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Vision", .2d, new Pair<String, Object>("Vision bot pose TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[0]),
                 new Pair<String, Object>("Vision bot pose TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[1]),

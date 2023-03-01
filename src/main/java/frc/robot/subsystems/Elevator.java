@@ -48,14 +48,15 @@ public class Elevator extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF), encoder);
         controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
+        // Initialize the shuffleboard values and start logging data
         initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
     // Metod to starts logging and updates the shuffleboard
+    @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-
         periodicShuffleboard = new LightningShuffleboardPeriodic("Elevator", .2d, new Pair<String, Object>("Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()),
                 new Pair<String, Object>("Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()), new Pair<String, Object>("Elevator target height", (DoubleSupplier) () -> targetExtension),
                 new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()),

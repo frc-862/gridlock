@@ -18,7 +18,14 @@ public class ServoTurn extends SubsystemBase {
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
     public ServoTurn() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Servo", 0.2d, new Pair<String, Object>("Servo position", (DoubleSupplier) () -> position));
+        // Initialize the shuffleboard values and start logging data
+        initializeShuffleboard();
+    }
+
+    // Initializes the shuffleboard values and starts logging data   
+    @SuppressWarnings("unchecked")
+    private void initializeShuffleboard() {
+        periodicShuffleboard = new LightningShuffleboardPeriodic("ServoTurn", 0.2d, new Pair<String, Object>("Servo Position", (DoubleSupplier) () -> position));
     }
 
     /**

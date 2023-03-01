@@ -96,8 +96,8 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController headingController = new PIDController(HeadingGains.kP, HeadingGains.kI, HeadingGains.kD);
 
     // Heading compenstaion variables
-    private boolean updatedHeading = false;
-    private double lastGoodheading = 0d;
+    // private boolean updatedHeading = false;
+    // private double lastGoodheading = 0d;
 
     // Chassis speeds for the robot
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
@@ -182,9 +182,9 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Checks if all the modules states speeds are 0
-    private boolean checkModuleStates() {
-        return Math.abs(states[0].speedMetersPerSecond + states[1].speedMetersPerSecond + states[2].speedMetersPerSecond + states[3].speedMetersPerSecond) == 0;
-    }
+    // private boolean checkModuleStates() {
+    //     return Math.abs(states[0].speedMetersPerSecond + states[1].speedMetersPerSecond + states[2].speedMetersPerSecond + states[3].speedMetersPerSecond) == 0;
+    // }
 
     /**
      * This takes chassis speeds and converts them to module states and then sets states.
@@ -195,19 +195,19 @@ public class Drivetrain extends SubsystemBase {
         outputChassisSpeeds = chassisSpeeds;
 
         // If we havent updated the heading last known good heading, update it
-        if (!updatedHeading) {
-            lastGoodheading = ESpose.getRotation().getDegrees();
-            updatedHeading = true;
-        }
+        // if (!updatedHeading) {
+        //     lastGoodheading = ESpose.getRotation().getDegrees();
+        //     updatedHeading = true;
+        // }
 
         // If we are not command a rotation for the robot and are moudle states are not 0 comensate for any rotational drift
-        if (chassisSpeeds.omegaRadiansPerSecond == 0 && !checkModuleStates()) {
-            // outputChassisSpeeds.omegaRadiansPerSecond =
-            //         headingController.calculate(pose.getRotation().getDegrees(), lastGoodheading);
-        } else {
-            // If we are command a rotation then our updated heading is no longer valid so this will help reset it 
-            updatedHeading = false;
-        }
+        // if (chassisSpeeds.omegaRadiansPerSecond == 0 && !checkModuleStates()) {
+        //     outputChassisSpeeds.omegaRadiansPerSecond =
+        //             headingController.calculate(ESpose.getRotation().getDegrees(), lastGoodheading);
+        // } else {
+        //     // If we are command a rotation then our updated heading is no longer valid so this will help reset it 
+        //     updatedHeading = false;
+        // }
 
         // If were not commanding any thing to the motors, make sure our states speeds are 0
         if (states != null && chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0 && chassisSpeeds.omegaRadiansPerSecond == 0) {
@@ -293,8 +293,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Method to start sending values to the dashboard and start logging
+    @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-
         periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", .2d, new Pair<String, Object>("Front left angle", (DoubleSupplier) () -> frontLeftModule.getSteerAngle()),
                 new Pair<String, Object>("Front right angle", (DoubleSupplier) () -> frontRightModule.getSteerAngle()),
                 new Pair<String, Object>("Back left angle", (DoubleSupplier) () -> backLeftModule.getSteerAngle()),
@@ -319,6 +319,8 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("Odometry Heading", (DoubleSupplier) () -> getHeading().getDegrees()), new Pair<String, Object>("ES X", (DoubleSupplier) () -> ESpose.getX()),
                 new Pair<String, Object>("ES Y", (DoubleSupplier) () -> ESpose.getY()), new Pair<String, Object>("ES Z", (DoubleSupplier) () -> ESpose.getRotation().getDegrees()),
                 new Pair<String, Object>("ES Pose", (Supplier<double[]>) () -> new double[] {ESpose.getX(), ESpose.getY(), ESpose.getRotation().getRadians()}));
+
+
         // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left angle", () -> frontLeftModule.getSteerAngle());
         // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right angle", () -> frontRightModule.getSteerAngle());
         // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left angle", () -> backLeftModule.getSteerAngle());

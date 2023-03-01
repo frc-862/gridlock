@@ -57,14 +57,15 @@ public class Wrist extends SubsystemBase {
                 new SparkMaxPIDGains(WristConstants.UP_kP, WristConstants.UP_kI, WristConstants.UP_kD, WristConstants.UP_kF), encoder);
         controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
 
+        // Initialize the shuffleboard values and start logging data
         initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
     // Method to update the shuffleboard
+    @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-
         periodicShuffleboard = new LightningShuffleboardPeriodic("Wrist", .2d, new Pair<String, Object>("Wrist Target Angle", (DoubleSupplier) () -> targetAngle),
                 new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()), new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),

@@ -72,9 +72,8 @@ public class AutoBalance extends CommandBase {
         addRequirements(drivetrain);
     }
 
-    /**
-     * Initializes the shuffleboard
-     */
+    // Initializes the shuffleboard
+    @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", 0.2, new Pair<String, Object>("magnitude", (DoubleSupplier) () -> magnitude),
                 new Pair<String, Object>("magnitudeROC", (DoubleSupplier) () -> magnitudeRateOfChange),
