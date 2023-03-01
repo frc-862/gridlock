@@ -24,16 +24,14 @@ public class Limelight extends SubsystemBase {
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
+    // Started logging
+    private boolean loggingStarted = false;
+
     public Limelight(String limelightName, Pose3d cameraPose) {
         this.limelightName = limelightName;
 
         // Sets the appropriate camera position
         setCameraPose(cameraPose);
-
-        hasVision();
-
-        // Initialize the shuffleboard values and start logging data
-        initializeShuffleboard();
 
         // Registers this as a proper Subsystem
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -61,37 +59,6 @@ public class Limelight extends SubsystemBase {
                 new Pair<String, Object>("Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
                 new Pair<String, Object>("Vision has vision", (BooleanSupplier) () -> hasVision()));
 
-        // if (hasVision()) {
-        //     double[] botPose = LimelightHelpers.getBotPose(limelightName);
-        //     double[] botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-        //     double[] botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
-
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose TX", botPose[0]);
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose TY", botPose[1]);
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose RZ", botPose[5]);
-
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TX", botPoseBlue[0]);
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue TY", botPoseBlue[1]);
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue RZ", botPoseBlue[5]);
-
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TX", botPoseRed[0]);
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose Red TY", botPoseRed[1]);
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose Red RZ", botPoseRed[5]);
-
-        //     LightningShuffleboard.set("Vision", "Vision robot bot pose", getRobotPose());
-        //     LightningShuffleboard.set("Vision", "Vision robot bot pose blue", getRobotPoseBlue());
-        //     LightningShuffleboard.set("Vision", "Vision robot bot pose red", getRobotPoseRed());
-
-        //     LightningShuffleboard.setDouble("Vision", "RR Tape Horizontal Offset", getHorizontalOffset());
-        //     LightningShuffleboard.setDouble("Vision", "RR Tape Vertical Offset", getVerticalOffset());
-        //     LightningShuffleboard.setDouble("Vision", "RR Tape Target Area", getTargetArea());
-
-        //     LightningShuffleboard.setDouble("Vision", "Vision latency pipeline", getLatencyPipline());
-        //     LightningShuffleboard.setDouble("Vision", "Vision latency capture", getLatencyCapture());
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose latency", getLatencyBotPose());
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose Blue latency", getLatencyBotPoseBlue());
-        //     LightningShuffleboard.setDouble("Vision", "Vision bot pose Red latency", getLatencyBotPoseRed());
-        // }
     }
 
     /**
@@ -320,9 +287,16 @@ public class Limelight extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (hasVision()) {
+        if (hasVision() && !loggingStarted) {
+            // Initialize the shuffleboard values and start logging data
+            initializeShuffleboard();
+            loggingStarted = true;
+        }
+
+        if (loggingStarted) {
             periodicShuffleboard.loop();
         }
+
     }
 
 }
