@@ -16,10 +16,10 @@ public class HoldPower extends CommandBase {
 
     @Override
     public void execute() {
-        if (collector.getGamePiece().equals(GamePiece.NONE)) {
-            collector.setPower(0d);
-        } else {
+        if (collector.getGamePiece().equals(GamePiece.CONE) || collector.getGamePiece().equals(GamePiece.CUBE)) {
             collector.setPower(CollectorConstants.HOLD_POWER);
+        } else {
+            collector.setPower(0d);
         }
     }
 
