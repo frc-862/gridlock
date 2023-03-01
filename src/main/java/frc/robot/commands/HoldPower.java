@@ -17,9 +17,9 @@ public class HoldPower extends CommandBase {
     @Override
     public void execute() {
         if (collector.getGamePiece().equals(GamePiece.NONE)) {
-            collector.setPower(CollectorConstants.HOLD_POWER);
-        } else {
             collector.setPower(0d);
+        } else {
+            collector.setPower(CollectorConstants.HOLD_POWER);
         }
     }
 
