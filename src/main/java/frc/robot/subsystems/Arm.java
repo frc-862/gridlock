@@ -49,6 +49,8 @@ public class Arm extends SubsystemBase {
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
+        targetAngle = getAngle().getDegrees();
+
         // Starts logging and updates the shuffleboard
         initializeShuffleboard();
 

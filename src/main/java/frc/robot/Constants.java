@@ -197,7 +197,7 @@ public final class Constants {
 
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 263.42;
-        public static final double ENCODER_OFFSET_BLACKOUT = 196.5;
+        public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;
@@ -272,8 +272,8 @@ public final class Constants {
         public static final double MAX_POWER = 0.5d;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 292.05;
-        public static final double ENCODER_OFFSET_BLACKOUT = 285.86; //TODO: change
+        public static final double ENCODER_OFFSET_GRIDLOCK = -167.55;
+        public static final double ENCODER_OFFSET_BLACKOUT = 43.1; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;

@@ -41,6 +41,8 @@ public class Elevator extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF), encoder);
         controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
+        targetExtension = getExtension();
+
         initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);

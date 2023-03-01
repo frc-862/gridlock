@@ -74,19 +74,19 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
 
         // new Trigger(copilot::getAButton)
-        //         .whileTrue(new ParallelCommandGroup(new RunCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-80))), new RunCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-40)))));
-        // new Trigger(copilot::getBButton)
-        //         .whileTrue(new ParallelCommandGroup(new RunCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-45))), new RunCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-90)))));
+        //         .whileTrue((new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-45))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))), new InstantCommand(() -> elevator.setExtension(6)))));
+        // new Trigger(copilot::getYButton)
+        //         .whileTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-70))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(20))), new InstantCommand(() -> elevator.setExtension(8))));
         // new Trigger(copilot::getXButton)
-        //         .whileTrue(new ParallelCommandGroup(new RunCommand(() -> arm.setAngle(Rotation2d.fromDegrees(0))), new RunCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-120)))));
+        //         .whileTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(0))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-40))), new InstantCommand(() -> elevator.setExtension(4))));
 
         // copilot controls 
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
-        new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
+        // new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
         new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
         // new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
-        new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
+        // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
 
     }
 

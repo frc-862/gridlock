@@ -50,6 +50,11 @@ public class Wrist extends SubsystemBase {
         encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
         encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
 
+        targetAngle = getAngle().getDegrees();
+
+        motor.getReverseLimitSwitch(WristConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
+        motor.getForwardLimitSwitch(WristConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
+
         initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -86,7 +91,12 @@ public class Wrist extends SubsystemBase {
      * @param angle Rotation2d to set the wrist to
      */
     public void setAngle(Rotation2d angle) {
-        targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);        
+        targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
+        // motor.set(controller.calculate(getAngle().getDegrees(), targetAngle) +  LightningShuffleboard.getDouble("Wrist", "kF", 0) * getGroundRelativeAngle(arm.getAngle()).getDegrees());
+    }
+
+    public void setAngel(Rotation2d angle) {
+        // targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
         // motor.set(controller.calculate(getAngle().getDegrees(), targetAngle) +  LightningShuffleboard.getDouble("Wrist", "kF", 0) * getGroundRelativeAngle(arm.getAngle()).getDegrees());
     }
 
@@ -156,7 +166,14 @@ public class Wrist extends SubsystemBase {
             minPower = 0;
         }
 
-        motor.set(controller.calculate(getAngle().getDegrees(), targetAngle) + minPower
-                + WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees()) * getGroundRelativeAngle(arm.getAngle()).getDegrees());
+        double POutput = controller.calculate(getAngle().getDegrees(), targetAngle);
+        double FOutput = WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees()) * getGroundRelativeAngle(arm.getAngle()).getDegrees();
+        double power = POutput + FOutput + minPower;
+        motor.set(power);
+
+        LightningShuffleboard.setDouble("Wrist", "FF output", FOutput);
+        LightningShuffleboard.setDouble("Wrist", "PID output", POutput);
+        LightningShuffleboard.setDouble("Wrist", "minpower", minPower);
+        LightningShuffleboard.setDouble("Wrist", "wrist output power", power);
     }
 }
