@@ -75,12 +75,10 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
         
-        new Trigger(() -> copilot.getPOV() == 0).whileTrue(new RunCommand(() -> lift.addWristBias(1), lift));
-        new Trigger(() -> copilot.getPOV() == 180).whileTrue(new RunCommand(() -> lift.addWristBias(-1), lift));
-        new Trigger(() -> copilot.getPOV() == 90).whileTrue(new RunCommand(() -> lift.addArmBias(1), lift));
-        new Trigger(() -> copilot.getPOV() == 270).whileTrue(new RunCommand(() -> lift.addArmBias(-1), lift));
-
-        new Trigger(() -> copilot.getLeftStickButtonPressed()).onTrue(new InstantCommand(lift::resetBias, lift));
+        new Trigger(() -> copilot.getPOV() == 0).whileTrue(new RunCommand(() -> lift.adjustWrist(1), lift));
+        new Trigger(() -> copilot.getPOV() == 180).whileTrue(new RunCommand(() -> lift.adjustWrist(-1), lift));
+        new Trigger(() -> copilot.getPOV() == 90).whileTrue(new RunCommand(() -> lift.adjustArm(1), lift));
+        new Trigger(() -> copilot.getPOV() == 270).whileTrue(new RunCommand(() -> lift.adjustArm(-1), lift));
 
         // copilot controls 
         // new Trigger(copilot::getAButton).whileTrue(new Ground(lift));

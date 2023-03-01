@@ -31,11 +31,6 @@ public class Lift extends SubsystemBase {
     // The next state to transition to
     private StateTransition nextState;
 
-    private double wristBias = 0;
-    private double lastWristBias = 0;
-    private double armBias = 0;
-    private double lastArmBias = 0;
-
     // Periodic Shuffleboard 
     private LightningShuffleboardPeriodic periodicShuffleboard;
     private LightningShuffleboardPeriodic periodicShuffleboardNextState;
@@ -81,18 +76,6 @@ public class Lift extends SubsystemBase {
         // LightningShuffleboard.set("Lift", "mechanism 2D", armMech);
     }
 
-    public void addWristBias(double biasToAdd) {
-        wristBias += biasToAdd / 50;
-    }
-
-    public void addArmBias(double biasToAdd) {
-        armBias += biasToAdd / 50;
-    }
-
-    public void resetBias() {
-        wristBias = 0;
-        armBias = 0;
-    }
     /**
      * Sets the goal state of the lift
      * 
@@ -124,15 +107,34 @@ public class Lift extends SubsystemBase {
         periodicShuffleboardNextState.loop();
     }
 
+    public void adjustArm(double angle) {
+        goalState = currentState;
+        nextState = null;
+        arm.setAngle(arm.getAngle().plus(Rotation2d.fromDegrees(angle)));
+    }
+
+    public void adjustWrist(double angle) {
+        goalState = currentState;
+        nextState = null;
+        wrist.setAngle(wrist.getAngle().plus(Rotation2d.fromDegrees(angle)));
+    }
+
+    public void adjustElevator(double extension) {
+        goalState = currentState;
+        nextState = null;
+        elevator.setExtension(elevator.getExtension() + extension);
+    }
+
     @Override
     public void periodic() {
         
         // Checks if were on target or if the next state is null, also makes sure our biassese havent changed
-        if (onTarget() || nextState == null && (wristBias == lastWristBias && armBias == lastArmBias)) {
+        if (onTarget() || nextState == null) {
             // Checks if the current state is not the goal state
             if (currentState != goalState) {
                 // Gets the next state from the state table
                 nextState = StateTable.get(currentState, goalState);
+
             } else {
                 // sets the next state to null
                 nextState = null;
@@ -149,30 +151,30 @@ public class Lift extends SubsystemBase {
                 // If parallel, set all the components to their target
                 case parallel:
                     elevator.setExtension(nextState.getElevatorExtension());
-                    arm.setAngle(nextState.getArmAngle().plus(Rotation2d.fromDegrees(armBias)));
-                    wrist.setAngle(nextState.getWristAngle().plus(Rotation2d.fromDegrees(wristBias)));
+                    arm.setAngle(nextState.getArmAngle());
+                    wrist.setAngle(nextState.getWristAngle());
                     break;
                 // If armPriority, set the arm to its target and then set the elevator and wrist
                 case armPriority:
-                    arm.setAngle(nextState.getArmAngle().plus(Rotation2d.fromDegrees(armBias)));
+                    arm.setAngle(nextState.getArmAngle());
                     if (arm.onTarget()) {
                         elevator.setExtension(nextState.getElevatorExtension());
-                        wrist.setAngle(nextState.getWristAngle().plus(Rotation2d.fromDegrees(wristBias)));
+                        wrist.setAngle(nextState.getWristAngle());
                     }
                     break;
                 // If elevatorPriority, set the elevator to its target and then set the arm and wrist
                 case elevatorPriority:
                     elevator.setExtension(nextState.getElevatorExtension());
                     if (elevator.onTarget()) {
-                        arm.setAngle(nextState.getArmAngle().plus(Rotation2d.fromDegrees(armBias)));
-                        wrist.setAngle(nextState.getWristAngle().plus(Rotation2d.fromDegrees(wristBias)));
+                        arm.setAngle(nextState.getArmAngle());
+                        wrist.setAngle(nextState.getWristAngle());
                     }
                     break;
                 // If elevatorLast set the wrist to its target and then set the arm and lastly the elevator
                 case elevatorLast:
-                    wrist.setAngle(nextState.getWristAngle().plus(Rotation2d.fromDegrees(wristBias)));
+                    wrist.setAngle(nextState.getWristAngle());
                     if (wrist.onTarget()) {
-                        arm.setAngle(nextState.getArmAngle().plus(Rotation2d.fromDegrees(armBias)));
+                        arm.setAngle(nextState.getArmAngle());
                         if (arm.onTarget()) {
                             elevator.setExtension(nextState.getElevatorExtension());
                         }
@@ -180,8 +182,5 @@ public class Lift extends SubsystemBase {
                     break;
             }
         }
-
-        lastArmBias = armBias;
-        lastWristBias = wristBias;
     }
 }
