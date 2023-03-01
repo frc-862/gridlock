@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
@@ -46,7 +47,7 @@ public class RobotContainer extends LightningContainer {
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
     private static final ServoTurn servoturn = new ServoTurn();
-    // private static final Lift lift = new Lift(elevator, wrist, arm);
+    private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
 
     // Creates our controllers and deadzones
@@ -74,6 +75,10 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
         
+        new Trigger(() -> copilot.getPOV() == 0).whileTrue(new RunCommand(() -> lift.addWristBias(1), lift));
+        new Trigger(() -> copilot.getPOV() == 180).whileTrue(new RunCommand(() -> lift.addWristBias(-1), lift));
+        new Trigger(() -> copilot.getPOV() == 90).whileTrue(new RunCommand(() -> lift.addArmBias(1), lift));
+        new Trigger(() -> copilot.getPOV() == 270).whileTrue(new RunCommand(() -> lift.addArmBias(-1), lift));
 
         // copilot controls 
         // new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
