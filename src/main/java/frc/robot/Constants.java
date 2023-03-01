@@ -242,6 +242,7 @@ public final class Constants {
     public static final class CollectorConstants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
+        public static final double HOLD_POWER = 0.1;
 
         //TODO: tune these
         //Cube Theoretical: #3a01b2 (58, 1, 178)
