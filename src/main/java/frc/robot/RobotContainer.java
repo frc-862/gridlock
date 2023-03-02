@@ -2,8 +2,8 @@ package frc.robot;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
-import frc.robot.subsystems.Limelight;
-
+import frc.robot.subsystems.LimelightBack;
+import frc.robot.subsystems.LimelightFront;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
@@ -39,15 +39,15 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final Limelight frontLimelight = new Limelight(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
-    private static final Limelight backLimelight = new Limelight(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
+    private static final LimelightFront frontLimelight = new LimelightFront(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
+    private static final LimelightBack backLimelight = new LimelightBack(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(frontLimelight, backLimelight);
     // private static final Arm arm = new Arm();
     // private static final Wrist wrist = new Wrist();
     // private static final Elevator elevator = new Elevator();
-    private static final ServoTurn servoturn = new ServoTurn();
+    private static final ServoTurn servoturn = new ServoTurn(); 
     // private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
 
@@ -71,12 +71,9 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
-        new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
-        new Trigger(driver::getYButton).whileTrue(new StdDev(backLimelight));
-
         new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
         
-        new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight, collector.getGamePiece()));
+        new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
         // copilot controls 
         // new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
         // new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
@@ -85,8 +82,6 @@ public class RobotContainer extends LightningContainer {
         // new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
         // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));    
     }
-
-    private void AutoAlign(Drivetrain drivetrain2, Limelight frontlimelight2, int i) {}
 
     // Creates the autonomous commands
     @Override

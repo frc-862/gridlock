@@ -3,17 +3,17 @@ package frc.robot.commands;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.LimelightBack;
 
 public class StdDev extends CommandBase {
 
-    private Limelight vision;
+    private LimelightBack vision;
 
     private ArrayList<Double> x;
     private ArrayList<Double> y;
     private ArrayList<Double> z;
 
-    public StdDev(Limelight vision) {
+    public StdDev(LimelightBack vision) {
         this.vision = vision;
 
         addRequirements(vision);
