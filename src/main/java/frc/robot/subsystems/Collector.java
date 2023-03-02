@@ -18,6 +18,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.RobotMap.*;
 import frc.thunder.config.NeoConfig;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -40,6 +41,8 @@ public class Collector extends SubsystemBase {
     public enum GamePiece {
         CONE, CUBE, NONE
     }
+
+    private GamePiece gamePiece = GamePiece.CUBE;
 
     public Collector() {
         // Create the motor and configure it
@@ -86,16 +89,21 @@ public class Collector extends SubsystemBase {
      */
 
     public GamePiece getGamePiece() {
-        Color detectedColor = colorSensor.getColor();
-        ColorMatchResult match = colorMatch.matchClosestColor(detectedColor);
+        // Color detectedColor = colorSensor.getColor();
+        // ColorMatchResult match = colorMatch.matchClosestColor(detectedColor);
 
-        if (match.color == CollectorConstants.CUBE_OPTIMAL) {
-            return GamePiece.CUBE;
-        } else if (match.color == CollectorConstants.CONE_OPTIMAL) {
-            return GamePiece.CONE;
-        } else {
-            return GamePiece.NONE;
-        }
+        // if (match.color == CollectorConstants.CUBE_OPTIMAL) {
+        //     return GamePiece.CUBE;
+        // } else if (match.color == CollectorConstants.CONE_OPTIMAL) {
+        //     return GamePiece.CONE;
+        // } else {
+        //     return GamePiece.NONE;
+        // }
+        return gamePiece;
+    }
+
+    public void setGamePiece(GamePiece gamePiece) {
+        this.gamePiece = gamePiece;
     }
 
     /**
@@ -138,5 +146,7 @@ public class Collector extends SubsystemBase {
     @Override
     public void periodic() {
         periodicShuffleboard.loop();
+
+        LightningShuffleboard.setString("Lift", "game piece", gamePiece.toString());
     }
 }

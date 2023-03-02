@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-public class Limelight extends SubsystemBase {
+public class LimelightFront extends SubsystemBase {
 
     // Change "limelight" to whatever the name of the limelight you are using
     // we should rename the limelight names to something consistent later
@@ -27,7 +27,7 @@ public class Limelight extends SubsystemBase {
     // Started logging
     private boolean loggingStarted = false;
 
-    public Limelight(String limelightName, Pose3d cameraPose) {
+    public LimelightFront(String limelightName, Pose3d cameraPose) {
         this.limelightName = limelightName;
 
         // Sets the appropriate camera position

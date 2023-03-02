@@ -48,7 +48,8 @@ public class Elevator extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF), encoder);
         controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
-        // Initialize the shuffleboard values and start logging data
+        targetExtension = getExtension();
+
         initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -112,6 +113,7 @@ public class Elevator extends SubsystemBase {
      */
     public boolean onTarget() {
         return Math.abs(targetExtension - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+        // return true;
     }
 
     /**
@@ -123,6 +125,7 @@ public class Elevator extends SubsystemBase {
      */
     public boolean onTarget(double target) {
         return Math.abs(target - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+        // return true;
     }
 
     /**
@@ -166,15 +169,15 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // if (getTopLimitSwitch()) {
+        //     encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
+        // }
 
-        periodicShuffleboard.loop();
+        // if (getBottomLimitSwitch()) {
+        //     encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
+        // }
 
-        if (getTopLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
-        }
 
-        if (getBottomLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
-        }
+        // setExtension(LightningShuffleboard.getDouble("Lift", "ele targ", 0));
     }
 }
