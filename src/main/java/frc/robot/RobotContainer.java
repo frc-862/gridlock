@@ -98,13 +98,15 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
-        new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
-        new Trigger(() -> -copilot.getRightY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
-        new Trigger(() -> -copilot.getRightY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
+        // new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
+        new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
+        new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
         // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
 
         new Trigger(copilot::getStartButton).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
         new Trigger(copilot::getBackButton).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
+
+        new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::targetOverride));
 
     }
 
@@ -150,7 +152,7 @@ public class RobotContainer extends LightningContainer {
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
         // collector.setDefaultCommand(new HoldPower(collector));
-        collector.setDefaultCommand(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
+        collector.setDefaultCommand(new HoldPower(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
     }
 
     @Override

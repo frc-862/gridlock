@@ -257,7 +257,7 @@ public final class Constants {
     public static final class CollectorConstants {
         public static final boolean MOTOR_INVERT = true;
         public static final int CURRENT_LIMIT = 30;
-        public static final double HOLD_POWER = 0.1;
+        public static final double HOLD_POWER = 0.25;
 
         public static final double LOG_PERIOD = 0.22;
 
@@ -456,7 +456,7 @@ public final class Constants {
             parallel, armPriority, elevatorPriority, wristPriority, elevatorLast
         }
 
-        public static final double ELEVATOR_STOWED_POS = 1;
+        public static final double ELEVATOR_STOWED_POS = 4;
         public static final double ARM_STOWED_ANGLE = -117;
         public static final double WRIST_STOWED_ANGLE = 112;
 

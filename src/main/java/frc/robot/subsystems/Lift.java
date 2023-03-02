@@ -31,6 +31,8 @@ public class Lift extends SubsystemBase {
     // The next state to transition to
     private StateTransition nextState;
 
+    private boolean doTargetOverride = false;
+
     // Periodic Shuffleboard 
     private LightningShuffleboardPeriodic periodicShuffleboard;
     // private LightningShuffleboardPeriodic periodicShuffleboardNextState;
@@ -93,9 +95,19 @@ public class Lift extends SubsystemBase {
     public boolean onTarget() {
         if (nextState == null) {
             return elevator.onTarget() && arm.onTarget() && wrist.onTarget();
+        } else if (doTargetOverride) {
+            doTargetOverride = false;
+            return true;
         } else {
             return elevator.onTarget(nextState.getElevatorExtension()) && arm.onTarget(nextState.getArmAngle().getDegrees()) && wrist.onTarget(nextState.getWristAngle().getDegrees());
         }
+    }
+
+    public void targetOverride() {
+        goalState = currentState;
+
+        doTargetOverride = true;
+
     }
 
     public boolean goalReached() {
