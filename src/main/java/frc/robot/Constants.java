@@ -419,7 +419,7 @@ public final class Constants {
     public static final class LiftConstants {
         // All of the different states the lift can be in
         public enum LiftState {
-            ground,
+            groundCone, groundCube,
 
             doubleSubstationCollect, reverseSubstationCollect,
 

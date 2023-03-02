@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LiftConstants.LiftState;
@@ -18,8 +19,8 @@ public class Lift extends SubsystemBase {
     private Arm arm;
 
     // The current and goal states
-    public LiftState currentState = LiftState.ground;
-    public LiftState goalState = LiftState.ground;
+    public LiftState currentState = LiftState.groundCube;
+    public LiftState goalState = LiftState.groundCube;
 
     // The next state to transition to
     public StateTransition nextState;
@@ -83,6 +84,14 @@ public class Lift extends SubsystemBase {
         return currentState == goalState;
     }
 
+    public Rotation2d getWristTarg() {
+        if (nextState != null) {
+            return nextState.getWristAngle();
+        } else {
+            return Rotation2d.fromDegrees(30);
+        }
+    }
+
     @Override
     public void periodic() {
         // Checks if were on target or if the next state is null
@@ -128,12 +137,12 @@ public class Lift extends SubsystemBase {
                     }
                     break;
                 case wristPriority:
-                wrist.setAngle(nextState.getWristAngle());
+                    wrist.setAngle(nextState.getWristAngle());
                     if (wrist.onTarget()) {
                         elevator.setExtension(nextState.getElevatorExtension());
                         arm.setAngle(nextState.getArmAngle());
                     }
-                break;
+                    break;
                 // If elevatorLast set the wrist to its target and then set the arm and lastly the elevator
                 case elevatorLast:
                     wrist.setAngle(nextState.getWristAngle());
