@@ -19,6 +19,8 @@ import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
+import frc.robot.commands.AutoAlign;
+import frc.robot.commands.AutoBalance;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
@@ -66,6 +68,7 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureButtonBindings() {
+        //Driver Controls
         // Back button to reset field centeric driving to current heading of the robot
         new Trigger(driver::getBackButton).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
@@ -77,10 +80,11 @@ public class RobotContainer extends LightningContainer {
 
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
-        new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
+        // new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
+        new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
+        // copilot controls 
         new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
-        
         new Trigger(() -> copilot.getPOV() == 0).whileTrue(new RunCommand(() -> lift.adjustWrist(1), lift));
         new Trigger(() -> copilot.getPOV() == 180).whileTrue(new RunCommand(() -> lift.adjustWrist(-1), lift));
         new Trigger(() -> copilot.getPOV() == 90).whileTrue(new RunCommand(() -> lift.adjustArm(1), lift));
@@ -92,8 +96,7 @@ public class RobotContainer extends LightningContainer {
         //         .whileTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-70))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(20))), new InstantCommand(() -> elevator.setExtension(8))));
         // new Trigger(copilot::getXButton)
         //         .whileTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(0))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-40))), new InstantCommand(() -> elevator.setExtension(4))));
-
-        // copilot controls 
+        
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
@@ -145,8 +148,8 @@ public class RobotContainer extends LightningContainer {
          */
         // drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX() * Math.sqrt(2)), () -> joystickFilter.filter(driver.getLeftY() * Math.sqrt(2)),
         //         () -> -joystickFilter.filter(driver.getRightX())));
-        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> MathUtil.applyDeadband(-driver.getLeftX(), XboxControllerConstants.DEADBAND), () -> MathUtil.applyDeadband(driver.getLeftY(), XboxControllerConstants.DEADBAND),
-                () -> -MathUtil.applyDeadband(driver.getRightX(), XboxControllerConstants.DEADBAND)));
+        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> MathUtil.applyDeadband(-driver.getLeftX(), XboxControllerConstants.DEADBAND),
+                () -> MathUtil.applyDeadband(driver.getLeftY(), XboxControllerConstants.DEADBAND), () -> -MathUtil.applyDeadband(driver.getRightX(), XboxControllerConstants.DEADBAND)));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),

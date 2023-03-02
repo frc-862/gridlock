@@ -10,6 +10,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -177,8 +178,8 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final String FRONT_NAME = "limelight-front";
         public static final String BACK_NAME = "limelight-back";
-        public static final Pose3d FRONT_POSE = new Pose3d();
-        public static final Pose3d BACK_POSE = new Pose3d();
+        public static final Pose3d FRONT_POSE = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
+        public static final Pose3d BACK_POSE = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
 
     }
 
@@ -477,5 +478,17 @@ public final class Constants {
         public static final double MAX_VELOCITY = 3;
         public static final double MAX_ACCELERATION = 3;
 
+    }
+
+    //Constants for autoAlign
+    public static final class AutoAlignConstants {
+        // PID constants for auto align
+        public static final PIDConstants AUTO_ALIGN_PID_CONSTANTS = new PIDConstants(0.05, 0, 0);
+
+        // Tolerance for auto align
+        public static final double TOLERANCE = 1d;
+
+        //Offset limelight off center
+        public static final double OFFSET = -11.5; //TODO determine for gridlock
     }
 }
