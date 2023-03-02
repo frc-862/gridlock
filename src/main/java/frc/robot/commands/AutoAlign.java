@@ -6,33 +6,30 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LimelightFront;
-import frc.robot.subsystems.Collector.GamePiece;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class AutoAlign extends CommandBase {
     private Drivetrain drivetrain;
     private LimelightFront limelight;
-    private PIDController controller = new PIDController(0.009, 0, 0);
+    private PIDController controller;
+
     public AutoAlign(Drivetrain drivetrain, LimelightFront limelight) {
-        // Use addRequirements() here to declare subsystem dependencies.
         this.drivetrain = drivetrain;
         this.limelight = limelight;
-
+        controller = new PIDController(AutoAlignConstants.AUTO_ALIGN_PID_CONSTANTS.kP, AutoAlignConstants.AUTO_ALIGN_PID_CONSTANTS.kI, AutoAlignConstants.AUTO_ALIGN_PID_CONSTANTS.kD);
+        controller.setSetpoint(AutoAlignConstants.OFFSET);
+        controller.setTolerance(AutoAlignConstants.TOLERANCE);
+        
         addRequirements(drivetrain, limelight);
     }
 
     @Override
     public void initialize() {
         limelight.setPipelineNum(2);
-        controller.setSetpoint(AutoAlignConstants.OFFSET);
-        controller.setTolerance(AutoAlignConstants.TOLERANCE);
     }
 
     @Override
     public void execute() {
-        controller.setP(LightningShuffleboard.getDouble("Auto align", "kP", controller.getP()));
-        controller.setI(LightningShuffleboard.getDouble("Auto align", "kI", controller.getI()));
-        controller.setD(LightningShuffleboard.getDouble("Auto align", "kD", controller.getD()));
         LightningShuffleboard.setBool("Auto align", "OnTarget", isOnTarget(limelight.getHorizontalOffset()));
         LightningShuffleboard.setDouble("Auto align", "Horizontal offset", limelight.getHorizontalOffset());
 

@@ -80,9 +80,9 @@ public class RobotContainer extends LightningContainer {
 
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
-        // new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
-
         new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
+
+
         // copilot controls 
         new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
         new Trigger(() -> copilot.getPOV() == 0).whileTrue(new RunCommand(() -> lift.adjustWrist(1), lift));
