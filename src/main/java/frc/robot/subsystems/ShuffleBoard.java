@@ -23,8 +23,6 @@ public class ShuffleBoard extends SubsystemBase {
         this.elevator = elevator;
         this.arm = arm;
         this.wrist = wrist;
-        this.autoBalance = autoBalance;
-        this.autoAlign = autoAlign;
         initializeShuffleboard();
     }
     
@@ -35,9 +33,7 @@ public class ShuffleBoard extends SubsystemBase {
             new Pair<String, Object>("Arm on Target", (BooleanSupplier) () -> arm.onTarget()), 
             new Pair<String, Object>("Wrist on Target", (BooleanSupplier) () -> wrist.onTarget()),
             new Pair<String, Object>("Auto Balance on Target", (BooleanSupplier) () -> autoBalance.balanced()),
-            new Pair<String, Object>("Auto Align on Target", (BooleanSupplier) () -> autoAlign.onTarget())
-            // TODO add piece type
-        );
+            new Pair<String, Object>("Auto Align on Target", (BooleanSupplier) () -> autoAlign.onTarget()));
     }
 
     @Override
