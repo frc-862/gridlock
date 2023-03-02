@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.Collector.GamePiece;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -83,10 +84,13 @@ public class RobotContainer extends LightningContainer {
         // copilot controls 
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
         new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
-        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, true));
-        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, true));
+        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, collector.getGamePiece()));
+        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, collector.getGamePiece()));
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
         // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
+
+        // new Trigger(copilot::getStartButton).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
+        // new Trigger(copilot::getBackButton).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
 
     }
 

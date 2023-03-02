@@ -182,7 +182,7 @@ public final class Constants {
         public static final double kD = 0d;
         public static final double kF = 0d;
 
-        public static final double TOLERANCE = 10d;
+        public static final double TOLERANCE = 5d;
 
         // Min and Max arm angles in degrees
         // TODO: change to actual values
@@ -263,7 +263,7 @@ public final class Constants {
         public static final double kD = 0d;
 
         // Tolernace for our wrist
-        public static final double TOLERANCE = 10d; // TODO: set a better tolerance
+        public static final double TOLERANCE = 5d; 
 
         // Min/max angles in degrees
         public static final double MAX_ANGLE = 111d;

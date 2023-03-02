@@ -33,6 +33,8 @@ public class Collector extends SubsystemBase {
         CONE, CUBE, NONE
     }
 
+    private GamePiece gamePiece = GamePiece.CUBE;
+
     public Collector() {
         // Create the motor and configure it
         motor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, CollectorConstants.MOTOR_INVERT, CollectorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMPENSATION, MotorType.kBrushless,
@@ -77,16 +79,21 @@ public class Collector extends SubsystemBase {
      */
 
     public GamePiece getGamePiece() {
-        Color detectedColor = colorSensor.getColor();
-        ColorMatchResult match = colorMatch.matchClosestColor(detectedColor);
+        // Color detectedColor = colorSensor.getColor();
+        // ColorMatchResult match = colorMatch.matchClosestColor(detectedColor);
 
-        if (match.color == CollectorConstants.CUBE_OPTIMAL) {
-            return GamePiece.CUBE;
-        } else if (match.color == CollectorConstants.CONE_OPTIMAL) {
-            return GamePiece.CONE;
-        } else {
-            return GamePiece.NONE;
-        }
+        // if (match.color == CollectorConstants.CUBE_OPTIMAL) {
+        //     return GamePiece.CUBE;
+        // } else if (match.color == CollectorConstants.CONE_OPTIMAL) {
+        //     return GamePiece.CONE;
+        // } else {
+        //     return GamePiece.NONE;
+        // }
+        return gamePiece;
+    }
+
+    public void setGamePiece(GamePiece gamePiece) {
+        this.gamePiece = gamePiece;
     }
 
     /**
