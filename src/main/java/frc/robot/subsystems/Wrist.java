@@ -5,16 +5,22 @@ import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
@@ -22,7 +28,9 @@ public class Wrist extends SubsystemBase {
 
     // The motor, encoder, and PID controller
     private CANSparkMax motor;
-    private SparkMaxPIDController controller;
+    private PIDController controller = new PIDController(WristConstants.kP, WristConstants.kI, WristConstants.kD);
+    private PowerDistribution PDH = new PowerDistribution(21, ModuleType.kRev);
+
     private SparkMaxAbsoluteEncoder encoder;
 
     // The encoder offset
@@ -30,11 +38,17 @@ public class Wrist extends SubsystemBase {
 
     // The target angle to be set to the wrist
     private double targetAngle;
+    private double minPower;
+
+    private boolean isBrakeModeSet = true;
+
+    private Arm arm;
 
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
-    public Wrist() {
+    public Wrist(Arm arm) {
+        this.arm = arm;
         // If blackout, use the blackout offset
         if (Constants.isBlackout()) {
             OFFSET = WristConstants.ENCODER_OFFSET_BLACKOUT;
@@ -49,15 +63,15 @@ public class Wrist extends SubsystemBase {
         motor.setClosedLoopRampRate(2);
 
         // Create the absolute encoder and sets the conversion factor
-        encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
-        encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
+        // encoder = NeoConfig.createAbsoluteEncoder(motor, OFFSET);
+        encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+        // encoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
 
-        // Create the PID controller and set the output range
-        controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(WristConstants.DOWN_kP, WristConstants.DOWN_kI, WristConstants.DOWN_kD, WristConstants.DOWN_kF),
-                new SparkMaxPIDGains(WristConstants.UP_kP, WristConstants.UP_kI, WristConstants.UP_kD, WristConstants.UP_kF), encoder);
-        controller.setOutputRange(WristConstants.MIN_POWER, WristConstants.MAX_POWER);
+        targetAngle = getAngle().getDegrees();
 
-        // Initialize the shuffleboard values and start logging data
+        motor.getReverseLimitSwitch(WristConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
+        motor.getForwardLimitSwitch(WristConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
+
         initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -79,7 +93,11 @@ public class Wrist extends SubsystemBase {
      * @return Rotation2d of the wrist from encoder
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(encoder.getPosition() - OFFSET);
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180));
+    }
+
+    public Rotation2d getGroundRelativeAngle(Rotation2d armAngle) {
+        return armAngle.plus(getAngle());
     }
 
     /**
@@ -89,6 +107,7 @@ public class Wrist extends SubsystemBase {
      */
     public void setAngle(Rotation2d angle) {
         targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
+        // motor.set(controller.calculate(getAngle().getDegrees(), targetAngle) +  LightningShuffleboard.getDouble("Wrist", "kF", 0) * getGroundRelativeAngle(arm.getAngle()).getDegrees());
     }
 
     /**
@@ -130,6 +149,7 @@ public class Wrist extends SubsystemBase {
      */
     public boolean onTarget() {
         return Math.abs(getAngle().getDegrees() - targetAngle) < WristConstants.TOLERANCE;
+        // return true;
     }
 
     /**
@@ -141,24 +161,33 @@ public class Wrist extends SubsystemBase {
      */
     public boolean onTarget(double target) {
         return Math.abs(getAngle().getDegrees() - target) < WristConstants.TOLERANCE;
+        // return true;
     }
 
     @Override
     public void periodic() {
 
-        periodicShuffleboard.loop();
+        // controller.setP(LightningShuffleboard.getDouble("Lift", "wrist kP", WristConstants.kP));
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -90)));
+        // LightningShuffleboard.setDouble("Lift", "ground relative wrist angle", getGroundRelativeAngle(arm.getAngle()).getDegrees());
+        LightningShuffleboard.setDouble("Lift", "wrist relative wrist angle", getAngle().getDegrees());
 
-        // If were not on target
-        if (!onTarget()) {
-            // Checks if wrist is going up or down
-            if (targetAngle - getAngle().getDegrees() > 2) {
-                // Uses the up gains
-                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
-            } else {
-                // Uses the down gains
-                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
-            }
+        if (Math.abs(controller.getPositionError()) > 2) {
+            minPower = Math.signum(controller.getPositionError()) * -0.035;
+        } else {
+            minPower = 0;
         }
 
+        double POutput = controller.calculate(getAngle().getDegrees(), targetAngle);
+        double FOutput = WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees()) * getGroundRelativeAngle(arm.getAngle()).getDegrees();
+        double power = POutput + FOutput + minPower;
+        motor.set(power);
+
+        // LightningShuffleboard.setDouble("Wrist", "FF output", FOutput);
+        // LightningShuffleboard.setDouble("Wrist", "PID output", POutput);
+        // LightningShuffleboard.setDouble("Wrist", "minpower", minPower);
+        LightningShuffleboard.setDouble("Wrist", "wrist output power", power);
+
+        periodicShuffleboard.loop();
     }
 }
