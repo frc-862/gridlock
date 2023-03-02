@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -7,6 +10,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -17,6 +21,8 @@ import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.config.SparkMaxPIDGains;
+import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 public class Wrist extends SubsystemBase {
 
@@ -38,9 +44,13 @@ public class Wrist extends SubsystemBase {
 
     private Arm arm;
 
+
+    // Periodic Shuffleboard
+    private LightningShuffleboardPeriodic periodicShuffleboard;
+
+    
     public Wrist(Arm arm) {
         this.arm = arm;
-
         // If blackout, use the blackout offset
         if (Constants.isBlackout()) {
             OFFSET = WristConstants.ENCODER_OFFSET_BLACKOUT;
@@ -70,16 +80,13 @@ public class Wrist extends SubsystemBase {
     }
 
     // Method to update the shuffleboard
+    @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        LightningShuffleboard.setDoubleSupplier("Wrist", "Wrist Target angle", () -> targetAngle);
-        LightningShuffleboard.setDoubleSupplier("Wrist", "Wrist angle", () -> getAngle().getDegrees());
-        LightningShuffleboard.setBoolSupplier("Wrist", "Wrist on target", () -> onTarget());
-        LightningShuffleboard.setDoubleSupplier("Wrist", "Wrist motor temperature", () -> motor.getMotorTemperature());
-        LightningShuffleboard.setDoubleSupplier("Wrist", "Controller Output (Amps)", () -> motor.getOutputCurrent());
-        LightningShuffleboard.setDoubleSupplier("Wrist", "applied output", () -> motor.getAppliedOutput());
-        LightningShuffleboard.setBoolSupplier("Wrist", "Wrist fwd Limit", () -> getTopLimitSwitch());
-        LightningShuffleboard.setBoolSupplier("Wrist", "Wrist rev Limit", () -> getBottomLimitSwitch());
-        LightningShuffleboard.setDoubleSupplier("Wrist", "PDH output", () -> PDH.getCurrent(15));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Wrist", WristConstants.LOG_PERIOD, new Pair<String, Object>("Wrist Target Angle", (DoubleSupplier) () -> targetAngle),
+                new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()), new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()),
+                new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
+                new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
     }
 
     /**
@@ -172,6 +179,18 @@ public class Wrist extends SubsystemBase {
             minPower = Math.signum(controller.getPositionError()) * -0.035;
         } else {
             minPower = 0;
+        periodicShuffleboard.loop();
+
+        // If were not on target
+        if (!onTarget()) {
+            // Checks if wrist is going up or down
+            if (targetAngle - getAngle().getDegrees() > 2) {
+                // Uses the up gains
+                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
+            } else {
+                // Uses the down gains
+                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
+            }
         }
 
         double POutput = controller.calculate(getAngle().getDegrees(), targetAngle);

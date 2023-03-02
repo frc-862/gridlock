@@ -7,6 +7,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.subsystems.Limelight;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Collector.GamePiece;
@@ -17,6 +23,7 @@ import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.HoldPower;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
 import frc.robot.commands.Lift.Ground;
 import frc.robot.commands.Lift.HighScore;
@@ -29,6 +36,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.thunder.LightningContainer;
 import frc.robot.Constants.AutonomousConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
@@ -37,16 +45,17 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final Vision vision = new Vision();
+    private static final Limelight frontLimelight = new Limelight(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
+    private static final Limelight backLimelight = new Limelight(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
+    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight,backLimelight);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist(arm);
     private static final Elevator elevator = new Elevator();
     private static final ServoTurn servoturn = new ServoTurn();
     private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
-    private static final Drivetrain drivetrain = new Drivetrain(vision);
 
     // Creates our controllers and deadzones
     private static final XboxController driver = new XboxController(XboxControllerConstants.DRIVER_CONTROLLER_PORT);
@@ -72,7 +81,15 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
-        new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(backLimelight));
+
+        new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
+        
+        new Trigger(() -> copilot.getPOV() == 0).whileTrue(new RunCommand(() -> lift.adjustWrist(1), lift));
+        new Trigger(() -> copilot.getPOV() == 180).whileTrue(new RunCommand(() -> lift.adjustWrist(-1), lift));
+        new Trigger(() -> copilot.getPOV() == 90).whileTrue(new RunCommand(() -> lift.adjustArm(1), lift));
+        new Trigger(() -> copilot.getPOV() == 270).whileTrue(new RunCommand(() -> lift.adjustArm(-1), lift));
 
         // new Trigger(copilot::getAButton)
         //         .whileTrue((new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-45))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))), new InstantCommand(() -> elevator.setExtension(6)))));
@@ -129,14 +146,15 @@ public class RobotContainer extends LightningContainer {
          * stick Y axis -> forward and backwards movement Left stick X axis -> left and right movement Right
          * stick X axis -> rotation
          */
-        drivetrain.setDefaultCommand(
-                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()), () -> joystickFilter.filter(driver.getLeftY()), () -> -joystickFilter.filter(driver.getRightX())));
+        // drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX() * Math.sqrt(2)), () -> joystickFilter.filter(driver.getLeftY() * Math.sqrt(2)),
+        //         () -> -joystickFilter.filter(driver.getRightX())));
+        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> MathUtil.applyDeadband(-driver.getLeftX(), XboxControllerConstants.DEADBAND), () -> MathUtil.applyDeadband(driver.getLeftY(), XboxControllerConstants.DEADBAND),
+                () -> -MathUtil.applyDeadband(driver.getRightX(), XboxControllerConstants.DEADBAND)));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
-
-        collector.setDefaultCommand(new Collect(collector, () -> copilot.getLeftTriggerAxis() - copilot.getRightTriggerAxis()));
+        collector.setDefaultCommand(new HoldPower(collector));
     }
 
     @Override
