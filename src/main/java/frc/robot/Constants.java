@@ -483,12 +483,12 @@ public final class Constants {
     //Constants for autoAlign
     public static final class AutoAlignConstants {
         // PID constants for auto align
-        public static final PIDConstants AUTO_ALIGN_PID_CONSTANTS = new PIDConstants(0.05, 0, 0);
+        public static final PIDConstants AUTO_ALIGN_PID_CONSTANTS = new PIDConstants(0.009, 0, 0);
 
         // Tolerance for auto align
         public static final double TOLERANCE = 1d;
 
         //Offset limelight off center
-        public static final double OFFSET = -11.5; //TODO determine for gridlock
+        public static final double OFFSET = -11.5; //TODO determine for gridlock 
     }
 }
