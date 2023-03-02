@@ -2,10 +2,10 @@ package frc.robot;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
-import frc.robot.subsystems.Vision;
-
 import java.util.HashMap;
-
+import frc.robot.subsystems.Limelight;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Wrist;
@@ -16,6 +16,7 @@ import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.HoldPower;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
 import frc.robot.commands.Lift.Ground;
 import frc.robot.commands.Lift.HighScore;
@@ -28,6 +29,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.thunder.LightningContainer;
 import frc.robot.Constants.AutonomousConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
@@ -36,16 +38,17 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final Vision vision = new Vision();
+    private static final Limelight frontLimelight = new Limelight(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
+    private static final Limelight backLimelight = new Limelight(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
+    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight,backLimelight);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist();
     private static final Elevator elevator = new Elevator();
     private static final ServoTurn servoturn = new ServoTurn();
     private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
-    private static final Drivetrain drivetrain = new Drivetrain(vision);
 
     // Creates our controllers and deadzones
     private static final XboxController driver = new XboxController(XboxControllerConstants.DRIVER_CONTROLLER_PORT);
@@ -67,15 +70,19 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
 
-        new Trigger(driver::getYButton).whileTrue(new StdDev(vision));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
+        new Trigger(driver::getYButton).whileTrue(new StdDev(backLimelight));
+
+        new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
+        
 
         // copilot controls 
-        new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
-        new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
-        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
-        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
-        new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
-        new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
+        // new Trigger(copilot::getAButton).whileTrue(new Ground(lift));
+        // new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
+        // new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, false));
+        // new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, false));
+        // new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubstationCollect(lift));
+        // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
 
     }
 
@@ -91,7 +98,8 @@ public class RobotContainer extends LightningContainer {
         // autoFactory.makeTrajectory("StraightAndBack", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // Game paths
-        autoFactory.makeTrajectory("Path1StartB", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path1StartB", Maps.getPathMap1Piece(drivetrain, servoturn), 
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("Path2StartB", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY,AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
         // autoFactory.makeTrajectory("Path3StartA", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
         autoFactory.makeTrajectory("Path4StartA", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
@@ -112,7 +120,11 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("stay", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("corner", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
-        new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path10StartCCHarge", Maps.getPathMap1Piece(drivetrain, servoturn), 
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path11StartACHarge", Maps.getPathMap1Piece(drivetrain, servoturn), 
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
     }
 
     @Override
@@ -122,14 +134,15 @@ public class RobotContainer extends LightningContainer {
          * stick Y axis -> forward and backwards movement Left stick X axis -> left and right movement Right
          * stick X axis -> rotation
          */
-        drivetrain.setDefaultCommand(
-                new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX()), () -> joystickFilter.filter(driver.getLeftY()), () -> -joystickFilter.filter(driver.getRightX())));
+        // drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX() * Math.sqrt(2)), () -> joystickFilter.filter(driver.getLeftY() * Math.sqrt(2)),
+        //         () -> -joystickFilter.filter(driver.getRightX())));
+        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> MathUtil.applyDeadband(-driver.getLeftX(), XboxControllerConstants.DEADBAND), () -> MathUtil.applyDeadband(driver.getLeftY(), XboxControllerConstants.DEADBAND),
+                () -> -MathUtil.applyDeadband(driver.getRightX(), XboxControllerConstants.DEADBAND)));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
-
-        collector.setDefaultCommand(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
+        collector.setDefaultCommand(new HoldPower(collector));
     }
 
     @Override

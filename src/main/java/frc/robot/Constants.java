@@ -8,6 +8,7 @@ import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -46,7 +47,7 @@ public final class Constants {
         public static final int COPILOT_CONTROLLER_PORT = 1;
 
         // Deadband, min, and max power for the controllers
-        public static final double DEADBAND = 0.05;
+        public static final double DEADBAND = 0.1d;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 0.9d;
 
@@ -83,6 +84,8 @@ public final class Constants {
         public static final int DRIVE_CURRENT_LIMIT = 40;
         public static final int STEER_CURRENT_LIMIT = 30;
         public static final double NOMINAL_VOLTAGE = 12d;
+
+        public static final double LOG_PERIOD = 0.18;
 
         // Pigeon heading offset 
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
@@ -164,9 +167,19 @@ public final class Constants {
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
 
+        public static final double LOG_PERIOD = 0.19;
+
         // Elevator limit switch types
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+    }
+
+    public static final class LimelightConstants {
+        public static final String FRONT_NAME = "limelight-front";
+        public static final String BACK_NAME = "limelight-back";
+        public static final Pose3d FRONT_POSE = new Pose3d();
+        public static final Pose3d BACK_POSE = new Pose3d();
+
     }
 
     public static final class ArmConstants {
@@ -206,6 +219,8 @@ public final class Constants {
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
 
+        public static final double LOG_PERIOD = 0.21;
+
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap ARM_UP_KF_MAP = new InterpolationMap() {
             {
@@ -233,6 +248,9 @@ public final class Constants {
     public static final class CollectorConstants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
+        public static final double HOLD_POWER = 0.1;
+
+        public static final double LOG_PERIOD = 0.22;
 
         //TODO: tune these
         //Cube Theoretical: #3a01b2 (58, 1, 178)
@@ -264,7 +282,6 @@ public final class Constants {
         // Tolernace for our wrist
         public static final double TOLERANCE = 10d; // TODO: set a better tolerance
 
-        
         // Min/max angles in degrees
         public static final double MAX_ANGLE = -5d;
         public static final double MIN_ANGLE = -146d;
@@ -272,6 +289,8 @@ public final class Constants {
         // Min and Max power
         public static final double MIN_POWER = -1d;
         public static final double MAX_POWER = 1d;
+
+        public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees
         public static final double ENCODER_OFFSET_GRIDLOCK = 0;
@@ -419,6 +438,8 @@ public final class Constants {
         public enum LiftPlan {
             parallel, armPriority, elevatorPriority, elevatorLast
         }
+
+        public static final double LOG_PERIOD = 0.23;
     }
 
     // Constants for autonomous

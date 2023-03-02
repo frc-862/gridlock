@@ -1,13 +1,14 @@
 package frc.robot.subsystems;
-
 import java.time.Period;
-
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,7 +16,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.RobotMap.*;
 import frc.thunder.config.NeoConfig;
-import frc.thunder.shuffleboard.LightningShuffleboard;
+import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
  * The collector subsystem
@@ -29,6 +30,9 @@ public class Collector extends SubsystemBase {
 
     // The rev color matcher
     private final ColorMatch colorMatch;
+
+    // Periodic Shuffleboard
+    private LightningShuffleboardPeriodic periodicShuffleboard;
 
     // Enum of possible game pieces
     public enum GamePiece {
@@ -61,14 +65,15 @@ public class Collector extends SubsystemBase {
     }
 
     // Method to start logging
+    @SuppressWarnings("unchecked")
     private void initialiizeShuffleboard() {
-        LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor temperature", () -> motor.getMotorTemperature());
-        LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor controller input voltage", () -> motor.getBusVoltage());
-        LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor controller output (amps)", () -> motor.getOutputCurrent());
-        LightningShuffleboard.setDoubleSupplier("Collector", "Collector motor controller output (volts)", () -> motor.getAppliedOutput());
-        LightningShuffleboard.setStringSupplier("Collector", "Color sensor raw color", () ->  colorSensor.getColor().toString());
-        LightningShuffleboard.setStringSupplier("Collector", "Color sensor detected game piece", () -> getGamePiece().toString());
-        LightningShuffleboard.setDoubleSupplier("Collector", "Color sensor confidence", () -> getConfidence());
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Collector", CollectorConstants.LOG_PERIOD, new Pair<String, Object>("Collector motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
+                new Pair<String, Object>("Collector motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
+                new Pair<String, Object>("Collector motor controller output (amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("Collector motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
+                new Pair<String, Object>("Color sensor raw color", (Supplier<String>) () -> colorSensor.getColor().toString()),
+                new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> getGamePiece().toString()),
+                new Pair<String, Object>("Color sensor confidence", (DoubleSupplier) () -> getConfidence()));
 
     }
 
@@ -126,5 +131,10 @@ public class Collector extends SubsystemBase {
      */
     public void stop() {
         setPower(0d);
+    }
+
+    @Override
+    public void periodic() {
+        periodicShuffleboard.loop();
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
@@ -37,12 +38,35 @@ public class SwerveDrive extends CommandBase {
 
     @Override
     public void execute() {
+
+        // Get values from double suppliers
+        double leftX = m_translationXSupplier.getAsDouble();
+        double leftY = m_translationYSupplier.getAsDouble();
+
+        Rotation2d theta = Rotation2d.fromRadians(Math.atan2(leftY, leftX));
+        double mag = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2));
+
+        double xOut = Math.pow(mag, 3) * theta.getCos();
+
+        double yOut = Math.pow(mag, 3) * theta.getSin();
+
+        double zOut = Math.pow(m_rotationSupplier.getAsDouble(), 3);
+
         // Call drive method from drivetrain
+        // drivetrain.drive(
+        //         // Supply chassie speeds from the translation suppliers using feild relative control
+        //         ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(m_translationXSupplier.getAsDouble()),
+        //                 drivetrain.percentOutputToMetersPerSecond(m_translationYSupplier.getAsDouble()), drivetrain.percentOutputToRadiansPerSecond(m_rotationSupplier.getAsDouble()),
+        //                 drivetrain.getYaw2d()));
+
         drivetrain.drive(
                 // Supply chassie speeds from the translation suppliers using feild relative control
-                ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(m_translationXSupplier.getAsDouble()),
-                        drivetrain.percentOutputToMetersPerSecond(m_translationYSupplier.getAsDouble()), drivetrain.percentOutputToRadiansPerSecond(m_rotationSupplier.getAsDouble()),
-                        drivetrain.getYaw2d()));
+                ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
+                        drivetrain.percentOutputToRadiansPerSecond(zOut), drivetrain.getYaw2d()));
+
+        // LightningShuffleboard.setDouble("joysticks", "X", m_translationXSupplier.getAsDouble());
+
+        // LightningShuffleboard.setDouble("joysticks", "Y", m_translationYSupplier.getAsDouble());
     }
 
     @Override

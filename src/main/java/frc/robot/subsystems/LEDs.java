@@ -21,13 +21,15 @@ public class LEDs extends SubsystemBase {
     private static int swirlLength = (LedConstants.ledLength / 2);
 
     // Create LEDs
-    private CANdle leds = new CANdle(LedConstants.ledPort, "Canivore"); //
+    private CANdle leds = new CANdle(LedConstants.ledPort, "Canivore");
     private CANdleConfiguration ledConfig = new CANdleConfiguration();
     RainbowAnimation rainbowAnim = new RainbowAnimation(1, LedConstants.ledSpeed, LedConstants.ledLength);
     String currentState = "none";
 
+    /*
+     * Initialize a CANdle for the robot
+     */
     public LEDs() {
-        // Set up LEDs
         ledConfig.stripType = LEDStripType.RGB;
         ledConfig.brightnessScalar = 0.5;
         leds.configAllSettings(ledConfig);
@@ -56,7 +58,6 @@ public class LEDs extends SubsystemBase {
      * Flashes between blue and orange
      */
     public void readyScore() {
-        // flashes between blue and orange
         if ((System.currentTimeMillis() % 1000) < 500) {
             leds.setLEDs(0, 0, 255);
         } else {
@@ -70,7 +71,6 @@ public class LEDs extends SubsystemBase {
      * Sets LEDS to Purple
      */
     public void wantsCube() {
-        // purple
         leds.setLEDs(220, 30, 240);
         currentState = "wantsCube";
     }
@@ -79,7 +79,6 @@ public class LEDs extends SubsystemBase {
      * Sets LEDS to Yellow
      */
     public void wantsCone() {
-        // yellow
         leds.setLEDs(255, 230, 20);
         currentState = "wantsCone";
     }
@@ -88,7 +87,6 @@ public class LEDs extends SubsystemBase {
      * Flashes leds green
      */
     public void hasGamePiece() {
-        // flashes green
         if ((System.currentTimeMillis() % 1000) < 500) {
             leds.setLEDs(0, 255, 0);
         } else {
@@ -98,7 +96,7 @@ public class LEDs extends SubsystemBase {
     }
 
     /**
-     * Turns of leds
+     * Turns off leds
      */
     public void off() {
         leds.setLEDs(0, 0, 0);
@@ -149,7 +147,7 @@ public class LEDs extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        //State logic
         if (currentState == "autoAligned") {
             rainbowAnim = new RainbowAnimation(1, LedConstants.ledSpeed, LedConstants.ledLength);
             leds.animate(rainbowAnim);
@@ -176,7 +174,6 @@ public class LEDs extends SubsystemBase {
      */
     private void initDashboard() {
         var ledTab = Shuffleboard.getTab("LEDs");
-        // strategy chosen methods
         ledTab.add("hasGamePiece", new InstantCommand(this::hasGamePiece, this));
         ledTab.add("wantsCone", new InstantCommand(this::wantsCone, this));
         ledTab.add("wantsCube", new InstantCommand(this::wantsCube, this));
