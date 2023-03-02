@@ -2,13 +2,12 @@ package frc.robot;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
-import frc.robot.subsystems.Vision;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.Limelight;
-
+import frc.robot.subsystems.LimelightBack;
+import frc.robot.subsystems.LimelightFront;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
@@ -30,7 +29,6 @@ import frc.robot.commands.Lift.HighScore;
 import frc.robot.commands.Lift.MidScore;
 import frc.robot.commands.Lift.ReverseDoubleSubstationCollect;
 import frc.robot.commands.Lift.Stow;
-import frc.robot.commands.StdDev;
 import frc.robot.commands.tests.DriveTrainSystemTest;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -45,8 +43,8 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final Limelight frontLimelight = new Limelight(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
-    private static final Limelight backLimelight = new Limelight(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
+    private static final LimelightFront frontLimelight = new LimelightFront(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
+    private static final LimelightBack backLimelight = new LimelightBack(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(frontLimelight,backLimelight);
@@ -80,9 +78,6 @@ public class RobotContainer extends LightningContainer {
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
         new Trigger(driver::getXButton).whileTrue(autoFactory.createManualTrajectory(new PathConstraints(3, 3), drivetrain.getCurrentPathPoint(), autoFactory.makePathPoint(0, 0, 0)));
-
-        new Trigger(driver::getYButton).whileTrue(new StdDev(frontLimelight));
-        new Trigger(driver::getYButton).whileTrue(new StdDev(backLimelight));
 
         new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
         

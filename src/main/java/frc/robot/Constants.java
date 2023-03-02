@@ -190,7 +190,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our arm
-        public static final double kP = 0.008d;
+        public static final double kP = 0.0095d;
         public static final double kI = 0d;
         public static final double kD = 0d;
         public static final double kF = 0d;
@@ -245,9 +245,9 @@ public final class Constants {
                 put(-120d, -0.012d);
                 put(-90d, 0d);
                 put(-45d, 0.02);
-                put(0d,   0.04);
-                put(45d,  0.02);
-                put(90d,  0d);
+                put(0d, 0.04);
+                put(45d, 0.02);
+                put(90d, 0d);
 
             }
         };
@@ -271,7 +271,7 @@ public final class Constants {
 
         // Motor configuration constants
         public static final boolean MOTOR_INVERT = false;
-        public static final int CURRENT_LIMIT = 20; 
+        public static final int CURRENT_LIMIT = 20;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
@@ -281,7 +281,7 @@ public final class Constants {
         public static final double kD = 0d;
 
         // Tolernace for our wrist
-        public static final double TOLERANCE = 5d; 
+        public static final double TOLERANCE = 5d;
 
         // Min/max angles in degrees
         public static final double MAX_ANGLE = 111d;

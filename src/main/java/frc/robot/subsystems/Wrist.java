@@ -179,18 +179,6 @@ public class Wrist extends SubsystemBase {
             minPower = Math.signum(controller.getPositionError()) * -0.035;
         } else {
             minPower = 0;
-        periodicShuffleboard.loop();
-
-        // If were not on target
-        if (!onTarget()) {
-            // Checks if wrist is going up or down
-            if (targetAngle - getAngle().getDegrees() > 2) {
-                // Uses the up gains
-                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 1);
-            } else {
-                // Uses the down gains
-                controller.setReference(targetAngle + OFFSET, CANSparkMax.ControlType.kPosition, 0);
-            }
         }
 
         double POutput = controller.calculate(getAngle().getDegrees(), targetAngle);
@@ -202,5 +190,8 @@ public class Wrist extends SubsystemBase {
         // LightningShuffleboard.setDouble("Wrist", "PID output", POutput);
         // LightningShuffleboard.setDouble("Wrist", "minpower", minPower);
         LightningShuffleboard.setDouble("Wrist", "wrist output power", power);
+
+
+        periodicShuffleboard.loop();
     }
 }
