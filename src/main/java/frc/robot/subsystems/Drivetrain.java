@@ -151,7 +151,7 @@ public class Drivetrain extends SubsystemBase {
         updateDriveStates(states);
 
         // Initialize the shuffleboard values and start logging data
-        initializeShuffleboard();
+        // initializeShuffleboard();
 
         // Zero our gyro
         zeroHeading();
@@ -163,7 +163,7 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
 
-        periodicShuffleboard.loop();
+        // periodicShuffleboard.loop();
 
         // Update our module position and odometry
         updateModulePositions();

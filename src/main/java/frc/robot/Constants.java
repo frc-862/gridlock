@@ -248,13 +248,14 @@ public final class Constants {
                 put(0d, 0.04);
                 put(45d, 0.02);
                 put(90d, 0d);
+                put(170d, -0.04d);
 
             }
         };
     }
 
     public static final class CollectorConstants {
-        public static final boolean MOTOR_INVERT = false;
+        public static final boolean MOTOR_INVERT = true;
         public static final int CURRENT_LIMIT = 30;
         public static final double HOLD_POWER = 0.1;
 
@@ -456,7 +457,7 @@ public final class Constants {
         }
 
         public static final double ELEVATOR_STOWED_POS = 1;
-        public static final double ARM_STOWED_ANGLE = -120;
+        public static final double ARM_STOWED_ANGLE = -117;
         public static final double WRIST_STOWED_ANGLE = 112;
 
         public static final double ELEVATOR_TRANSITION_POS = 8;

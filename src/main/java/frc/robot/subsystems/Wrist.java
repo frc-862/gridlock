@@ -44,11 +44,9 @@ public class Wrist extends SubsystemBase {
 
     private Arm arm;
 
-
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
-    
     public Wrist(Arm arm) {
         this.arm = arm;
         // If blackout, use the blackout offset
@@ -109,8 +107,7 @@ public class Wrist extends SubsystemBase {
      */
     public void setAngle(Rotation2d angle) {
         targetAngle = MathUtil.clamp(angle.getDegrees(), WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE);
-        motor.setIdleMode(IdleMode.kBrake);        
-        motor.set(controller.calculate(getAngle().getDegrees(), targetAngle) +  LightningShuffleboard.getDouble("Wrist", "kF", 0) * getGroundRelativeAngle(arm.getAngle()).getDegrees());
+        // motor.set(controller.calculate(getAngle().getDegrees(), targetAngle) +  LightningShuffleboard.getDouble("Wrist", "kF", 0) * getGroundRelativeAngle(arm.getAngle()).getDegrees());
     }
 
     /**
@@ -190,7 +187,6 @@ public class Wrist extends SubsystemBase {
         // LightningShuffleboard.setDouble("Wrist", "PID output", POutput);
         // LightningShuffleboard.setDouble("Wrist", "minpower", minPower);
         LightningShuffleboard.setDouble("Wrist", "wrist output power", power);
-
 
         periodicShuffleboard.loop();
     }

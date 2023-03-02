@@ -16,9 +16,9 @@ public class StateTable {
                     LiftPlan.elevatorLast, LiftState.stowed),
             LiftState.transition, new StateTransition(LiftConstants.ELEVATOR_TRANSITION_POS, Rotation2d.fromDegrees(LiftConstants.ARM_TRANSITION_ANGLE), Rotation2d.fromDegrees(LiftConstants.WRIST_TRANSITION_ANGLE),
                     LiftPlan.parallel, LiftState.transition),
-            LiftState.groundCube, new StateTransition(3, Rotation2d.fromDegrees(-70.5), Rotation2d.fromDegrees(0.0), LiftPlan.wristPriority, LiftState.groundCube), 
-            LiftState.groundCone, new StateTransition(0, Rotation2d.fromDegrees(-70.5), Rotation2d.fromDegrees(30.0), LiftPlan.wristPriority, LiftState.groundCone), 
-            LiftState.midCubeScore, new StateTransition(8, Rotation2d.fromDegrees(-15), Rotation2d.fromDegrees(-40), LiftPlan.parallel, LiftState.midCubeScore), LiftState.midConeScore,
+            LiftState.groundCube, new StateTransition(5.5, Rotation2d.fromDegrees(-70.5), Rotation2d.fromDegrees(0.0), LiftPlan.wristPriority, LiftState.groundCube), 
+            LiftState.groundCone, new StateTransition(0, Rotation2d.fromDegrees(-70.5), Rotation2d.fromDegrees(30.0), LiftPlan.elevatorPriority, LiftState.groundCone), 
+            LiftState.midCubeScore, new StateTransition(8, Rotation2d.fromDegrees(-8), Rotation2d.fromDegrees(-40), LiftPlan.parallel, LiftState.midCubeScore), LiftState.midConeScore,
             new StateTransition(0, Rotation2d.fromDegrees(20), Rotation2d.fromDegrees(-75), LiftPlan.parallel, LiftState.midConeScore), LiftState.highCubeScore,
             new StateTransition(22, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-70), LiftPlan.parallel, LiftState.highCubeScore), LiftState.highConeScore,
             new StateTransition(24, Rotation2d.fromDegrees(10), Rotation2d.fromDegrees(-75), LiftPlan.parallel, LiftState.highConeScore), LiftState.doubleSubstationCollect,
@@ -27,7 +27,7 @@ public class StateTable {
 
     // Index is current state, goal state; outputs a StateTransition
     private static Map<LiftState, Map<LiftState, StateTransition>> stateTable =
-            Map.of(LiftState.transition, nextStateTable, LiftState.groundCube, nextStateTable, LiftState.midCubeScore, nextStateTable, LiftState.midConeScore, nextStateTable, LiftState.highCubeScore,
+            Map.of(LiftState.transition, nextStateTable, LiftState.groundCube, nextStateTable, LiftState.groundCone, nextStateTable, LiftState.midCubeScore, nextStateTable, LiftState.midConeScore, nextStateTable, LiftState.highCubeScore,
                     nextStateTable, LiftState.highConeScore, nextStateTable, LiftState.doubleSubstationCollect, nextStateTable, LiftState.reverseSubstationCollect, nextStateTable);
 
     /**

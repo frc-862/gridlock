@@ -1,5 +1,7 @@
 package frc.robot.commands.Lift;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.subsystems.Lift;
@@ -11,9 +13,9 @@ import frc.robot.subsystems.Collector.GamePiece;
  */
 public class MidScore extends InstantCommand {
     private Lift lift;
-    private GamePiece gamePiece;
+    private Supplier<GamePiece> gamePiece;
 
-    public MidScore(Lift lift, GamePiece gamePiece) {
+    public MidScore(Lift lift, Supplier<GamePiece> gamePiece) {
         this.lift = lift;
         this.gamePiece = gamePiece;
 
@@ -22,7 +24,7 @@ public class MidScore extends InstantCommand {
 
     @Override
     public void initialize() {
-        if (gamePiece == GamePiece.CONE) {
+        if (gamePiece.get() == GamePiece.CONE) {
             lift.setGoalState(LiftState.midConeScore);
         } else {
             lift.setGoalState(LiftState.midCubeScore);

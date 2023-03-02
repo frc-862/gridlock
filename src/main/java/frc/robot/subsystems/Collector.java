@@ -18,6 +18,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.RobotMap.*;
 import frc.thunder.config.NeoConfig;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -145,5 +146,7 @@ public class Collector extends SubsystemBase {
     @Override
     public void periodic() {
         periodicShuffleboard.loop();
+
+        LightningShuffleboard.setString("Lift", "game piece", gamePiece.toString());
     }
 }
