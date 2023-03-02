@@ -156,7 +156,7 @@ public class AutoBalance extends CommandBase {
                 break;
             case FALLING:
                 drivetrain.stop();
-
+                
                 // Wait for a certain amount of time before starting to climb again
                 if (Timer.getFPGATimestamp() - timer > AutoBalanceConstants.DELAY_TIME) {
                     climbState = climbStates.CLIMB;
@@ -167,6 +167,14 @@ public class AutoBalance extends CommandBase {
                 drivetrain.stop();
                 break;
         }
+    }
+
+    public boolean balanced(){
+        climbStates state = climbState;
+        if (state == climbStates.FALLING){
+            return true;
+        }
+        return false;
     }
 
     @Override

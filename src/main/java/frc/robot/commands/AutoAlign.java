@@ -30,7 +30,7 @@ public class AutoAlign extends CommandBase {
 
     @Override
     public void execute() {
-        LightningShuffleboard.setBool("Auto align", "OnTarget", isOnTarget(limelight.getHorizontalOffset()));
+        LightningShuffleboard.setBool("Auto align", "OnTarget", onTarget());
         LightningShuffleboard.setDouble("Auto align", "Horizontal offset", limelight.getHorizontalOffset());
 
         if (limelight.hasVision()) {
@@ -45,14 +45,15 @@ public class AutoAlign extends CommandBase {
         }
     }
 
-    public boolean isOnTarget(double currentAngle) {
+    public boolean onTarget() {
+        double currentAngle = limelight.getHorizontalOffset();
         currentAngle -= AutoAlignConstants.OFFSET;
         return Math.abs(currentAngle) < AutoAlignConstants.TOLERANCE;
     }
 
     @Override
     public boolean isFinished() {
-        return isOnTarget(limelight.getHorizontalOffset());
+        return onTarget();
     }
 
     @Override

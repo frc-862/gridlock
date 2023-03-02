@@ -41,6 +41,8 @@ public final class Constants {
         return !isBlackout();
     }
 
+    public static final double COMP_LOG_PERIOD = .33;
+
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
         // Ports for the controllers
