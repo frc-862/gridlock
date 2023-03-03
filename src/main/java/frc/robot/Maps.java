@@ -43,10 +43,10 @@ public class Maps {
     public static HashMap<String, Command> getPathMap2Piece(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector) {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(.25), servoturn));
-        eventMap.put("Set-Ground-Collect", new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
+        // eventMap.put("Set-Ground-Collect", new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
         eventMap.put("Collect-Game-Piece", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
         eventMap.put("Store-For-Moving", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
-        eventMap.put("Set-Ground-Score", new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
+        // eventMap.put("Set-Ground-Score", new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
         eventMap.put("Score-Game-Piece", new Collect(collector, () -> .5d).until(() -> collector.hasPiece())); //TODO change to until collector doesn't piece
         eventMap.put("Store-For-Moving-2", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
@@ -62,16 +62,16 @@ public class Maps {
      * @param collector
      * @return
      */
-    public static HashMap<String, Command> getPathMapPiece(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector) {
+    public static HashMap<String, Command> getPathMap3Piece(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector) {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(.25), servoturn));
-        eventMap.put("Set-Ground-Collect", new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
+        // eventMap.put("Set-Ground-Collect", new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
         eventMap.put("Collect-Game-Piece", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
         eventMap.put("Store-For-Moving", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
         eventMap.put("Set-High-Score", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
         eventMap.put("Score-Game-Piece", new Collect(collector, () -> .5d).until(() -> collector.hasPiece())); //TODO change to until collector doesn't piece
         eventMap.put("Store-For-Moving-2", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
-        eventMap.put("Set-Ground-Collect-2", new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
+        // eventMap.put("Set-Ground-Collect-2", new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
         eventMap.put("Collect-Game-Piece-2", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
         eventMap.put("Store-For-Moving-3", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
         eventMap.put("Set-High-Score-2", new RunCommand(() -> lift.setGoalState(LiftState.highConeScore), lift).until(lift::goalReached));

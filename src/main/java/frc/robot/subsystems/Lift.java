@@ -34,7 +34,6 @@ public class Lift extends SubsystemBase {
     private boolean doTargetOverride = false;
 
     // Periodic Shuffleboard 
-    private LightningShuffleboardPeriodic periodicShuffleboard;
     // private LightningShuffleboardPeriodic periodicShuffleboardNextState;
 
     // Periodic Shuffleboard 

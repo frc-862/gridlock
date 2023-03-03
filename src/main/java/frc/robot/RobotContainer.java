@@ -76,7 +76,6 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
-        new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
         // new Trigger(copilot::getAButton).onTrue(new InstantCommand(() -> elevator.setExtension(4)));
         // new Trigger(copilot::getBButton).onTrue(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-75))));
         // new Trigger(copilot::getXButton).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-90))));
@@ -140,7 +139,7 @@ public class RobotContainer extends LightningContainer {
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("Path6StartCCharge", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("Path7StartA", Maps.getPathMapPiece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("Path7StartA", Maps.getPathMap3Piece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("Path8StartC", Maps.getPathMapPiece(drivetrain, servoturn, lift, collector), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Will not work PathPlanner
         autoFactory.makeTrajectory("Path9StartB", Maps.getPathMap2Piece(drivetrain, servoturn, lift, collector),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
@@ -171,7 +170,6 @@ public class RobotContainer extends LightningContainer {
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
-        collector.setDefaultCommand(new HoldPower(collector));
         collector.setDefaultCommand(new HoldPower(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
     }
 
