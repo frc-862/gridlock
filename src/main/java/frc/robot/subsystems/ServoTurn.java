@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
@@ -25,7 +26,7 @@ public class ServoTurn extends SubsystemBase {
     // Initializes the shuffleboard values and starts logging data   
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("ServoTurn", 0.25, new Pair<String, Object>("Servo Position", (DoubleSupplier) () -> position));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("ServoTurn", 2, new Pair<String, Object>("Servo Position", (DoubleSupplier) () -> position));
     }
 
     /**
@@ -41,6 +42,8 @@ public class ServoTurn extends SubsystemBase {
 
     @Override
     public void periodic() {
-        periodicShuffleboard.loop();
+        if (DriverStation.isAutonomous()) {
+            periodicShuffleboard.loop();
+        }
     }
 }

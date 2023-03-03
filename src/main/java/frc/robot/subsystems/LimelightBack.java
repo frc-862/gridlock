@@ -40,7 +40,8 @@ public class LimelightBack extends SubsystemBase {
     // Method to initialize shuffleboard with vision data\
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Vision", 0.17, new Pair<String, Object>(limelightName + "Vision bot pose TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[0]),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Vision", 0.17, 
+        new Pair<String, Object>(limelightName + "Vision bot pose TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[0]),
                 new Pair<String, Object>(limelightName + "Vision bot pose TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[1]),
                 new Pair<String, Object>(limelightName + "Vision bot pose RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[5]),
                 new Pair<String, Object>(limelightName + "Vision bot pose Blue TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[0]),
@@ -287,15 +288,15 @@ public class LimelightBack extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (hasVision() && !loggingStarted) {
-            // Initialize the shuffleboard values and start logging data
-            initializeShuffleboard();
-            loggingStarted = true;
-        }
+        // if (hasVision() && !loggingStarted) {
+        //     // Initialize the shuffleboard values and start logging data
+        //     initializeShuffleboard();
+        //     loggingStarted = true;
+        // }
 
-        if (loggingStarted) {
-            periodicShuffleboard.loop();
-        }
+        // if (loggingStarted) {
+        //     periodicShuffleboard.loop();
+        // }
 
     }
 

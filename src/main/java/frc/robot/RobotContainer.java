@@ -160,7 +160,7 @@ public class RobotContainer extends LightningContainer {
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
         // collector.setDefaultCommand(new HoldPower(collector));
-        collector.setDefaultCommand(new HoldPower(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
+        collector.setDefaultCommand(new HoldPower(collector, () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), XboxControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), XboxControllerConstants.DEADBAND)));
     }
 
     @Override

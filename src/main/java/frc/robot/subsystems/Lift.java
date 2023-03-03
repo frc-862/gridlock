@@ -123,7 +123,6 @@ public class Lift extends SubsystemBase {
 
     public void runPeriodicShuffleboardLoop() {
         periodicShuffleboard.loop();
-        // periodicShuffleboardNextState.loop();
     }
 
     public void adjustArm(double angle) {

@@ -68,12 +68,15 @@ public class Arm extends SubsystemBase {
     // Metod to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
-                new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
-                new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle + OFFSET),
-                new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
-                new Pair<String, Object>("Arm motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
-                new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, 
+            // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
+                // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
+                new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
+                new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle),
+                new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()));
+                // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
+                // new Pair<String, Object>("Arm motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
     }
 
     /**
@@ -169,7 +172,7 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         // controller.setP(LightningShuffleboard.getDouble("Arm", "arm kP", ArmConstants.kP));
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "arm setpoint", -90)));
-        LightningShuffleboard.setDouble("Lift", "arm angle", getAngle().getDegrees());
+        // LightningShuffleboard.setDouble("Lift", "arm angle", getAngle().getDegrees());
 
         double currentAngle = getAngle().getDegrees();
         // double kFOut = LightningShuffleboard.getDouble("Arm", "kF in", 0);
@@ -177,12 +180,14 @@ public class Arm extends SubsystemBase {
         double PIDOUT = controller.calculate(currentAngle, targetAngle);
         double power = kFOut + PIDOUT;
 
-        LightningShuffleboard.setDouble("Arm", "kf output", kFOut);
-        LightningShuffleboard.setDouble("Arm", "PID output", PIDOUT);
-        LightningShuffleboard.setDouble("Arm", "power", power);
+        // LightningShuffleboard.setDouble("Arm", "kf output", kFOut);
+        // LightningShuffleboard.setDouble("Arm", "PID output", PIDOUT);
+        // LightningShuffleboard.setDouble("Arm", "power", power);
         motor.set(power);
 
-        LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
+        periodicShuffleboard.loop();
+
+        // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
         // motor.set(power);
 
         // LightningShuffleboard.setDouble("Arm", "power", power);

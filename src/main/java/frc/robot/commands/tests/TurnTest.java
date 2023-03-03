@@ -29,10 +29,6 @@ public class TurnTest extends CommandBase {
         this.drivetrain = drivetrain;
         this.direction = direction;
 
-        DataLogger.addDataElement("Current angle", () -> Math.toDegrees(module.getSteerAngle()));
-        DataLogger.addDataElement("Target angle", () -> driveAngle);
-        DataLogger.addDataElement("Bearing Difference", () -> getBearingDifference());
-
         addRequirements(drivetrain);
     }
 
