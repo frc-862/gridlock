@@ -1,15 +1,14 @@
 package frc.robot.subsystems;
 
+import java.time.Period;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -125,7 +124,7 @@ public class Collector extends SubsystemBase {
      * @return true if the color sensor detects a game piece
      */
     public boolean hasPiece() {
-        return getGamePiece() != GamePiece.NONE;
+        return true;// getGamePiece() != GamePiece.NONE;
     }
 
     /**

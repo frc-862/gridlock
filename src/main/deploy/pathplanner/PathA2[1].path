@@ -2,37 +2,39 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 2.5162690984510085,
-        "y": 2.1015801670429957
+        "x": 1.85,
+        "y": 4.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.516269098451008,
-        "y": 2.1015801670429957
+        "x": 2.849999999999999,
+        "y": 4.45
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "Score-Game-Piece-Servo"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 3.934108584546395,
-        "y": 2.086781368292395
+        "x": 6.4,
+        "y": 4.55
       },
       "prevControl": {
-        "x": 2.9341085845463946,
-        "y": 2.086781368292395
+        "x": 5.244825035410054,
+        "y": 4.55
       },
       "nextControl": null,
-      "holonomicAngle": 0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,

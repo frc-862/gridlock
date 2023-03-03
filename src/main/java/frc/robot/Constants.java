@@ -370,7 +370,7 @@ public final class Constants {
         }
 
         public static final class PWM {
-            public static final int SERVO = 3;
+            public static final int SERVO = 0;
         }
 
         public static final class i2c { //Lowercase to avoid conflict with wpilib's I2C class
@@ -385,8 +385,7 @@ public final class Constants {
 
         // Upper and lower magnitude thresholds for checking if we are on the charge station at all
         public static final double UPPER_MAGNITUDE_THRESHOLD = 11;
-        public static final double LOWER_MAGNITUDE_THRESHOLD = 3;
-
+        public static final double LOWER_MAGNITUDE_THRESHOLD = 7; // TODO RESET Value if possible was 2.5 If mag jumps during Auton
         // Min and max speeds for our auto balance
         public static final double MIN_SPEED_THRESHOLD = 0.35;
         public static final double MAX_SPEED_THRESHOLD = 3;
@@ -471,13 +470,14 @@ public final class Constants {
     // Constants for autonomous
     public static final class AutonomousConstants {
         // Path planner PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0); // Drive velocity PID
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7, 0, 0); // Rotation PID
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(2.5, 0, 0); // Drive velocity PID 10.5
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(4, 0, 0); // Rotation PID 7
         public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0); // X and Y position PID
 
         // Max velocity and acceleration for the path planner
-        public static final double MAX_VELOCITY = 3;
-        public static final double MAX_ACCELERATION = 3;
+        public static final double MAX_VELOCITY = 1.5;
+        public static final double MAX_ACCELERATION = .5
+        ;
 
     }
 

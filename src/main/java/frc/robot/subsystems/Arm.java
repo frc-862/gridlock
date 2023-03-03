@@ -57,6 +57,7 @@ public class Arm extends SubsystemBase {
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
+        // Create the PID controller and set the output range
         targetAngle = getAngle().getDegrees();
 
         // Starts logging and updates the shuffleboard

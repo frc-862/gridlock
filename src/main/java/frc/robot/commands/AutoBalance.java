@@ -113,8 +113,9 @@ public class AutoBalance extends CommandBase {
                     AutoBalanceConstants.MAX_SPEED_THRESHOLD);
         }
 
-        // LightningShuffleboard.setDouble("autoBalance", "speed", speedMetersPerSecond);
-        // LightningShuffleboard.setDouble("autoBalance", "error", controller.getPositionError());
+        LightningShuffleboard.setDouble("autoBalance", "speed", speedMetersPerSecond);
+        LightningShuffleboard.setDouble("autoBalance", "error", controller.getPositionError());
+        LightningShuffleboard.setDouble("autoBalance", "Magnitude", magnitude);
 
         // Set the states of the swerve modules
         for (int i = 0; i < moduleStates.length; i++) {

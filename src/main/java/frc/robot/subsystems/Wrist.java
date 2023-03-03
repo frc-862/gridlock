@@ -69,6 +69,7 @@ public class Wrist extends SubsystemBase {
 
         targetAngle = getAngle().getDegrees();
 
+        // Initialize the shuffleboard values and start logging data
         motor.getReverseLimitSwitch(WristConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
         motor.getForwardLimitSwitch(WristConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
 

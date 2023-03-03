@@ -48,6 +48,7 @@ public class Elevator extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF), encoder);
         controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
+        // Initialize the shuffleboard values and start logging data
         targetExtension = getExtension();
 
         initializeShuffleboard();
@@ -170,6 +171,12 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        periodicShuffleboard.loop();
+
+        if (getTopLimitSwitch()) {
+            encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
+        }
         // if (getTopLimitSwitch()) {
         //     encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
         // }

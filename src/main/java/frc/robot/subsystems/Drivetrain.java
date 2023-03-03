@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -36,6 +37,7 @@ import frc.robot.Constants.DrivetrainConstants.HeadingGains;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -157,7 +159,6 @@ public class Drivetrain extends SubsystemBase {
         zeroHeading();
 
         CommandScheduler.getInstance().registerSubsystem(this);
-
     }
 
     @Override
@@ -269,7 +270,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Method to set states of modules.
+     * 2 Method to set states of modules.
      */
     public void setStates(SwerveModuleState[] newStates) {
         states = newStates;
