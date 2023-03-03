@@ -105,18 +105,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.6545454545454729,
-      "names": [
-        "Set-Ground-Collect"
-      ]
-    },
-    {
-      "position": 2.487272727272651,
-      "names": [
-        "Set-Ground-Score"
-      ]
-    }
-  ]
+  "markers": []
 }
