@@ -88,8 +88,8 @@ public class Drivetrain extends SubsystemBase {
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
 
-    private Limelight visionFront;
-    private Limelight visionBack;
+    private LimelightFront visionFront;
+    private LimelightBack visionBack;
 
     // Time of flight sensor
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
@@ -104,7 +104,7 @@ public class Drivetrain extends SubsystemBase {
     // Chassis speeds for the robot
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
-    public Drivetrain(Limelight visionFront, Limelight visionBack) {
+    public Drivetrain(LimelightFront visionFront, LimelightBack visionBack) {
         /**
          * Creates a new Drivetrain.
          * 
@@ -153,7 +153,7 @@ public class Drivetrain extends SubsystemBase {
         updateDriveStates(states);
 
         // Initialize the shuffleboard values and start logging data
-        initializeShuffleboard();
+        // initializeShuffleboard();
 
         // Zero our gyro
         zeroHeading();
@@ -164,7 +164,7 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
 
-        periodicShuffleboard.loop();
+        // periodicShuffleboard.loop();
 
         // Update our module position and odometry
         updateModulePositions();
@@ -347,11 +347,13 @@ public class Drivetrain extends SubsystemBase {
         // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left target velocity", () -> states[2].speedMetersPerSecond);
         // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right target velocity", () -> states[3].speedMetersPerSecond);
 
-        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Pigeon heading", () -> getYaw2d().getDegrees());
-        LightningShuffleboard.setDoubleSupplier("Drivetrain", "Odometry heading", () -> getHeading().getDegrees());
-        LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES X", () -> ESpose.getX());
-        LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Y", () -> ESpose.getY());
-        LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Z", () -> ESpose.getRotation().getDegrees());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Pigeon heading", () -> getYaw2d().getDegrees());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Odometry heading", () -> getHeading().getDegrees());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES X", () -> ESpose.getX());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Y", () -> ESpose.getY());
+        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Z", () -> ESpose.getRotation().getDegrees());
+
+        // LightningShuffleboard.setDoubleArray("Drivetrain", "ES Pose", () -> new double[]{ESpose.getX(), ESpose.getY(), ESpose.getRotation().getRadians()});
 
     }
 
@@ -460,7 +462,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        estimator.resetPosition(getYaw2d().plus(DrivetrainConstants.HEADING_OFFSET), modulePositions, pose);
+        estimator.resetPosition(getYaw2d(), modulePositions, pose);
     }
 
     /**

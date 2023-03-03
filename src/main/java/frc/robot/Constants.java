@@ -10,6 +10,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -177,8 +178,8 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final String FRONT_NAME = "limelight-front";
         public static final String BACK_NAME = "limelight-back";
-        public static final Pose3d FRONT_POSE = new Pose3d();
-        public static final Pose3d BACK_POSE = new Pose3d();
+        public static final Pose3d FRONT_POSE = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
+        public static final Pose3d BACK_POSE = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
 
     }
 
@@ -190,17 +191,17 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our arm
-        public static final double kP = 0.0062d;
+        public static final double kP = 0.0095d;
         public static final double kI = 0d;
         public static final double kD = 0d;
         public static final double kF = 0d;
 
-        public static final double TOLERANCE = 10d;
+        public static final double TOLERANCE = 5d;
 
         // Min and Max arm angles in degrees
         // TODO: change to actual values
         public static final double MAX_ANGLE = 90d;
-        public static final double MIN_ANGLE = -111d;
+        public static final double MIN_ANGLE = -120d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -209,8 +210,8 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 0;
-        public static final double ENCODER_OFFSET_BLACKOUT = 196.5;
+        public static final double ENCODER_OFFSET_GRIDLOCK = 263.42;
+        public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;
@@ -222,33 +223,42 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.21;
 
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
-        public static InterpolationMap ARM_UP_KF_MAP = new InterpolationMap() {
+        public static InterpolationMap ARM_KF_MAP = new InterpolationMap() {
             {
-                put(-110d, -0.0001);
-                put(-90d, 0.0002);
-                put(-60d, 0.00028);
-                put(-30d, 0.00065);
+                // put(-110d, -0.0001);
+                // put(-90d, 0.0002);
+                // put(-60d, 0.00028);
+                // put(-30d, 0.00065);
 
-                put(0d, 0.00075);
+                // put(0d, 0.00075);
 
-                put(30d, 0.0005);
-                put(60d, 0.00028);
+                // put(30d, 0.0005);
+                // put(60d, 0.00028);
 
-                put(90d, 0.0);
+                // put(90d, 0.0);
 
-                put(130d, -0.00065);
-                put(150d, -0.00070);
-                put(180d, -0.00075);
-                put(210d, 0.00065);
-                put(240d, 0.00028);
+                // put(130d, -0.00065);
+                // put(150d, -0.00070);
+                // put(180d, -0.00075);
+                // put(210d, 0.00065);
+                // put(240d, 0.00028);
+
+                put(-120d, -0.012d);
+                put(-90d, 0d);
+                put(-45d, 0.02);
+                put(0d, 0.04);
+                put(45d, 0.02);
+                put(90d, 0d);
+                put(170d, -0.04d);
+
             }
         };
     }
 
     public static final class CollectorConstants {
-        public static final boolean MOTOR_INVERT = false;
+        public static final boolean MOTOR_INVERT = true;
         public static final int CURRENT_LIMIT = 30;
-        public static final double HOLD_POWER = 0.1;
+        public static final double HOLD_POWER = 0.25;
 
         public static final double LOG_PERIOD = 0.22;
 
@@ -262,39 +272,32 @@ public final class Constants {
     public static final class WristConstants {
 
         // Motor configuration constants
-        public static final boolean MOTOR_INVERT = true;
-        public static final int CURRENT_LIMIT = 15; // TODO: make 20 for comp
+        public static final boolean MOTOR_INVERT = false;
+        public static final int CURRENT_LIMIT = 20;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double UP_kP = 0.001d;
-        public static final double UP_kI = 0d;
-        public static final double UP_kD = 0d;
-        public static final double UP_kF = 0.0004d;
-
-        // PID gains for our wrist going down
-        public static final double DOWN_kP = 0.002d;
-        public static final double DOWN_kI = 0d;
-        public static final double DOWN_kD = 0d;
-        public static final double DOWN_kF = 0.00008d;
+        public static final double kP = -0.003d;
+        public static final double kI = 0d;
+        public static final double kD = 0d;
 
         // Tolernace for our wrist
-        public static final double TOLERANCE = 10d; // TODO: set a better tolerance
+        public static final double TOLERANCE = 5d;
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = -5d;
-        public static final double MIN_ANGLE = -146d;
+        public static final double MAX_ANGLE = 111d;
+        public static final double MIN_ANGLE = -75d;
 
         // Min and Max power
-        public static final double MIN_POWER = -1d;
-        public static final double MAX_POWER = 1d;
+        public static final double MIN_POWER = -0.5d;
+        public static final double MAX_POWER = 0.5d;
 
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 0;
-        public static final double ENCODER_OFFSET_BLACKOUT = 285.86;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -42.1;
+        public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;
@@ -302,6 +305,20 @@ public final class Constants {
         // Wrist limit switch types
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+
+        // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
+        public static InterpolationMap WRIST_KF_MAP = new InterpolationMap() {
+            {
+                put(-90d, 0d);
+                put(-45d, 0.0005d);
+                put(-25d, 0.001d);
+                put(0d, 0.0025d);
+                put(25d, -0.001d);
+                put(45d, -0.0005d);
+                put(90d, 0d);
+                put(110d, 0d);
+            }
+        };
     }
 
     // RobotMap Constants
@@ -423,7 +440,7 @@ public final class Constants {
     public static final class LiftConstants {
         // All of the different states the lift can be in
         public enum LiftState {
-            ground,
+            groundCone, groundCube,
 
             doubleSubstationCollect, reverseSubstationCollect,
 
@@ -436,9 +453,16 @@ public final class Constants {
 
         // All of the different plans the lift can follow
         public enum LiftPlan {
-            parallel, armPriority, elevatorPriority, elevatorLast
+            parallel, armPriority, elevatorPriority, wristPriority, elevatorLast
         }
 
+        public static final double ELEVATOR_STOWED_POS = 4;
+        public static final double ARM_STOWED_ANGLE = -117;
+        public static final double WRIST_STOWED_ANGLE = 112;
+
+        public static final double ELEVATOR_TRANSITION_POS = 8;
+        public static final double ARM_TRANSITION_ANGLE = -70;
+        public static final double WRIST_TRANSITION_ANGLE = 112;
         public static final double LOG_PERIOD = 0.23;
     }
 
@@ -454,5 +478,17 @@ public final class Constants {
         public static final double MAX_ACCELERATION = .5
         ;
 
+    }
+
+    //Constants for autoAlign
+    public static final class AutoAlignConstants {
+        // PID constants for auto align
+        public static final PIDConstants AUTO_ALIGN_PID_CONSTANTS = new PIDConstants(0.009, 0, 0);
+
+        // Tolerance for auto align
+        public static final double TOLERANCE = 1d;
+
+        //Offset limelight off center
+        public static final double OFFSET = -11.5; //TODO determine for gridlock 
     }
 }

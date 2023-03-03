@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -24,11 +25,17 @@ public class Lift extends SubsystemBase {
     private Arm arm;
 
     // The current and goal states
-    public LiftState currentState = LiftState.stowed;
-    public LiftState goalState = LiftState.stowed;
+    private LiftState currentState = LiftState.stowed;
+    private LiftState goalState = LiftState.stowed;
 
     // The next state to transition to
-    public StateTransition nextState;
+    private StateTransition nextState;
+
+    private boolean doTargetOverride = false;
+
+    // Periodic Shuffleboard 
+    private LightningShuffleboardPeriodic periodicShuffleboard;
+    // private LightningShuffleboardPeriodic periodicShuffleboardNextState;
 
     // Periodic Shuffleboard 
     private LightningShuffleboardPeriodic periodicShuffleboard;
@@ -92,18 +99,53 @@ public class Lift extends SubsystemBase {
     public boolean onTarget() {
         if (nextState == null) {
             return elevator.onTarget() && arm.onTarget() && wrist.onTarget();
+        } else if (doTargetOverride) {
+            doTargetOverride = false;
+            return true;
         } else {
             return elevator.onTarget(nextState.getElevatorExtension()) && arm.onTarget(nextState.getArmAngle().getDegrees()) && wrist.onTarget(nextState.getWristAngle().getDegrees());
         }
+    }
+
+    public void targetOverride() {
+        goalState = currentState;
+
+        doTargetOverride = true;
+
     }
 
     public boolean goalReached() {
         return currentState == goalState;
     }
 
+    public Rotation2d getWristTarg() {
+        if (nextState != null) {
+            return nextState.getWristAngle();
+        } else {
+            return Rotation2d.fromDegrees(30);
+        }
+    }
+
     public void runPeriodicShuffleboardLoop() {
         periodicShuffleboard.loop();
-        periodicShuffleboardNextState.loop();
+    }
+
+    public void adjustArm(double angle) {
+        goalState = currentState;
+        nextState = null;
+        arm.setAngle(arm.getAngle().plus(Rotation2d.fromDegrees(angle)));
+    }
+
+    public void adjustWrist(double angle) {
+        goalState = currentState;
+        nextState = null;
+        wrist.setAngle(wrist.getAngle().plus(Rotation2d.fromDegrees(angle)));
+    }
+
+    public void adjustElevator(double extension) {
+        goalState = currentState;
+        nextState = null;
+        elevator.setExtension(elevator.getExtension() + extension);
     }
 
     @Override
@@ -113,11 +155,13 @@ public class Lift extends SubsystemBase {
         runPeriodicShuffleboardLoop();
 
         // Checks if were on target or if the next state is null
+        // Checks if were on target or if the next state is null, also makes sure our biassese havent changed
         if (onTarget() || nextState == null) {
             // Checks if the current state is not the goal state
             if (currentState != goalState) {
                 // Gets the next state from the state table
                 nextState = StateTable.get(currentState, goalState);
+
             } else {
                 // sets the next state to null
                 nextState = null;
@@ -129,7 +173,6 @@ public class Lift extends SubsystemBase {
                 currentState = nextState.getEndState();
             }
         } else {
-
             // Checks the run plan of the next state
             switch (nextState.getPlan()) {
                 // If parallel, set all the components to their target
@@ -154,6 +197,13 @@ public class Lift extends SubsystemBase {
                         wrist.setAngle(nextState.getWristAngle());
                     }
                     break;
+                case wristPriority:
+                    wrist.setAngle(nextState.getWristAngle());
+                    if (wrist.onTarget()) {
+                        elevator.setExtension(nextState.getElevatorExtension());
+                        arm.setAngle(nextState.getArmAngle());
+                    }
+                    break;
                 // If elevatorLast set the wrist to its target and then set the arm and lastly the elevator
                 case elevatorLast:
                     wrist.setAngle(nextState.getWristAngle());
@@ -166,5 +216,7 @@ public class Lift extends SubsystemBase {
                     break;
             }
         }
+
+        runPeriodicShuffleboardLoop();
     }
 }
