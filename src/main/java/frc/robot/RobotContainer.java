@@ -99,17 +99,16 @@ public class RobotContainer extends LightningContainer {
         // new Trigger(copilot::getXButton)
         //         .whileTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(0))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-40))), new InstantCommand(() -> elevator.setExtension(4))));
         
-        new Trigger(copilot::getAButton).whileTrue(new Ground(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); // TODO: implement color sensors into the commands themselves
+        new Trigger(copilot::getAButton).whileTrue(new Ground(lift, collector, () -> GamePiece.CONE));
+        new Trigger(copilot::getRightBumper).whileTrue(new Ground(lift, collector, () -> GamePiece.CUBE));
+
+        new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); 
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
         // new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
         new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
         // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
-
-        new Trigger(copilot::getStartButton).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
-        new Trigger(copilot::getBackButton).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
 
         new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::targetOverride));
 
