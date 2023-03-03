@@ -87,6 +87,10 @@ public class Arm extends SubsystemBase {
         // motor.set(controller.calculate(currentAngle, targetAngle) +  LightningShuffleboard.getDouble("Arm", "kF", 0) * currentAngle);
     }
 
+    public double getTargetAngle() {
+        return targetAngle;
+    }
+
     /**
      * Gets the angle gets the angle of the arm
      * 

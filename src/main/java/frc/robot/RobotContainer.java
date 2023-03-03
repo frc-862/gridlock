@@ -2,12 +2,16 @@ package frc.robot;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.LimelightBack;
 import frc.robot.subsystems.LimelightFront;
+
+import java.util.HashMap;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
@@ -49,7 +53,7 @@ public class RobotContainer extends LightningContainer {
     private static final LimelightBack backLimelight = new LimelightBack(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight,backLimelight);
+    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight, backLimelight);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist(arm);
     private static final Elevator elevator = new Elevator();
@@ -71,6 +75,7 @@ public class RobotContainer extends LightningContainer {
         //Driver Controls
         // Back button to reset field centeric driving to current heading of the robot
         new Trigger(driver::getBackButton).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+        new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
@@ -82,13 +87,12 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
 
-
         // copilot controls 
         new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
-        new Trigger(() -> copilot.getPOV() == 0).whileTrue(new RunCommand(() -> lift.adjustWrist(1), lift));
-        new Trigger(() -> copilot.getPOV() == 180).whileTrue(new RunCommand(() -> lift.adjustWrist(-1), lift));
-        new Trigger(() -> copilot.getPOV() == 90).whileTrue(new RunCommand(() -> lift.adjustArm(1), lift));
-        new Trigger(() -> copilot.getPOV() == 270).whileTrue(new RunCommand(() -> lift.adjustArm(-1), lift));
+        new Trigger(() -> copilot.getPOV() == 0).onTrue(new InstantCommand(() -> lift.adjustWrist(4), lift));
+        new Trigger(() -> copilot.getPOV() == 180).onTrue(new InstantCommand(() -> lift.adjustWrist(-4), lift));
+        new Trigger(() -> copilot.getPOV() == 90).onTrue(new InstantCommand(() -> lift.adjustArm(4), lift));
+        new Trigger(() -> copilot.getPOV() == 270).onTrue(new InstantCommand(() -> lift.adjustArm(-4), lift));
 
         // new Trigger(copilot::getAButton)
         //         .whileTrue((new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-45))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))), new InstantCommand(() -> elevator.setExtension(6)))));
@@ -96,11 +100,11 @@ public class RobotContainer extends LightningContainer {
         //         .whileTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-70))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(20))), new InstantCommand(() -> elevator.setExtension(8))));
         // new Trigger(copilot::getXButton)
         //         .whileTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(0))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-40))), new InstantCommand(() -> elevator.setExtension(4))));
-        
+
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift, collector, () -> GamePiece.CONE));
         new Trigger(copilot::getRightBumper).whileTrue(new Ground(lift, collector, () -> GamePiece.CUBE));
 
-        new Trigger(copilot::getBButton).whileTrue(new Stow(lift)); 
+        new Trigger(copilot::getBButton).whileTrue(new Stow(lift));
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
         // new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
@@ -108,7 +112,9 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
         // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
 
-        new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::targetOverride));
+        new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::breakLift));
+
+        new Trigger(driver::getXButton).onTrue(new InstantCommand(() -> servoturn.turnServo(1)));
 
     }
 
@@ -116,7 +122,7 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void configureAutonomousCommands() {
         //Test paths 
-        // autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(1, 0.25));
+        autoFactory.makeTrajectory("Meter", new HashMap<>(), new PathConstraints(1, 0.25));
         // autoFactory.makeTrajectory("Straight", new HashMap<>(), new PathConstraints(11, 3));
         // autoFactory.makeTrajectory("StraightButRotate", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, 1));
         // autoFactory.makeTrajectory("7Meter", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
@@ -147,8 +153,8 @@ public class RobotContainer extends LightningContainer {
          */
         // drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> -joystickFilter.filter(driver.getLeftX() * Math.sqrt(2)), () -> joystickFilter.filter(driver.getLeftY() * Math.sqrt(2)),
         //         () -> -joystickFilter.filter(driver.getRightX())));
-        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> MathUtil.applyDeadband(-driver.getLeftX(), XboxControllerConstants.DEADBAND),
-                () -> MathUtil.applyDeadband(driver.getLeftY(), XboxControllerConstants.DEADBAND), () -> -MathUtil.applyDeadband(driver.getRightX(), XboxControllerConstants.DEADBAND)));
+        drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> MathUtil.applyDeadband(driver.getLeftX(), XboxControllerConstants.DEADBAND),
+                () -> MathUtil.applyDeadband(driver.getLeftY(), XboxControllerConstants.DEADBAND), () -> MathUtil.applyDeadband(-driver.getRightX(), XboxControllerConstants.DEADBAND)));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),

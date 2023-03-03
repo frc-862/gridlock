@@ -61,7 +61,8 @@ public class SwerveDrive extends CommandBase {
 
         drivetrain.drive(
                 // Supply chassie speeds from the translation suppliers using feild relative control
-                ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
+                // TODO: x and y fliped
+                ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(-xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
                         drivetrain.percentOutputToRadiansPerSecond(zOut), drivetrain.getYaw2d()));
 
         // LightningShuffleboard.setDouble("joysticks", "X", m_translationXSupplier.getAsDouble());

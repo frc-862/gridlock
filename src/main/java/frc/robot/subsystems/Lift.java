@@ -103,11 +103,10 @@ public class Lift extends SubsystemBase {
         }
     }
 
-    public void targetOverride() {
-        goalState = currentState;
-
-        doTargetOverride = true;
-
+    public void breakLift() {
+        elevator.setExtension(elevator.getExtension());
+        arm.setAngle(arm.getAngle());
+        wrist.setAngle(wrist.getAngle());
     }
 
     public boolean goalReached() {
@@ -130,7 +129,7 @@ public class Lift extends SubsystemBase {
     public void adjustArm(double angle) {
         goalState = currentState;
         nextState = null;
-        arm.setAngle(arm.getAngle().plus(Rotation2d.fromDegrees(angle)));
+        arm.setAngle(Rotation2d.fromDegrees(arm.getTargetAngle() + angle));
     }
 
     public void adjustWrist(double angle) {
