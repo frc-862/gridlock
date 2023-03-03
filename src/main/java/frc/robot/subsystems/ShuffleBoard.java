@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,14 +16,17 @@ public class ShuffleBoard extends SubsystemBase {
     Elevator elevator;
     Arm arm;
     Wrist wrist;
+    Collector collector;
     AutoBalance autoBalance;
     AutoAlign autoAlign;
 
-    public ShuffleBoard(Drivetrain drivetrain, Elevator elevator, Arm arm, Wrist wrist) {
+    public ShuffleBoard(Drivetrain drivetrain, Elevator elevator, Arm arm, Wrist wrist, Collector collector) {
         this.drivetrain = drivetrain;
         this.elevator = elevator;
         this.arm = arm;
         this.wrist = wrist;
+        this.collector = collector;
+
         initializeShuffleboard();
     }
     
@@ -33,7 +37,8 @@ public class ShuffleBoard extends SubsystemBase {
             new Pair<String, Object>("Arm on Target", (BooleanSupplier) () -> arm.onTarget()), 
             new Pair<String, Object>("Wrist on Target", (BooleanSupplier) () -> wrist.onTarget()),
             new Pair<String, Object>("Auto Balance on Target", (BooleanSupplier) () -> autoBalance.balanced()),
-            new Pair<String, Object>("Auto Align on Target", (BooleanSupplier) () -> autoAlign.onTarget()));
+            new Pair<String, Object>("Auto Align on Target", (BooleanSupplier) () -> autoAlign.onTarget()),
+            new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> collector.getGamePiece().toString()));
     }
 
     @Override

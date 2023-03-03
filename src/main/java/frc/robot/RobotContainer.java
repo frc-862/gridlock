@@ -57,7 +57,7 @@ public class RobotContainer extends LightningContainer {
     private static final ServoTurn servoturn = new ServoTurn();
     private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
-    private static final ShuffleBoard shuffleboard = new ShuffleBoard(drivetrain, elevator, arm, wrist);
+    private static final ShuffleBoard shuffleboard = new ShuffleBoard(drivetrain, elevator, arm, wrist, collector);
 
     // Creates our controllers and deadzones
     private static final XboxController driver = new XboxController(XboxControllerConstants.DRIVER_CONTROLLER_PORT);
