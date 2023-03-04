@@ -88,9 +88,6 @@ public class Drivetrain extends SubsystemBase {
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
 
-    private LimelightFront visionFront;
-    private LimelightBack visionBack;
-
     // Time of flight sensor
     private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
@@ -104,14 +101,12 @@ public class Drivetrain extends SubsystemBase {
     // Chassis speeds for the robot
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
-    public Drivetrain(LimelightFront visionFront, LimelightBack visionBack) {
+    public Drivetrain() {
         /**
          * Creates a new Drivetrain.
          * 
          * @param vision the vision subsystem
          */
-        this.visionFront = visionFront;
-        this.visionBack = visionBack;
 
         if (Constants.isBlackout()) {
             FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;

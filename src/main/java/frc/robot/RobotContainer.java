@@ -50,7 +50,7 @@ public class RobotContainer extends LightningContainer {
     private static final LimelightBack backLimelight = new LimelightBack(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain(frontLimelight, backLimelight);
+    private static final Drivetrain drivetrain = new Drivetrain();
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist(arm);
     private static final Elevator elevator = new Elevator();
