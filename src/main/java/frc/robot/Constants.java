@@ -493,6 +493,7 @@ public final class Constants {
         public static final double TOLERANCE = 1d;
 
         //Offset limelight off center
-        public static final double OFFSET = -11.5; //TODO determine for gridlock 
+        public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5; 
+        public static final double LIMELGHT_OFFSET_GRIDLOCK = -12.2;
     }
 }

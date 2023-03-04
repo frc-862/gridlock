@@ -80,6 +80,7 @@ public class RobotContainer extends LightningContainer {
         // new Trigger(copilot::getXButton).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-90))));
 
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
+        new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
 
         new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
 
@@ -110,7 +111,10 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::breakLift));
 
-        new Trigger(driver::getXButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
+        // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.flickServo()));
+        
+        
+        // new Trigger(driver::getXButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
 
     }
 
@@ -126,15 +130,20 @@ public class RobotContainer extends LightningContainer {
         // autoFactory.makeTrajectory("StraightAndBackCurve", new HashMap<>(), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
 
         // Game paths
-        autoFactory.makeTrajectory("PathA2[1]", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("PathA2Charge[1]", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("PathA2[1]", Maps.getPathMap1Piece(drivetrain, servoturn), 
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("PathA2Charge[1]", Maps.getPathMap1Piece(drivetrain, servoturn), 
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("PathA1[2]", Maps.getPathMap2Cube(drivetrain, servoturn, lift, collector),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("PathA1Charge[2]", Maps.getPathMap2Cube(drivetrain, servoturn, lift, collector),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("PathB2Charge[1]", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("PathC2[1]", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("PathC2Charge[1]", Maps.getPathMap1Piece(drivetrain, servoturn), new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("PathB2Charge[1]", Maps.getPathMap1Piece(drivetrain, servoturn), 
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("PathC2[1]", Maps.getPathMap1Piece(drivetrain, servoturn), 
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("PathC2Charge[1]", Maps.getPathMap1Piece(drivetrain, servoturn), 
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("PathC2[2]", Maps.getPathMap2Cube(drivetrain, servoturn, lift, collector),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         autoFactory.makeTrajectory("PathC2Charge[2]", Maps.getPathMap2Cube(drivetrain, servoturn, lift, collector),
