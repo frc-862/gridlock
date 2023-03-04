@@ -463,7 +463,7 @@ public final class Constants {
         public static final double ARM_STOWED_ANGLE = -117;
         public static final double WRIST_STOWED_ANGLE = 112;
 
-        public static final double ELEVATOR_TRANSITION_POS = 8;
+        public static final double ELEVATOR_TRANSITION_POS = 12;
         public static final double ARM_TRANSITION_ANGLE = -70;
         public static final double WRIST_TRANSITION_ANGLE = 112;
         public static final double LOG_PERIOD = 0.23;
