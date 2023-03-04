@@ -4,6 +4,7 @@ import java.util.HashMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
@@ -26,7 +27,7 @@ public class Maps {
      */
     public static HashMap<String, Command> getPathMap1Piece(Drivetrain drivetrain, ServoTurn servoturn) {
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(.25), servoturn));
+        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY), servoturn));
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
         return eventMap;
     }
@@ -42,7 +43,7 @@ public class Maps {
      */ 
     public static HashMap<String, Command> getPathMap2Cube(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector) {
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(.25), servoturn));
+        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY), servoturn));
         eventMap.put("Set-Ground-Collect", new RunCommand(() -> lift.setGoalState(LiftState.groundCube), lift).until(lift::goalReached));
         eventMap.put("Collect-Game-Piece", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
         eventMap.put("Store-For-Moving", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
@@ -64,7 +65,7 @@ public class Maps {
      */
     public static HashMap<String, Command> getPathMap3Piece(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector) {
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(.25), servoturn));
+        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY), servoturn));
         // eventMap.put("Set-Ground-Collect", new RunCommand(() -> lift.setGoalState(LiftState.ground), lift).until(lift::goalReached));
         eventMap.put("Collect-Game-Piece", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
         eventMap.put("Store-For-Moving", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));

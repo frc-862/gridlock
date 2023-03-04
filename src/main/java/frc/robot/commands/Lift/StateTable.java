@@ -17,9 +17,9 @@ public class StateTable {
             LiftState.groundCube, new StateTransition(5.5, Rotation2d.fromDegrees(-70.5), Rotation2d.fromDegrees(0.0), LiftPlan.elevatorPriority, LiftState.groundCube), 
             LiftState.groundCone, new StateTransition(0, Rotation2d.fromDegrees(-70.5), Rotation2d.fromDegrees(30.0), LiftPlan.wristPriority, LiftState.groundCone), 
             LiftState.midCubeScore, new StateTransition(8, Rotation2d.fromDegrees(-8), Rotation2d.fromDegrees(-40), LiftPlan.parallel, LiftState.midCubeScore), 
-            LiftState.midConeScore, new StateTransition(0, Rotation2d.fromDegrees(20), Rotation2d.fromDegrees(-75), LiftPlan.parallel, LiftState.midConeScore), 
-            LiftState.highCubeScore, new StateTransition(22, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-70), LiftPlan.parallel, LiftState.highCubeScore), 
-            LiftState.highConeScore, new StateTransition(24, Rotation2d.fromDegrees(10), Rotation2d.fromDegrees(-75), LiftPlan.parallel, LiftState.highConeScore), 
+            LiftState.midConeScore, new StateTransition(0, Rotation2d.fromDegrees(20), Rotation2d.fromDegrees(-69), LiftPlan.parallel, LiftState.midConeScore), 
+            LiftState.highCubeScore, new StateTransition(22, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(-69), LiftPlan.parallel, LiftState.highCubeScore), 
+            LiftState.highConeScore, new StateTransition(24, Rotation2d.fromDegrees(10), Rotation2d.fromDegrees(-69), LiftPlan.parallel, LiftState.highConeScore), 
             LiftState.doubleSubstationCollect, new StateTransition(5, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.doubleSubstationCollect), 
             LiftState.reverseSubstationCollect, new StateTransition(5, Rotation2d.fromDegrees(60), Rotation2d.fromDegrees(0), LiftPlan.parallel, LiftState.reverseSubstationCollect));
 

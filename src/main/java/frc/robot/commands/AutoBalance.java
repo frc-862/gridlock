@@ -61,7 +61,7 @@ public class AutoBalance extends CommandBase {
     public AutoBalance(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
 
-        initializeShuffleboard();
+        // initializeShuffleboard();
 
         // LightningShuffleboard.setDoubleSupplier("AutoBalance", "magnitude", () -> magnitude);
         // LightningShuffleboard.setDoubleSupplier("AutoBalance","magnitudeROC", () -> magnitudeRateOfChange);
@@ -167,7 +167,7 @@ public class AutoBalance extends CommandBase {
                 break;
         }
 
-        periodicShuffleboard.loop();
+        // periodicShuffleboard.loop();
     }
 
     public boolean balanced(){
