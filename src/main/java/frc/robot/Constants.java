@@ -479,7 +479,7 @@ public final class Constants {
         // Max velocity and acceleration for the path planner
         public static final double MAX_VELOCITY = 1.5;
         public static final double MAX_ACCELERATION = .5;
-        public static final double SERVO_DEPLOY = 0.8;
+        public static final double SERVO_DEPLOY = 0.7;
         public static final double SERVO_STOW = 0d;
 
     }

@@ -12,6 +12,7 @@ import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
+import frc.thunder.auto.Autonomous;
 
 /**
  * Class for creating all auton HasMaps
@@ -43,7 +44,8 @@ public class Maps {
      */ 
     public static HashMap<String, Command> getPathMap2Cube(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector) {
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.flickServo(), servoturn));
+        // eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.flickServo(), servoturn));
+        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY), servoturn));
         eventMap.put("Set-Ground-Collect", new RunCommand(() -> lift.setGoalState(LiftState.groundCube), lift).until(lift::goalReached));
         eventMap.put("Collect-Game-Piece", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
         eventMap.put("Store-For-Moving", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
