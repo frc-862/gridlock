@@ -94,6 +94,11 @@ public class Drivetrain extends SubsystemBase {
     // PIDController for heading compenstation
     private final PIDController headingController = new PIDController(HeadingGains.kP, HeadingGains.kI, HeadingGains.kD);
 
+    private boolean flipFL = false;
+    private boolean flipFR = false;
+    private boolean flipBR = false;
+    private boolean flipBL = false;
+
     // Heading compenstaion variables
     // private boolean updatedHeading = false;
     // private double lastGoodheading = 0d;
@@ -213,9 +218,35 @@ public class Drivetrain extends SubsystemBase {
             // If not set the states to the commanded chassis speeds
             states = kinematics.toSwerveModuleStates(outputChassisSpeeds);
         }
+        
+        if(flipFL) {
+            states[0].angle = Rotation2d.fromDegrees(states[0].angle.getDegrees() - 180);
+        }
+        if(flipFR) {
+            states[1].angle = Rotation2d.fromDegrees(states[1].angle.getDegrees() - 180);
+        }
+        if(flipBL) {
+            states[2].angle = Rotation2d.fromDegrees(states[2].angle.getDegrees() - 180);
+        }
+        if(flipBR) {
+            states[3].angle = Rotation2d.fromDegrees(states[3].angle.getDegrees() - 180);
+        }
 
         // Sets the states to the modules
         setStates(states);
+    }
+
+    public void flipFL() {
+        flipFL = !flipFL;
+    }
+    public void flipFR() {
+        flipFR = !flipFR;
+    }
+    public void flipBL() {
+        flipBL = !flipBL;
+    }
+    public void flipBR() {
+        flipBR = !flipBR;
     }
 
     /**

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
 import java.util.function.BooleanSupplier;
@@ -49,9 +50,9 @@ public class SwerveDrive extends CommandBase {
         // Get values from double suppliers
 
         if(slowMode.getAsBoolean()) {
-            leftX = m_translationXSupplier.getAsDouble() * 0.4;
-            leftY = m_translationYSupplier.getAsDouble() * 0.4;
-            rightX = m_rotationSupplier.getAsDouble() * 0.4;
+            leftX = m_translationXSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
+            leftY = m_translationYSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
+            rightX = m_rotationSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_ROTATIONAL_MULT;
         } else {
             leftX = m_translationXSupplier.getAsDouble();
             leftY = m_translationYSupplier.getAsDouble();

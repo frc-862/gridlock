@@ -91,6 +91,9 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.18;
 
+        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.4;
+        public static final double SLOW_MODE_ROTATIONAL_MULT = 0.4;
+
         // Pigeon heading offset 
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
 
@@ -196,7 +199,7 @@ public final class Constants {
         // PID gains for our arm
         public static final double kP = 0.0095d;
         public static final double kI = 0d;
-        public static final double kD = 0d;
+        public static final double kD = 0.0005d;
         public static final double kF = 0d;
 
         public static final double TOLERANCE = 5d;
@@ -281,7 +284,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double kP = -0.0038d;
+        public static final double kP = -0.0035d;
         public static final double kI = 0d;
         public static final double kD = 0d;
 
@@ -463,7 +466,7 @@ public final class Constants {
         public static final double ARM_STOWED_ANGLE = -117;
         public static final double WRIST_STOWED_ANGLE = 112;
 
-        public static final double ELEVATOR_TRANSITION_POS = 12;
+        public static final double ELEVATOR_TRANSITION_POS = 8;
         public static final double ARM_TRANSITION_ANGLE = -70;
         public static final double WRIST_TRANSITION_ANGLE = 112;
         public static final double LOG_PERIOD = 0.23;
@@ -493,7 +496,7 @@ public final class Constants {
         public static final double TOLERANCE = 1d;
 
         //Offset limelight off center
-        public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5; 
+        public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5;
         public static final double LIMELGHT_OFFSET_GRIDLOCK = -12.2;
     }
 }
