@@ -30,6 +30,8 @@ public class Elevator extends SubsystemBase {
     // The target extension to be set to the elevator
     private double targetExtension;
 
+    private boolean disableEle = false;
+
     // Periodic Shuffleboard 
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
@@ -63,7 +65,9 @@ public class Elevator extends SubsystemBase {
                 new Pair<String, Object>("Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()),
                 new Pair<String, Object>("Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()), 
                 new Pair<String, Object>("Elevator target height", (DoubleSupplier) () -> targetExtension),
-                new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()));
+                new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), 
+                new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()),
+                new Pair<String, Object>("Elecator amps", (DoubleSupplier) () -> motor.getOutputCurrent()));
         // new Pair<String, Object>("Elevator motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
         // new Pair<String, Object>("Elevator motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
         // new Pair<String, Object>("Elevator motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
@@ -170,14 +174,14 @@ public class Elevator extends SubsystemBase {
         return targetHeight >= ElevatorConstants.MIN_EXTENSION && targetHeight <= ElevatorConstants.MAX_EXTENSION;
     }
 
+    public void disableEle() {
+        disableEle = true;
+    }
+
     @Override
     public void periodic() {
 
         periodicShuffleboard.loop();
-
-        if (getTopLimitSwitch()) {
-            encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
-        }
         // if (getTopLimitSwitch()) {
         //     encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
         // }
@@ -187,5 +191,10 @@ public class Elevator extends SubsystemBase {
         // }
 
         // setExtension(LightningShuffleboard.getDouble("Lift", "ele targ", 0));
+
+
+        if(disableEle) {
+            motor.stopMotor();
+        }
     }
 }

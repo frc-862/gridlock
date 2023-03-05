@@ -35,6 +35,8 @@ public class Arm extends SubsystemBase {
     // The target angle to be set to the arm
     private double targetAngle;
 
+    private boolean disableArm = false;
+
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
@@ -57,6 +59,10 @@ public class Arm extends SubsystemBase {
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
+
+        motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
+        motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
+
         // Create the PID controller and set the output range
         targetAngle = getAngle().getDegrees();
 
@@ -74,9 +80,9 @@ public class Arm extends SubsystemBase {
                 // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
                 new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle),
-                new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()));
+                new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
                 // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
-                // new Pair<String, Object>("Arm motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()));
                 // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
     }
 
@@ -102,6 +108,7 @@ public class Arm extends SubsystemBase {
      */
     public Rotation2d getAngle() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -180, 180));
+        // return Rotation2d.fromDegrees(encoder.getPosition() - OFFSET);
     }
 
     /**
@@ -169,9 +176,13 @@ public class Arm extends SubsystemBase {
         return angle.getDegrees() >= ArmConstants.MIN_ANGLE && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
     }
 
+    public void disableArm() {
+        disableArm = true;
+    }
+
     @Override
     public void periodic() {
-        // controller.setP(LightningShuffleboard.getDouble("Arm", "arm kP", ArmConstants.kP));
+        // controller.setD(LightningShuffleboard.getDouble("Arm", "arm kD", ArmConstants.kD));
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "arm setpoint", -90)));
         // LightningShuffleboard.setDouble("Lift", "arm angle", getAngle().getDegrees());
 
@@ -184,7 +195,9 @@ public class Arm extends SubsystemBase {
         // LightningShuffleboard.setDouble("Arm", "kf output", kFOut);
         // LightningShuffleboard.setDouble("Arm", "PID output", PIDOUT);
         // LightningShuffleboard.setDouble("Arm", "power", power);
-        motor.set(power);
+        if(!disableArm) {
+            motor.set(power);
+        }
 
         periodicShuffleboard.loop();
 

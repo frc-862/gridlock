@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
-import frc.robot.subsystems.Arm;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.config.SparkMaxPIDGains;
@@ -43,6 +43,8 @@ public class Wrist extends SubsystemBase {
     private boolean isBrakeModeSet = true;
 
     private Arm arm;
+
+    private boolean disableWrist = false;
 
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
@@ -82,8 +84,9 @@ public class Wrist extends SubsystemBase {
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Wrist", WristConstants.LOG_PERIOD, new Pair<String, Object>("Wrist Target Angle", (DoubleSupplier) () -> targetAngle),
-                new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()), new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()));
-        // new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
+                new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()),
+                new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
+                new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()));
         // new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
         // new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
     }
@@ -95,6 +98,7 @@ public class Wrist extends SubsystemBase {
      */
     public Rotation2d getAngle() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180));
+        // return Rotation2d.fromDegrees(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET);
     }
 
     public Rotation2d getGroundRelativeAngle(Rotation2d armAngle) {
@@ -165,6 +169,10 @@ public class Wrist extends SubsystemBase {
         // return true;
     }
 
+    public void disableWrist() {
+        disableWrist = true;
+    }
+
     @Override
     public void periodic() {
 
@@ -182,7 +190,9 @@ public class Wrist extends SubsystemBase {
         double POutput = controller.calculate(getAngle().getDegrees(), targetAngle);
         double FOutput = WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees()) * getGroundRelativeAngle(arm.getAngle()).getDegrees();
         double power = POutput + FOutput + minPower;
-        motor.set(power);
+        if (!disableWrist) {
+            motor.set(power);
+        }
 
         // LightningShuffleboard.setDouble("Wrist", "FF output", FOutput);
         // LightningShuffleboard.setDouble("Wrist", "PID output", POutput);

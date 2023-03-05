@@ -13,9 +13,11 @@ import frc.robot.subsystems.LimelightBack;
 import frc.robot.subsystems.LimelightFront;
 
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Collector.GamePiece;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
+import frc.robot.subsystems.Wrist;
 // import frc.robot.subsystems.ShuffleBoard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
@@ -85,7 +87,6 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
 
         // copilot controls 
-        new Trigger(() -> (copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1).whileTrue(new Collect(collector, () -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()));
         new Trigger(() -> copilot.getPOV() == 0).onTrue(new InstantCommand(() -> lift.adjustWrist(4), lift));
         new Trigger(() -> copilot.getPOV() == 180).onTrue(new InstantCommand(() -> lift.adjustWrist(-4), lift));
         new Trigger(() -> copilot.getPOV() == 90).onTrue(new InstantCommand(() -> lift.adjustArm(4), lift));
@@ -112,6 +113,8 @@ public class RobotContainer extends LightningContainer {
         // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
 
         new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::breakLift));
+
+        new Trigger(() -> copilot.getStartButton() && copilot.getBackButton()).onTrue(new SequentialCommandGroup(new InstantCommand(wrist::disableWrist), new InstantCommand(arm::disableArm), new InstantCommand(elevator::disableEle)));
 
         // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.flickServo()));
         
