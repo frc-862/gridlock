@@ -49,9 +49,9 @@ public class SwerveDrive extends CommandBase {
         // Get values from double suppliers
 
         if(slowMode.getAsBoolean()) {
-            leftX = m_translationXSupplier.getAsDouble() * 0.2;
-            leftY = m_translationYSupplier.getAsDouble() * 0.2;
-            rightX = m_rotationSupplier.getAsDouble() * 0.2;
+            leftX = m_translationXSupplier.getAsDouble() * 0.4;
+            leftY = m_translationYSupplier.getAsDouble() * 0.4;
+            rightX = m_rotationSupplier.getAsDouble() * 0.4;
         } else {
             leftX = m_translationXSupplier.getAsDouble();
             leftY = m_translationYSupplier.getAsDouble();

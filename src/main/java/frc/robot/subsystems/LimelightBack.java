@@ -33,6 +33,8 @@ public class LimelightBack extends SubsystemBase {
         // Sets the appropriate camera position
         setCameraPose(cameraPose);
 
+        setCameraMode();
+
         // Registers this as a proper Subsystem
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -239,6 +241,10 @@ public class LimelightBack extends SubsystemBase {
         } else {
             return 0;
         }
+    }
+
+    private void setCameraMode(){
+        LimelightHelpers.setCameraMode_Driver(limelightName);
     }
 
     /**
