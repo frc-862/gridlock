@@ -59,7 +59,6 @@ public class Arm extends SubsystemBase {
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
-
         motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
         motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
 
@@ -75,15 +74,14 @@ public class Arm extends SubsystemBase {
     // Metod to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, 
-            // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD,
+                // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
                 // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
-                new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
-                new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle),
+                new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()), new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle),
                 new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
                 // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
                 new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()));
-                // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
+        // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
     }
 
     /**
@@ -195,7 +193,7 @@ public class Arm extends SubsystemBase {
         // LightningShuffleboard.setDouble("Arm", "kf output", kFOut);
         // LightningShuffleboard.setDouble("Arm", "PID output", PIDOUT);
         // LightningShuffleboard.setDouble("Arm", "power", power);
-        if(!disableArm) {
+        if (!disableArm) {
             motor.set(power);
         }
 
