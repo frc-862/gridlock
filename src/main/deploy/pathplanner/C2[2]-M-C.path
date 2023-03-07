@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece-Servo"
+          "Score-Piece-Servo"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
@@ -69,12 +69,12 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Game-Piece",
-          "Store-For-Moving"
+          "Collect-Piece",
+          "Stow"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
-        "waitTime": 3.0
+        "waitBehavior": "deadline",
+        "waitTime": 5.0
       }
     },
     {
@@ -97,11 +97,11 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece",
-          "Store-For-Moving-2"
+          "Score-Piece",
+          "Stow"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
+        "waitBehavior": "deadline",
         "waitTime": 5.0
       }
     },
@@ -155,5 +155,18 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 1.3454545454544684,
+      "names": [
+        "Ground-Collect-Cube"
+      ]
+    },
+    {
+      "position": 2.799999999999996,
+      "names": [
+        "Ground-Score"
+      ]
+    }
+  ]
 }

@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece-Servo"
+          "Score-Piece-Servo"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -43,7 +43,9 @@
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "Get-Vision"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
         "waitTime": 2.0

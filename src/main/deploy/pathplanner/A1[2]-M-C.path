@@ -49,7 +49,7 @@
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "deadline",
-        "waitTime": 3.0
+        "waitTime": 5.0
       }
     },
     {

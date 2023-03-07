@@ -3,6 +3,7 @@ package frc.robot;
 import java.util.HashMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
@@ -43,6 +44,7 @@ public class Maps {
         eventMap.put("Collect-Piece", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
         eventMap.put("Score-Piece", new Collect(collector, () -> .5d).until(() -> collector.hasPiece())); //TODO: switch until to be until no piece
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
+        eventMap.put("Update-Pos-Vision", new PrintCommand("Update-Pos-Vision")); //TODO add vision code
         return eventMap;
     }
 }
