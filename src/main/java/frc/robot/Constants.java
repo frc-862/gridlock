@@ -284,7 +284,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double kP = -0.0035d;
+        public static final double kP = -0.0032d;
         public static final double kI = 0d;
         public static final double kD = 0d;
 
@@ -452,7 +452,7 @@ public final class Constants {
 
             midCubeScore, highCubeScore, midConeScore, highConeScore,
 
-            transition,
+            transition, safeCollect, silly,
 
             stowed, undetermined
         }
@@ -462,13 +462,6 @@ public final class Constants {
             parallel, armPriority, elevatorPriority, wristPriority, elevatorLast
         }
 
-        public static final double ELEVATOR_STOWED_POS = 4;
-        public static final double ARM_STOWED_ANGLE = -117;
-        public static final double WRIST_STOWED_ANGLE = 112;
-
-        public static final double ELEVATOR_TRANSITION_POS = 8;
-        public static final double ARM_TRANSITION_ANGLE = -70;
-        public static final double WRIST_TRANSITION_ANGLE = 112;
         public static final double LOG_PERIOD = 0.23;
     }
 

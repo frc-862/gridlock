@@ -207,12 +207,12 @@ public class Lift extends SubsystemBase {
                 // If elevatorLast set the wrist to its target and then set the arm and lastly the elevator
                 case elevatorLast:
                     wrist.setAngle(nextState.getWristAngle());
-                    if (wrist.onTarget()) {
+                    // if (wrist.onTarget()) {
                         arm.setAngle(nextState.getArmAngle());
                         if (arm.onTarget()) {
                             elevator.setExtension(nextState.getElevatorExtension());
                         }
-                    }
+                    // }
                     break;
             }
         }

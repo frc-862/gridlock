@@ -32,6 +32,8 @@ public class Arm extends SubsystemBase {
     // The encoder offset 
     private double OFFSET;
 
+    private double tolerance = ArmConstants.TOLERANCE;
+
     // The target angle to be set to the arm
     private double targetAngle;
 
@@ -149,7 +151,7 @@ public class Arm extends SubsystemBase {
      * @return true if the arm is within the tolerance of the target angle
      */
     public boolean onTarget() {
-        return Math.abs(getAngle().getDegrees() - targetAngle) < ArmConstants.TOLERANCE;
+        return Math.abs(getAngle().getDegrees() - targetAngle) < tolerance;
         // return true;
     }
 
@@ -161,8 +163,12 @@ public class Arm extends SubsystemBase {
      * @return true if the arm is within the tolerance of the target angle
      */
     public boolean onTarget(double target) {
-        return Math.abs(getAngle().getDegrees() - target) < ArmConstants.TOLERANCE;
+        return Math.abs(getAngle().getDegrees() - target) < tolerance;
         // return true;
+    }
+
+    public void setTolerance(double tolerance) {
+        this.tolerance = tolerance;
     }
 
     /**
@@ -177,6 +183,8 @@ public class Arm extends SubsystemBase {
     public void disableArm() {
         disableArm = true;
     }
+
+
 
     @Override
     public void periodic() {

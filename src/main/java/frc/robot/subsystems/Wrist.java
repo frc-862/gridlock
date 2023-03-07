@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
@@ -40,7 +41,7 @@ public class Wrist extends SubsystemBase {
     private double targetAngle;
     private double minPower;
 
-    private boolean isBrakeModeSet = true;
+    double tolerance = WristConstants.TOLERANCE;
 
     private Arm arm;
 
@@ -153,7 +154,7 @@ public class Wrist extends SubsystemBase {
      * @return the encoder position
      */
     public boolean onTarget() {
-        return Math.abs(getAngle().getDegrees() - targetAngle) < WristConstants.TOLERANCE;
+        return Math.abs(getAngle().getDegrees() - targetAngle) < tolerance;
         // return true;
     }
 
@@ -165,8 +166,12 @@ public class Wrist extends SubsystemBase {
      * @return true if the wrist is within the tolerance of the target angle
      */
     public boolean onTarget(double target) {
-        return Math.abs(getAngle().getDegrees() - target) < WristConstants.TOLERANCE;
+        return Math.abs(getAngle().getDegrees() - target) < tolerance;
         // return true;
+    }
+
+    public void setTolerance(double tolerance) {
+        this.tolerance = tolerance;
     }
 
     public void disableWrist() {
