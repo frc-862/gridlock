@@ -33,15 +33,15 @@ public class Maps {
      */
     public static HashMap<String, Command> getPathMap(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector, LEDs leds) {
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("Score-Game-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY), servoturn));
+        eventMap.put("Score-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY), servoturn));
         eventMap.put("Ground-Collect-Cone", new RunCommand(() -> lift.setGoalState(LiftState.groundCone), lift).until(lift::goalReached));
         eventMap.put("Ground-Collect-Cube", new RunCommand(() -> lift.setGoalState(LiftState.groundCube), lift).until(lift::goalReached));
         eventMap.put("Ground-Score", new RunCommand(() -> lift.setGoalState(LiftState.groundCube), lift).until(lift::goalReached));  
         eventMap.put("High-Score-Cone", new RunCommand(() -> lift.setGoalState(LiftState.highConeScore), lift).until(lift::goalReached));
         eventMap.put("High-Score-Cube", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
         eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));   
-        eventMap.put("Collect-Game-Piece", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
-        eventMap.put("Score-Game-Piece", new Collect(collector, () -> .5d).until(() -> collector.hasPiece())); //TODO: switch until to be until no piece
+        eventMap.put("Collect-Piece", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
+        eventMap.put("Score-Piece", new Collect(collector, () -> .5d).until(() -> collector.hasPiece())); //TODO: switch until to be until no piece
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
         return eventMap;
     }

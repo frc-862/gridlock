@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.849999999999999,
-        "y": 4.45
+        "x": 2.761497020412285,
+        "y": 4.79102665606364
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece-Servo"
+          "Score-Piece-Servo"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -30,8 +30,8 @@
         "y": 4.55
       },
       "prevControl": {
-        "x": 5.244825035410054,
-        "y": 4.55
+        "x": 5.295241709244176,
+        "y": 4.7198540524447665
       },
       "nextControl": null,
       "holonomicAngle": 0.0,
