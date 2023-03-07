@@ -61,7 +61,7 @@ public class AutoBalance extends CommandBase {
     public AutoBalance(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
 
-        initializeShuffleboard();
+        // initializeShuffleboard();
 
         // LightningShuffleboard.setDoubleSupplier("AutoBalance", "magnitude", () -> magnitude);
         // LightningShuffleboard.setDoubleSupplier("AutoBalance","magnitudeROC", () -> magnitudeRateOfChange);
@@ -76,9 +76,9 @@ public class AutoBalance extends CommandBase {
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", 0.2, new Pair<String, Object>("magnitude", (DoubleSupplier) () -> magnitude),
-                new Pair<String, Object>("magnitudeROC", (DoubleSupplier) () -> magnitudeRateOfChange),
-                new Pair<String, Object>("filtered magnitudeROC", (DoubleSupplier) () -> filteredMagnitudeRateOfChange), new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle),
-                new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle));
+                // new Pair<String, Object>("magnitudeROC", (DoubleSupplier) () -> magnitudeRateOfChange),
+                // new Pair<String, Object>("filtered magnitudeROC", (DoubleSupplier) () -> filteredMagnitudeRateOfChange), 
+                new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle), new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle));
     }
 
     @Override
@@ -86,13 +86,11 @@ public class AutoBalance extends CommandBase {
         // Initialize our climb state to climb
         climbState = climbStates.CLIMB;
         // TODO: get rid of this line after testing and proper calibration of odometry
-        drivetrain.resetOdometry(new Pose2d(new Translation2d(2.75, drivetrain.getPose().getY()), drivetrain.getPose().getRotation()));
+        // drivetrain.resetOdometry(new Pose2d(new Translation2d(2.75, drivetrain.getPose().getY()), drivetrain.getPose().getRotation()));
     }
 
     @Override
     public void execute() {
-
-        periodicShuffleboard.loop();
 
         // Get the pitch and roll of the robot
         pitchAngle = drivetrain.getPitch2d().getDegrees();
@@ -115,8 +113,9 @@ public class AutoBalance extends CommandBase {
                     AutoBalanceConstants.MAX_SPEED_THRESHOLD);
         }
 
-        // LightningShuffleboard.setDouble("autoBalance", "speed", speedMetersPerSecond);
-        // LightningShuffleboard.setDouble("autoBalance", "error", controller.getPositionError());
+        LightningShuffleboard.setDouble("autoBalance", "speed", speedMetersPerSecond);
+        LightningShuffleboard.setDouble("autoBalance", "error", controller.getPositionError());
+        LightningShuffleboard.setDouble("autoBalance", "Magnitude", magnitude);
 
         // Set the states of the swerve modules
         for (int i = 0; i < moduleStates.length; i++) {
@@ -156,7 +155,7 @@ public class AutoBalance extends CommandBase {
                 break;
             case FALLING:
                 drivetrain.stop();
-
+                
                 // Wait for a certain amount of time before starting to climb again
                 if (Timer.getFPGATimestamp() - timer > AutoBalanceConstants.DELAY_TIME) {
                     climbState = climbStates.CLIMB;
@@ -167,6 +166,16 @@ public class AutoBalance extends CommandBase {
                 drivetrain.stop();
                 break;
         }
+
+        // periodicShuffleboard.loop();
+    }
+
+    public boolean balanced(){
+        climbStates state = climbState;
+        if (state == climbStates.FALLING){
+            return true;
+        }
+        return false;
     }
 
     @Override

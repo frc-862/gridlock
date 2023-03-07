@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LimelightFront;
@@ -13,11 +14,22 @@ public class AutoAlign extends CommandBase {
     private LimelightFront limelight;
     private PIDController controller;
 
+    private double OFFSET;
+
     public AutoAlign(Drivetrain drivetrain, LimelightFront limelight) {
         this.drivetrain = drivetrain;
         this.limelight = limelight;
+
+        if (Constants.isBlackout()) {
+            // If blackout, use the blackout offset
+            OFFSET = AutoAlignConstants.LIMELGHT_OFFSET_BLACKOUT;
+        } else {
+            // Otherwise, assume gridlock offset
+            OFFSET = AutoAlignConstants.LIMELGHT_OFFSET_GRIDLOCK;
+        }
+        
         controller = new PIDController(AutoAlignConstants.AUTO_ALIGN_PID_CONSTANTS.kP, AutoAlignConstants.AUTO_ALIGN_PID_CONSTANTS.kI, AutoAlignConstants.AUTO_ALIGN_PID_CONSTANTS.kD);
-        controller.setSetpoint(AutoAlignConstants.OFFSET);
+        controller.setSetpoint(OFFSET);
         controller.setTolerance(AutoAlignConstants.TOLERANCE);
         
         addRequirements(drivetrain, limelight);
@@ -30,8 +42,8 @@ public class AutoAlign extends CommandBase {
 
     @Override
     public void execute() {
-        LightningShuffleboard.setBool("Auto align", "OnTarget", isOnTarget(limelight.getHorizontalOffset()));
-        LightningShuffleboard.setDouble("Auto align", "Horizontal offset", limelight.getHorizontalOffset());
+        LightningShuffleboard.setBool("Auto align", "OnTarget", onTarget());
+        LightningShuffleboard.setDouble("Auto align", "Horizontal offset", limelight.getHorizontalOffset() - OFFSET);
 
         if (limelight.hasVision()) {
             drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -45,14 +57,15 @@ public class AutoAlign extends CommandBase {
         }
     }
 
-    public boolean isOnTarget(double currentAngle) {
-        currentAngle -= AutoAlignConstants.OFFSET;
+    public boolean onTarget() {
+        double currentAngle = limelight.getHorizontalOffset();
+        currentAngle -= OFFSET;
         return Math.abs(currentAngle) < AutoAlignConstants.TOLERANCE;
     }
 
     @Override
     public boolean isFinished() {
-        return isOnTarget(limelight.getHorizontalOffset());
+        return false;
     }
 
     @Override

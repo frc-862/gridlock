@@ -3,12 +3,12 @@
     {
       "anchorPoint": {
         "x": 1.85,
-        "y": 2.75
+        "y": 4.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.849999999999999,
-        "y": 2.75
+        "x": 2.3099758971272593,
+        "y": 4.55
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
@@ -19,23 +19,23 @@
         "names": [
           "Score-Game-Piece-Servo"
         ],
-        "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "executionBehavior": "parallel",
+        "waitBehavior": "after",
+        "waitTime": 2.0
       }
     },
     {
       "anchorPoint": {
-        "x": 5.1100017584650566,
-        "y": 2.75
+        "x": 5.65,
+        "y": 4.65
       },
       "prevControl": {
-        "x": 4.1100017584650566,
-        "y": 2.75
+        "x": 4.37526377204162,
+        "y": 4.65
       },
       "nextControl": {
-        "x": 6.1100017584650566,
-        "y": 2.75
+        "x": 5.664311798409467,
+        "y": 4.65
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
@@ -51,21 +51,23 @@
     },
     {
       "anchorPoint": {
-        "x": 7.258589613333074,
-        "y": 2.75
+        "x": 4.85,
+        "y": 3.0
       },
       "prevControl": {
-        "x": 6.551863087874694,
-        "y": 2.75
+        "x": 5.639922529845061,
+        "y": 2.8006198589320266
       },
       "nextControl": null,
-      "holonomicAngle": 0.0,
+      "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "Auto-Balance"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0

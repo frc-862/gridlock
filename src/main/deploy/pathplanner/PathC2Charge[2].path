@@ -20,8 +20,8 @@
           "Score-Game-Piece-Servo"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "after",
+        "waitTime": 2.0
       }
     },
     {
@@ -147,7 +147,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Auto-balance"
+          "Auto-Balance"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -155,18 +155,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 1.3818181818181654,
-      "names": [
-        "Set-Groud-Collect"
-      ]
-    },
-    {
-      "position": 2.7636363636362598,
-      "names": [
-        "Set-Ground-Score"
-      ]
-    }
-  ]
+  "markers": []
 }

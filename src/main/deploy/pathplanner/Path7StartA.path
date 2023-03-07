@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Peice-Servo"
+          "Score-Game-Piece-Servo"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",

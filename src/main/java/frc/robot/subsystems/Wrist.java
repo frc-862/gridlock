@@ -44,6 +44,8 @@ public class Wrist extends SubsystemBase {
 
     private Arm arm;
 
+    private boolean disableWrist = false;
+
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
@@ -69,6 +71,7 @@ public class Wrist extends SubsystemBase {
 
         targetAngle = getAngle().getDegrees();
 
+        // Initialize the shuffleboard values and start logging data
         motor.getReverseLimitSwitch(WristConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
         motor.getForwardLimitSwitch(WristConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
 
@@ -81,10 +84,11 @@ public class Wrist extends SubsystemBase {
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Wrist", WristConstants.LOG_PERIOD, new Pair<String, Object>("Wrist Target Angle", (DoubleSupplier) () -> targetAngle),
-                new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()), new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()),
+                new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
-                new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
-                new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
+                new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()));
+        // new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+        // new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
     }
 
     /**
@@ -94,6 +98,7 @@ public class Wrist extends SubsystemBase {
      */
     public Rotation2d getAngle() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180));
+        // return Rotation2d.fromDegrees(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET);
     }
 
     public Rotation2d getGroundRelativeAngle(Rotation2d armAngle) {
@@ -164,13 +169,17 @@ public class Wrist extends SubsystemBase {
         // return true;
     }
 
+    public void disableWrist() {
+        disableWrist = true;
+    }
+
     @Override
     public void periodic() {
 
         // controller.setP(LightningShuffleboard.getDouble("Lift", "wrist kP", WristConstants.kP));
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -90)));
         // LightningShuffleboard.setDouble("Lift", "ground relative wrist angle", getGroundRelativeAngle(arm.getAngle()).getDegrees());
-        LightningShuffleboard.setDouble("Lift", "wrist relative wrist angle", getAngle().getDegrees());
+        // LightningShuffleboard.setDouble("Lift", "wrist relative wrist angle", getAngle().getDegrees());
 
         if (Math.abs(controller.getPositionError()) > 2) {
             minPower = Math.signum(controller.getPositionError()) * -0.035;
@@ -181,12 +190,14 @@ public class Wrist extends SubsystemBase {
         double POutput = controller.calculate(getAngle().getDegrees(), targetAngle);
         double FOutput = WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees()) * getGroundRelativeAngle(arm.getAngle()).getDegrees();
         double power = POutput + FOutput + minPower;
-        motor.set(power);
+        if (!disableWrist) {
+            motor.set(power);
+        }
 
         // LightningShuffleboard.setDouble("Wrist", "FF output", FOutput);
         // LightningShuffleboard.setDouble("Wrist", "PID output", POutput);
         // LightningShuffleboard.setDouble("Wrist", "minpower", minPower);
-        LightningShuffleboard.setDouble("Wrist", "wrist output power", power);
+        // LightningShuffleboard.setDouble("Wrist", "wrist output power", power);
 
         periodicShuffleboard.loop();
     }

@@ -41,6 +41,8 @@ public final class Constants {
         return !isBlackout();
     }
 
+    public static final double COMP_LOG_PERIOD = .33;
+
     // Constants for xbox controlers
     public static final class XboxControllerConstants {
         // Ports for the controllers
@@ -50,7 +52,7 @@ public final class Constants {
         // Deadband, min, and max power for the controllers
         public static final double DEADBAND = 0.1d;
         public static final double MIN_POWER = 0d;
-        public static final double MAX_POWER = 0.9d;
+        public static final double MAX_POWER = 1d;
 
     }
 
@@ -77,9 +79,10 @@ public final class Constants {
 
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12;
-        public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+        // public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 12;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI / 5;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -87,6 +90,9 @@ public final class Constants {
         public static final double NOMINAL_VOLTAGE = 12d;
 
         public static final double LOG_PERIOD = 0.18;
+
+        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.4;
+        public static final double SLOW_MODE_ROTATIONAL_MULT = 0.4;
 
         // Pigeon heading offset 
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
@@ -193,7 +199,7 @@ public final class Constants {
         // PID gains for our arm
         public static final double kP = 0.0095d;
         public static final double kI = 0d;
-        public static final double kD = 0d;
+        public static final double kD = 0.0005d;
         public static final double kF = 0d;
 
         public static final double TOLERANCE = 5d;
@@ -210,7 +216,7 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 263.42;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -169.7;
         public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
@@ -278,7 +284,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double kP = -0.003d;
+        public static final double kP = -0.0035d;
         public static final double kI = 0d;
         public static final double kD = 0d;
 
@@ -296,7 +302,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -42.1;
+        public static final double ENCODER_OFFSET_GRIDLOCK = 103.2;
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
@@ -369,7 +375,7 @@ public final class Constants {
         }
 
         public static final class PWM {
-            public static final int SERVO = 3;
+            public static final int SERVO = 0;
         }
 
         public static final class i2c { //Lowercase to avoid conflict with wpilib's I2C class
@@ -384,8 +390,7 @@ public final class Constants {
 
         // Upper and lower magnitude thresholds for checking if we are on the charge station at all
         public static final double UPPER_MAGNITUDE_THRESHOLD = 11;
-        public static final double LOWER_MAGNITUDE_THRESHOLD = 3;
-
+        public static final double LOWER_MAGNITUDE_THRESHOLD = 7; // TODO RESET Value if possible was 2.5 If mag jumps during Auton
         // Min and max speeds for our auto balance
         public static final double MIN_SPEED_THRESHOLD = 0.35;
         public static final double MAX_SPEED_THRESHOLD = 3;
@@ -470,13 +475,15 @@ public final class Constants {
     // Constants for autonomous
     public static final class AutonomousConstants {
         // Path planner PIDConstants
-        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(10.5, 0, 0); // Drive velocity PID
-        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(7, 0, 0); // Rotation PID
+        public static final PIDConstants DRIVE_PID_CONSTANTS = new PIDConstants(2.5, 0, 0); // Drive velocity PID 10.5
+        public static final PIDConstants THETA_PID_CONSTANTS = new PIDConstants(4, 0, 0); // Rotation PID 7
         public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0); // X and Y position PID
 
         // Max velocity and acceleration for the path planner
-        public static final double MAX_VELOCITY = 3;
-        public static final double MAX_ACCELERATION = 3;
+        public static final double MAX_VELOCITY = 1.5;
+        public static final double MAX_ACCELERATION = .5;
+        public static final double SERVO_DEPLOY = 0.7;
+        public static final double SERVO_STOW = 0d;
 
     }
 
@@ -489,6 +496,7 @@ public final class Constants {
         public static final double TOLERANCE = 1d;
 
         //Offset limelight off center
-        public static final double OFFSET = -11.5; //TODO determine for gridlock 
+        public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5;
+        public static final double LIMELGHT_OFFSET_GRIDLOCK = -12.2;
     }
 }

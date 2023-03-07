@@ -287,15 +287,15 @@ public class LimelightFront extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (hasVision() && !loggingStarted) {
-            // Initialize the shuffleboard values and start logging data
-            initializeShuffleboard();
-            loggingStarted = true;
-        }
+    //     if (hasVision() && !loggingStarted) {
+    //         // Initialize the shuffleboard values and start logging data
+    //         initializeShuffleboard();
+    //         loggingStarted = true;
+    //     }
 
-        if (loggingStarted) {
-            periodicShuffleboard.loop();
-        }
+    //     if (loggingStarted) {
+    //         periodicShuffleboard.loop();
+    //     }
 
     }
 

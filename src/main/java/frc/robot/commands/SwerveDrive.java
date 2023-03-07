@@ -3,8 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -18,6 +20,11 @@ public class SwerveDrive extends CommandBase {
     private final DoubleSupplier m_translationXSupplier;
     private final DoubleSupplier m_translationYSupplier;
     private final DoubleSupplier m_rotationSupplier;
+    private final BooleanSupplier slowMode;
+
+    double leftX;
+    double leftY;
+    double rightX;
 
     /**
      * Creates a new SwerveDrive command.
@@ -27,11 +34,12 @@ public class SwerveDrive extends CommandBase {
      * @param translationYSupplier The control input for the translation in the Y direction
      * @param rotationSupplier The control input for rotation
      */
-    public SwerveDrive(Drivetrain drivetrainSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier) {
+    public SwerveDrive(Drivetrain drivetrainSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier, BooleanSupplier slowMode) {
         this.drivetrain = drivetrainSubsystem;
         this.m_translationXSupplier = translationXSupplier;
         this.m_translationYSupplier = translationYSupplier;
         this.m_rotationSupplier = rotationSupplier;
+        this.slowMode = slowMode;
 
         addRequirements(drivetrainSubsystem);
     }
@@ -40,8 +48,16 @@ public class SwerveDrive extends CommandBase {
     public void execute() {
 
         // Get values from double suppliers
-        double leftX = m_translationXSupplier.getAsDouble();
-        double leftY = m_translationYSupplier.getAsDouble();
+
+        if(slowMode.getAsBoolean()) {
+            leftX = m_translationXSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
+            leftY = m_translationYSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
+            rightX = m_rotationSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_ROTATIONAL_MULT;
+        } else {
+            leftX = m_translationXSupplier.getAsDouble();
+            leftY = m_translationYSupplier.getAsDouble();
+            rightX = m_rotationSupplier.getAsDouble();
+        }
 
         Rotation2d theta = Rotation2d.fromRadians(Math.atan2(leftY, leftX));
         double mag = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2));
@@ -50,7 +66,7 @@ public class SwerveDrive extends CommandBase {
 
         double yOut = Math.pow(mag, 3) * theta.getSin();
 
-        double zOut = Math.pow(m_rotationSupplier.getAsDouble(), 3);
+        double zOut = Math.pow(rightX, 3);
 
         // Call drive method from drivetrain
         // drivetrain.drive(
@@ -61,7 +77,8 @@ public class SwerveDrive extends CommandBase {
 
         drivetrain.drive(
                 // Supply chassie speeds from the translation suppliers using feild relative control
-                ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
+                // TODO: x and y fliped
+                ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(-xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
                         drivetrain.percentOutputToRadiansPerSecond(zOut), drivetrain.getYaw2d()));
 
         // LightningShuffleboard.setDouble("joysticks", "X", m_translationXSupplier.getAsDouble());

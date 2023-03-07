@@ -30,6 +30,8 @@ public class Elevator extends SubsystemBase {
     // The target extension to be set to the elevator
     private double targetExtension;
 
+    private boolean disableEle = false;
+
     // Periodic Shuffleboard 
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
@@ -48,6 +50,7 @@ public class Elevator extends SubsystemBase {
         controller = NeoConfig.createPIDController(motor.getPIDController(), new SparkMaxPIDGains(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.kF), encoder);
         controller.setOutputRange(ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER);
 
+        // Initialize the shuffleboard values and start logging data
         targetExtension = getExtension();
 
         initializeShuffleboard();
@@ -58,13 +61,17 @@ public class Elevator extends SubsystemBase {
     // Metod to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Elevator", ElevatorConstants.LOG_PERIOD, new Pair<String, Object>("Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()),
-                new Pair<String, Object>("Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()), new Pair<String, Object>("Elevator target height", (DoubleSupplier) () -> targetExtension),
-                new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()),
-                new Pair<String, Object>("Elevator motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
-                new Pair<String, Object>("Elevator motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
-                new Pair<String, Object>("Elevator motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
-                new Pair<String, Object>("Elevator motor controller voltage", (DoubleSupplier) () -> motor.getBusVoltage()));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Elevator", ElevatorConstants.LOG_PERIOD,
+                new Pair<String, Object>("Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()),
+                new Pair<String, Object>("Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()), 
+                new Pair<String, Object>("Elevator target height", (DoubleSupplier) () -> targetExtension),
+                new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), 
+                new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()),
+                new Pair<String, Object>("Elecator amps", (DoubleSupplier) () -> motor.getOutputCurrent()));
+        // new Pair<String, Object>("Elevator motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
+        // new Pair<String, Object>("Elevator motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
+        // new Pair<String, Object>("Elevator motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+        // new Pair<String, Object>("Elevator motor controller voltage", (DoubleSupplier) () -> motor.getBusVoltage()));
 
     }
 
@@ -167,8 +174,14 @@ public class Elevator extends SubsystemBase {
         return targetHeight >= ElevatorConstants.MIN_EXTENSION && targetHeight <= ElevatorConstants.MAX_EXTENSION;
     }
 
+    public void disableEle() {
+        disableEle = true;
+    }
+
     @Override
     public void periodic() {
+
+        periodicShuffleboard.loop();
         // if (getTopLimitSwitch()) {
         //     encoder.setPosition(ElevatorConstants.MAX_EXTENSION);
         // }
@@ -177,7 +190,11 @@ public class Elevator extends SubsystemBase {
         //     encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
         // }
 
-
         // setExtension(LightningShuffleboard.getDouble("Lift", "ele targ", 0));
+
+
+        if(disableEle) {
+            motor.stopMotor();
+        }
     }
 }

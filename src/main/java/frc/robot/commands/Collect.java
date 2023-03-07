@@ -27,11 +27,7 @@ public class Collect extends CommandBase {
 
     @Override
     public void execute() {
-        if (Math.abs(input.getAsDouble()) == 0) {
-            collector.setPower(CollectorConstants.HOLD_POWER);
-        } else {
             collector.runCollector(input.getAsDouble());
-        }
     }
 
     @Override

@@ -34,8 +34,11 @@ public class Lift extends SubsystemBase {
     private boolean doTargetOverride = false;
 
     // Periodic Shuffleboard 
-    private LightningShuffleboardPeriodic periodicShuffleboard;
     // private LightningShuffleboardPeriodic periodicShuffleboardNextState;
+
+    // Periodic Shuffleboard 
+    private LightningShuffleboardPeriodic periodicShuffleboard;
+    private LightningShuffleboardPeriodic periodicShuffleboardNextState;
 
     /**
      * Creates a new lift subsystem
@@ -65,11 +68,11 @@ public class Lift extends SubsystemBase {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
                 new Pair<String, Object>("Lift goal state", (Supplier<String>) () -> goalState.toString()), new Pair<String, Object>("Lift on target", (BooleanSupplier) () -> onTarget()));
         if (nextState != null) {
-            // periodicShuffleboardNextState =
-            //         new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift next state elevator extension", (DoubleSupplier) () -> nextState.getElevatorExtension()),
-            //                 new Pair<String, Object>("Lift next state arm angle", (DoubleSupplier) () -> nextState.getArmAngle().getDegrees()),
-            //                 new Pair<String, Object>("Lift next state wrist angle", (DoubleSupplier) () -> nextState.getWristAngle().getDegrees()),
-            //                 new Pair<String, Object>("Lift next state plan", (Supplier<String>) () -> nextState.getPlan().toString()));
+            periodicShuffleboardNextState =
+                    new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift next state elevator extension", (DoubleSupplier) () -> nextState.getElevatorExtension()),
+                            new Pair<String, Object>("Lift next state arm angle", (DoubleSupplier) () -> nextState.getArmAngle().getDegrees()),
+                            new Pair<String, Object>("Lift next state wrist angle", (DoubleSupplier) () -> nextState.getWristAngle().getDegrees()),
+                            new Pair<String, Object>("Lift next state plan", (Supplier<String>) () -> nextState.getPlan().toString()));
         }
 
         // mech_elevator.setLength(elevator.getExtension());
@@ -103,11 +106,12 @@ public class Lift extends SubsystemBase {
         }
     }
 
-    public void targetOverride() {
-        goalState = currentState;
+    public void breakLift() {
+        elevator.setExtension(elevator.getExtension());
+        arm.setAngle(arm.getAngle());
+        wrist.setAngle(wrist.getAngle());
 
-        doTargetOverride = true;
-
+        nextState = null;
     }
 
     public boolean goalReached() {
@@ -124,13 +128,12 @@ public class Lift extends SubsystemBase {
 
     public void runPeriodicShuffleboardLoop() {
         periodicShuffleboard.loop();
-        // periodicShuffleboardNextState.loop();
     }
 
     public void adjustArm(double angle) {
         goalState = currentState;
         nextState = null;
-        arm.setAngle(arm.getAngle().plus(Rotation2d.fromDegrees(angle)));
+        arm.setAngle(Rotation2d.fromDegrees(arm.getTargetAngle() + angle));
     }
 
     public void adjustWrist(double angle) {
@@ -148,6 +151,10 @@ public class Lift extends SubsystemBase {
     @Override
     public void periodic() {
 
+        // Updates the shuffleboard values
+        runPeriodicShuffleboardLoop();
+
+        // Checks if were on target or if the next state is null
         // Checks if were on target or if the next state is null, also makes sure our biassese havent changed
         if (onTarget() || nextState == null) {
             // Checks if the current state is not the goal state
