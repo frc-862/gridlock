@@ -22,9 +22,9 @@ public class SwerveDrive extends CommandBase {
     private final DoubleSupplier m_rotationSupplier;
     private final BooleanSupplier slowMode;
 
-    double leftX;
-    double leftY;
-    double rightX;
+    private double leftX;
+    private double leftY;
+    private double rightX;
 
     /**
      * Creates a new SwerveDrive command.

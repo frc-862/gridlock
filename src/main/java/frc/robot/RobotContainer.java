@@ -70,57 +70,46 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureButtonBindings() {
-        //Driver Controls
-        // Back button to reset field centeric driving to current heading of the robot
+        /* driver Controls */
+        // RESETS
         new Trigger(driver::getBackButton).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
-
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
-        // new Trigger(copilot::getAButton).onTrue(new InstantCommand(() -> elevator.setExtension(4)));
-        // new Trigger(copilot::getBButton).onTrue(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-75))));
-        // new Trigger(copilot::getXButton).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-90))));
-
-        // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
+        //SET DRIVE PODS TO 45
         new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
 
+        //AUTO ALIGN
         new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
 
-        // copilot controls 
+        //AUTOBALANCE
+        // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
+
+        /*copilot controls*/ 
+        //BIAS
         new Trigger(() -> copilot.getPOV() == 0).onTrue(new InstantCommand(() -> lift.adjustWrist(4), lift));
         new Trigger(() -> copilot.getPOV() == 180).onTrue(new InstantCommand(() -> lift.adjustWrist(-4), lift));
         new Trigger(() -> copilot.getPOV() == 90).onTrue(new InstantCommand(() -> lift.adjustArm(4), lift));
         new Trigger(() -> copilot.getPOV() == 270).onTrue(new InstantCommand(() -> lift.adjustArm(-4), lift));
 
-        // new Trigger(copilot::getAButton)
-        //         .whileTrue((new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-45))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))), new InstantCommand(() -> elevator.setExtension(6)))));
-        // new Trigger(copilot::getYButton)
-        //         .whileTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(-70))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(20))), new InstantCommand(() -> elevator.setExtension(8))));
-        // new Trigger(copilot::getXButton)
-        //         .whileTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.setAngle(Rotation2d.fromDegrees(0))), new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(-40))), new InstantCommand(() -> elevator.setExtension(4))));
-
+        //SETPOINTS
         new Trigger(copilot::getAButton).whileTrue(new Ground(lift, collector, () -> GamePiece.CONE));
         new Trigger(copilot::getRightBumper).whileTrue(new Ground(lift, collector, () -> GamePiece.CUBE));
-
         new Trigger(copilot::getBButton).whileTrue(new Stow(lift));
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
-        // new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
+
+        //FLICK
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
-        // new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
         new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(0))));
 
-        // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
-
+        //BREAK
         new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::breakLift));
 
+        //DISABLE LIFT
         new Trigger(() -> copilot.getStartButton() && copilot.getBackButton()).onTrue(new SequentialCommandGroup(new InstantCommand(wrist::disableWrist), new InstantCommand(arm::disableArm), new InstantCommand(elevator::disableEle)));
 
-        // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.flickServo()));
-        
-        
-        new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
-
+        // new Trigger(copilot::getLeftBumper).whileTrue(new DoubleSubstationCollect(lift));
     }
 
     // Creates the autonomous commands

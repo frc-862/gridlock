@@ -220,16 +220,16 @@ public class Drivetrain extends SubsystemBase {
         }
         
         if(flipFL) {
-            states[0].angle = Rotation2d.fromDegrees(states[0].angle.getDegrees() - 180);
+            states[0].speedMetersPerSecond *= -1;
         }
         if(flipFR) {
-            states[1].angle = Rotation2d.fromDegrees(states[1].angle.getDegrees() - 180);
+            states[1].speedMetersPerSecond *= -1;
         }
         if(flipBL) {
-            states[2].angle = Rotation2d.fromDegrees(states[2].angle.getDegrees() - 180);
+            states[2].speedMetersPerSecond *= -1;
         }
         if(flipBR) {
-            states[3].angle = Rotation2d.fromDegrees(states[3].angle.getDegrees() - 180);
+            states[3].speedMetersPerSecond *= -1; 
         }
 
         // Sets the states to the modules
