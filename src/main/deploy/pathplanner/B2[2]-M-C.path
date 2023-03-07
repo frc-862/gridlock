@@ -79,15 +79,15 @@
     },
     {
       "anchorPoint": {
-        "x": 5.11,
+        "x": 5.25,
         "y": 2.75
       },
       "prevControl": {
-        "x": 5.533111944654704,
+        "x": 5.673111944654703,
         "y": 2.7271290840727187
       },
       "nextControl": {
-        "x": 4.686888055345297,
+        "x": 4.826888055345297,
         "y": 2.7728709159272813
       },
       "holonomicAngle": 180.0,
@@ -108,14 +108,14 @@
         "y": 2.75
       },
       "prevControl": {
-        "x": 3.0507775395092533,
-        "y": 2.75
+        "x": 2.3351439010570347,
+        "y": 2.736318164944023
       },
       "nextControl": {
-        "x": 1.8217937099034613,
-        "y": 2.75
+        "x": 1.772269107552165,
+        "y": 2.752192135667187
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": -180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -123,7 +123,7 @@
       "stopEvent": {
         "names": [
           "Score-Game-Piece",
-          "Store-For-Moving"
+          "Store-For-Moving-2"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -136,8 +136,8 @@
         "y": 2.75
       },
       "prevControl": {
-        "x": 2.3803686106768676,
-        "y": 2.7171780365178204
+        "x": 2.4750189692083526,
+        "y": 2.751757030675808
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -155,18 +155,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 1.3090909090909066,
-      "names": [
-        "Set-Ground-Collect"
-      ]
-    },
-    {
-      "position": 3.818181818181647,
-      "names": [
-        "Set-Ground-Score"
-      ]
-    }
-  ]
+  "markers": []
 }
