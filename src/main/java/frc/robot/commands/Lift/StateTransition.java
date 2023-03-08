@@ -81,4 +81,16 @@ public class StateTransition {
     public LiftState getEndState() {
         return endState;
     }
+
+    public double getElevatorTolerance() {
+        return elevatorTolerance;
+    }
+
+    public double getArmTolerance() {
+        return armTolerance;
+    }
+
+    public double getWristTolerance() {
+        return wristTolerance;
+    }
 }

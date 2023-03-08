@@ -452,7 +452,7 @@ public final class Constants {
 
             midCubeScore, highCubeScore, midConeScore, highConeScore,
 
-            transition, safeCollect, silly,
+            transition, safeCollect, elevatorDeploy,
 
             stowed, undetermined
         }

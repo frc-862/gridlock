@@ -173,6 +173,9 @@ public class Lift extends SubsystemBase {
                 currentState = nextState.getEndState();
             }
         } else {
+            elevator.setTolerance(nextState.getElevatorTolerance());
+            arm.setTolerance(nextState.getArmTolerance());
+            wrist.setTolerance(nextState.getWristTolerance());
             // Checks the run plan of the next state
             switch (nextState.getPlan()) {
                 // If parallel, set all the components to their target
