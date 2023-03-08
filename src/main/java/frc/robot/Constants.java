@@ -446,20 +446,25 @@ public final class Constants {
     public static final class LiftConstants {
         // All of the different states the lift can be in
         public enum LiftState {
+            //ground collects
             groundCone, groundCube,
 
-            doubleSubstationCollect, reverseSubstationCollect,
+            //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
+            doubleSubstationCollect, singleSubstationCollect,
 
+            //score states
             midCubeScore, highCubeScore, midConeScore, highConeScore,
 
-            transition, safeCollect, elevatorDeploy,
+            //substates
+            stowedCollect, stowedScore, stowedSingleSub, scoreToCollect,
 
-            stowed, undetermined
+            //s t o w e d
+            stowed
         }
 
         // All of the different plans the lift can follow
         public enum LiftPlan {
-            parallel, armPriority, elevatorPriority, wristPriority, elevatorLast
+            parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist
         }
 
         public static final double LOG_PERIOD = 0.23;

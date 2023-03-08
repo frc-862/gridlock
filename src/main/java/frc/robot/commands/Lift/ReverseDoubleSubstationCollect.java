@@ -17,6 +17,6 @@ public class ReverseDoubleSubstationCollect extends InstantCommand {
 
     @Override
     public void initialize() {
-        lift.setGoalState(LiftState.reverseSubstationCollect);
+        lift.setGoalState(LiftState.singleSubstationCollect);
     }
 }
