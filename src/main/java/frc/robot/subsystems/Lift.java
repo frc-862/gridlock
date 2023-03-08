@@ -5,6 +5,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import com.playingwithfusion.CANVenom.BrakeCoastMode;
+
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,8 +27,8 @@ public class Lift extends SubsystemBase {
     private Arm arm;
 
     // The current and goal states
-    private LiftState currentState = LiftState.stowed;
-    private LiftState goalState = LiftState.stowed;
+    private LiftState currentState = LiftState.groundCone;
+    private LiftState goalState = LiftState.groundCone;
 
     // The next state to transition to
     private StateTransition nextState;
@@ -222,6 +224,24 @@ public class Lift extends SubsystemBase {
                         arm.setAngle(nextState.getArmAngle());
                         wrist.setAngle(nextState.getWristAngle());
                     }
+                    break;
+                case eleAndWristThenArm:
+                    elevator.setExtension(nextState.getElevatorExtension());
+                    wrist.setAngle(nextState.getWristAngle());
+                    if (elevator.onTarget() && wrist.onTarget()) {
+                        arm.setAngle(nextState.getArmAngle());
+                    }
+                    break;
+                case wristArmEle:
+                    wrist.setAngle(nextState.getWristAngle());
+                    if (wrist.onTarget()) {
+                        arm.setAngle(nextState.getArmAngle());
+                        if (arm.onTarget()) {
+                            elevator.setExtension(nextState.getElevatorExtension());
+                        }
+                    }
+                    break;
+
             }
         }
 
