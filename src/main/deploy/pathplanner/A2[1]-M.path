@@ -2,37 +2,39 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 2.0,
-        "y": 3.0
+        "x": 1.85,
+        "y": 4.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6613255647076937,
-        "y": 3.4024696555197944
+        "x": 2.761497020412285,
+        "y": 4.79102665606364
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "names": [
+          "Score-Piece-Servo"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "after",
+        "waitTime": 2.0
       }
     },
     {
       "anchorPoint": {
-        "x": 3.0,
-        "y": 4.0
+        "x": 6.4,
+        "y": 4.55
       },
       "prevControl": {
-        "x": 2.3833237692826206,
-        "y": 3.6315394419043914
+        "x": 5.295241709244176,
+        "y": 4.7198540524447665
       },
       "nextControl": null,
-      "holonomicAngle": 0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,

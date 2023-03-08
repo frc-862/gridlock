@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.80628604913922,
-        "y": 5.065907877892789
+        "x": 2.7398106719290385,
+        "y": 4.96198540474004
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
@@ -17,7 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece-Servo"
+          "Score-Piece-Servo"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
@@ -26,26 +26,26 @@
     },
     {
       "anchorPoint": {
-        "x": 6.8,
-        "y": 4.75
+        "x": 6.526335456517069,
+        "y": 4.576588480100038
       },
       "prevControl": {
-        "x": 6.280486854839616,
-        "y": 4.837198718619977
+        "x": 5.4086843750610605,
+        "y": 4.769286942420039
       },
       "nextControl": {
-        "x": 6.280486854839616,
-        "y": 4.837198718619977
+        "x": 5.4086843750610605,
+        "y": 4.769286942420039
       },
-      "holonomicAngle": -30.0,
+      "holonomicAngle": 0.0,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Game-Piece",
-          "Store-For-Moving"
+          "Collect-Piece",
+          "Stow"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -58,12 +58,12 @@
         "y": 4.619925017310805
       },
       "prevControl": {
-        "x": 4.459221297428409,
-        "y": 4.619925017310805
+        "x": 4.315323688824236,
+        "y": 4.644472734290843
       },
       "nextControl": {
-        "x": 3.5046983108672993,
-        "y": 4.619925017310805
+        "x": 3.655128367949046,
+        "y": 4.595858326332038
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -96,8 +96,8 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece",
-          "Store-For-Moving-2"
+          "Score-Piece",
+          "Stow"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
@@ -107,15 +107,15 @@
   ],
   "markers": [
     {
-      "position": 0.6545454545454357,
+      "position": 0.632727272727274,
       "names": [
-        "Set-Ground-Collect"
+        "Ground-Collect-Cone"
       ]
     },
     {
-      "position": 2.465454545454473,
+      "position": 2.4654545454544143,
       "names": [
-        "Set-Ground-Score"
+        "Ground-Score"
       ]
     }
   ]

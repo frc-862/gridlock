@@ -3,12 +3,12 @@
     {
       "anchorPoint": {
         "x": 1.85,
-        "y": 3.17
+        "y": 1.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8500000000000005,
-        "y": 3.17
+        "x": 2.8499999999999988,
+        "y": 1.0
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
@@ -16,20 +16,22 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "Score-Piece-Servo"
+        ],
         "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "after",
+        "waitTime": 2.0
       }
     },
     {
       "anchorPoint": {
-        "x": 7.91,
-        "y": 3.17
+        "x": 6.25,
+        "y": 1.0
       },
       "prevControl": {
-        "x": 6.91,
-        "y": 3.17
+        "x": 5.25,
+        "y": 1.0
       },
       "nextControl": null,
       "holonomicAngle": 0.0,
@@ -45,8 +47,5 @@
       }
     }
   ],
-  "maxVelocity": 1.0,
-  "maxAcceleration": 0.5,
-  "isReversed": null,
   "markers": []
 }

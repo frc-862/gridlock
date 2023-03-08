@@ -200,7 +200,7 @@ public class Elevator extends SubsystemBase {
 
 
         if(disableEle) {
-            motor.stopMotor();
+            motor.set(0);
         }
     }
 }
