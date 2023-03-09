@@ -192,17 +192,21 @@ public final class Constants {
     public static final class ArmConstants {
         // Motor configuration constants
         public static final boolean MOTOR_INVERT = true;
-        public static final int CURRENT_LIMIT = 40;
+        public static final int CURRENT_LIMIT = 50;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our arm
-        public static final double kP = 0.0095d;
-        public static final double kI = 0d;
-        public static final double kD = 0.0005d;
+        public static final double UP_kP = 0.011d;
+        public static final double UP_kI = 0d;
+        public static final double UP_kD = 0.0004d;
+
+        public static final double DOWN_kP = 0.0085d;
+        public static final double DOWN_kI = 0d;
+        public static final double DOWN_kD = 0.0004d;
         public static final double kF = 0d;
 
-        public static final double TOLERANCE = 5d;
+        public static final double TOLERANCE = 10d;
 
         // Min and Max arm angles in degrees
         // TODO: change to actual values
@@ -216,7 +220,7 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -169.7;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -19.31;
         public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
@@ -253,16 +257,19 @@ public final class Constants {
                 put(-90d, 0d);
                 put(-45d, 0.02);
                 put(0d, 0.04);
-                put(45d, 0.02);
-                put(90d, 0d);
-                put(170d, -0.04d);
+                put(10d, 0.01);
+                put(15d, 0d);
+                put(90d, -0.1);
+                // put(45d, 0.02);
+                // put(90d, 0d);
+                // put(170d, -0.04d);
 
             }
         };
     }
 
     public static final class CollectorConstants {
-        public static final boolean MOTOR_INVERT = true;
+        public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
         public static final double HOLD_POWER = 0.25;
 
@@ -284,7 +291,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double kP = -0.0035d;
+        public static final double kP = -0.0038d;
         public static final double kI = 0d;
         public static final double kD = 0d;
 
@@ -293,16 +300,16 @@ public final class Constants {
 
         // Min/max angles in degrees
         public static final double MAX_ANGLE = 111d;
-        public static final double MIN_ANGLE = -75d;
+        public static final double MIN_ANGLE = -90d;
 
         // Min and Max power
-        public static final double MIN_POWER = -0.5d;
-        public static final double MAX_POWER = 0.5d;
+        public static final double MIN_POWER = -1d;
+        public static final double MAX_POWER = 1d;
 
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 103.2;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -59.99;
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
@@ -379,7 +386,7 @@ public final class Constants {
         }
 
         public static final class i2c { //Lowercase to avoid conflict with wpilib's I2C class
-            public static final I2C.Port COLOR_SENSOR = I2C.Port.kOnboard;
+            public static final I2C.Port COLOR_SENSOR = I2C.Port.kMXP;
         }
     }
 
@@ -446,29 +453,27 @@ public final class Constants {
     public static final class LiftConstants {
         // All of the different states the lift can be in
         public enum LiftState {
+            //ground collects
             groundCone, groundCube,
 
-            doubleSubstationCollect, reverseSubstationCollect,
+            //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
+            doubleSubstationCollect, singleSubstationCollect,
 
+            //score states
             midCubeScore, highCubeScore, midConeScore, highConeScore,
 
-            transition,
+            //substates
+            stowedCollect, stowedScore, stowedSingleSub, scoreToCollect,
 
-            stowed, undetermined
+            //s t o w e d
+            stowed
         }
 
         // All of the different plans the lift can follow
         public enum LiftPlan {
-            parallel, armPriority, elevatorPriority, wristPriority, elevatorLast
+            parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle
         }
 
-        public static final double ELEVATOR_STOWED_POS = 4;
-        public static final double ARM_STOWED_ANGLE = -117;
-        public static final double WRIST_STOWED_ANGLE = 112;
-
-        public static final double ELEVATOR_TRANSITION_POS = 8;
-        public static final double ARM_TRANSITION_ANGLE = -70;
-        public static final double WRIST_TRANSITION_ANGLE = 112;
         public static final double LOG_PERIOD = 0.23;
     }
 

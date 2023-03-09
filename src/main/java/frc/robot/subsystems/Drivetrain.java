@@ -4,7 +4,6 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.playingwithfusion.TimeOfFlight;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
@@ -87,9 +86,6 @@ public class Drivetrain extends SubsystemBase {
     private LightningShuffleboardPeriodic periodicShuffleboard;
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
-
-    // Time of flight sensor
-    private TimeOfFlight tof = new TimeOfFlight(RobotMap.CAN.TIME_OF_FLIGHT);
 
     // PIDController for heading compenstation
     private final PIDController headingController = new PIDController(HeadingGains.kP, HeadingGains.kI, HeadingGains.kD);
@@ -576,9 +572,5 @@ public class Drivetrain extends SubsystemBase {
         frontRightModule.setEncoderAngle();
         backLeftModule.setEncoderAngle();
         backRightModule.setEncoderAngle();
-    }
-
-    public double getTOF() {
-        return tof.getRange();
     }
 }

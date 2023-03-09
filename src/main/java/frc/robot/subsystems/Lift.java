@@ -28,6 +28,8 @@ public class Lift extends SubsystemBase {
     private LiftState currentState = LiftState.stowed;
     private LiftState goalState = LiftState.stowed;
 
+    private double lastKnownGoodWristSetPoint = 0;
+
     // The next state to transition to
     private StateTransition nextState;
 
@@ -68,11 +70,11 @@ public class Lift extends SubsystemBase {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
                 new Pair<String, Object>("Lift goal state", (Supplier<String>) () -> goalState.toString()), new Pair<String, Object>("Lift on target", (BooleanSupplier) () -> onTarget()));
         if (nextState != null) {
-            periodicShuffleboardNextState =
-                    new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift next state elevator extension", (DoubleSupplier) () -> nextState.getElevatorExtension()),
-                            new Pair<String, Object>("Lift next state arm angle", (DoubleSupplier) () -> nextState.getArmAngle().getDegrees()),
-                            new Pair<String, Object>("Lift next state wrist angle", (DoubleSupplier) () -> nextState.getWristAngle().getDegrees()),
-                            new Pair<String, Object>("Lift next state plan", (Supplier<String>) () -> nextState.getPlan().toString()));
+            periodicShuffleboardNextState = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD,
+                    new Pair<String, Object>("Lift next state elevator extension", (DoubleSupplier) () -> nextState.getElevatorExtension()),
+                    new Pair<String, Object>("Lift next state arm angle", (DoubleSupplier) () -> nextState.getArmAngle().getDegrees()),
+                    new Pair<String, Object>("Lift next state wrist angle", (DoubleSupplier) () -> nextState.getWristAngle().getDegrees()),
+                    new Pair<String, Object>("Lift next state plan", (Supplier<String>) () -> nextState.getPlan().toString()));
         }
 
         // mech_elevator.setLength(elevator.getExtension());
@@ -148,6 +150,10 @@ public class Lift extends SubsystemBase {
         elevator.setExtension(elevator.getExtension() + extension);
     }
 
+    public double getLastKnownGoodWristSetPoint() {
+        return lastKnownGoodWristSetPoint;
+    }
+
     @Override
     public void periodic() {
 
@@ -173,6 +179,11 @@ public class Lift extends SubsystemBase {
                 currentState = nextState.getEndState();
             }
         } else {
+            elevator.setTolerance(nextState.getElevatorTolerance());
+            arm.setTolerance(nextState.getArmTolerance());
+            wrist.setTolerance(nextState.getWristTolerance());
+
+            lastKnownGoodWristSetPoint = nextState.getWristAngle().getDegrees();
             // Checks the run plan of the next state
             switch (nextState.getPlan()) {
                 // If parallel, set all the components to their target
@@ -181,31 +192,53 @@ public class Lift extends SubsystemBase {
                     arm.setAngle(nextState.getArmAngle());
                     wrist.setAngle(nextState.getWristAngle());
                     break;
-                // If armPriority, set the arm to its target and then set the elevator and wrist
-                case armPriority:
+                case armThenWristAndEle:
                     arm.setAngle(nextState.getArmAngle());
                     if (arm.onTarget()) {
                         elevator.setExtension(nextState.getElevatorExtension());
                         wrist.setAngle(nextState.getWristAngle());
                     }
                     break;
-                // If elevatorPriority, set the elevator to its target and then set the arm and wrist
-                case elevatorPriority:
+                case eleWristArm:
+                    elevator.setExtension(nextState.getElevatorExtension());
+                    if (elevator.onTarget()) {
+                        wrist.setAngle(nextState.getWristAngle());
+                        if (wrist.onTarget()) {
+                            arm.setAngle(nextState.getArmAngle());
+                        }
+                    }
+                    break;
+                case eleArmWrist:
+                    elevator.setExtension(nextState.getElevatorExtension());
+                    if (elevator.onTarget()) {
+                        arm.setAngle(nextState.getArmAngle());
+                        if (arm.onTarget()) {
+                            wrist.setAngle(nextState.getWristAngle());
+                        }
+                    }
+                    break;
+                case armAndWristThenEle:
+                    arm.setAngle(nextState.getArmAngle());
+                    wrist.setAngle(nextState.getWristAngle());
+                    if (arm.onTarget() && wrist.onTarget()) {
+                        elevator.setExtension(nextState.getElevatorExtension());
+                    }
+                    break;
+                case eleThenArmAndWrist:
                     elevator.setExtension(nextState.getElevatorExtension());
                     if (elevator.onTarget()) {
                         arm.setAngle(nextState.getArmAngle());
                         wrist.setAngle(nextState.getWristAngle());
                     }
                     break;
-                case wristPriority:
+                case eleAndWristThenArm:
+                    elevator.setExtension(nextState.getElevatorExtension());
                     wrist.setAngle(nextState.getWristAngle());
-                    if (wrist.onTarget()) {
-                        elevator.setExtension(nextState.getElevatorExtension());
+                    if (elevator.onTarget() && wrist.onTarget()) {
                         arm.setAngle(nextState.getArmAngle());
                     }
                     break;
-                // If elevatorLast set the wrist to its target and then set the arm and lastly the elevator
-                case elevatorLast:
+                case wristArmEle:
                     wrist.setAngle(nextState.getWristAngle());
                     if (wrist.onTarget()) {
                         arm.setAngle(nextState.getArmAngle());
@@ -214,6 +247,7 @@ public class Lift extends SubsystemBase {
                         }
                     }
                     break;
+
             }
         }
 
