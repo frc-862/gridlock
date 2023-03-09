@@ -41,8 +41,9 @@ public class Maps {
         eventMap.put("High-Score-Cone", new RunCommand(() -> lift.setGoalState(LiftState.highConeScore), lift).until(lift::goalReached));
         eventMap.put("High-Score-Cube", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
         eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));   
-        eventMap.put("Collect-Piece", new Collect(collector, () -> -.5d).until(() -> collector.hasPiece()));
-        eventMap.put("Score-Piece", new Collect(collector, () -> .5d).until(() -> collector.hasPiece())); //TODO: switch until to be until no piece
+        eventMap.put("Stop-Collect", new RunCommand(() -> collector.stop(), collector));
+        eventMap.put("Collect-Piece", new Collect(collector, () -> .5d));
+        eventMap.put("Score-Piece", new Collect(collector, () -> -.5d)); //TODO: switch until to be until no piece
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
         eventMap.put("Update-Pos-Vision", new PrintCommand("Update-Pos-Vision")); //TODO add vision code
         return eventMap;
