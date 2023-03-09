@@ -10,9 +10,12 @@ import frc.robot.Constants.LiftConstants.LiftState;
 public class StateTransition {
     private double elevatorExtension;
     private Rotation2d armAngle;
+    private Rotation2d wristAngle;
     private LiftPlan plan;
     private LiftState endState;
-    private Rotation2d wristAngle;
+    private double elevatorTolerance;
+    private double armTolerance;
+    private double wristTolerance;
 
     /**
      * Creates a new state transition
@@ -23,12 +26,15 @@ public class StateTransition {
      * @param plan The plan for the lift
      * @param endState The end state of the lift
      */
-    public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState) {
+    public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState, double elevatorTolerance, double armTolerance, double wristTolerance) {
         this.elevatorExtension = elevatorExtension;
         this.armAngle = armAngle;
         this.wristAngle = wristAngle;
         this.plan = plan;
         this.endState = endState;
+        this.elevatorTolerance = elevatorTolerance;
+        this.armTolerance = armTolerance;
+        this.wristTolerance = wristTolerance;
     }
 
     /**
@@ -74,5 +80,17 @@ public class StateTransition {
      */
     public LiftState getEndState() {
         return endState;
+    }
+
+    public double getElevatorTolerance() {
+        return elevatorTolerance;
+    }
+
+    public double getArmTolerance() {
+        return armTolerance;
+    }
+
+    public double getWristTolerance() {
+        return wristTolerance;
     }
 }

@@ -32,6 +32,8 @@ public class Elevator extends SubsystemBase {
 
     private boolean disableEle = false;
 
+    private double tolerance = ElevatorConstants.TOLERANCE;
+
     // Periodic Shuffleboard 
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
@@ -119,7 +121,7 @@ public class Elevator extends SubsystemBase {
      * @return true if the elevator is within the tolerance of the target extension
      */
     public boolean onTarget() {
-        return Math.abs(targetExtension - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+        return Math.abs(targetExtension - encoder.getPosition()) < tolerance;
         // return true;
     }
 
@@ -131,7 +133,7 @@ public class Elevator extends SubsystemBase {
      * @return true if the elevator is within the tolerance of the target extension
      */
     public boolean onTarget(double target) {
-        return Math.abs(target - encoder.getPosition()) < ElevatorConstants.TOLERANCE;
+        return Math.abs(target - encoder.getPosition()) < tolerance;
         // return true;
     }
 
@@ -176,6 +178,10 @@ public class Elevator extends SubsystemBase {
 
     public void disableEle() {
         disableEle = true;
+    }
+
+    public void setTolerance(double tolerance) {
+        this.tolerance = tolerance;
     }
 
     @Override

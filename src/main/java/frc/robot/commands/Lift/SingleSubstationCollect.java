@@ -7,16 +7,16 @@ import frc.robot.subsystems.Lift;
 /**
  * Sets the lift position to the reverse double substation collect position
  */
-public class ReverseDoubleSubstationCollect extends InstantCommand {
+public class SingleSubstationCollect extends InstantCommand {
     private Lift lift;
 
-    public ReverseDoubleSubstationCollect(Lift lift) {
+    public SingleSubstationCollect(Lift lift) {
         this.lift = lift;
         addRequirements(lift);
     }
 
     @Override
     public void initialize() {
-        lift.setGoalState(LiftState.reverseSubstationCollect);
+        lift.setGoalState(LiftState.singleSubstationCollect);
     }
 }
