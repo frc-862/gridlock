@@ -189,7 +189,7 @@ public class Wrist extends SubsystemBase {
         double FOutput = WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees()) * getGroundRelativeAngle(arm.getAngle()).getDegrees();
         double power = PIDOutput + FOutput + minPower;
         if (disableWrist) {
-            motor.set(0);
+            setPower(0);
         } else {
             motor.set(power);
         }
