@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7521871710868684,
-        "y": 2.75
+        "x": 2.3125815418035,
+        "y": 2.763269471865767
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -21,21 +21,21 @@
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
-        "waitTime": 2.0
+        "waitTime": 1.0
       }
     },
     {
       "anchorPoint": {
-        "x": 2.0,
+        "x": 1.92,
         "y": 2.75
       },
       "prevControl": {
-        "x": 1.7653739915806943,
-        "y": 2.75
+        "x": 1.7836733046474804,
+        "y": 2.7520189582753254
       },
       "nextControl": {
-        "x": 2.2346260084193057,
-        "y": 2.75
+        "x": 2.1362768888162593,
+        "y": 2.7467970028664737
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -48,7 +48,35 @@
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "deadline",
-        "waitTime": 5.0
+        "waitTime": 2.0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.1,
+        "y": 2.75
+      },
+      "prevControl": {
+        "x": 1.902993546357991,
+        "y": 2.755945369237385
+      },
+      "nextControl": {
+        "x": 2.337454436965284,
+        "y": 2.74283396924966
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Stop-Collect",
+          "Stow"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "minimum",
+        "waitTime": 2.0
       }
     },
     {
@@ -57,11 +85,11 @@
         "y": 2.75
       },
       "prevControl": {
-        "x": 3.1237755235540927,
-        "y": 2.7641805023267674
+        "x": 2.840701099376521,
+        "y": 2.7742421019792105
       },
       "nextControl": null,
-      "holonomicAngle": 180.0,
+      "holonomicAngle": -179.56779539012044,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -76,13 +104,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 1.0909090909090216,
-      "names": [
-        "Stow",
-        "Stop-Collect"
-      ]
-    }
-  ]
+  "markers": []
 }
