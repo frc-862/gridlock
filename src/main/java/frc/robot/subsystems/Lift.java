@@ -30,6 +30,8 @@ public class Lift extends SubsystemBase {
     private LiftState currentState = LiftState.stowed;
     private LiftState goalState = LiftState.stowed;
 
+    private double lastKnownGoodWristSetPoint = 0;
+
     // The next state to transition to
     private StateTransition nextState;
 
@@ -150,6 +152,10 @@ public class Lift extends SubsystemBase {
         elevator.setExtension(elevator.getExtension() + extension);
     }
 
+    public double getLastKnownGoodWristSetPoint() {
+        return lastKnownGoodWristSetPoint;
+    }
+
     @Override
     public void periodic() {
 
@@ -178,6 +184,8 @@ public class Lift extends SubsystemBase {
             elevator.setTolerance(nextState.getElevatorTolerance());
             arm.setTolerance(nextState.getArmTolerance());
             wrist.setTolerance(nextState.getWristTolerance());
+
+            lastKnownGoodWristSetPoint = nextState.getWristAngle().getDegrees();
             // Checks the run plan of the next state
             switch (nextState.getPlan()) {
                 // If parallel, set all the components to their target

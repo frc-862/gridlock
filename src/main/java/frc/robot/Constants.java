@@ -206,7 +206,7 @@ public final class Constants {
         public static final double DOWN_kD = 0.0004d;
         public static final double kF = 0d;
 
-        public static final double TOLERANCE = 5d;
+        public static final double TOLERANCE = 10d;
 
         // Min and Max arm angles in degrees
         // TODO: change to actual values
@@ -386,7 +386,7 @@ public final class Constants {
         }
 
         public static final class i2c { //Lowercase to avoid conflict with wpilib's I2C class
-            public static final I2C.Port COLOR_SENSOR = I2C.Port.kOnboard;
+            public static final I2C.Port COLOR_SENSOR = I2C.Port.kMXP;
         }
     }
 
