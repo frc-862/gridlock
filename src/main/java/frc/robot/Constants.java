@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.Matrix;
@@ -275,6 +276,11 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.22;
 
+        // // Enum of possible game pieces
+        // public enum GamePiece {
+        //     CONE, CUBE, NONE
+        // }
+
         //TODO: tune these
         //Cube Theoretical: #3a01b2 (58, 1, 178)
         public static final Color CUBE_OPTIMAL = new Color(58, 1, 178);
@@ -379,6 +385,9 @@ public final class Constants {
 
             // MISC SENSORS
             public static final int TIME_OF_FLIGHT = 0;
+
+            // CANdle
+            public static final int CANDLE = 22;
         }
 
         public static final class PWM {
@@ -416,24 +425,12 @@ public final class Constants {
 
     // Constants for the LEDs
     public static final class LedConstants {
-        public static final int ledPort = 22;
-        public static final int ledLength = 170;
-        public static final double ledSpeed = .5;
+        public static final double BRIGHTNESS = .25;
+        public static final LEDStripType STRIP_TYPE = LEDStripType.RGB;
+        public static final int LED_LENGTH = 71;
 
-        // Color constants for the LEDs
-        public static final class Colors {
-            // Lightning colors
-            public static final int[] lightningOrange = {255, 71, 15};
-            public static final int[] lightningBlue = {0, 0, 255};
-
-            // Misc colors
-            public static final int[] cyan = {96, 209, 149};
-            public static final int[] yellow = {255, 230, 20};
-            public static final int[] purple = {220, 30, 240};
-            public static final int[] green = {0, 255, 0};
-            public static final int[] red = {255, 0, 0};
-            public static final int[] white = {255, 255, 255};
-            public static final int[] off = {0, 0, 0};
+        public static enum LEDStates {
+            wantsCone, wantsCube, hasCone, hasCube, override, noPiece
         }
     }
 

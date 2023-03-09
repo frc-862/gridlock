@@ -56,9 +56,9 @@ public class RobotContainer extends LightningContainer {
     private static final Wrist wrist = new Wrist(arm);
     private static final Elevator elevator = new Elevator();
     private static final ServoTurn servoturn = new ServoTurn();
-    private static final LEDs leds = new LEDs();
-    private static final Lift lift = new Lift(elevator, wrist, arm);
     private static final Collector collector = new Collector();
+    private static final LEDs leds = new LEDs(collector);
+    private static final Lift lift = new Lift(elevator, wrist, arm);
     // private static final ShuffleBoard shuffleboard = new ShuffleBoard(drivetrain, elevator, arm, wrist, collector);
 
     // Creates our controllers and deadzones
