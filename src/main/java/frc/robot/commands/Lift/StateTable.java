@@ -85,10 +85,10 @@ public class StateTable {
     private static final double ELEVATOR_DOUBLE_SUB_TOLERANCE = ElevatorConstants.TOLERANCE;
     private static final double ARM_DOUBLE_SUB_TOLERANCE = ArmConstants.TOLERANCE;
     private static final double WRIST_DOUBLE_SUB_TOLERANCE = WristConstants.TOLERANCE;
-
-    private static final double ELEVATOR_SINGLE_SUB_POS = 5;
-    private static final double ARM_SINGLE_SUB_ANGLE = 60d;
-    private static final double WRIST_SINGLE_SUB_ANGLE = 0d;
+    
+    private static final double ELEVATOR_SINGLE_SUB_POS = 6.3d;
+    private static final double ARM_SINGLE_SUB_ANGLE = -64.3d;
+    private static final double WRIST_SINGLE_SUB_ANGLE = 101.4d;
     private static final LiftPlan SINGLE_SUB_PLAN = LiftPlan.parallel;
     private static final double ELEVATOR_SINGLE_SUB_TOLERANCE = ElevatorConstants.TOLERANCE;
     private static final double ARM_SINGLE_SUB_TOLERANCE = ArmConstants.TOLERANCE;
@@ -110,7 +110,7 @@ public class StateTable {
     //         LiftState.reverseSubstationCollect, new StateTransition(ELEVATOR_REV_DOUBLE_SUB_POS, Rotation2d.fromDegrees(ARM_REV_DOUBLE_SUB_ANGLE), Rotation2d.fromDegrees(WRIST_REV_DOUBLE_SUB_ANGLE), REV_DOUBLE_SUB_PLAN, LiftState.reverseSubstationCollect, ELEVATOR_REV_DOUBLE_SUB_TOLERANCE, ARM_REV_DOUBLE_SUB_TOLERANCE, WRIST_REV_DOUBLE_SUB_TOLERANCE));
 
         private static Map<LiftState, StateTransition> scoreTable = Map.ofEntries(
-            Map.entry(LiftState.stowed, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(-100), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.parallel, LiftState.stowedScore, ELEVATOR_STOWED_TOLERANCE, ARM_STOWED_TOLERANCE, WRIST_STOWED_TOLERANCE)),
+            Map.entry(LiftState.stowed, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(-90), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.eleAndWristThenArm, LiftState.stowedScore, ELEVATOR_STOWED_TOLERANCE, ARM_STOWED_TOLERANCE, WRIST_STOWED_TOLERANCE)),
 
             Map.entry(LiftState.groundCube, new StateTransition(ELEVATOR_GROUND_CUBE_POS, Rotation2d.fromDegrees(ARM_GROUND_CUBE_ANGLE), Rotation2d.fromDegrees(112), GROUND_CUBE_PLAN, LiftState.scoreToCollect, ELEVATOR_GROUND_CUBE_TOLERANCE, ARM_GROUND_CUBE_TOLERANCE, 20)), 
             Map.entry(LiftState.groundCone, new StateTransition(ELEVATOR_GROUND_CONE_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(112), GROUND_CONE_PLAN, LiftState.scoreToCollect, ELEVATOR_GROUND_CONE_TOLERANCE, ARM_GROUND_CONE_TOLERANCE, 20)), 
@@ -171,7 +171,7 @@ public class StateTable {
                 LiftState.singleSubstationCollect, new StateTransition(ELEVATOR_SINGLE_SUB_POS, Rotation2d.fromDegrees(ARM_SINGLE_SUB_ANGLE), Rotation2d.fromDegrees(WRIST_SINGLE_SUB_ANGLE), SINGLE_SUB_PLAN, LiftState.singleSubstationCollect, ELEVATOR_SINGLE_SUB_TOLERANCE, ARM_SINGLE_SUB_TOLERANCE, WRIST_SINGLE_SUB_TOLERANCE))),
 
             Map.entry(LiftState.stowedScore, Map.of(
-                LiftState.stowed, new StateTransition(ELEVATOR_STOWED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.parallel, LiftState.stowed, ELEVATOR_STOWED_TOLERANCE, ARM_STOWED_TOLERANCE, 10),
+                LiftState.stowed, new StateTransition(ELEVATOR_STOWED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.armAndWristThenEle, LiftState.stowed, ELEVATOR_STOWED_TOLERANCE, 15, 10),
                 LiftState.groundCube, new StateTransition(ELEVATOR_GROUND_CUBE_POS, Rotation2d.fromDegrees(ARM_GROUND_CUBE_ANGLE), Rotation2d.fromDegrees(WRIST_GROUND_CUBE_ANGLE), GROUND_CUBE_PLAN, LiftState.groundCube, ELEVATOR_GROUND_CUBE_TOLERANCE, ARM_GROUND_CUBE_TOLERANCE, WRIST_GROUND_CUBE_TOLERANCE), 
                 LiftState.groundCone, new StateTransition(ELEVATOR_GROUND_CONE_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(WRIST_GROUND_CONE_ANGLE), GROUND_CONE_PLAN, LiftState.groundCone, ELEVATOR_GROUND_CONE_TOLERANCE, ARM_GROUND_CONE_TOLERANCE, WRIST_GROUND_CONE_TOLERANCE), 
 

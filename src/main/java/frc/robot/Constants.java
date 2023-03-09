@@ -192,14 +192,18 @@ public final class Constants {
     public static final class ArmConstants {
         // Motor configuration constants
         public static final boolean MOTOR_INVERT = true;
-        public static final int CURRENT_LIMIT = 40;
+        public static final int CURRENT_LIMIT = 50;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our arm
-        public static final double kP = 0.0095d;
-        public static final double kI = 0d;
-        public static final double kD = 0.0005d;
+        public static final double UP_kP = 0.011d;
+        public static final double UP_kI = 0d;
+        public static final double UP_kD = 0.0004d;
+
+        public static final double DOWN_kP = 0.0085d;
+        public static final double DOWN_kI = 0d;
+        public static final double DOWN_kD = 0.0004d;
         public static final double kF = 0d;
 
         public static final double TOLERANCE = 5d;
@@ -253,16 +257,19 @@ public final class Constants {
                 put(-90d, 0d);
                 put(-45d, 0.02);
                 put(0d, 0.04);
-                put(45d, 0.02);
-                put(90d, 0d);
-                put(170d, -0.04d);
+                put(10d, 0.01);
+                put(15d, 0d);
+                put(90d, -0.1);
+                // put(45d, 0.02);
+                // put(90d, 0d);
+                // put(170d, -0.04d);
 
             }
         };
     }
 
     public static final class CollectorConstants {
-        public static final boolean MOTOR_INVERT = true;
+        public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
         public static final double HOLD_POWER = 0.25;
 

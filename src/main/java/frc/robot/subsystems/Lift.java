@@ -27,8 +27,8 @@ public class Lift extends SubsystemBase {
     private Arm arm;
 
     // The current and goal states
-    private LiftState currentState = LiftState.groundCone;
-    private LiftState goalState = LiftState.groundCone;
+    private LiftState currentState = LiftState.stowed;
+    private LiftState goalState = LiftState.stowed;
 
     // The next state to transition to
     private StateTransition nextState;
