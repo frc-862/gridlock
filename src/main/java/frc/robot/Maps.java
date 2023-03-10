@@ -42,7 +42,7 @@ public class Maps {
         eventMap.put("High-Score-Cone", new RunCommand(() -> lift.setGoalState(LiftState.highConeScore), lift).until(lift::goalReached));
         eventMap.put("High-Score-Cube", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
         eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));   
-        eventMap.put("Stop-Collect", new RunCommand(() -> collector.stop(), collector));
+        eventMap.put("Stop-Collect", new InstantCommand(() -> collector.stop(), collector));
         eventMap.put("Hold-Power", new InstantCommand(() -> collector.setPower(CollectorConstants.HOLD_POWER), collector));
         eventMap.put("Collect-Piece", new Collect(collector, () -> .5d));
         eventMap.put("Score-Piece", new Collect(collector, () -> -.5d)); //TODO: switch until to be until no piece
