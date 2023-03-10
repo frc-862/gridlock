@@ -273,6 +273,8 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
         public static final double HOLD_POWER = 0.25;
+        public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         public static final double LOG_PERIOD = 0.22;
 
@@ -367,8 +369,7 @@ public final class Constants {
             public static final int BACK_LEFT_CANCODER = 34;
 
             // COLLECTOR
-            public static final int LEFT_COLLECTOR_MOTOR = 12;
-            public static final int RIGHT_COLLECTOR_MOTOR = 13;
+            public static final int COLLECTOR_MOTOR = 12;
 
             // ARM
             public static final int ARM_MOTOR = 10;
@@ -378,10 +379,6 @@ public final class Constants {
 
             // ELEVATOR
             public static final int ELEVATOR_MOTOR = 9;
-
-            // COLECTOR
-            public static final int COLLECTOR_MOTOR_ONE = 12;
-            public static final int COLLECTOR_MOTOR_TWO = 13;
 
             // MISC SENSORS
             public static final int TIME_OF_FLIGHT = 0;
@@ -427,7 +424,7 @@ public final class Constants {
     public static final class LedConstants {
         public static final double BRIGHTNESS = .25;
         public static final LEDStripType STRIP_TYPE = LEDStripType.RGB;
-        public static final int LED_LENGTH = 71;
+        public static final int LED_LENGTH = 150;
 
         public static enum LEDStates {
             wantsCone, wantsCube, hasCone, hasCube, override, noPiece

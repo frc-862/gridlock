@@ -14,9 +14,11 @@ public class LEDs extends SubsystemBase {
     private CANdleConfiguration ledConfig;
     private int orangeSwirlPosition = 0;
     private int blueSwirlPosition = (LedConstants.LED_LENGTH / 2) + 1;
-    private Collector collector = new Collector();
+    private Collector collector;
 
     public LEDs(Collector collector) {
+        this.collector = collector;
+
         ledConfig = new CANdleConfiguration();
         ledConfig.stripType = LedConstants.STRIP_TYPE;
         ledConfig.brightnessScalar = LedConstants.BRIGHTNESS;
@@ -28,7 +30,7 @@ public class LEDs extends SubsystemBase {
 
     @Override
     public void periodic() {
-        hasPiece(collector.getGamePiece());
+        wantsPiece(collector.getGamePiece());
     }
     
 

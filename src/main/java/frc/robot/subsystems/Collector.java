@@ -45,8 +45,8 @@ public class Collector extends SubsystemBase {
 
     public Collector() {
         // Create the motor and configure it
-        motor = NeoConfig.createMotor(CAN.LEFT_COLLECTOR_MOTOR, CollectorConstants.MOTOR_INVERT, CollectorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMPENSATION, MotorType.kBrushless,
-                IdleMode.kCoast);
+        motor = NeoConfig.createMotor(CAN.COLLECTOR_MOTOR, CollectorConstants.MOTOR_INVERT, CollectorConstants.CURRENT_LIMIT, Constants.VOLTAGE_COMPENSATION, CollectorConstants.MOTOR_TYPE,
+                CollectorConstants.NEUTRAL_MODE);
 
         // Create the color sensor
         colorSensor = new ColorSensorV3(i2c.COLOR_SENSOR);

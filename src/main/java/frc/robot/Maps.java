@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.AutonomousConstants;
+import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
@@ -42,6 +43,7 @@ public class Maps {
         eventMap.put("High-Score-Cube", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
         eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));   
         eventMap.put("Stop-Collect", new RunCommand(() -> collector.stop(), collector));
+        eventMap.put("Hold-Power", new InstantCommand(() -> collector.setPower(CollectorConstants.HOLD_POWER), collector));
         eventMap.put("Collect-Piece", new Collect(collector, () -> .5d));
         eventMap.put("Score-Piece", new Collect(collector, () -> -.5d)); //TODO: switch until to be until no piece
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));

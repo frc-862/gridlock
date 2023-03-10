@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3125815418035,
-        "y": 2.763269471865767
+        "x": 2.3121947454248044,
+        "y": 2.75
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -17,9 +17,10 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "High-Score-Cube"
+          "High-Score-Cube",
+          "Hold-Power"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "after",
         "waitTime": 1.0
       }
@@ -53,15 +54,15 @@
     },
     {
       "anchorPoint": {
-        "x": 2.1,
+        "x": 2.35,
         "y": 2.75
       },
       "prevControl": {
-        "x": 1.902993546357991,
+        "x": 2.1529935463579912,
         "y": 2.755945369237385
       },
       "nextControl": {
-        "x": 2.337454436965284,
+        "x": 2.587454436965284,
         "y": 2.74283396924966
       },
       "holonomicAngle": 180.0,
@@ -85,11 +86,11 @@
         "y": 2.75
       },
       "prevControl": {
-        "x": 2.840701099376521,
-        "y": 2.7742421019792105
+        "x": 2.991495578094159,
+        "y": 2.7405639759123455
       },
       "nextControl": null,
-      "holonomicAngle": -179.56779539012044,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
