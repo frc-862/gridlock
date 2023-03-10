@@ -409,7 +409,7 @@ public final class Constants {
         public static final double MAX_SPEED_THRESHOLD = 3;
 
         // Delay time for our auto balance after falling
-        public static final double DELAY_TIME = 2;
+        public static final double DELAY_TIME = 1.5;
 
         // Target X position for the middle of the charge station
         public static final double TARGET_X = 3.93;

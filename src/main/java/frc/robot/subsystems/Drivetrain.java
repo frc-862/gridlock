@@ -467,6 +467,9 @@ public class Drivetrain extends SubsystemBase {
     public void zeroHeading() {
         pigeon.setYaw(0);
     }
+    public void setHeading(double input) {
+        pigeon.setYaw(input);
+    }
 
     /**
      * Gets the current pose of the robot.

@@ -76,8 +76,8 @@
           "Stow"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "deadline",
-        "waitTime": 2.0
+        "waitBehavior": "minimum",
+        "waitTime": 1.5
       }
     },
     {
