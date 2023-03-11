@@ -9,6 +9,8 @@ import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -133,7 +135,12 @@ public class Collector extends SubsystemBase {
      * @param power the percent speed to set the elevator motor to
      */
     public void setPower(double power) {
-        motor.set(power);
+        if(getGamePiece() == GamePiece.CONE) {
+            motor.set(MathUtil.clamp(power, -1, 0.5));
+        } else {
+            motor.set(power);
+        }
+            
     }
 
     /**
