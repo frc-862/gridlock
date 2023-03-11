@@ -307,12 +307,12 @@ public final class Constants {
         public static final double TOLERANCE = 5d;
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = 111d;
+        public static final double MAX_ANGLE = 121d;
         public static final double MIN_ANGLE = -90d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
-        public static final double MAX_POWER = 1d;
+        public static final double MAX_POWER = 0.9d;
 
         public static final double LOG_PERIOD = 0.24;
 
