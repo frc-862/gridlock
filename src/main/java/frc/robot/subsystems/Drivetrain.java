@@ -332,6 +332,8 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("bl target angle", (DoubleSupplier) () -> states[2].angle.getDegrees()),
                 new Pair<String, Object>("br target angle", (DoubleSupplier) () -> states[3].angle.getDegrees()),
                 new Pair<String, Object>("Odometry Heading", (DoubleSupplier) () -> getHeading().getDegrees()), 
+                new Pair<String, Object>("roll", (DoubleSupplier) () -> pigeon.getRoll()), 
+                new Pair<String, Object>("pitch", (DoubleSupplier) () -> pigeon.getPitch()), 
                 new Pair<String, Object>("odo X", (DoubleSupplier) () -> pose.getX()),
                 new Pair<String, Object>("odo Y", (DoubleSupplier) () -> pose.getY()), 
                 new Pair<String, Object>("odo Z", (DoubleSupplier) () -> pose.getRotation().getDegrees()),
@@ -466,6 +468,9 @@ public class Drivetrain extends SubsystemBase {
      */
     public void zeroHeading() {
         pigeon.setYaw(0);
+    }
+    public void setHeading(double input) {
+        pigeon.setYaw(input);
     }
 
     /**

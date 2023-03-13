@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.849999999999999,
-        "y": 2.75
+        "x": 1.847438285232061,
+        "y": 2.7469467183937004
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
@@ -21,7 +21,7 @@
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
-        "waitTime": 2.0
+        "waitTime": 0.0
       }
     },
     {
@@ -48,7 +48,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
-        "waitTime": 2.0
+        "waitTime": 0.5
       }
     },
     {

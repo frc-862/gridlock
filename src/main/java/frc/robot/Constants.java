@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.Matrix;
@@ -220,7 +221,9 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -19.31;
+        // public static final double ENCODER_OFFSET_GRIDLOCK = -19.31;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -19.69;
+
         public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
@@ -272,8 +275,15 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
         public static final double HOLD_POWER = 0.25;
+        public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         public static final double LOG_PERIOD = 0.22;
+
+        // // Enum of possible game pieces
+        // public enum GamePiece {
+        //     CONE, CUBE, NONE
+        // }
 
         //TODO: tune these
         //Cube Theoretical: #3a01b2 (58, 1, 178)
@@ -299,12 +309,12 @@ public final class Constants {
         public static final double TOLERANCE = 5d;
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = 111d;
+        public static final double MAX_ANGLE = 121d;
         public static final double MIN_ANGLE = -90d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
-        public static final double MAX_POWER = 1d;
+        public static final double MAX_POWER = 0.9d;
 
         public static final double LOG_PERIOD = 0.24;
 
@@ -361,8 +371,7 @@ public final class Constants {
             public static final int BACK_LEFT_CANCODER = 34;
 
             // COLLECTOR
-            public static final int LEFT_COLLECTOR_MOTOR = 12;
-            public static final int RIGHT_COLLECTOR_MOTOR = 13;
+            public static final int COLLECTOR_MOTOR = 12;
 
             // ARM
             public static final int ARM_MOTOR = 10;
@@ -373,12 +382,11 @@ public final class Constants {
             // ELEVATOR
             public static final int ELEVATOR_MOTOR = 9;
 
-            // COLECTOR
-            public static final int COLLECTOR_MOTOR_ONE = 12;
-            public static final int COLLECTOR_MOTOR_TWO = 13;
-
             // MISC SENSORS
             public static final int TIME_OF_FLIGHT = 0;
+
+            // CANdle
+            public static final int CANDLE = 22;
         }
 
         public static final class PWM {
@@ -403,7 +411,7 @@ public final class Constants {
         public static final double MAX_SPEED_THRESHOLD = 3;
 
         // Delay time for our auto balance after falling
-        public static final double DELAY_TIME = 2;
+        public static final double DELAY_TIME = 1.5;
 
         // Target X position for the middle of the charge station
         public static final double TARGET_X = 3.93;
@@ -416,24 +424,12 @@ public final class Constants {
 
     // Constants for the LEDs
     public static final class LedConstants {
-        public static final int ledPort = 22;
-        public static final int ledLength = 170;
-        public static final double ledSpeed = .5;
+        public static final double BRIGHTNESS = .25;
+        public static final LEDStripType STRIP_TYPE = LEDStripType.RGB;
+        public static final int LED_LENGTH = 150;
 
-        // Color constants for the LEDs
-        public static final class Colors {
-            // Lightning colors
-            public static final int[] lightningOrange = {255, 71, 15};
-            public static final int[] lightningBlue = {0, 0, 255};
-
-            // Misc colors
-            public static final int[] cyan = {96, 209, 149};
-            public static final int[] yellow = {255, 230, 20};
-            public static final int[] purple = {220, 30, 240};
-            public static final int[] green = {0, 255, 0};
-            public static final int[] red = {255, 0, 0};
-            public static final int[] white = {255, 255, 255};
-            public static final int[] off = {0, 0, 0};
+        public static enum LEDStates {
+            wantsCone, wantsCube, hasCone, hasCube, override, noPiece
         }
     }
 
@@ -487,7 +483,7 @@ public final class Constants {
         // Max velocity and acceleration for the path planner
         public static final double MAX_VELOCITY = 1.5;
         public static final double MAX_ACCELERATION = .5;
-        public static final double SERVO_DEPLOY = 0.7;
+        public static final double SERVO_DEPLOY = 0.4;
         public static final double SERVO_STOW = 0d;
 
     }
