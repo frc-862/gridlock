@@ -9,6 +9,9 @@ import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.Num;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -80,7 +83,7 @@ public class Drivetrain extends SubsystemBase {
     private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     // Swerve pose esitmator for odometry
-    SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d());  
+    SwerveDrivePoseEstimator poseEstimator;// = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, setInitialPose());  
         
     // Creates our drivetrain shuffleboard tab for displaying module data and a periodic shuffleboard for data that doesn't need constant updates
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -147,6 +150,16 @@ public class Drivetrain extends SubsystemBase {
         // Making back right module
         backRightModule = Mk4iSwerveModuleHelper.createNeo(tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0), swerveConfiguration,
                 Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
+
+        // Setting start position and creating estimator
+        setInitialPose(new Pose2d(0, 0, new Rotation2d()));
+
+        // Setting StfDevs for vision in the estimater
+        Matrix stfMatrix = new Matrix<>(Nat.N1(), Nat.N3());
+        stfMatrix.set(0, 0, 1);
+        stfMatrix.set(0, 1, 1);
+        stfMatrix.set(0, 2, 0.122173);
+        poseEstimator.setVisionMeasurementStdDevs(stfMatrix);
 
         // Setting states of the modules
         updateOdometry();
@@ -392,18 +405,16 @@ public class Drivetrain extends SubsystemBase {
         return new PathPoint(pose.getTranslation(), pose.getRotation());
     }
 
-    // /**
-    //  * Sets initial pose of robot in meters.
-    //  * 
-    //  * @param initalPosition the initial position of the robot
-    //  * @param initalRotation the initial rotation(heading) of the robot
-    //  */
-    // public void setInitialPose(Pose2d initalPosition, Rotation2d initalRotation) {
-    //     pigeon.setYaw(initalRotation.getDegrees());
-    //     pose = new Pose2d(initalPosition.getTranslation(), initalRotation);
-    //     estimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, pose);
-
-    // }
+    /**
+     * Sets initial pose of robot in meters.
+     * 
+     * @param initalPosition the initial position of the robot
+     */
+    public void setInitialPose(Pose2d initalPosition) {
+        pigeon.setYaw(initalPosition.getRotation().getDegrees());
+        pose = new Pose2d(initalPosition.getTranslation(), initalPosition.getRotation());
+        poseEstimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, pose);
+    }
 
     /**
      * Gets the heading of the robot from odometry in degrees from 0 to 360
