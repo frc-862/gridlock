@@ -496,6 +496,10 @@ public final class Constants {
         // Tolerance for auto align
         public static final double TOLERANCE = 1d;
 
+        //Log period auto align
+        public static final double LOG_PERIOD = 0.25;
+
+
         //Offset limelight off center
         public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5;
         public static final double LIMELGHT_OFFSET_GRIDLOCK = -12.2;
