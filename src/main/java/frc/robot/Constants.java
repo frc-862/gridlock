@@ -447,6 +447,8 @@ public final class Constants {
 
     // Constants for the lift
     public static final class LiftConstants {
+        public double ELEVATOR_SAFE_HEIGHT = 4;
+
         // All of the different states the lift can be in
         public enum LiftState {
             //ground collects
