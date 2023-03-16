@@ -279,6 +279,7 @@ public class Drivetrain extends SubsystemBase {
         updateModulePositions();
 
         pose = poseEstimator.update(getYaw2d(), modulePositions);
+        
         // if (visionFront.hasVision()) {
         //     double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(visionFront.limelightName);
         //     Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
@@ -291,9 +292,9 @@ public class Drivetrain extends SubsystemBase {
             Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[5]));
             if (visionPose != null) {
                 poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - limelightBack.getLatencyBotPoseBlue());
+                pose = poseEstimator.getEstimatedPosition();
             }
         }
-
     }
 
     /**
