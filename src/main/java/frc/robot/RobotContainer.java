@@ -51,14 +51,14 @@ public class RobotContainer extends LightningContainer {
     private static final LimelightBack backLimelight = new LimelightBack(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain();
-    private static final Arm arm = new Arm();
-    private static final Wrist wrist = new Wrist(arm);
-    private static final Elevator elevator = new Elevator();
-    private static final ServoTurn servoturn = new ServoTurn();
-    private static final Collector collector = new Collector();
-    private static final LEDs leds = new LEDs(collector);
-    private static final Lift lift = new Lift(elevator, wrist, arm);
+    private static final Drivetrain drivetrain = new Drivetrain(backLimelight);
+    // private static final Arm arm = new Arm();
+    // private static final Wrist wrist = new Wrist(arm);
+    // private static final Elevator elevator = new Elevator();
+    // private static final ServoTurn servoturn = new ServoTurn();
+    // private static final Collector collector = new Collector();frontLimelight
+    // private static final LEDs leds = new LEDs(collector);
+    // private static final Lift lift = new Lift(elevator, wrist, arm);
     // private static final ShuffleBoard shuffleboard = new ShuffleBoard(drivetrain, elevator, arm, wrist, collector);
 
     // Creates our controllers and deadzones
@@ -81,8 +81,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
         // GAME PIECE SET
-        new Trigger(driver::getRightBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
-        new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
+        // new Trigger(driver::getRightBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
+        // new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
 
 
         //SET DRIVE PODS TO 45
@@ -91,8 +91,8 @@ public class RobotContainer extends LightningContainer {
         //AUTO ALIGN
         new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
 
-        new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
-        new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_STOW)));
+        // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
+        // new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_STOW)));
 
 
         //AUTOBALANCE
@@ -100,29 +100,29 @@ public class RobotContainer extends LightningContainer {
 
         /* copilot controls */
         //BIAS
-        new Trigger(() -> copilot.getPOV() == 0).onTrue(new InstantCommand(() -> lift.adjustWrist(4), lift));
-        new Trigger(() -> copilot.getPOV() == 180).onTrue(new InstantCommand(() -> lift.adjustWrist(-4), lift));
-        new Trigger(() -> copilot.getPOV() == 90).onTrue(new InstantCommand(() -> lift.adjustArm(4), lift));
-        new Trigger(() -> copilot.getPOV() == 270).onTrue(new InstantCommand(() -> lift.adjustArm(-4), lift));
+        // new Trigger(() -> copilot.getPOV() == 0).onTrue(new InstantCommand(() -> lift.adjustWrist(4), lift));
+        // new Trigger(() -> copilot.getPOV() == 180).onTrue(new InstantCommand(() -> lift.adjustWrist(-4), lift));
+        // new Trigger(() -> copilot.getPOV() == 90).onTrue(new InstantCommand(() -> lift.adjustArm(4), lift));
+        // new Trigger(() -> copilot.getPOV() == 270).onTrue(new InstantCommand(() -> lift.adjustArm(-4), lift));
 
         //SETPOINTS
-        new Trigger(copilot::getAButton).whileTrue(new Ground(lift, collector, () -> collector.getGamePiece()));
-        new Trigger(copilot::getBButton).whileTrue(new Stow(lift));
-        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getLeftBumper).whileTrue(new SingleSubstationCollect(lift));
-        new Trigger(copilot::getRightBumper).whileTrue(new DoubleSubstationCollect(lift));
+        // new Trigger(copilot::getAButton).whileTrue(new Ground(lift, collector, () -> collector.getGamePiece()));
+        // new Trigger(copilot::getBButton).whileTrue(new Stow(lift));
+        // new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
+        // new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
+        // new Trigger(copilot::getLeftBumper).whileTrue(new SingleSubstationCollect(lift));
+        // new Trigger(copilot::getRightBumper).whileTrue(new DoubleSubstationCollect(lift));
 
         //FLICK
-        new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
-        new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(lift.getLastKnownGoodWristSetPoint()))));
+        // new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
+        // new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(lift.getLastKnownGoodWristSetPoint()))));
 
         //BREAK
-        new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::breakLift));
+        // new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::breakLift));
 
         //DISABLE LIFT
-        new Trigger(() -> copilot.getStartButton() && copilot.getBackButton())
-                .onTrue(new SequentialCommandGroup(new InstantCommand(wrist::disableWrist), new InstantCommand(arm::disableArm), new InstantCommand(elevator::disableEle)));
+        // new Trigger(() -> copilot.getStartButton() && copilot.getBackButton())
+        //         .onTrue(new SequentialCommandGroup(new InstantCommand(wrist::disableWrist), new InstantCommand(arm::disableArm), new InstantCommand(elevator::disableEle)));
     }
 
     // Creates the autonomous commands
@@ -138,28 +138,28 @@ public class RobotContainer extends LightningContainer {
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("A1[3]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("A2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("A2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         //B paths
-        autoFactory.makeTrajectory("B2[1]-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("B2[1]-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("B2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("B2[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("B2[1]-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("B2[1]-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         //C paths
-        autoFactory.makeTrajectory("C2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("C2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("C2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("C2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("C2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("C2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("C2[2]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("C2[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
@@ -184,8 +184,8 @@ public class RobotContainer extends LightningContainer {
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
         // () -> 0, () -> 0, arm, wrist, elevator));
-        collector.setDefaultCommand(new HoldPower(collector, () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), XboxControllerConstants.DEADBAND)
-                - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), XboxControllerConstants.DEADBAND)));
+        // collector.setDefaultCommand(new HoldPower(collector, () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), XboxControllerConstants.DEADBAND)
+        //         - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), XboxControllerConstants.DEADBAND)));
         // collector.setDefaultCommand(new Collect(collector, () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), XboxControllerConstants.DEADBAND)
         //         - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), XboxControllerConstants.DEADBAND)));
     }

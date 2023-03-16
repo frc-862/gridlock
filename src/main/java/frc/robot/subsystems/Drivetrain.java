@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -79,7 +80,7 @@ public class Drivetrain extends SubsystemBase {
     private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     // Swerve pose esitmator for odometry
-    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions);      
+    SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d());  
         
     // Creates our drivetrain shuffleboard tab for displaying module data and a periodic shuffleboard for data that doesn't need constant updates
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -102,7 +103,10 @@ public class Drivetrain extends SubsystemBase {
     // Chassis speeds for the robot
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
-    public Drivetrain() {
+    private LimelightBack limelightBack;
+
+    public Drivetrain(LimelightBack limelightBack) {
+        this.limelightBack = limelightBack;
         /**
          * Creates a new Drivetrain.
          * 
@@ -273,21 +277,22 @@ public class Drivetrain extends SubsystemBase {
      */
     public void updateOdometry() {
         updateModulePositions();
-        pose = odometry.update(getYaw2d(), modulePositions);
-        // pose = estimator.update(getYaw2d(), modulePositions);
+
+        pose = poseEstimator.update(getYaw2d(), modulePositions);
         // if (visionFront.hasVision()) {
         //     double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(visionFront.limelightName);
         //     Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
         //     if (visionPose != null) {
         //         estimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - visionFront.getLatencyBotPoseBlue());
         //     }
-        // } else if (visionBack.hasVision()) {
-        //     double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(visionBack.limelightName);
-        //     Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
-        //     if (visionPose != null) {
-        //         estimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - visionBack.getLatencyBotPoseBlue());
-        //     }
-        // }
+        // } else 
+        if (limelightBack.hasVision()) {
+            double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(limelightBack.limelightName);
+            Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[5]));
+            if (visionPose != null) {
+                poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - limelightBack.getLatencyBotPoseBlue());
+            }
+        }
 
     }
 
@@ -341,7 +346,8 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("fr module position", (DoubleSupplier) () -> modulePositions[1].distanceMeters),
                 new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
                 new Pair<String, Object>("br module position", (DoubleSupplier) () -> modulePositions[3].distanceMeters),
-                new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}));
+                new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
+                new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()));
 
         // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left angle", () -> frontLeftModule.getSteerAngle());
         // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right angle", () -> frontRightModule.getSteerAngle());
@@ -486,7 +492,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(getYaw2d(), modulePositions, pose);
+        poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
     }
 
     /**
