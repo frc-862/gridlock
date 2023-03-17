@@ -54,7 +54,7 @@ public class AutoAlign extends CommandBase {
     @SuppressWarnings("unchecked")
     private void initialiizeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Auto align", AutoAlignConstants.LOG_PERIOD,
-                new Pair<String, Object>("If Auto align Is On Target", (BooleanSupplier) () -> onTarget()));;
+                new Pair<String, Object>("Auto align On Target", (BooleanSupplier) () -> onTarget()));;
                 new Pair<String, Object>("Horizontal Offset", (DoubleSupplier) () -> limelight.getHorizontalOffset() - OFFSET);;
 
     }
