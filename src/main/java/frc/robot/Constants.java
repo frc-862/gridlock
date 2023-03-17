@@ -416,6 +416,9 @@ public final class Constants {
         // Target X position for the middle of the charge station
         public static final double TARGET_X = 3.93;
 
+        //log period for autobalance
+        public static final double LOG_PERIOD = 0.2;
+
         // Gains for our auto balance
         public static final double kP = 2;
         public static final double kI = 0;
@@ -495,6 +498,10 @@ public final class Constants {
 
         // Tolerance for auto align
         public static final double TOLERANCE = 1d;
+
+        //Log period auto align
+        public static final double LOG_PERIOD = 0.25;
+
 
         //Offset limelight off center
         public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5;

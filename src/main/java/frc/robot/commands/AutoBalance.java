@@ -59,24 +59,22 @@ public class AutoBalance extends CommandBase {
     public AutoBalance(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
 
-        // initializeShuffleboard();
-
-        // LightningShuffleboard.setDoubleSupplier("AutoBalance", "magnitude", () -> magnitude);
-        // LightningShuffleboard.setDoubleSupplier("AutoBalance","magnitudeROC", () -> magnitudeRateOfChange);
-        // LightningShuffleboard.setDoubleSupplier("AutoBalance","filtered magnitudeROC", () -> filteredMagnitudeRateOfChange);
-        // LightningShuffleboard.setDoubleSupplier("AutoBalance","pitch", () -> pitchAngle);
-        // LightningShuffleboard.setDoubleSupplier("AutoBalance","roll", () -> rollAngle);
+        //Starts logging and updates the shuffleboard
+        initializeShuffleboard();
 
         addRequirements(drivetrain);
     }
 
-    // Initializes the shuffleboard
+    // Method to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", 0.2, new Pair<String, Object>("magnitude", (DoubleSupplier) () -> magnitude),
-                // new Pair<String, Object>("magnitudeROC", (DoubleSupplier) () -> magnitudeRateOfChange),
-                // new Pair<String, Object>("filtered magnitudeROC", (DoubleSupplier) () -> filteredMagnitudeRateOfChange), 
-                new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle), new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", AutoBalanceConstants.LOG_PERIOD,
+                new Pair<String, Object>("magnitude", (DoubleSupplier) () -> magnitude),
+                new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle), 
+                new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle),
+                new Pair<String, Object>("speed", (DoubleSupplier) () -> speedMetersPerSecond),
+                new Pair<String, Object>("error", (DoubleSupplier) () -> controller.getPositionError()),
+                new Pair<String, Object>("pee", (DoubleSupplier) () -> rollAngle));
     }
 
     @Override
