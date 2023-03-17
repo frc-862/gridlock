@@ -25,6 +25,7 @@ import frc.robot.commands.AutoAlign;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.TestManualTraj;
 import frc.robot.commands.HoldPower;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
 import frc.robot.commands.Lift.Ground;
@@ -75,7 +76,6 @@ public class RobotContainer extends LightningContainer {
         /* driver Controls */
         // RESETS
         new Trigger(driver::getBackButton).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-        // new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.setHeading(180)));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
@@ -89,7 +89,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
 
         //AUTO ALIGN
-        new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
+        // new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
+        new Trigger(driver::getYButton).whileTrue(new TestManualTraj(drivetrain, autoFactory)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
 
         // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
         // new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_STOW)));
