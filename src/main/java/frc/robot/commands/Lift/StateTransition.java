@@ -3,6 +3,9 @@ package frc.robot.commands.Lift;
 import org.apache.commons.lang3.Range;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.LiftConstants.LiftPlan;
 import frc.robot.Constants.LiftConstants.LiftState;
 
@@ -50,7 +53,7 @@ public class StateTransition {
      * @param endState The end state of the lift
      */
     public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState) {
-        this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(, 0.0), Range.between(0.0, 0.0), Range.between(0.0, 0.0))      
+        this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION), Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE));      
     }
 
     /**
