@@ -205,7 +205,7 @@ public class LimelightBack extends SubsystemBase {
     public double getLatencyBotPoseBlue() {
         double[] pose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
         if (hasVision() && pose.length != 0) {
-            return pose[6];
+            return pose[6] / 1000;
         } else {
             return 0;
         }
@@ -294,15 +294,15 @@ public class LimelightBack extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // if (hasVision() && !loggingStarted) {
-        //     // Initialize the shuffleboard values and start logging data
-        //     initializeShuffleboard();
-        //     loggingStarted = true;
-        // }
+        if (hasVision() && !loggingStarted) {
+            // Initialize the shuffleboard values and start logging data
+            initializeShuffleboard();
+            loggingStarted = true;
+        }
 
-        // if (loggingStarted) {
-        //     periodicShuffleboard.loop();
-        // }
+        if (loggingStarted) {
+            periodicShuffleboard.loop();
+        }
 
     }
 
