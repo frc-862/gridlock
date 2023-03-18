@@ -26,7 +26,6 @@ import frc.robot.commands.AutoAlign;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
-import frc.robot.commands.TestManualTraj;
 import frc.robot.commands.HoldPower;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
 import frc.robot.commands.Lift.Ground;
@@ -45,6 +44,7 @@ import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathConstraints;
+import frc.thunder.pathplanner.com.pathplanner.lib.PathPlanner;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.testing.SystemTest;
 
@@ -70,7 +70,7 @@ public class RobotContainer extends LightningContainer {
     private static final JoystickFilter joystickFilter = new JoystickFilter(XboxControllerConstants.DEADBAND, XboxControllerConstants.MIN_POWER, XboxControllerConstants.MAX_POWER, Mode.CUBED);
 
     // creates Autonomous Command
-    private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(drivetrain::getPose, drivetrain::resetOdometry, drivetrain.getDriveKinematics(),
+    private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(drivetrain::getPose, drivetrain::changeUpdateVision, drivetrain::resetOdometry, drivetrain.getDriveKinematics(),
             AutonomousConstants.DRIVE_PID_CONSTANTS, AutonomousConstants.THETA_PID_CONSTANTS, AutonomousConstants.POSE_PID_CONSTANTS, drivetrain::setStates, drivetrain::resetNeoAngle, drivetrain);
 
     @Override
@@ -92,8 +92,8 @@ public class RobotContainer extends LightningContainer {
 
         //AUTO ALIGN
         // new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
-        new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> autoFactory.createManualTrajectory(new PathConstraints(0.1, 0.1), drivetrain.getPose(),
-                new PathPoint(new Translation2d(1, 1), Rotation2d.fromDegrees(0))))).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+        new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> autoFactory.createManualTrajectory(new PathConstraints(0.5, 0.5), PathPoint.fromCurrentHolonomicState(drivetrain.getPose(), drivetrain.getChassisSpeeds()),
+                new PathPoint(new Translation2d(3, 7), drivetrain.getDriveHeading(3, 7), Rotation2d.fromDegrees(180))))).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
 
         // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
         // new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_STOW)));

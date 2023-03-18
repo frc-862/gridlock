@@ -191,7 +191,7 @@ public class LimelightBack extends SubsystemBase {
     public double getLatencyBotPose() {
         double[] pose = LimelightHelpers.getBotPose(limelightName);
         if (hasVision() && pose.length != 0) {
-            return pose[6];
+            return pose[6] / 1000;
         } else {
             return 0;
         }
@@ -219,7 +219,7 @@ public class LimelightBack extends SubsystemBase {
     public double getLatencyBotPoseRed() {
         double[] pose = LimelightHelpers.getBotPose_wpiRed(limelightName);
         if (hasVision() && pose.length != 0) {
-            return pose[6];
+            return pose[6] / 1000;
         } else {
             return 0;
         }
