@@ -65,12 +65,16 @@ public class AutoAlign extends CommandBase {
         //LightningShuffleboard.setDouble("Auto align", "Horizontal offset", limelight.getHorizontalOffset() - OFFSET);
 
         if (limelight.hasVision()) {
-            drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+            if (!onTarget()){
+                drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
                     drivetrain.percentOutputToMetersPerSecond(
                             controller.calculate(limelight.getHorizontalOffset())),
                     drivetrain.percentOutputToMetersPerSecond(0d),
                     drivetrain.percentOutputToRadiansPerSecond(0d),
                     drivetrain.getYaw2d()));
+            } else {
+                drivetrain.stop();
+            }
         } else {
             drivetrain.stop();
         }

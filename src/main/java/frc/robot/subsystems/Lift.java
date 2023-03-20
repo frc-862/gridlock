@@ -5,6 +5,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.apache.commons.lang3.Range;
+
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -108,6 +110,10 @@ public class Lift extends SubsystemBase {
         }
     }
 
+    public boolean safeToMove() {
+        return nextState.isInEleSafeZone(elevator.getExtension()) &&  nextState.isInArmSafeZone(arm.getAngle().getDegrees()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees());
+    }
+
     public void breakLift() {
         elevator.setExtension(elevator.getExtension());
         arm.setAngle(arm.getAngle());
@@ -162,7 +168,7 @@ public class Lift extends SubsystemBase {
 
         // Checks if were on target or if the next state is null
         // Checks if were on target or if the next state is null, also makes sure our biassese havent changed
-        if (onTarget() || nextState == null) {
+        if (safeToMove() || nextState == null) {
             // Checks if the current state is not the goal state
             if (currentState != goalState) {
                 // Gets the next state from the state table
@@ -179,10 +185,6 @@ public class Lift extends SubsystemBase {
                 currentState = nextState.getEndState();
             }
         } else {
-            elevator.setTolerance(nextState.getElevatorTolerance());
-            arm.setTolerance(nextState.getArmTolerance());
-            wrist.setTolerance(nextState.getWristTolerance());
-
             lastKnownGoodWristSetPoint = nextState.getWristAngle().getDegrees();
             // Checks the run plan of the next state
             switch (nextState.getPlan()) {
