@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class LimelightBack extends SubsystemBase {
 
@@ -42,68 +43,43 @@ public class LimelightBack extends SubsystemBase {
     // Method to initialize shuffleboard with vision data\
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Vision", 0.17, 
-        new Pair<String, Object>(limelightName + "Vision bot pose TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[0]),
-                new Pair<String, Object>(limelightName + "Vision bot pose TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[1]),
-                new Pair<String, Object>(limelightName + "Vision bot pose RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[5]),
-                new Pair<String, Object>(limelightName + "Vision bot pose Blue TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[0]),
-                new Pair<String, Object>(limelightName + "Vision bot pose Blue TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[1]),
-                new Pair<String, Object>(limelightName + "Vision bot pose Blue RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[5]),
-                new Pair<String, Object>(limelightName + "Vision bot pose Red TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[0]),
-                new Pair<String, Object>(limelightName + "Vision bot pose Red TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[1]),
-                new Pair<String, Object>(limelightName + "Vision bot pose Red RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[5]),
-                new Pair<String, Object>(limelightName + "RR Tape Horizontal Offset", (DoubleSupplier) () -> getHorizontalOffset()),
-                new Pair<String, Object>(limelightName + "RR Tape Vertical Offset", (DoubleSupplier) () -> getVerticalOffset()),
-                new Pair<String, Object>(limelightName + "RR Tape Target Area", (DoubleSupplier) () -> getTargetArea()),
-                new Pair<String, Object>(limelightName + "Vision latency pipeline", (DoubleSupplier) () -> getLatencyPipline()),
-                new Pair<String, Object>(limelightName + "Vision latency capture", (DoubleSupplier) () -> getLatencyCapture()),
-                new Pair<String, Object>(limelightName + "Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
-                new Pair<String, Object>(limelightName + "Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
-                new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
-                new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()));
+        periodicShuffleboard =
+                new LightningShuffleboardPeriodic("Vision", 0.17, new Pair<String, Object>(limelightName + "Vision bot pose TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[0]),
+                        new Pair<String, Object>(limelightName + "Vision bot pose TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[1]),
+                        new Pair<String, Object>(limelightName + "Vision bot pose RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[5]),
+                        new Pair<String, Object>(limelightName + "Vision bot pose Blue TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[0]),
+                        new Pair<String, Object>(limelightName + "Vision bot pose Blue TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[1]),
+                        new Pair<String, Object>(limelightName + "Vision bot pose Blue RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[5]),
+                        new Pair<String, Object>(limelightName + "Vision bot pose Red TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[0]),
+                        new Pair<String, Object>(limelightName + "Vision bot pose Red TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[1]),
+                        new Pair<String, Object>(limelightName + "Vision bot pose Red RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[5]),
+                        new Pair<String, Object>(limelightName + "RR Tape Horizontal Offset", (DoubleSupplier) () -> getHorizontalOffset()),
+                        new Pair<String, Object>(limelightName + "RR Tape Vertical Offset", (DoubleSupplier) () -> getVerticalOffset()),
+                        new Pair<String, Object>(limelightName + "RR Tape Target Area", (DoubleSupplier) () -> getTargetArea()),
+                        new Pair<String, Object>(limelightName + "Vision latency pipeline", (DoubleSupplier) () -> getLatencyPipline()),
+                        new Pair<String, Object>(limelightName + "Vision latency capture", (DoubleSupplier) () -> getLatencyCapture()),
+                        new Pair<String, Object>(limelightName + "Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
+                        new Pair<String, Object>(limelightName + "Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
+                        new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
+                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()));
 
     }
 
     /**
-     * Gets the robot pose relative to the april tag
+     * Gets robot pose based off the alliance color
      * 
      * @return Pose2d of the robot
      */
     public Pose2d getRobotPose() {
-        if (hasVision()) {
-            double[] botPose = LimelightHelpers.getBotPose(limelightName);
-            return new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
-        } else {
-            return null;
+        Pose2d robotPose = new Pose2d();
+        if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
+            double[] botPose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
+            robotPose = new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
+        } else if (Constants.ALLIANCE == DriverStation.Alliance.Red) {
+            double[] botPose = LimelightHelpers.getBotPose_wpiRed(limelightName);
+            robotPose = new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
         }
-    }
-
-    /**
-     * Gets the robot pose relative to the red side of the field
-     * 
-     * @return Pose2d of the robot
-     */
-    public Pose2d getRobotPoseRed() {
-        if (hasVision()) {
-            double[] botPoseRed = LimelightHelpers.getBotPose_wpiRed(limelightName);
-            return new Pose2d(new Translation2d(botPoseRed[0], botPoseRed[1]), Rotation2d.fromDegrees(botPoseRed[5]));
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Gets the robot pose relative to the red side of the field
-     * 
-     * @return Pose2d of the robot
-     */
-    public Pose2d getRobotPoseBlue() {
-        if (hasVision()) {
-            double[] botPoseBlue = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-            return new Pose2d(new Translation2d(botPoseBlue[0], botPoseBlue[1]), Rotation2d.fromDegrees(botPoseBlue[5]));
-        } else {
-            return null;
-        }
+        return robotPose;
     }
 
     /**
@@ -243,7 +219,7 @@ public class LimelightBack extends SubsystemBase {
         }
     }
 
-    private void setCameraMode(){
+    private void setCameraMode() {
         LimelightHelpers.setCameraMode_Driver(limelightName);
     }
 
