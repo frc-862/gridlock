@@ -95,16 +95,9 @@ public class RobotContainer extends LightningContainer {
         // new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
         new Trigger(driver::getYButton)
                 .onTrue(new InstantCommand(() -> autoFactory.createManualTrajectory(new PathConstraints(0.5, 0.5),
-                        PathPoint.fromCurrentHolonomicState(drivetrain.getPose(), drivetrain.getChassisSpeeds()).withControlLengths(0, 0),
-                        new PathPoint(new Translation2d(2, 7), drivetrain.getDriveHeading(2, 7), Rotation2d.fromDegrees(drivetrain.getPose().getRotation().getDegrees())).withControlLengths(0, 0))))
+                        PathPoint.fromCurrentHolonomicState(drivetrain.getPose(), drivetrain.getChassisSpeeds()).withControlLengths(0.01, 0.01),
+                        new PathPoint(new Translation2d(3.3, 3.8), drivetrain.getDriveHeading(3.3, 3.8), Rotation2d.fromDegrees(180)).withControlLengths(0.01, 0.01))))
                 .onFalse(new InstantCommand(drivetrain::stop, drivetrain));
-
-        new Trigger(driver::getXButton)
-                .onTrue(new InstantCommand(
-                        () -> autoFactory.createManualTrajectory(new PathConstraints(0.5, 0.5), PathPoint.fromCurrentHolonomicState(drivetrain.getPose(), drivetrain.getChassisSpeeds()),
-                                new PathPoint(new Translation2d(3, 6), drivetrain.getDriveHeading(3, 6), Rotation2d.fromDegrees(drivetrain.getPose().getRotation().getDegrees())))))
-                .onFalse(new InstantCommand(drivetrain::stop, drivetrain));
-
         //SERVO
         // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
         // new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_STOW)));
