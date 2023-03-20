@@ -78,7 +78,7 @@ public class RobotContainer extends LightningContainer {
         // RESETS
         new Trigger(driver::getBackButton).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
         // new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.setHeading(180)));
-        new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
+        new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(2, 7, Rotation2d.fromDegrees(0)))));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
@@ -92,7 +92,9 @@ public class RobotContainer extends LightningContainer {
         //AUTO ALIGN
         // new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
         new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> autoFactory.createManualTrajectory(new PathConstraints(0.5, 0.5), PathPoint.fromCurrentHolonomicState(drivetrain.getPose(), drivetrain.getChassisSpeeds()),
-                new PathPoint(new Translation2d(3, 7), drivetrain.getDriveHeading(3, 7), Rotation2d.fromDegrees(180))))).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+                new PathPoint(new Translation2d(2, 7), drivetrain.getDriveHeading(2, 7), Rotation2d.fromDegrees(drivetrain.getPose().getRotation().getDegrees()))))).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+                new Trigger(driver::getXButton).onTrue(new InstantCommand(() -> autoFactory.createManualTrajectory(new PathConstraints(0.5, 0.5), PathPoint.fromCurrentHolonomicState(drivetrain.getPose(), drivetrain.getChassisSpeeds()),
+                        new PathPoint(new Translation2d(3, 6), drivetrain.getDriveHeading(3, 6), Rotation2d.fromDegrees(drivetrain.getPose().getRotation().getDegrees()))))).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
 
         new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
         new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_STOW)));

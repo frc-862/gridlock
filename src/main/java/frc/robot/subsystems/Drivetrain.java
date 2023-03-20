@@ -83,8 +83,7 @@ public class Drivetrain extends SubsystemBase {
     private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     // Swerve pose esitmator for odometry
-    SwerveDrivePoseEstimator poseEstimator =
-            new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d()); // , DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
+    SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d()); // , DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
 
     // Creates our drivetrain shuffleboard tab for displaying module data and a periodic shuffleboard for data that doesn't need constant updates
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -155,7 +154,7 @@ public class Drivetrain extends SubsystemBase {
                 Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
         // Setting start position and creating estimator
-        setInitialPose(new Pose2d(0.5, 0.5, new Rotation2d()));
+        setInitialPose(new Pose2d(0, 0, new Rotation2d()));
 
         // Setting states of the modules
         updateOdometry();
@@ -311,6 +310,7 @@ public class Drivetrain extends SubsystemBase {
         //     }
         // } else 
         if (limelightBack.hasVision() && updateVision) {
+            System.out.println("al;kdf;laksjdf;lkajdf;lakdjf;lakdjf;lakdjf");
             double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(limelightBack.limelightName);
             Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[5]));
             if (visionPose != null) {
