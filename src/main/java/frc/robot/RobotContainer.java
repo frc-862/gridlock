@@ -94,7 +94,7 @@ public class RobotContainer extends LightningContainer {
         //AUTO ALIGN
         // new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
         new Trigger(driver::getYButton)
-                .onTrue(new InstantCommand(() -> autoFactory.createManualTrajectory(new PathConstraints(0.5, 0.5),
+                .onTrue(new InstantCommand(() -> autoFactory.createManualTrajectory(new PathConstraints(2, 2),
                         PathPoint.fromCurrentHolonomicState(drivetrain.getPose(), drivetrain.getChassisSpeeds()).withControlLengths(0.01, 0.01),
                         new PathPoint(new Translation2d(3.3, 3.8), drivetrain.getDriveHeading(3.3, 3.8), Rotation2d.fromDegrees(180)).withControlLengths(0.01, 0.01))))
                 .onFalse(new InstantCommand(drivetrain::stop, drivetrain));
