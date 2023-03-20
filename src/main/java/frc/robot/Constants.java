@@ -99,7 +99,7 @@ public final class Constants {
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
 
         // Standard dev for robot pose
-        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(1, 1, 0.0368); // (0.3313838876, 0.2642363651, 0.03681853519);
+        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(0, 0, 0);// (1, 1, 0.0368);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -445,7 +445,7 @@ public final class Constants {
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
         // Standard deviation for vision, heading is 1000 becuase were using pigeon, so i dont want to use vision heading
-        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(2, 1.4, 1000); //(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
+        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1000, 1000, 1000); //(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
     }
 
     // Constants for the lift
@@ -460,7 +460,7 @@ public final class Constants {
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
             doubleSubstationCollect, singleSubstationCollect,
 
-            //score states
+            //score states1000
             midCubeScore, highCubeScore, midConeScore, highConeScore,
 
             //substates
@@ -503,7 +503,6 @@ public final class Constants {
 
         //Log period auto align
         public static final double LOG_PERIOD = 0.25;
-
 
         //Offset limelight off center
         public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5;
