@@ -502,11 +502,27 @@ public final class Constants {
     public static final class AutoAlignConstants {
 
         public static final class BluePoints {
+            public static final Pose2d SLOT_1_POSE = new Pose2d(2.5, 5.0, new Rotation2d(180));
+            public static final Pose2d SLOT_2_POSE = new Pose2d(2.5, 4.45, new Rotation2d(180));
+            public static final Pose2d SLOT_3_POSE = new Pose2d(2.5, 3.9, new Rotation2d(180));
+            public static final Pose2d SLOT_4_POSE = new Pose2d(2.5, 3.35, new Rotation2d(180));
             public static final Pose2d SLOT_5_POSE = new Pose2d(2.5, 2.75, new Rotation2d(180));
+            public static final Pose2d SLOT_6_POSE = new Pose2d(2.5, 2.2, new Rotation2d(180));
+            public static final Pose2d SLOT_7_POSE = new Pose2d(2.5, 1.65, new Rotation2d(180));
+            public static final Pose2d SLOT_8_POSE = new Pose2d(2.5, 1.1, new Rotation2d(180));
+            public static final Pose2d SLOT_9_POSE = new Pose2d(2.5, 0.55, new Rotation2d(180));
         }
 
         public static final class RedPoints {
+            public static final Pose2d SLOT_1_POSE = new Pose2d(2.5, 0.55, new Rotation2d(180));
+            public static final Pose2d SLOT_2_POSE = new Pose2d(2.5, 1.1, new Rotation2d(180));
+            public static final Pose2d SLOT_3_POSE = new Pose2d(2.5, 1.65, new Rotation2d(180));
+            public static final Pose2d SLOT_4_POSE = new Pose2d(2.5, 2.2, new Rotation2d(180));
             public static final Pose2d SLOT_5_POSE = new Pose2d(2.5, 2.75, new Rotation2d(180)); // TODO prob needs to change
+            public static final Pose2d SLOT_6_POSE = new Pose2d(2.5, 3.35, new Rotation2d(180));
+            public static final Pose2d SLOT_7_POSE = new Pose2d(2.5, 3.9, new Rotation2d(180));
+            public static final Pose2d SLOT_8_POSE = new Pose2d(2.5, 4.45, new Rotation2d(180));
+            public static final Pose2d SLOT_9_POSE = new Pose2d(2.5, 5.0, new Rotation2d(180));
         }
 
         public static enum SlotPosition {

@@ -93,8 +93,24 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
 
         //AUTO ALIGN
-        new Trigger(() -> driver.getLeftTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton()).onTrue(
-                new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot5, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+        new Trigger(() -> driver.getRightTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton())
+                .onTrue(new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot1, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+        new Trigger(() -> driver.getRightTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton())
+                .onTrue(new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot2, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+        new Trigger(() -> driver.getRightTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton())
+                .onTrue(new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot3, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+        new Trigger(() -> driver.getRightTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton())
+                .onTrue(new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot4, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+        new Trigger(() -> driver.getRightTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton())
+                .onTrue(new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot5, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+        new Trigger(() -> driver.getRightTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton())
+                .onTrue(new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot6, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+        new Trigger(() -> driver.getRightTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton())
+                .onTrue(new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot7, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+        new Trigger(() -> driver.getRightTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton())
+                .onTrue(new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot8, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+        new Trigger(() -> driver.getRightTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton())
+                .onTrue(new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot9, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
 
         //SERVO
         // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
