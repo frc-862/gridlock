@@ -111,7 +111,11 @@ public class Lift extends SubsystemBase {
     }
 
     public boolean safeToMove() {
-        return nextState.isInEleSafeZone(elevator.getExtension()) &&  nextState.isInArmSafeZone(arm.getAngle().getDegrees()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees());
+        if (nextState == null) {
+            return false;
+        } else {
+            return nextState.isInEleSafeZone(elevator.getExtension()) && nextState.isInArmSafeZone(arm.getAngle().getDegrees()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees());
+        }
     }
 
     public void breakLift() {
