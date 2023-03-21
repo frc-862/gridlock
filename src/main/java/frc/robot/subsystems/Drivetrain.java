@@ -4,10 +4,13 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.apache.commons.collections4.map.PassiveExpiringMap.ConstantTimeToLiveExpirationPolicy;
+
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
+import edu.wpi.first.math.MathUsageId;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -29,16 +32,21 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.AutoAlignConstants;
+import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.Offsets;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
+import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.limelightlib.LimelightHelpers;
+import frc.thunder.pathplanner.com.pathplanner.lib.PathConstraints;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
@@ -112,6 +120,9 @@ public class Drivetrain extends SubsystemBase {
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
     private LimelightBack limelightBack;
+
+    // Manual trajectory variables
+    private Pose2d desiredPose = new Pose2d();
 
     public Drivetrain(LimelightBack limelightBack) {
         this.limelightBack = limelightBack;
@@ -624,5 +635,28 @@ public class Drivetrain extends SubsystemBase {
         frontRightModule.setEncoderAngle();
         backLeftModule.setEncoderAngle();
         backRightModule.setEncoderAngle();
+    }
+
+    public Runnable getPathPoint(AutoAlignConstants.SlotPosition slot, AutonomousCommandFactory autoFactory) {
+        desiredPose = pose;
+
+        switch (slot) {
+            case slot5:
+                if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
+                    desiredPose = AutoAlignConstants.BluePoints.SLOT_5_POSE;
+                } else if (Constants.ALLIANCE == DriverStation.Alliance.Red) {
+                    desiredPose = AutoAlignConstants.RedPoints.SLOT_5_POSE;
+                }
+                break;
+        }
+
+        double maxVel = MathUtil.clamp(pose.getTranslation().getDistance(desiredPose.getTranslation()) / DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND, 0,
+                DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
+        double maxAccell = maxVel / AutoAlignConstants.MAX_ACCELERATION_MUL;
+        Rotation2d driveHeading = getDriveHeading(desiredPose.getX(), desiredPose.getY());
+
+        return () -> autoFactory.createManualTrajectory(new PathConstraints(maxVel, maxAccell), getCurrentPathPoint(),
+                new PathPoint(desiredPose.getTranslation(), driveHeading, desiredPose.getRotation()).withControlLengths(AutoAlignConstants.CONTROL_LENGTHS, AutoAlignConstants.CONTROL_LENGTHS));
+
     }
 }

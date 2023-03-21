@@ -7,6 +7,7 @@ import java.util.HashMap;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -22,7 +23,7 @@ import frc.robot.subsystems.Wrist;
 // import frc.robot.subsystems.ShuffleBoard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.XboxControllerConstants;
-import frc.robot.commands.AutoAlign;
+import frc.robot.Constants.AutoAlignConstants.SlotPosition;
 import frc.robot.commands.AutoBalance;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Collect;
@@ -88,16 +89,13 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getRightBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
         new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
 
-        //SET DRIVE PODS TO 45
-        // new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
+        // SET DRIVE PODS TO 45
+        new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
 
         //AUTO ALIGN
-        // new Trigger(driver::getYButton).whileTrue(new AutoAlign(drivetrain, frontLimelight));
-        new Trigger(driver::getYButton)
-                .onTrue(new InstantCommand(() -> autoFactory.createManualTrajectory(new PathConstraints(2, 2),
-                        PathPoint.fromCurrentHolonomicState(drivetrain.getPose(), drivetrain.getChassisSpeeds()).withControlLengths(0.01, 0.01),
-                        new PathPoint(new Translation2d(3.3, 3.8), drivetrain.getDriveHeading(3.3, 3.8), Rotation2d.fromDegrees(180)).withControlLengths(0.01, 0.01))))
-                .onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+        new Trigger(() -> driver.getLeftTriggerAxis() > 0.25).onTrue(new InstantCommand(() -> new Trigger(() -> driver.getYButton()).onTrue(
+                new InstantCommand(drivetrain.getPathPoint(SlotPosition.slot5, autoFactory))).onFalse(new InstantCommand(drivetrain::stop, drivetrain))));
+
         //SERVO
         // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
         // new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_STOW)));

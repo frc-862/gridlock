@@ -9,6 +9,7 @@ import com.revrobotics.SparkMaxLimitSwitch;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -499,8 +500,22 @@ public final class Constants {
 
     //Constants for autoAlign
     public static final class AutoAlignConstants {
-        // PID constants for auto align
-        public static final PIDConstants AUTO_ALIGN_PID_CONSTANTS = new PIDConstants(0.009, 0, 0);
+
+        public static final class BluePoints {
+            public static final Pose2d SLOT_5_POSE = new Pose2d(2.5, 2.75, new Rotation2d(180));
+        }
+
+        public static final class RedPoints {
+            public static final Pose2d SLOT_5_POSE = new Pose2d(2.5, 2.75, new Rotation2d(180)); // TODO prob needs to change
+        }
+
+        public static enum SlotPosition {
+            slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9
+        }
+
+        public static final double MAX_ACCELERATION_MUL = 2;
+
+        public static final double CONTROL_LENGTHS = 0.001;
 
         // Tolerance for auto align
         public static final double TOLERANCE = 1d;
