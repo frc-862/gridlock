@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.thunder.math.InterpolationMap;
@@ -31,6 +32,9 @@ public final class Constants {
 
     // Path to the blackout directory
     public static final Path BLACKOUT_PATH = Paths.get("home/lvuser/blackout");
+
+    // Getting alliance form driverstation 
+    public static final DriverStation.Alliance ALLIANCE = DriverStation.getAlliance();
 
     // Check if we're on blackout
     public static final boolean isBlackout() {
@@ -81,7 +85,7 @@ public final class Constants {
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12;
         // public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
-        public static final double MAX_VELOCITY_METERS_PER_SECOND = 12;
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 3.7;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
         public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI / 5;
 
@@ -92,8 +96,8 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.18;
 
-        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.4;
-        public static final double SLOW_MODE_ROTATIONAL_MULT = 0.4;
+        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.6;
+        public static final double SLOW_MODE_ROTATIONAL_MULT = 0.6;
 
         // Pigeon heading offset 
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
@@ -408,7 +412,7 @@ public final class Constants {
         public static final double LOWER_MAGNITUDE_THRESHOLD = 7; // TODO RESET Value if possible was 2.5 If mag jumps during Auton
         // Min and max speeds for our auto balance
         public static final double MIN_SPEED_THRESHOLD = 0.35;
-        public static final double MAX_SPEED_THRESHOLD = 3;
+        public static final double MAX_SPEED_THRESHOLD = 1.5;
 
         // Delay time for our auto balance after falling
         public static final double DELAY_TIME = 1.5;

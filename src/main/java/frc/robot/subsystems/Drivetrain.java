@@ -83,8 +83,7 @@ public class Drivetrain extends SubsystemBase {
     private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     // Swerve pose esitmator for odometry
-    SwerveDrivePoseEstimator poseEstimator =
-            new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d()); // , DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
+    SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d()); // , DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
 
     // Creates our drivetrain shuffleboard tab for displaying module data and a periodic shuffleboard for data that doesn't need constant updates
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -100,7 +99,10 @@ public class Drivetrain extends SubsystemBase {
     private boolean flipBR = false;
     private boolean flipBL = false;
 
-    private boolean updateVision = true;
+    private boolean doVisionUpdate = true;
+    private double lastKnownGoodVisionX = 0;
+    private double lastKnownGoodVisionY = 0;
+    private double lastTime = 0;
 
     // Heading compenstaion variables
     // private boolean updatedHeading = false;
@@ -155,7 +157,7 @@ public class Drivetrain extends SubsystemBase {
                 Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
         // Setting start position and creating estimator
-        setInitialPose(new Pose2d(0.5, 0.5, new Rotation2d()));
+        setInitialPose(new Pose2d(0, 0, new Rotation2d()));
 
         // Setting states of the modules
         updateOdometry();
@@ -175,6 +177,7 @@ public class Drivetrain extends SubsystemBase {
 
         // Update our odometry
         updateOdometry();
+        updateVision();
 
         periodicShuffleboard.loop();
     }
@@ -300,28 +303,42 @@ public class Drivetrain extends SubsystemBase {
      */
     public void updateOdometry() {
         updateModulePositions();
-
         pose = poseEstimator.update(getYaw2d(), modulePositions);
 
-        // if (visionFront.hasVision()) {
-        //     double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(visionFront.limelightName);
-        //     Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[2]));
-        //     if (visionPose != null) {
-        //         estimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - visionFront.getLatencyBotPoseBlue());
-        //     }
-        // } else 
-        if (limelightBack.hasVision() && updateVision) {
-            double[] visionPose = LimelightHelpers.getBotPose_wpiBlue(limelightBack.limelightName);
-            Pose2d visionPose2d = new Pose2d(visionPose[0], visionPose[1], Rotation2d.fromDegrees(visionPose[5]));
-            if (visionPose != null) {
-                poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - limelightBack.getLatencyBotPoseBlue());
-                pose = poseEstimator.getEstimatedPosition();
-            }
-        }
+        // if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
+        //     pose = new Pose2d(16.48 - pose.getX(), pose.getY(), pose.getRotation());
+        // }
     }
 
-    public void changeUpdateVision(Boolean updateVision) {
-        this.updateVision = updateVision;
+    public void changeUpdateVision(Boolean doVisionUpdate) {
+        this.doVisionUpdate = doVisionUpdate;
+    }
+
+    public void updateVision() {
+        if (doVisionUpdate) {
+            if (limelightBack.hasVision()) {
+                Pose2d visionPose2d = limelightBack.getRobotPose();
+                if (visionPose2d.getX() > 20 || visionPose2d.getY() > 10 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
+                    return;
+                }
+
+                double currTime = Timer.getFPGATimestamp();
+                LightningShuffleboard.setDouble("Drivetrain", "Velocity between points", pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime));
+                if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
+                    // if(visionPose[0] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND || visionPose[1] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
+                    return;
+                }
+
+                poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - limelightBack.getLatencyBotPoseBlue());
+                pose = poseEstimator.getEstimatedPosition();
+
+                lastKnownGoodVisionX = visionPose2d.getX();
+                lastKnownGoodVisionY = visionPose2d.getY();
+                lastTime = currTime;
+
+                LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
+            }
+        }
     }
 
     /**

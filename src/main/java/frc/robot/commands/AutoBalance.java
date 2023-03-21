@@ -5,7 +5,9 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -60,7 +62,7 @@ public class AutoBalance extends CommandBase {
         this.drivetrain = drivetrain;
 
         //Starts logging and updates the shuffleboard
-        initializeShuffleboard();
+        // initializeShuffleboard();
 
         addRequirements(drivetrain);
     }
@@ -68,21 +70,19 @@ public class AutoBalance extends CommandBase {
     // Method to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", AutoBalanceConstants.LOG_PERIOD,
-                new Pair<String, Object>("magnitude", (DoubleSupplier) () -> magnitude),
-                new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle), 
-                new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle),
-                new Pair<String, Object>("speed", (DoubleSupplier) () -> speedMetersPerSecond),
-                new Pair<String, Object>("error", (DoubleSupplier) () -> controller.getPositionError()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", AutoBalanceConstants.LOG_PERIOD, new Pair<String, Object>("magnitude", (DoubleSupplier) () -> magnitude),
+                new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle), new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle),
+                new Pair<String, Object>("speed", (DoubleSupplier) () -> speedMetersPerSecond), new Pair<String, Object>("error", (DoubleSupplier) () -> controller.getPositionError()),
                 new Pair<String, Object>("pee", (DoubleSupplier) () -> rollAngle));
     }
 
     @Override
     public void initialize() {
         // Initialize our climb state to climb
+
         climbState = climbStates.CLIMB;
         // TODO: get rid of this line after testing and proper calibration of odometry
-        // drivetrain.resetOdometry(new Pose2d(new Translation2d(2.75, drivetrain.getPose().getY()), drivetrain.getPose().getRotation()));
+        // drivetrain.resetOdometry(new Pose2d(new Translation2d(3.25, drivetrain.getPose().getY()), drivetrain.getPose().getRotation()));
     }
 
     @Override
@@ -151,7 +151,7 @@ public class AutoBalance extends CommandBase {
                 break;
             case FALLING:
                 drivetrain.stop();
-                
+
                 // Wait for a certain amount of time before starting to climb again
                 if (Timer.getFPGATimestamp() - timer > AutoBalanceConstants.DELAY_TIME) {
                     climbState = climbStates.CLIMB;
@@ -166,9 +166,9 @@ public class AutoBalance extends CommandBase {
         // periodicShuffleboard.loop();
     }
 
-    public boolean balanced(){
+    public boolean balanced() {
         climbStates state = climbState;
-        if (state == climbStates.FALLING){
+        if (state == climbStates.FALLING) {
             return true;
         }
         return false;
