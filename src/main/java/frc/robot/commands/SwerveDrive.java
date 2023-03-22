@@ -21,6 +21,7 @@ public class SwerveDrive extends CommandBase {
     private final DoubleSupplier m_translationYSupplier;
     private final DoubleSupplier m_rotationSupplier;
     private final BooleanSupplier slowMode;
+    private final BooleanSupplier robotCentric;
 
     private double leftX;
     private double leftY;
@@ -34,12 +35,13 @@ public class SwerveDrive extends CommandBase {
      * @param translationYSupplier The control input for the translation in the Y direction
      * @param rotationSupplier The control input for rotation
      */
-    public SwerveDrive(Drivetrain drivetrainSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier, BooleanSupplier slowMode) {
+    public SwerveDrive(Drivetrain drivetrainSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier, BooleanSupplier slowMode, BooleanSupplier robotCentric) {
         this.drivetrain = drivetrainSubsystem;
         this.m_translationXSupplier = translationXSupplier;
         this.m_translationYSupplier = translationYSupplier;
         this.m_rotationSupplier = rotationSupplier;
         this.slowMode = slowMode;
+        this.robotCentric = robotCentric;
 
         addRequirements(drivetrainSubsystem);
     }
@@ -68,22 +70,18 @@ public class SwerveDrive extends CommandBase {
 
         double zOut = Math.pow(rightX, 3);
 
-        // Call drive method from drivetrain
-        // drivetrain.drive(
-        //         // Supply chassie speeds from the translation suppliers using feild relative control
-        //         ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(m_translationXSupplier.getAsDouble()),
-        //                 drivetrain.percentOutputToMetersPerSecond(m_translationYSupplier.getAsDouble()), drivetrain.percentOutputToRadiansPerSecond(m_rotationSupplier.getAsDouble()),
-        //                 drivetrain.getYaw2d()));
-
-        drivetrain.drive(
+        if(!robotCentric.getAsBoolean()) {
+            drivetrain.drive(
                 // Supply chassie speeds from the translation suppliers using feild relative control
                 // TODO: x and y fliped
                 ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(-xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
                         drivetrain.percentOutputToRadiansPerSecond(zOut), drivetrain.getYaw2d()));
-
-        // LightningShuffleboard.setDouble("joysticks", "X", m_translationXSupplier.getAsDouble());
-
-        // LightningShuffleboard.setDouble("joysticks", "Y", m_translationYSupplier.getAsDouble());
+        } else {
+            // create robot relative speeds
+            drivetrain.drive(
+                    new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-yOut), drivetrain.percentOutputToMetersPerSecond(-xOut),
+                            drivetrain.percentOutputToRadiansPerSecond(zOut)));
+        }
     }
 
     @Override

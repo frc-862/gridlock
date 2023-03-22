@@ -50,10 +50,11 @@ public final class Constants {
     public static final double COMP_LOG_PERIOD = .33;
 
     // Constants for xbox controlers
-    public static final class XboxControllerConstants {
+    public static final class ControllerConstants {
         // Ports for the controllers
         public static final int DRIVER_CONTROLLER_PORT = 0;
         public static final int COPILOT_CONTROLLER_PORT = 1;
+        public static final int BUTTON_PAD_CONTROLLER_PORT = 2;
 
         // Deadband, min, and max power for the controllers
         public static final double DEADBAND = 0.1d;
@@ -502,34 +503,34 @@ public final class Constants {
     public static final class AutoAlignConstants {
 
         public static final class BluePoints {
-            public static final Pose2d SLOT_1_POSE = new Pose2d(2.5, 5.0, new Rotation2d(180));
-            public static final Pose2d SLOT_2_POSE = new Pose2d(2.5, 4.45, new Rotation2d(180));
-            public static final Pose2d SLOT_3_POSE = new Pose2d(2.5, 3.9, new Rotation2d(180));
-            public static final Pose2d SLOT_4_POSE = new Pose2d(2.5, 3.35, new Rotation2d(180));
-            public static final Pose2d SLOT_5_POSE = new Pose2d(2.5, 2.75, new Rotation2d(180));
-            public static final Pose2d SLOT_6_POSE = new Pose2d(2.5, 2.2, new Rotation2d(180));
-            public static final Pose2d SLOT_7_POSE = new Pose2d(2.5, 1.65, new Rotation2d(180));
-            public static final Pose2d SLOT_8_POSE = new Pose2d(2.5, 1.1, new Rotation2d(180));
-            public static final Pose2d SLOT_9_POSE = new Pose2d(2.5, 0.55, new Rotation2d(180));
+            public static final Pose2d SLOT_1_POSE = new Pose2d(2, 5.0, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_2_POSE = new Pose2d(2, 4.45, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_3_POSE = new Pose2d(2, 3.9, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_4_POSE = new Pose2d(2, 3.35, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_5_POSE = new Pose2d(2, 2.75, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_6_POSE = new Pose2d(2, 2.2, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_7_POSE = new Pose2d(2, 1.65, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_8_POSE = new Pose2d(2, 1.1, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_9_POSE = new Pose2d(2, 0.55, Rotation2d.fromDegrees(180));
         }
 
         public static final class RedPoints {
-            public static final Pose2d SLOT_1_POSE = new Pose2d(2.5, 0.55, new Rotation2d(180));
-            public static final Pose2d SLOT_2_POSE = new Pose2d(2.5, 1.1, new Rotation2d(180));
-            public static final Pose2d SLOT_3_POSE = new Pose2d(2.5, 1.65, new Rotation2d(180));
-            public static final Pose2d SLOT_4_POSE = new Pose2d(2.5, 2.2, new Rotation2d(180));
-            public static final Pose2d SLOT_5_POSE = new Pose2d(2.5, 2.75, new Rotation2d(180)); // TODO prob needs to change
-            public static final Pose2d SLOT_6_POSE = new Pose2d(2.5, 3.35, new Rotation2d(180));
-            public static final Pose2d SLOT_7_POSE = new Pose2d(2.5, 3.9, new Rotation2d(180));
-            public static final Pose2d SLOT_8_POSE = new Pose2d(2.5, 4.45, new Rotation2d(180));
-            public static final Pose2d SLOT_9_POSE = new Pose2d(2.5, 5.0, new Rotation2d(180));
+            public static final Pose2d SLOT_1_POSE = new Pose2d(2, 0.55, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_2_POSE = new Pose2d(2, 1.1, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_3_POSE = new Pose2d(2, 1.65, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_4_POSE = new Pose2d(2, 2.2, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_5_POSE = new Pose2d(2, 2.75, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_6_POSE = new Pose2d(2, 3.35, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_7_POSE = new Pose2d(2, 3.9, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_8_POSE = new Pose2d(2, 4.45, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_9_POSE = new Pose2d(2, 5.0, Rotation2d.fromDegrees(180));
         }
 
         public static enum SlotPosition {
             slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9
         }
 
-        public static final double MAX_ACCELERATION_MUL = 2;
+        public static final double MAX_ACCELERATION_MUL = 1;
 
         public static final double CONTROL_LENGTHS = 0.001;
 

@@ -4,8 +4,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-import org.apache.commons.collections4.map.PassiveExpiringMap.ConstantTimeToLiveExpirationPolicy;
-
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
@@ -48,6 +46,7 @@ import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathConstraints;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
+import frc.thunder.pathplanner.com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
@@ -123,6 +122,8 @@ public class Drivetrain extends SubsystemBase {
 
     // Manual trajectory variables
     private Pose2d desiredPose = new Pose2d();
+    private double maxVel = 0d;
+    private double maxAccell = 0d;
 
     public Drivetrain(LimelightBack limelightBack) {
         this.limelightBack = limelightBack;
@@ -400,7 +401,9 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
                 new Pair<String, Object>("br module position", (DoubleSupplier) () -> modulePositions[3].distanceMeters),
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
-                new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()));
+                new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
+                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()), new Pair<String, Object>("max accell", (DoubleSupplier) () -> maxAccell),
+                new Pair<String, Object>("max vel", (DoubleSupplier) () -> maxVel), new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()));
 
         // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left angle", () -> frontLeftModule.getSteerAngle());
         // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right angle", () -> frontRightModule.getSteerAngle());
@@ -637,25 +640,28 @@ public class Drivetrain extends SubsystemBase {
         backRightModule.setEncoderAngle();
     }
 
-    public Runnable getPathPoint(AutoAlignConstants.SlotPosition slot, AutonomousCommandFactory autoFactory) {
-        desiredPose = pose;
+    public void setDesiredPose(Pose2d desiredPose) {
+        this.desiredPose = desiredPose;
 
-        switch (slot) {
-            case slot5:
-                if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
-                    desiredPose = AutoAlignConstants.BluePoints.SLOT_5_POSE;
-                } else if (Constants.ALLIANCE == DriverStation.Alliance.Red) {
-                    desiredPose = AutoAlignConstants.RedPoints.SLOT_5_POSE;
-                }
-                break;
-        }
+    }
 
-        double maxVel = MathUtil.clamp(pose.getTranslation().getDistance(desiredPose.getTranslation()) / DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND, 0,
-                DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
-        double maxAccell = maxVel / AutoAlignConstants.MAX_ACCELERATION_MUL;
+    public void getPathPoint(AutonomousCommandFactory autoFactory) {
+
+        maxVel = MathUtil.clamp(pose.getTranslation().getDistance(desiredPose.getTranslation()) * 2, 0.5, DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
+        maxAccell = 5;
+
+        System.out.println("desired X: " + desiredPose.getX());
+        System.out.println("desired Y: " + desiredPose.getX());
+        System.out.println("odo X: " + pose.getX());
+        System.out.println("odo Y: " + pose.getY());
+
+        // MathUtil.clamp(pose.getTranslation().getDistance(desiredPose.getTranslation()) / DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND,
+        //         -DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND, DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
         Rotation2d driveHeading = getDriveHeading(desiredPose.getX(), desiredPose.getY());
 
-        return () -> autoFactory.createManualTrajectory(new PathConstraints(maxVel, maxAccell), getCurrentPathPoint(),
+        autoFactory.createManualTrajectory(new PathConstraints(maxVel, maxAccell),
+                PathPoint.fromCurrentHolonomicState(pose, chassisSpeeds).withControlLengths(AutoAlignConstants.CONTROL_LENGTHS, AutoAlignConstants.CONTROL_LENGTHS),
                 new PathPoint(desiredPose.getTranslation(), driveHeading, desiredPose.getRotation()).withControlLengths(AutoAlignConstants.CONTROL_LENGTHS, AutoAlignConstants.CONTROL_LENGTHS));
 
     }
