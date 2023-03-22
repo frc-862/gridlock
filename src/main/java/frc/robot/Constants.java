@@ -227,9 +227,7 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        // public static final double ENCODER_OFFSET_GRIDLOCK = -19.31;
-        public static final double ENCODER_OFFSET_GRIDLOCK = -19.69;
-
+        public static final double ENCODER_OFFSET_GRIDLOCK = 29.48;
         public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
@@ -325,7 +323,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -59.99;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -166.84;
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
@@ -541,7 +539,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.25;
 
         //Offset limelight off center
+        public static final double LIMELGHT_OFFSET_GRIDLOCK = -12.2; // TODO check if right
         public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5;
-        public static final double LIMELGHT_OFFSET_GRIDLOCK = -12.2;
     }
 }
