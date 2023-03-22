@@ -258,14 +258,19 @@ public class Lift extends SubsystemBase {
             }
         }
 
-        if (nextState != null) {
-            LightningShuffleboard.setBool("Lift", "ele on targ", elevator.onTarget(nextState.getElevatorExtension()));
-            LightningShuffleboard.setBool("Lift", "arm on targ", arm.onTarget(nextState.getArmAngle().getDegrees()));
-            LightningShuffleboard.setBool("Lift", "wrist on targ", wrist.onTarget(nextState.getWristAngle().getDegrees()));
-            LightningShuffleboard.setDouble("Lift", "arm target", nextState.getArmAngle().getDegrees());
-            LightningShuffleboard.setDouble("Lift", "ele target", nextState.getElevatorExtension());
-            LightningShuffleboard.setDouble("Lift", "wrist target", nextState.getWristAngle().getDegrees());
-        }
+        // if (nextState != null) {
+        //     LightningShuffleboard.setBool("Lift", "ele on targ", elevator.onTarget(nextState.getElevatorExtension()));
+        //     LightningShuffleboard.setBool("Lift", "arm on targ", arm.onTarget(nextState.getArmAngle().getDegrees()));
+        //     LightningShuffleboard.setBool("Lift", "wrist on targ", wrist.onTarget(nextState.getWristAngle().getDegrees()));
+        //     LightningShuffleboard.setDouble("Lift", "arm target", nextState.getArmAngle().getDegrees());
+        //     LightningShuffleboard.setDouble("Lift", "ele target", nextState.getElevatorExtension());
+        //     LightningShuffleboard.setDouble("Lift", "wrist target", nextState.getWristAngle().getDegrees());
+
+        //     LightningShuffleboard.setBool("Lift", "ele in safe zone", nextState.isInEleSafeZone(elevator.getExtension()));
+        //     LightningShuffleboard.setBool("Lift", "arm in safe zone", nextState.isInArmSafeZone(arm.getAngle().getDegrees()));
+        //     LightningShuffleboard.setBool("Lift", "wrist in safe zone", nextState.isInWristSafeZone(wrist.getAngle().getDegrees()));
+
+        // }
 
         runPeriodicShuffleboardLoop();
     }
