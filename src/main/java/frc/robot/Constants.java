@@ -418,7 +418,7 @@ public final class Constants {
         public static final double DELAY_TIME = 1.5;
 
         // Target X position for the middle of the charge station
-        public static final double TARGET_X = 3.93;
+        public static final double TARGET_X = 3.85;// 3.93;
 
         //log period for autobalance
         public static final double LOG_PERIOD = 0.2;
@@ -447,6 +447,10 @@ public final class Constants {
 
         // Arbitrary value for how close the robot needs to be to the target (in angles)
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
+
+        // Y meters offset
+        public static final double Y_METER_OFFSET = -0.36;
+        public static final double X_METER_OFFSET = -0.23;
 
         // Standard deviation for vision, heading is 1000 becuase were using pigeon, so i dont want to use vision heading
         public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1000, 1000, 1000); //(1.195384707229739, 0.7850610924749237, 2.2025094640913276);

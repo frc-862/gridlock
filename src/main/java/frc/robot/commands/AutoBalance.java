@@ -70,7 +70,7 @@ public class AutoBalance extends CommandBase {
     // Method to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", AutoBalanceConstants.LOG_PERIOD, new Pair<String, Object>("magnitude", (DoubleSupplier) () -> magnitude),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", AutoBalanceConstants.LOG_PERIOD, new Pair<String, Object>("angle magnitude", (DoubleSupplier) () -> magnitude),
                 new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle), new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle),
                 new Pair<String, Object>("speed", (DoubleSupplier) () -> speedMetersPerSecond), new Pair<String, Object>("error", (DoubleSupplier) () -> controller.getPositionError()),
                 new Pair<String, Object>("pee", (DoubleSupplier) () -> rollAngle));
@@ -163,7 +163,7 @@ public class AutoBalance extends CommandBase {
                 break;
         }
 
-        periodicShuffleboard.loop();
+        // periodicShuffleboard.loop();
     }
 
     public boolean balanced() {

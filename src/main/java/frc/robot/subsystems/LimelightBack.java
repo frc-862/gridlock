@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
 import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
@@ -74,10 +75,10 @@ public class LimelightBack extends SubsystemBase {
         Pose2d robotPose = new Pose2d();
         if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
             double[] botPose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-            robotPose = new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
+            robotPose = new Pose2d(new Translation2d(botPose[0] + VisionConstants.X_METER_OFFSET, botPose[1] + VisionConstants.Y_METER_OFFSET), Rotation2d.fromDegrees(botPose[5]));
         } else if (Constants.ALLIANCE == DriverStation.Alliance.Red) {
             double[] botPose = LimelightHelpers.getBotPose_wpiRed(limelightName);
-            robotPose = new Pose2d(new Translation2d(botPose[0], botPose[1]), Rotation2d.fromDegrees(botPose[5]));
+            robotPose = new Pose2d(new Translation2d(botPose[0] + VisionConstants.X_METER_OFFSET, botPose[1] + VisionConstants.Y_METER_OFFSET), Rotation2d.fromDegrees(botPose[5]));
         }
         return robotPose;
     }

@@ -322,15 +322,15 @@ public class Drivetrain extends SubsystemBase {
         // }
     }
 
-    public void changeUpdateVision(Boolean doVisionUpdate) {
-        this.doVisionUpdate = doVisionUpdate;
+    public void resetPigeonYaw(Rotation2d yaw) {
+        setYaw(yaw.getDegrees());
     }
 
     public void updateVision() {
         if (doVisionUpdate) {
             if (limelightBack.hasVision()) {
                 Pose2d visionPose2d = limelightBack.getRobotPose();
-                if (visionPose2d.getX() > 20 || visionPose2d.getY() > 10 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
+                if (visionPose2d.getX() > 3 || visionPose2d.getY() > 4 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {// if (visionPose2d.getX() > 20 || visionPose2d.getY() > 10 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
                     return;
                 }
 
@@ -392,10 +392,10 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("fl target angle", (DoubleSupplier) () -> states[0].angle.getDegrees()),
                 new Pair<String, Object>("fr target angle", (DoubleSupplier) () -> states[1].angle.getDegrees()),
                 new Pair<String, Object>("bl target angle", (DoubleSupplier) () -> states[2].angle.getDegrees()),
-                new Pair<String, Object>("br target angle", (DoubleSupplier) () -> states[3].angle.getDegrees()),
-                new Pair<String, Object>("Odometry Heading", (DoubleSupplier) () -> getHeading().getDegrees()), new Pair<String, Object>("roll", (DoubleSupplier) () -> pigeon.getRoll()),
-                new Pair<String, Object>("pitch", (DoubleSupplier) () -> pigeon.getPitch()), new Pair<String, Object>("odo X", (DoubleSupplier) () -> pose.getX()),
-                new Pair<String, Object>("odo Y", (DoubleSupplier) () -> pose.getY()), new Pair<String, Object>("odo Z", (DoubleSupplier) () -> pose.getRotation().getDegrees()),
+                new Pair<String, Object>("br target angle", (DoubleSupplier) () -> states[3].angle.getDegrees()), new Pair<String, Object>("Yaw", (DoubleSupplier) () -> getYaw2d().getDegrees()),
+                new Pair<String, Object>("roll", (DoubleSupplier) () -> pigeon.getRoll()), new Pair<String, Object>("pitch", (DoubleSupplier) () -> pigeon.getPitch()),
+                new Pair<String, Object>("odo X", (DoubleSupplier) () -> pose.getX()), new Pair<String, Object>("odo Y", (DoubleSupplier) () -> pose.getY()),
+                new Pair<String, Object>("odo Z", (DoubleSupplier) () -> pose.getRotation().getDegrees()),
                 new Pair<String, Object>("fl module position", (DoubleSupplier) () -> modulePositions[0].distanceMeters),
                 new Pair<String, Object>("fr module position", (DoubleSupplier) () -> modulePositions[1].distanceMeters),
                 new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
@@ -404,39 +404,6 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
                 new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()), new Pair<String, Object>("max accell", (DoubleSupplier) () -> maxAccell),
                 new Pair<String, Object>("max vel", (DoubleSupplier) () -> maxVel), new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()));
-
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left angle", () -> frontLeftModule.getSteerAngle());
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right angle", () -> frontRightModule.getSteerAngle());
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left angle", () -> backLeftModule.getSteerAngle());
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right angle", () -> backRightModule.getSteerAngle());
-
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left drive velocity", () -> frontLeftModule.getDriveVelocity());
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right drive velocity", () -> frontRightModule.getDriveVelocity());
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left drive velocity", () -> backLeftModule.getDriveVelocity());
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right drive velocity", () -> backRightModule.getDriveVelocity());
-
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left drive voltage", () -> frontLeftModule.getDriveVoltage());
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right drive voltage", () -> frontRightModule.getDriveVoltage());
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left drive voltage", () -> backLeftModule.getDriveVoltage());
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right drive voltage", () -> backRightModule.getDriveVoltage());
-
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left target angle", () -> states[0].angle.getDegrees());
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right target angle", () -> states[1].angle.getDegrees());
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left target angle", () -> states[2].angle.getDegrees());
-        // // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right target angle", () -> states[3].angle.getDegrees());
-
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front left target velocity", () -> states[0].speedMetersPerSecond);
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Front right target velocity", () -> states[1].speedMetersPerSecond);
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back left target velocity", () -> states[2].speedMetersPerSecond);
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Back right target velocity", () -> states[3].speedMetersPerSecond);
-
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Pigeon heading", () -> getYaw2d().getDegrees());
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "Odometry heading", () -> getHeading().getDegrees());
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES X", () -> pose.getX());
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Y", () -> pose.getY());
-        // LightningShuffleboard.setDoubleSupplier("Drivetrain", "ES Z", () -> pose.getRotation().getDegrees());
-
-        // LightningShuffleboard.setDoubleArray("Drivetrain", "ES Pose", () -> new double[]{pose.getX(), pose.getY(), pose.getRotation().getRadians()});
 
     }
 
@@ -530,7 +497,7 @@ public class Drivetrain extends SubsystemBase {
         pigeon.setYaw(0);
     }
 
-    public void setHeading(double input) {
+    public void setYaw(double input) {
         pigeon.setYaw(input);
     }
 
@@ -548,6 +515,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose) {
         poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
+        setYaw(pose.getRotation().getDegrees());
     }
 
     /**
