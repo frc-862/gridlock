@@ -323,7 +323,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetPigeonYaw(Rotation2d yaw) {
-        setYaw(yaw.getDegrees());
+        // setYaw(yaw.getDegrees());
     }
 
     public void updateVision() {
@@ -392,7 +392,7 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("fl target angle", (DoubleSupplier) () -> states[0].angle.getDegrees()),
                 new Pair<String, Object>("fr target angle", (DoubleSupplier) () -> states[1].angle.getDegrees()),
                 new Pair<String, Object>("bl target angle", (DoubleSupplier) () -> states[2].angle.getDegrees()),
-                new Pair<String, Object>("br target angle", (DoubleSupplier) () -> states[3].angle.getDegrees()), new Pair<String, Object>("Yaw", (DoubleSupplier) () -> getYaw2d().getDegrees()),
+                new Pair<String, Object>("br target angle", (DoubleSupplier) () -> states[3].angle.getDegrees()), new Pair<String, Object>("Pigeon Yaw", (DoubleSupplier) () -> pigeon.getYaw()),
                 new Pair<String, Object>("roll", (DoubleSupplier) () -> pigeon.getRoll()), new Pair<String, Object>("pitch", (DoubleSupplier) () -> pigeon.getPitch()),
                 new Pair<String, Object>("odo X", (DoubleSupplier) () -> pose.getX()), new Pair<String, Object>("odo Y", (DoubleSupplier) () -> pose.getY()),
                 new Pair<String, Object>("odo Z", (DoubleSupplier) () -> pose.getRotation().getDegrees()),
@@ -439,6 +439,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public Rotation2d getYaw2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
+        // return Rotation2d.fromDegrees(90);
     }
 
     /**
@@ -515,7 +516,6 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose) {
         poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
-        setYaw(pose.getRotation().getDegrees());
     }
 
     /**

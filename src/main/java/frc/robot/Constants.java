@@ -494,8 +494,8 @@ public final class Constants {
         public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0); // X and Y position PID
 
         // Max velocity and acceleration for the path planner
-        public static final double MAX_VELOCITY = 1.5;
-        public static final double MAX_ACCELERATION = .5;
+        public static final double MAX_VELOCITY = 2;
+        public static final double MAX_ACCELERATION = 1;
         public static final double SERVO_DEPLOY = 0.4;
         public static final double SERVO_STOW = 0d;
 
