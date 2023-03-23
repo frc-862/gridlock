@@ -141,6 +141,10 @@ public class Wrist extends SubsystemBase {
         return motor.getReverseLimitSwitch(WristConstants.BOTTOM_LIMIT_SWITCH_TYPE).isPressed();
     }
 
+    public double getTargetAngle() {
+        return targetAngle;
+    }
+
     /**
      * Gets the top limit switch
      * 

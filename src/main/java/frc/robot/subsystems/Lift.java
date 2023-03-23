@@ -152,7 +152,7 @@ public class Lift extends SubsystemBase {
     public void adjustWrist(double angle) {
         goalState = currentState;
         nextState = null;
-        wrist.setAngle(wrist.getAngle().plus(Rotation2d.fromDegrees(angle)));
+        wrist.setAngle(Rotation2d.fromDegrees(wrist.getTargetAngle() + angle));
     }
 
     public void adjustElevator(double extension) {
