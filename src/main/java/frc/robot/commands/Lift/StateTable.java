@@ -73,8 +73,8 @@ public class StateTable {
     private static final LiftPlan HIGH_CONE_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_DOUBLE_SUB_POS = 17.1;
-    private static final double ARM_DOUBLE_SUB_ANGLE = 10d;
-    private static final double WRIST_DOUBLE_SUB_ANGLE = -63.3d;
+    private static final double ARM_DOUBLE_SUB_ANGLE = 14.4d;
+    private static final double WRIST_DOUBLE_SUB_ANGLE = -59d;
     private static final LiftPlan DOUBLE_SUB_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_SINGLE_SUB_POS = 6.3d;
