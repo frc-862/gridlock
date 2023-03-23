@@ -300,7 +300,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -134.24;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -129.96d;
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
