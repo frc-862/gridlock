@@ -326,10 +326,6 @@ public class Drivetrain extends SubsystemBase {
         // }
     }
 
-    public void resetPigeonYaw(Rotation2d yaw) {
-        // setYaw(yaw.getDegrees());
-    }
-
     public void updateVision() {
         if (doVisionUpdate) {
             Pose2d visionPose2d = null;
@@ -341,19 +337,16 @@ public class Drivetrain extends SubsystemBase {
                 visionPose2d = limelightBack.getRobotPose();
                 latency = limelightBack.getLatencyBotPoseBlue();
             }
-            if (visionPose2d == null || visionPose2d.getX() > 3 || visionPose2d.getY() > 4 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {// if (visionPose2d.getX() > 20 || visionPose2d.getY() > 10 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
+            if (visionPose2d == null || visionPose2d.getX() > 3 || visionPose2d.getY() > 4 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
                 return;
             }
 
             double currTime = Timer.getFPGATimestamp();
             LightningShuffleboard.setDouble("Drivetrain", "Velocity between points", pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime));
             if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
-                System.out.println("Velocity bail klajsdnlkahdl;kajdsl;ajdf");
-                // if(visionPose[0] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND || visionPose[1] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
                 return;
             }
 
-            System.out.println("Pose update al;ksdf;laksjdg;lakdgj;alkdjg;alkdgj");
             poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
             pose = poseEstimator.getEstimatedPosition();
 
