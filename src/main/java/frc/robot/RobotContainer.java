@@ -67,7 +67,7 @@ public class RobotContainer extends LightningContainer {
     private static final ServoTurn servoturn = new ServoTurn();
     private static final Collector collector = new Collector();
     private static final LEDs leds = new LEDs(collector);
-    // private static final Lift lift = new Lift(elevator, wrist, arm);
+    private static final Lift lift = new Lift(elevator, wrist, arm);
 
     // Creates our controllers and deadzones
     private static final XboxController driver = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
@@ -135,7 +135,7 @@ public class RobotContainer extends LightningContainer {
 
         //FLICK
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
-        // new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(lift.getLastKnownGoodWristSetPoint()))));
+        new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(lift.getLastKnownGoodWristSetPoint()))));
 
         //BREAK
         // new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::breakLift));
