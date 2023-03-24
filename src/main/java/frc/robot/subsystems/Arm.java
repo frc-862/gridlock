@@ -190,7 +190,7 @@ public class Arm extends SubsystemBase {
         double currentAngle = getAngle().getDegrees();
         // double kFOut = LightningShuffleboard.getDouble("Arm", "kF in", 0);
         double kFOut = ArmConstants.ARM_KF_MAP.get(currentAngle);
-        if(targetAngle-currentAngle > 0) {
+        if (targetAngle - currentAngle > 0) {
             PIDOUT = upController.calculate(currentAngle, targetAngle);
         } else {
             PIDOUT = downController.calculate(currentAngle, targetAngle);
