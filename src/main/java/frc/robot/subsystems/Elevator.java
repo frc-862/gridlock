@@ -16,6 +16,7 @@ import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
  * The elevator subsystem
@@ -63,12 +64,9 @@ public class Elevator extends SubsystemBase {
     // Metod to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Elevator", ElevatorConstants.LOG_PERIOD,
-                new Pair<String, Object>("Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()),
-                new Pair<String, Object>("Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()), 
-                new Pair<String, Object>("Elevator target height", (DoubleSupplier) () -> targetExtension),
-                new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), 
-                new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Elevator", ElevatorConstants.LOG_PERIOD, new Pair<String, Object>("Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()),
+                new Pair<String, Object>("Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()), new Pair<String, Object>("Elevator target height", (DoubleSupplier) () -> targetExtension),
+                new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Elecator amps", (DoubleSupplier) () -> motor.getOutputCurrent()));
         // new Pair<String, Object>("Elevator motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
         // new Pair<String, Object>("Elevator motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
@@ -84,6 +82,10 @@ public class Elevator extends SubsystemBase {
      */
     public double getExtension() {
         return encoder.getPosition();
+    }
+
+    public double getTargetExtension() {
+        return targetExtension;
     }
 
     /**
@@ -198,8 +200,7 @@ public class Elevator extends SubsystemBase {
 
         // setExtension(LightningShuffleboard.getDouble("Lift", "ele targ", 0));
 
-
-        if(disableEle) {
+        if (disableEle) {
             motor.set(0);
         }
     }

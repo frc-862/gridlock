@@ -31,7 +31,8 @@ public class StateTransition {
      * @param plan The plan for the lift
      * @param endState The end state of the lift
      */
-    public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState, Range<Double> elevatorSafeZone, Range<Double> armSafeZone, Range<Double> wristSafeZone) {
+    public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState, Range<Double> elevatorSafeZone, Range<Double> armSafeZone,
+            Range<Double> wristSafeZone) {
         this.elevatorExtension = elevatorExtension;
         this.armAngle = armAngle;
         this.wristAngle = wristAngle;
@@ -39,10 +40,9 @@ public class StateTransition {
         this.endState = endState;
         this.elevatorSafeZone = elevatorSafeZone;
         this.armSafeZone = armSafeZone;
-        this.wristSafeZone = wristSafeZone;        
+        this.wristSafeZone = wristSafeZone;
     }
-    
-    
+
     /**
      * Creates a new state transition
      * 
@@ -53,7 +53,8 @@ public class StateTransition {
      * @param endState The end state of the lift
      */
     public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState) {
-        this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION), Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE));      
+        this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION),
+                Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE));
     }
 
     /**

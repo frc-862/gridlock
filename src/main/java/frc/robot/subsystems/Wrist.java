@@ -19,12 +19,14 @@ import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class Wrist extends SubsystemBase {
 
     // The motor, encoder, and PID controller
     private CANSparkMax motor;
-    private PIDController controller = new PIDController(WristConstants.kP, WristConstants.kI, WristConstants.kD);
+    private PIDController upController = new PIDController(WristConstants.UP_kP, WristConstants.kI, WristConstants.UP_kD);
+    private PIDController downController = new PIDController(WristConstants.DOWN_kP, WristConstants.kI, WristConstants.DOWN_kD);
 
     private SparkMaxAbsoluteEncoder encoder;
 
@@ -33,7 +35,11 @@ public class Wrist extends SubsystemBase {
 
     // The target angle to be set to the wrist
     private double targetAngle;
+    private double currentAngle;
     private double minPower;
+    private double PIDerror;
+    private double PIDOutput;
+    private double FOutput;
 
     double tolerance = WristConstants.TOLERANCE;
 
@@ -83,9 +89,9 @@ public class Wrist extends SubsystemBase {
                 new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
                 new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()));
-                new Pair<String, Object>("Wrist built-in encoder", (DoubleSupplier) () -> motor.getEncoder().getPosition());
-                // new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
-                // new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
+        new Pair<String, Object>("Wrist built-in encoder", (DoubleSupplier) () -> motor.getEncoder().getPosition());
+        // new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
+        // new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
     }
 
     /**
@@ -135,6 +141,10 @@ public class Wrist extends SubsystemBase {
         return motor.getReverseLimitSwitch(WristConstants.BOTTOM_LIMIT_SWITCH_TYPE).isPressed();
     }
 
+    public double getTargetAngle() {
+        return targetAngle;
+    }
+
     /**
      * Gets the top limit switch
      * 
@@ -177,22 +187,29 @@ public class Wrist extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // controller.setP(LightningShuffleboard.getDouble("Lift", "wrist kP", WristConstants.kP));
+        // upController.setP(LightningShuffleboard.getDouble("Lift", "up wrist kP", WristConstants.UP_kP));
+        // downController.setP(LightningShuffleboard.getDouble("Lift", "down wrist kP", WristConstants.DOWN_kP));
+
+        // upController.setD(LightningShuffleboard.getDouble("Lift", "wrist up D", WristConstants.kD));
+        // downController.setD(LightningShuffleboard.getDouble("Lift", "wrist down D", WristConstants.kD));
+
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -90)));
 
-        if (Math.abs(controller.getPositionError()) > 2) {
-            minPower = Math.signum(controller.getPositionError()) * -0.035;
-        } else {
-            minPower = 0;
-        }
+        // LightningShuffleboard.setDouble("Lift", "GR wrist angle", getGroundRelativeAngle(arm.getAngle()).getDegrees());
 
-        double PIDOutput = controller.calculate(getAngle().getDegrees(), targetAngle);
-        double FOutput = WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees()) * getGroundRelativeAngle(arm.getAngle()).getDegrees();
-        double power = PIDOutput + FOutput + minPower;
+        currentAngle = getAngle().getDegrees();
+
+        if (targetAngle - currentAngle > 0) {
+            PIDOutput = upController.calculate(getAngle().getDegrees(), targetAngle);
+        } else {
+            PIDOutput = downController.calculate(getAngle().getDegrees(), targetAngle);
+        }
+        FOutput = WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees());
+        // FOutput = LightningShuffleboard.getDouble("Lift", "F input", 0d);
         if (disableWrist) {
             setPower(0);
         } else {
-            motor.set(power);
+            motor.set(PIDOutput + FOutput);
         }
 
         periodicShuffleboard.loop();

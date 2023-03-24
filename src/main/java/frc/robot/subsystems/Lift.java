@@ -15,6 +15,7 @@ import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Lift.StateTable;
 import frc.robot.commands.Lift.StateTransition;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
  * The lift subsystem
@@ -111,7 +112,11 @@ public class Lift extends SubsystemBase {
     }
 
     public boolean safeToMove() {
-        return nextState.isInEleSafeZone(elevator.getExtension()) &&  nextState.isInArmSafeZone(arm.getAngle().getDegrees()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees());
+        if (nextState == null) {
+            return false;
+        } else {
+            return nextState.isInEleSafeZone(elevator.getExtension()) && nextState.isInArmSafeZone(arm.getAngle().getDegrees()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees());
+        }
     }
 
     public void breakLift() {
@@ -147,13 +152,13 @@ public class Lift extends SubsystemBase {
     public void adjustWrist(double angle) {
         goalState = currentState;
         nextState = null;
-        wrist.setAngle(wrist.getAngle().plus(Rotation2d.fromDegrees(angle)));
+        wrist.setAngle(Rotation2d.fromDegrees(wrist.getTargetAngle() + angle));
     }
 
     public void adjustElevator(double extension) {
         goalState = currentState;
         nextState = null;
-        elevator.setExtension(elevator.getExtension() + extension);
+        elevator.setExtension(elevator.getTargetExtension() + extension);
     }
 
     public double getLastKnownGoodWristSetPoint() {
@@ -168,7 +173,7 @@ public class Lift extends SubsystemBase {
 
         // Checks if were on target or if the next state is null
         // Checks if were on target or if the next state is null, also makes sure our biassese havent changed
-        if (safeToMove() || nextState == null) {
+        if (onTarget() || nextState == null) {
             // Checks if the current state is not the goal state
             if (currentState != goalState) {
                 // Gets the next state from the state table
@@ -196,25 +201,25 @@ public class Lift extends SubsystemBase {
                     break;
                 case armThenWristAndEle:
                     arm.setAngle(nextState.getArmAngle());
-                    if (arm.onTarget()) {
+                    if (nextState.isInArmSafeZone(arm.getAngle().getDegrees())) {
                         elevator.setExtension(nextState.getElevatorExtension());
                         wrist.setAngle(nextState.getWristAngle());
                     }
                     break;
                 case eleWristArm:
                     elevator.setExtension(nextState.getElevatorExtension());
-                    if (elevator.onTarget()) {
+                    if (nextState.isInEleSafeZone(elevator.getExtension())) {
                         wrist.setAngle(nextState.getWristAngle());
-                        if (wrist.onTarget()) {
+                        if (nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
                             arm.setAngle(nextState.getArmAngle());
                         }
                     }
                     break;
                 case eleArmWrist:
                     elevator.setExtension(nextState.getElevatorExtension());
-                    if (elevator.onTarget()) {
+                    if (nextState.isInEleSafeZone(elevator.getExtension())) {
                         arm.setAngle(nextState.getArmAngle());
-                        if (arm.onTarget()) {
+                        if (nextState.isInArmSafeZone(arm.getAngle().getDegrees())) {
                             wrist.setAngle(nextState.getWristAngle());
                         }
                     }
@@ -222,13 +227,13 @@ public class Lift extends SubsystemBase {
                 case armAndWristThenEle:
                     arm.setAngle(nextState.getArmAngle());
                     wrist.setAngle(nextState.getWristAngle());
-                    if (arm.onTarget() && wrist.onTarget()) {
+                    if (nextState.isInArmSafeZone(arm.getAngle().getDegrees()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
                         elevator.setExtension(nextState.getElevatorExtension());
                     }
                     break;
                 case eleThenArmAndWrist:
                     elevator.setExtension(nextState.getElevatorExtension());
-                    if (elevator.onTarget()) {
+                    if (nextState.isInEleSafeZone(elevator.getExtension())) {
                         arm.setAngle(nextState.getArmAngle());
                         wrist.setAngle(nextState.getWristAngle());
                     }
@@ -236,15 +241,15 @@ public class Lift extends SubsystemBase {
                 case eleAndWristThenArm:
                     elevator.setExtension(nextState.getElevatorExtension());
                     wrist.setAngle(nextState.getWristAngle());
-                    if (elevator.onTarget() && wrist.onTarget()) {
+                    if (nextState.isInEleSafeZone(elevator.getExtension()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
                         arm.setAngle(nextState.getArmAngle());
                     }
                     break;
                 case wristArmEle:
                     wrist.setAngle(nextState.getWristAngle());
-                    if (wrist.onTarget()) {
+                    if (nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
                         arm.setAngle(nextState.getArmAngle());
-                        if (arm.onTarget()) {
+                        if (nextState.isInArmSafeZone(arm.getAngle().getDegrees())) {
                             elevator.setExtension(nextState.getElevatorExtension());
                         }
                     }
@@ -252,6 +257,20 @@ public class Lift extends SubsystemBase {
 
             }
         }
+
+        // if (nextState != null) {
+        //     LightningShuffleboard.setBool("Lift", "ele on targ", elevator.onTarget(nextState.getElevatorExtension()));
+        //     LightningShuffleboard.setBool("Lift", "arm on targ", arm.onTarget(nextState.getArmAngle().getDegrees()));
+        //     LightningShuffleboard.setBool("Lift", "wrist on targ", wrist.onTarget(nextState.getWristAngle().getDegrees()));
+        //     LightningShuffleboard.setDouble("Lift", "arm target", nextState.getArmAngle().getDegrees());
+        //     LightningShuffleboard.setDouble("Lift", "ele target", nextState.getElevatorExtension());
+        //     LightningShuffleboard.setDouble("Lift", "wrist target", nextState.getWristAngle().getDegrees());
+
+        //     LightningShuffleboard.setBool("Lift", "ele in safe zone", nextState.isInEleSafeZone(elevator.getExtension()));
+        //     LightningShuffleboard.setBool("Lift", "arm in safe zone", nextState.isInArmSafeZone(arm.getAngle().getDegrees()));
+        //     LightningShuffleboard.setBool("Lift", "wrist in safe zone", nextState.isInWristSafeZone(wrist.getAngle().getDegrees()));
+
+        // }
 
         runPeriodicShuffleboardLoop();
     }

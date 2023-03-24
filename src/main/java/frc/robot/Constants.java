@@ -204,13 +204,13 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our arm
-        public static final double UP_kP = 0.011d;
+        public static final double UP_kP = 0.013d;
         public static final double UP_kI = 0d;
-        public static final double UP_kD = 0.0004d;
+        public static final double UP_kD = 0d;
 
-        public static final double DOWN_kP = 0.0085d;
+        public static final double DOWN_kP = 0.01d;
         public static final double DOWN_kI = 0d;
-        public static final double DOWN_kD = 0.0004d;
+        public static final double DOWN_kD = 0d;
         public static final double kF = 0d;
 
         public static final double TOLERANCE = 10d;
@@ -218,7 +218,7 @@ public final class Constants {
         // Min and Max arm angles in degrees
         // TODO: change to actual values
         public static final double MAX_ANGLE = 90d;
-        public static final double MIN_ANGLE = -120d;
+        public static final double MIN_ANGLE = -113d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -242,35 +242,12 @@ public final class Constants {
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap ARM_KF_MAP = new InterpolationMap() {
             {
-                // put(-110d, -0.0001);
-                // put(-90d, 0.0002);
-                // put(-60d, 0.00028);
-                // put(-30d, 0.00065);
-
-                // put(0d, 0.00075);
-
-                // put(30d, 0.0005);
-                // put(60d, 0.00028);
-
-                // put(90d, 0.0);
-
-                // put(130d, -0.00065);
-                // put(150d, -0.00070);
-                // put(180d, -0.00075);
-                // put(210d, 0.00065);
-                // put(240d, 0.00028);
-
-                put(-120d, -0.012d);
+                put(-120d, -0.005d);
                 put(-90d, 0d);
-                put(-45d, 0.02);
-                put(0d, 0.04);
-                put(10d, 0.01);
+                put(-45d, 0.005d);
+                put(10d, 0.02d);
                 put(15d, 0d);
                 put(90d, -0.1);
-                // put(45d, 0.02);
-                // put(90d, 0d);
-                // put(170d, -0.04d);
-
             }
         };
     }
@@ -299,18 +276,20 @@ public final class Constants {
     public static final class WristConstants {
 
         // Motor configuration constants
-        public static final boolean MOTOR_INVERT = false;
+        public static final boolean MOTOR_INVERT = true;
         public static final int CURRENT_LIMIT = 20;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double kP = -0.0038d;
+        public static final double UP_kP = 0.006d;
+        public static final double UP_kD = 0.0001d;
+        public static final double DOWN_kP = 0.004d;
+        public static final double DOWN_kD = 0d;
         public static final double kI = 0d;
-        public static final double kD = 0d;
 
         // Tolernace for our wrist
-        public static final double TOLERANCE = 5d;
+        public static final double TOLERANCE = 12d;
 
         // Min/max angles in degrees
         public static final double MAX_ANGLE = 121d;
@@ -323,7 +302,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -166.84;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -129.96d;
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
@@ -336,14 +315,18 @@ public final class Constants {
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap WRIST_KF_MAP = new InterpolationMap() {
             {
-                put(-90d, 0d);
-                put(-45d, 0.0005d);
-                put(-25d, 0.001d);
-                put(0d, 0.0025d);
-                put(25d, -0.001d);
-                put(45d, -0.0005d);
-                put(90d, 0d);
-                put(110d, 0d);
+                // put(-90d, 0d);
+                // put(-45d, 0.0005d);
+                // put(-25d, 0.001d);
+                // put(0d, 0.004d);
+                // put(25d, -0.001d);
+                // put(45d, -0.0005d);
+                // put(90d, 0d);
+                // put(110d, 0d);
+
+                put(-45d, -0.01d);
+                put(0d, 0.015d);
+                put(45d, 0.01d);
             }
         };
     }
