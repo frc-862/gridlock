@@ -191,8 +191,8 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final String FRONT_NAME = "limelight-front";
         public static final String BACK_NAME = "limelight-back";
-        public static final Pose3d FRONT_POSE = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
-        public static final Pose3d BACK_POSE = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
+        public static final Pose3d FRONT_POSE = new Pose3d(0.28, 0.1, 0.72, new Rotation3d(0, 0, 0));
+        public static final Pose3d BACK_POSE = new Pose3d(0.28, 0.1, 0.83, new Rotation3d(0, 10, 180));
 
     }
 
@@ -401,7 +401,7 @@ public final class Constants {
         public static final double DELAY_TIME = 1.5;
 
         // Target X position for the middle of the charge station
-        public static final double TARGET_X = 3.93;
+        public static final double TARGET_X = 3.85;// 3.93;
 
         //log period for autobalance
         public static final double LOG_PERIOD = 0.2;
@@ -473,8 +473,8 @@ public final class Constants {
         public static final PIDConstants POSE_PID_CONSTANTS = new PIDConstants(0, 0, 0); // X and Y position PID
 
         // Max velocity and acceleration for the path planner
-        public static final double MAX_VELOCITY = 1.5;
-        public static final double MAX_ACCELERATION = .5;
+        public static final double MAX_VELOCITY = 2;
+        public static final double MAX_ACCELERATION = 1;
         public static final double SERVO_DEPLOY = 0.4;
         public static final double SERVO_STOW = 0d;
 
@@ -521,8 +521,5 @@ public final class Constants {
         //Log period auto align
         public static final double LOG_PERIOD = 0.25;
 
-        //Offset limelight off center
-        public static final double LIMELGHT_OFFSET_GRIDLOCK = -12.2; // TODO check if right
-        public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5;
     }
 }
