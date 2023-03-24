@@ -191,8 +191,8 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final String FRONT_NAME = "limelight-front";
         public static final String BACK_NAME = "limelight-back";
-        public static final Pose3d FRONT_POSE = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
-        public static final Pose3d BACK_POSE = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
+        public static final Pose3d FRONT_POSE = new Pose3d(0.28, 0.1, 0.72, new Rotation3d(0, 0, 0));
+        public static final Pose3d BACK_POSE = new Pose3d(0.28, 0.1, 0.83, new Rotation3d(0, 10, 180));
 
     }
 
@@ -448,10 +448,6 @@ public final class Constants {
         // Arbitrary value for how close the robot needs to be to the target (in angles)
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
-        // Y meters offset
-        public static final double Y_METER_OFFSET = -0.36;
-        public static final double X_METER_OFFSET = -0.23;
-
         // Standard deviation for vision, heading is 1000 becuase were using pigeon, so i dont want to use vision heading
         public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1000, 1000, 1000); //(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
     }
@@ -542,8 +538,5 @@ public final class Constants {
         //Log period auto align
         public static final double LOG_PERIOD = 0.25;
 
-        //Offset limelight off center
-        public static final double LIMELGHT_OFFSET_GRIDLOCK = -12.2; // TODO check if right
-        public static final double LIMELGHT_OFFSET_BLACKOUT = -11.5;
     }
 }

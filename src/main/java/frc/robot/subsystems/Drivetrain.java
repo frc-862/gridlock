@@ -4,6 +4,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.apache.commons.lang3.Range;
+
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
@@ -119,14 +121,16 @@ public class Drivetrain extends SubsystemBase {
     private ChassisSpeeds outputChassisSpeeds = new ChassisSpeeds();
 
     private LimelightBack limelightBack;
+    private LimelightFront limelightFront;
 
     // Manual trajectory variables
     private Pose2d desiredPose = new Pose2d();
     private double maxVel = 0d;
     private double maxAccell = 0d;
 
-    public Drivetrain(LimelightBack limelightBack) {
+    public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
+        this.limelightFront = limelightFront;
         /**
          * Creates a new Drivetrain.
          * 
@@ -328,28 +332,31 @@ public class Drivetrain extends SubsystemBase {
 
     public void updateVision() {
         if (doVisionUpdate) {
-            if (limelightBack.hasVision()) {
-                Pose2d visionPose2d = limelightBack.getRobotPose();
-                if (visionPose2d.getX() > 3 || visionPose2d.getY() > 4 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {// if (visionPose2d.getX() > 20 || visionPose2d.getY() > 10 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
-                    return;
-                }
-
-                double currTime = Timer.getFPGATimestamp();
-                LightningShuffleboard.setDouble("Drivetrain", "Velocity between points", pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime));
-                if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
-                    // if(visionPose[0] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND || visionPose[1] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
-                    return;
-                }
-
-                poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - limelightBack.getLatencyBotPoseBlue());
-                pose = poseEstimator.getEstimatedPosition();
-
-                lastKnownGoodVisionX = visionPose2d.getX();
-                lastKnownGoodVisionY = visionPose2d.getY();
-                lastTime = currTime;
-
-                LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
+            Pose2d visionPose2d = null;
+            if (limelightBack.hasVision() && Range.between(-90d, 90d).contains(getHeading().getDegrees())) {
+                visionPose2d = limelightBack.getRobotPose();
+            } else if (limelightBack.hasVision()) {
+                visionPose2d = limelightFront.getRobotPose();
             }
+            if (visionPose2d == null || visionPose2d.getX() > 3 || visionPose2d.getY() > 4 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {// if (visionPose2d.getX() > 20 || visionPose2d.getY() > 10 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
+                return;
+            }
+
+            double currTime = Timer.getFPGATimestamp();
+            LightningShuffleboard.setDouble("Drivetrain", "Velocity between points", pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime));
+            if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
+                // if(visionPose[0] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND || visionPose[1] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
+                return;
+            }
+
+            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - limelightBack.getLatencyBotPoseBlue());
+            pose = poseEstimator.getEstimatedPosition();
+
+            lastKnownGoodVisionX = visionPose2d.getX();
+            lastKnownGoodVisionY = visionPose2d.getY();
+            lastTime = currTime;
+
+            LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
         }
     }
 

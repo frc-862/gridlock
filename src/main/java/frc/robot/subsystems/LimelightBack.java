@@ -29,8 +29,13 @@ public class LimelightBack extends SubsystemBase {
     // Started logging
     private boolean loggingStarted = false;
 
+
+    // position of the limelight relative to the center and bottom of the robot
+    private Pose3d cameraPose;
+
     public LimelightBack(String limelightName, Pose3d cameraPose) {
         this.limelightName = limelightName;
+        this.cameraPose = cameraPose;
 
         // Sets the appropriate camera position
         setCameraPose(cameraPose);
@@ -75,10 +80,10 @@ public class LimelightBack extends SubsystemBase {
         Pose2d robotPose = new Pose2d();
         if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
             double[] botPose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-            robotPose = new Pose2d(new Translation2d(botPose[0] + VisionConstants.X_METER_OFFSET, botPose[1] + VisionConstants.Y_METER_OFFSET), Rotation2d.fromDegrees(botPose[5]));
+            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
         } else if (Constants.ALLIANCE == DriverStation.Alliance.Red) {
             double[] botPose = LimelightHelpers.getBotPose_wpiRed(limelightName);
-            robotPose = new Pose2d(new Translation2d(botPose[0] + VisionConstants.X_METER_OFFSET, botPose[1] + VisionConstants.Y_METER_OFFSET), Rotation2d.fromDegrees(botPose[5]));
+            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
         }
         return robotPose;
     }
