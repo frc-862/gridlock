@@ -333,10 +333,13 @@ public class Drivetrain extends SubsystemBase {
     public void updateVision() {
         if (doVisionUpdate) {
             Pose2d visionPose2d = null;
-            if (limelightBack.hasVision() && Range.between(-90d, 90d).contains(getHeading().getDegrees())) {
-                visionPose2d = limelightBack.getRobotPose();
-            } else if (limelightBack.hasVision()) {
+            double latency = 0;
+            if (limelightFront.hasVision()) {
                 visionPose2d = limelightFront.getRobotPose();
+                latency = limelightFront.getLatencyBotPoseBlue();
+            } else if (limelightBack.hasVision()) {
+                visionPose2d = limelightBack.getRobotPose();
+                latency = limelightBack.getLatencyBotPoseBlue();
             }
             if (visionPose2d == null || visionPose2d.getX() > 3 || visionPose2d.getY() > 4 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {// if (visionPose2d.getX() > 20 || visionPose2d.getY() > 10 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
                 return;
@@ -345,11 +348,13 @@ public class Drivetrain extends SubsystemBase {
             double currTime = Timer.getFPGATimestamp();
             LightningShuffleboard.setDouble("Drivetrain", "Velocity between points", pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime));
             if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
+                System.out.println("Velocity bail klajsdnlkahdl;kajdsl;ajdf");
                 // if(visionPose[0] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND || visionPose[1] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
                 return;
             }
 
-            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - limelightBack.getLatencyBotPoseBlue());
+            System.out.println("Pose update al;ksdf;laksjdg;lakdgj;alkdjg;alkdgj");
+            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
             pose = poseEstimator.getEstimatedPosition();
 
             lastKnownGoodVisionX = visionPose2d.getX();
@@ -446,7 +451,6 @@ public class Drivetrain extends SubsystemBase {
      */
     public Rotation2d getYaw2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
-        // return Rotation2d.fromDegrees(90);
     }
 
     /**
