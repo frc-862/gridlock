@@ -84,6 +84,10 @@ public class Elevator extends SubsystemBase {
         return encoder.getPosition();
     }
 
+    public double getTargetExtension() {
+        return targetExtension;
+    }
+
     /**
      * Method to set Extension of the elevator to a target
      * 

@@ -158,7 +158,7 @@ public class Lift extends SubsystemBase {
     public void adjustElevator(double extension) {
         goalState = currentState;
         nextState = null;
-        elevator.setExtension(elevator.getExtension() + extension);
+        elevator.setExtension(elevator.getTargetExtension() + extension);
     }
 
     public double getLastKnownGoodWristSetPoint() {
