@@ -79,10 +79,10 @@ public class LimelightBack extends SubsystemBase {
         Pose2d robotPose = new Pose2d();
         if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
             double[] botPose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
+            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), (botPose[1]) - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5] + 180));
         } else if (Constants.ALLIANCE == DriverStation.Alliance.Red) {
             double[] botPose = LimelightHelpers.getBotPose_wpiRed(limelightName);
-            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
+            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5] + 180));
         }
         return robotPose;
     }
@@ -311,7 +311,6 @@ public class LimelightBack extends SubsystemBase {
         if (loggingStarted) {
             periodicShuffleboard.loop();
         }
-
     }
 
 }

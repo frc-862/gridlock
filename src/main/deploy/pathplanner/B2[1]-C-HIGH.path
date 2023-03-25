@@ -21,7 +21,7 @@
           "Hold-Power"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "after",
+        "waitBehavior": "minimum",
         "waitTime": 1.0
       }
     },
@@ -45,11 +45,11 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Piece"
+          "Score"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallelDeadline",
         "waitBehavior": "deadline",
-        "waitTime": 0.5
+        "waitTime": 1.0
       }
     },
     {
