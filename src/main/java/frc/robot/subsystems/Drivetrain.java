@@ -342,7 +342,7 @@ public class Drivetrain extends SubsystemBase {
                 visionPose2d = limelightBack.getRobotPose();
                 latency = limelightBack.getLatencyBotPoseBlue();
             }
-            if (visionPose2d == null || visionPose2d.getX() > 3.5 || visionPose2d.getY() > 3.5 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
+            if (visionPose2d == null || visionPose2d.getX() > 3.5 || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
                 return;
             }
 

@@ -39,7 +39,7 @@ public class Maps {
      * @param leds
      * @return
      */
-    public static HashMap<String, Command> getPathMap(Drivetrain drivetrain, Lift lift, ServoTurn servoturn, Collector collector, LEDs leds) {
+    public static HashMap<String, Command> getPathMap(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector, LEDs leds) {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("Score-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY), servoturn));
         eventMap.put("Ground-Collect-Cone", new RunCommand(() -> lift.setGoalState(LiftState.groundCone), lift).until(lift::goalReached));
@@ -48,9 +48,9 @@ public class Maps {
         eventMap.put("High-Score-Cube", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
         eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));   
         eventMap.put("Stop-Collect", new InstantCommand(() -> collector.stop(), collector));
-        eventMap.put("Collect", new Collect(collector, () -> 1d)); //TODO: switch until to be until piece
-        eventMap.put("Hold-Power", new Collect(collector, () -> CollectorConstants.HOLD_POWER));
-        eventMap.put("Score", new Collect(collector, () -> -1d)); //TODO: switch until to be until no piece
+        eventMap.put("Collect", new InstantCommand(() -> collector.setPower(1d))); //TODO: switch until to be until piece
+        eventMap.put("Hold-Power", new InstantCommand(() -> collector.setPower(CollectorConstants.HOLD_POWER)));
+        eventMap.put("Score", new InstantCommand(() -> collector.setPower(-1d))); //TODO: switch until to be until no piece
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
         eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
         eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));

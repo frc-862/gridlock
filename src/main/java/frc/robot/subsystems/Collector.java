@@ -78,7 +78,7 @@ public class Collector extends SubsystemBase {
                 // new Pair<String, Object>("Collector motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
                 new Pair<String, Object>("Collector motor controller output (amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
         // new Pair<String, Object>("Collector motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
-        new Pair<String, Object>("Color sensor proximity", (Supplier<Double>) () -> (double) colorSensor.getProximity()),
+        // new Pair<String, Object>("Color sensor proximity", (Supplier<Double>) () -> (double) colorSensor.getProximity()),
         new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> getGamePiece().toString()));
         // new Pair<String, Object>("Color sensor confidence", (DoubleSupplier) () -> getConfidence()));
 
