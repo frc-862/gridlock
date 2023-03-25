@@ -285,7 +285,6 @@ public class LimelightBack extends SubsystemBase {
         if (loggingStarted) {
             periodicShuffleboard.loop();
         }
-
     }
 
 }

@@ -191,8 +191,8 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final String FRONT_NAME = "limelight-front";
         public static final String BACK_NAME = "limelight-back";
-        public static final Pose3d FRONT_POSE = new Pose3d(0.28, 0.1, 0.72, new Rotation3d(0, 0, 0));
-        public static final Pose3d BACK_POSE = new Pose3d(0.28, 0.1, 0.83, new Rotation3d(0, 10, 180));
+        public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0));
+        public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180));
 
     }
 
@@ -292,7 +292,7 @@ public final class Constants {
         public static final double TOLERANCE = 12d;
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = 121d;
+        public static final double MAX_ANGLE = 126d;
         public static final double MIN_ANGLE = -90d;
 
         // Min and Max power

@@ -10,6 +10,7 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
+import frc.thunder.vision.VisionBase;
 import edu.wpi.first.math.MathUsageId;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -35,6 +36,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DrivetrainConstants;
@@ -43,6 +46,8 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
+import frc.thunder.LightningRobot;
+import frc.thunder.auto.Autonomous;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.limelightlib.LimelightHelpers;
@@ -327,7 +332,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void updateVision() {
-        if (doVisionUpdate) {
+        if (VisionBase.isVisionEnabled()) {
             Pose2d visionPose2d = null;
             double latency = 0;
             if (limelightFront.hasVision()) {
@@ -347,12 +352,13 @@ public class Drivetrain extends SubsystemBase {
                 return;
             }
 
-            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
-            pose = poseEstimator.getEstimatedPosition();
+                poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
+                pose = poseEstimator.getEstimatedPosition();
 
-            lastKnownGoodVisionX = visionPose2d.getX();
-            lastKnownGoodVisionY = visionPose2d.getY();
-            lastTime = currTime;
+                lastKnownGoodVisionX = visionPose2d.getX();
+                lastKnownGoodVisionY = visionPose2d.getY();
+                lastTime = currTime;
+            
 
             LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
         }

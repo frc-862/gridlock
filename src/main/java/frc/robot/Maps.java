@@ -1,6 +1,9 @@
 package frc.robot;
 
 import java.util.HashMap;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -16,6 +19,8 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.ServoTurn;
+import frc.thunder.command.core.TimedCommand;
+import frc.thunder.vision.VisionBase;
 
 /**
  * Class for creating all auton HasMaps
@@ -43,11 +48,12 @@ public class Maps {
         eventMap.put("High-Score-Cube", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
         eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));   
         eventMap.put("Stop-Collect", new InstantCommand(() -> collector.stop(), collector));
-        eventMap.put("Hold-Power", new InstantCommand(() -> collector.setPower(CollectorConstants.HOLD_POWER), collector));
-        eventMap.put("Collect-Piece", new HoldPower(collector, () -> .5d));
-        eventMap.put("Score-Piece", new HoldPower(collector, () -> -.5d)); //TODO: switch until to be until no piece
+        eventMap.put("Collect", new Collect(collector, () -> 1d)); //TODO: switch until to be until piece
+        eventMap.put("Hold-Power", new Collect(collector, () -> CollectorConstants.HOLD_POWER));
+        eventMap.put("Score", new Collect(collector, () -> -1d)); //TODO: switch until to be until no piece
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
-        eventMap.put("Update-Pos-Vision", new PrintCommand("Update-Pos-Vision")); //TODO add vision code
+        eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
+        eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));
         return eventMap;
     }
 }
