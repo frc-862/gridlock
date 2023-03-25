@@ -240,7 +240,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.21;
 
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
-        public static InterpolationMap ARM_KF_MAP = new InterpolationMap() {
+        public static InterpolationMap ARM_POSITIONAL_KF_MAP = new InterpolationMap() {
             {
                 put(-120d, -0.005d);
                 put(-90d, 0d);
@@ -248,6 +248,12 @@ public final class Constants {
                 put(10d, 0.02d);
                 put(15d, 0d);
                 put(90d, -0.1);
+            }
+        };
+
+        public static InterpolationMap ARM_VELOCITY_KF_MAP = new InterpolationMap() {
+            {
+                put(0d, 0d);
             }
         };
     }
@@ -444,7 +450,7 @@ public final class Constants {
             //ground collects
             groundCone, groundCube,
 
-            //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
+            //substation collects
             doubleSubstationCollect, singleSubstationCollect,
 
             //score states1000

@@ -34,6 +34,9 @@ public class Arm extends SubsystemBase {
     private double OFFSET;
 
     private double PIDOUT;
+    private double kFOut_POSITIONAL;
+    private double kFOut_VELOCITY;
+    private double power;
 
     private double tolerance = ArmConstants.TOLERANCE;
 
@@ -63,6 +66,7 @@ public class Arm extends SubsystemBase {
         // Create the absolute encoder and sets the conversion factor
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
         encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        encoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
         motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
         motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
@@ -81,7 +85,7 @@ public class Arm extends SubsystemBase {
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
-                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()));
+                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()));
         // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
         // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
         // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
@@ -172,6 +176,10 @@ public class Arm extends SubsystemBase {
         this.tolerance = tolerance;
     }
 
+    public double getVelocity() {
+        return encoder.getVelocity();
+    }
+
     /**
      * Checks if the given angle is reachable by the arm
      * 
@@ -188,14 +196,19 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         double currentAngle = getAngle().getDegrees();
+        double currentVelocity = getVelocity();
+
         // double kFOut = LightningShuffleboard.getDouble("Arm", "kF in", 0);
-        double kFOut = ArmConstants.ARM_KF_MAP.get(currentAngle);
+        kFOut_POSITIONAL = ArmConstants.ARM_POSITIONAL_KF_MAP.get(currentAngle);
+        kFOut_VELOCITY = 0d;
+        // kFOut_VELOCITY = ArmConstants.ARM_VELOCITY_KF_MAP.get(currentVelocity);
+
         if (targetAngle - currentAngle > 0) {
             PIDOUT = upController.calculate(currentAngle, targetAngle);
         } else {
             PIDOUT = downController.calculate(currentAngle, targetAngle);
         }
-        double power = kFOut + PIDOUT;
+        power = kFOut_POSITIONAL + kFOut_VELOCITY + PIDOUT;
 
         if (disableArm) {
             motor.set(0);
