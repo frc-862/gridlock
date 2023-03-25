@@ -29,7 +29,6 @@ public class LimelightBack extends SubsystemBase {
     // Started logging
     private boolean loggingStarted = false;
 
-
     // position of the limelight relative to the center and bottom of the robot
     private Pose3d cameraPose;
 
@@ -86,6 +85,33 @@ public class LimelightBack extends SubsystemBase {
             robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
         }
         return robotPose;
+    }
+
+    /**
+     * Gets robot pose based off the alliance color
+     * 
+     * @return Pose2d of the robot
+     */
+    public Pose2d getRobotPose(double tagNum) {
+        Pose2d robotPose = new Pose2d();
+        if ((Constants.ALLIANCE == DriverStation.Alliance.Blue) && (tagNum == getTagNum())) {
+            double[] botPose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
+            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
+        } else if (Constants.ALLIANCE == DriverStation.Alliance.Red) {
+            double[] botPose = LimelightHelpers.getBotPose_wpiRed(limelightName);
+            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
+        }
+        return robotPose;
+    }
+    
+    public double getTagNum(){
+        if(hasVision()){
+            double tagID = LimelightHelpers.getFiducialID(limelightName);
+            return tagID;
+        }
+        else{
+            return 0;
+        }
     }
 
     /**
