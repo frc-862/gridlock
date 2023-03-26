@@ -18,7 +18,8 @@
       "stopEvent": {
         "names": [
           "High-Score-Cube",
-          "Hold-Power"
+          "Hold-Power",
+          "Turn-On-Vison"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "minimum",
@@ -123,7 +124,9 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "Auto-Balance"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0

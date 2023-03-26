@@ -20,8 +20,8 @@
           "High-Score-Cube",
           "Hold-Power"
         ],
-        "executionBehavior": "parallel",
-        "waitBehavior": "after",
+        "executionBehavior": "parallelDeadline",
+        "waitBehavior": "minimum",
         "waitTime": 1.0
       }
     },
@@ -45,9 +45,9 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Piece"
+          "Score"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "deadline",
         "waitTime": 0.5
       }
@@ -75,7 +75,7 @@
           "Stop-Collect",
           "Stow"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "parallelDeadline",
         "waitBehavior": "minimum",
         "waitTime": 1.5
       }

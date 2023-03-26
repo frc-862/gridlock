@@ -17,11 +17,12 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Piece-Servo"
+          "Score-Piece-Servo",
+          "Turn-On-Vison"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "after",
-        "waitTime": 2.0
+        "waitTime": 0.5
       }
     },
     {
@@ -44,12 +45,12 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Piece",
-          "Stow"
+          "Stow",
+          "Hold-Power"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallelDeadline",
         "waitBehavior": "deadline",
-        "waitTime": 5.0
+        "waitTime": 3.0
       }
     },
     {
@@ -99,12 +100,11 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Piece",
-          "Stow"
+          "Score"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "deadline",
-        "waitTime": 5.0
+        "waitTime": 1.0
       }
     },
     {
@@ -137,15 +137,15 @@
   "isReversed": null,
   "markers": [
     {
-      "position": 0.6690909090908832,
+      "position": 0.3781818181818091,
       "names": [
-        "Ground-Collect-cone"
+        "Ground-Collect-Cube"
       ]
     },
     {
-      "position": 2.5018181818180625,
+      "position": 0.581818181818157,
       "names": [
-        "Ground-Score"
+        "Collect"
       ]
     }
   ]

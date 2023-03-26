@@ -21,7 +21,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
-        "waitTime": 2.0
+        "waitTime": 0.5
       }
     },
     {
@@ -69,12 +69,12 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Piece",
+          "Hold-Power",
           "Stow"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallelDeadline",
         "waitBehavior": "deadline",
-        "waitTime": 5.0
+        "waitTime": 3.0
       }
     },
     {
@@ -147,12 +147,11 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Piece",
-          "Stow"
+          "Score"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "deadline",
-        "waitTime": 5.0
+        "waitTime": 0.5
       }
     },
     {
@@ -200,12 +199,12 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Piece",
+          "Hold-Power",
           "Stow"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallelDeadline",
         "waitBehavior": "deadline",
-        "waitTime": 5.0
+        "waitTime": 3.0
       }
     },
     {
@@ -278,10 +277,9 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Piece",
-          "Stow"
+          "Score"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -292,27 +290,39 @@
   "isReversed": null,
   "markers": [
     {
-      "position": 1.687272727272614,
+      "position": 0.5818181818182002,
       "names": [
         "Ground-Collect-Cube"
       ]
     },
     {
-      "position": 4.218181818181685,
+      "position": 3.6363636363637166,
       "names": [
         "High-Score-Cube"
       ]
     },
     {
-      "position": 6.399999999999622,
+      "position": 5.745454545454589,
       "names": [
-        "Ground-Collect-Cone"
+        "Ground-Collect-Cube"
       ]
     },
     {
-      "position": 9.45454545454491,
+      "position": 1.236363636363618,
       "names": [
-        "High-Score-Cone"
+        "Collect"
+      ]
+    },
+    {
+      "position": 5.309090909090683,
+      "names": [
+        "Stop-Collect"
+      ]
+    },
+    {
+      "position": 6.254545454545115,
+      "names": [
+        "Collect"
       ]
     }
   ]
