@@ -434,6 +434,12 @@ public final class Constants {
 
         // Standard deviation for vision, heading is 1000 becuase were using pigeon, so i dont want to use vision heading
         public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1000, 1000, 1000); //(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
+        
+        // Distance from the center of the field, used for getIsolatedTagPose()
+        public static final double ISOLATEDTAGXOFFSET = 7.24;
+
+        public static final double ISOLATEDTAGYOFFSET = 1.07;
+        
     }
 
     // Constants for the lift
