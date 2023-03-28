@@ -66,7 +66,11 @@ public class LimelightBack extends SubsystemBase {
                         new Pair<String, Object>(limelightName + "Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
                         new Pair<String, Object>(limelightName + "Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
                         new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
-                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()));
+                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()),
+                        new Pair<String, Object>(limelightName + "isolated tag pose TX", (DoubleSupplier) () -> getIsolatedTagPose()[0]),
+                        new Pair<String, Object>(limelightName + "isolated tag pose TY", (DoubleSupplier) () -> getIsolatedTagPose()[1]),
+                        new Pair<String, Object>(limelightName + "isolated tag pose TZ", (DoubleSupplier) () -> getIsolatedTagPose()[2]),
+                        new Pair<String, Object>(limelightName + "isolated tag num", (DoubleSupplier) () -> (double) getTagNum()));
 
     }
 
@@ -104,13 +108,30 @@ public class LimelightBack extends SubsystemBase {
         return robotPose;
     }
     
-    public double getTagNum(){
+    public int getTagNum(){
         if(hasVision()){
-            double tagID = LimelightHelpers.getFiducialID(limelightName);
+            int tagID = (int) LimelightHelpers.getFiducialID(limelightName);
             return tagID;
         }
         else{
             return 0;
+        }
+    }
+
+
+    public Double[] getIsolatedTagPose(){
+        if (hasVision()){
+            // Pose2d botPose = new Pose2d();
+            Double[] pose = LimelightHelpers.parseLimeLightData(LimelightHelpers.getJSONDump(limelightName), getTagNum());
+            // botPose = new Pose2d(new Translation2d(pose[0] - cameraPose.getX(), pose[1] - cameraPose.getY()), Rotation2d.fromDegrees(pose[5]));
+
+            pose[0] += VisionConstants.ISOLATEDTAGXOFFSET;
+            pose[1] += VisionConstants.ISOLATEDTAGYOFFSET;
+
+            return pose;
+            
+        } else {
+            return null;
         }
     }
 
