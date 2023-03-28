@@ -343,7 +343,7 @@ public class Drivetrain extends SubsystemBase {
             double latency = 0;
             if (limelightFront.hasVision()) {
                 if(aprilTagTarget > 0){
-                    visionPose2d = limelightFront.getRobotPose();
+                    visionPose2d = limelightFront.getRobotPose(aprilTagTarget);
                     latency = limelightFront.getLatencyBotPoseBlue();
                 } else{
                     visionPose2d = limelightFront.getRobotPose();
@@ -351,7 +351,7 @@ public class Drivetrain extends SubsystemBase {
                 }
             } else if (limelightBack.hasVision()) {
                 if(aprilTagTarget > 0){
-                    visionPose2d = limelightFront.getRobotPose();
+                    visionPose2d = limelightFront.getRobotPose(aprilTagTarget);
                     latency = limelightFront.getLatencyBotPoseBlue();
                 } else{
                 visionPose2d = limelightBack.getRobotPose();
