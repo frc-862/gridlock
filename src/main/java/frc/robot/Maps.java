@@ -28,9 +28,8 @@ import frc.thunder.vision.VisionBase;
 public class Maps {
 
     /**
-     * The general Hash map for all paths. 
-     * Has most calls needed for the paths to run.
-     * NEED TO FIX score piece 
+     * The general Hash map for all paths. Has most calls needed for the paths to run. NEED TO FIX score
+     * piece
      * 
      * @param drivetrain
      * @param servoturn
@@ -46,14 +45,24 @@ public class Maps {
         eventMap.put("Ground-Collect-Cube", new RunCommand(() -> lift.setGoalState(LiftState.groundCube), lift).until(lift::goalReached));
         eventMap.put("High-Score-Cone", new RunCommand(() -> lift.setGoalState(LiftState.highConeScore), lift).until(lift::goalReached));
         eventMap.put("High-Score-Cube", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
-        eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));   
+        eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
         eventMap.put("Stop-Collect", new InstantCommand(() -> collector.stop(), collector));
         eventMap.put("Collect", new InstantCommand(() -> collector.setPower(1d))); //TODO: switch until to be until piece
-        eventMap.put("Hold-Power", new InstantCommand(() -> collector.setPower(CollectorConstants.HOLD_POWER)));
+        eventMap.put("Hold-Power", new InstantCommand(() -> collector.setPower(CollectorConstants.HOLD_POWER_CUBE)));
         eventMap.put("Score", new InstantCommand(() -> collector.setPower(-1d))); //TODO: switch until to be until no piece
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
         eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
         eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));
+        eventMap.put("Tag1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));
+        eventMap.put("Tag2", new InstantCommand(() -> drivetrain.setAprilTagTarget(2)));
+        eventMap.put("Tag3", new InstantCommand(() -> drivetrain.setAprilTagTarget(3)));
+        eventMap.put("Tag4", new InstantCommand(() -> drivetrain.setAprilTagTarget(4)));
+        eventMap.put("Tag5", new InstantCommand(() -> drivetrain.setAprilTagTarget(5)));
+        eventMap.put("Tag6", new InstantCommand(() -> drivetrain.setAprilTagTarget(6)));
+        eventMap.put("Tag7", new InstantCommand(() -> drivetrain.setAprilTagTarget(7)));
+        eventMap.put("Tag8", new InstantCommand(() -> drivetrain.setAprilTagTarget(8)));
+        eventMap.put("ResetTag", new InstantCommand(() -> drivetrain.setAprilTagTargetAll()));
+
         return eventMap;
     }
 }
