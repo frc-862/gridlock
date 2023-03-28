@@ -18,7 +18,8 @@
       "stopEvent": {
         "names": [
           "High-Score-Cube",
-          "Hold-Power"
+          "Hold-Power",
+          "Turn-On-Vison"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
@@ -45,7 +46,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Piece"
+          "Score"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "deadline",

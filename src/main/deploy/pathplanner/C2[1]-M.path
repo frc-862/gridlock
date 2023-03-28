@@ -10,7 +10,7 @@
         "x": 2.8499999999999988,
         "y": 1.0
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -21,7 +21,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
-        "waitTime": 2.0
+        "waitTime": 0.5
       }
     },
     {
@@ -34,7 +34,7 @@
         "y": 1.0
       },
       "nextControl": null,
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,

@@ -17,11 +17,12 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Piece-Servo"
+          "Score-Piece-Servo",
+          "Turn-On-Vison"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
-        "waitTime": 2.0
+        "waitTime": 0.5
       }
     },
     {
