@@ -4,12 +4,16 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import javax.accessibility.AccessibleHyperlink;
+
 import org.apache.commons.lang3.Range;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
+import frc.thunder.vision.VisionBase;
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.MathUsageId;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -35,6 +39,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DrivetrainConstants;
@@ -43,6 +49,8 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
+import frc.thunder.LightningRobot;
+import frc.thunder.auto.Autonomous;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.limelightlib.LimelightHelpers;
@@ -67,6 +75,9 @@ public class Drivetrain extends SubsystemBase {
             new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
             // Back right
             new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
+
+    //Target to focus on
+    private int aprilTagTarget = -1;
 
     // Creating new pigeon2 IMU
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
@@ -326,38 +337,60 @@ public class Drivetrain extends SubsystemBase {
         // }
     }
 
-    public void resetPigeonYaw(Rotation2d yaw) {
-        // setYaw(yaw.getDegrees());
-    }
-
     public void updateVision() {
-        if (doVisionUpdate) {
+        if (VisionBase.isVisionEnabled()) {
             Pose2d visionPose2d = null;
-            if (limelightBack.hasVision() && Range.between(-90d, 90d).contains(getHeading().getDegrees())) {
-                visionPose2d = limelightBack.getRobotPose();
+            double latency = 0;
+            if (limelightFront.hasVision()) {
+                if(aprilTagTarget > 0){
+                    visionPose2d = limelightFront.getRobotPose();
+                    latency = limelightFront.getLatencyBotPoseBlue();
+                } else{
+                    visionPose2d = limelightFront.getRobotPose();
+                    latency = limelightFront.getLatencyBotPoseBlue();
+                }
             } else if (limelightBack.hasVision()) {
-                visionPose2d = limelightFront.getRobotPose();
+                if(aprilTagTarget > 0){
+                    visionPose2d = limelightFront.getRobotPose();
+                    latency = limelightFront.getLatencyBotPoseBlue();
+                } else{
+                visionPose2d = limelightBack.getRobotPose();
+                latency = limelightBack.getLatencyBotPoseBlue();
+                }
             }
-            if (visionPose2d == null || visionPose2d.getX() > 3 || visionPose2d.getY() > 4 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {// if (visionPose2d.getX() > 20 || visionPose2d.getY() > 10 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
+
+            if (visionPose2d == null || visionPose2d.getX() > 4.5 || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
                 return;
             }
 
             double currTime = Timer.getFPGATimestamp();
             LightningShuffleboard.setDouble("Drivetrain", "Velocity between points", pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime));
             if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
-                // if(visionPose[0] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND || visionPose[1] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
                 return;
             }
 
-            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - limelightBack.getLatencyBotPoseBlue());
-            pose = poseEstimator.getEstimatedPosition();
+                poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
+                pose = poseEstimator.getEstimatedPosition();
 
-            lastKnownGoodVisionX = visionPose2d.getX();
-            lastKnownGoodVisionY = visionPose2d.getY();
-            lastTime = currTime;
+                lastKnownGoodVisionX = visionPose2d.getX();
+                lastKnownGoodVisionY = visionPose2d.getY();
+                lastTime = currTime;
+            
 
             LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
         }
+    }
+
+    /**
+     * ta
+     * @param tag
+     */
+    public void setAprilTagTarget(int tag){
+        aprilTagTarget = tag;
+    }
+
+    public void setAprilTagTargetAll(){
+        aprilTagTarget = -1;
     }
 
     /**
@@ -446,7 +479,6 @@ public class Drivetrain extends SubsystemBase {
      */
     public Rotation2d getYaw2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
-        // return Rotation2d.fromDegrees(90);
     }
 
     /**
@@ -522,7 +554,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
+        // poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
     }
 
     /**

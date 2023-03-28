@@ -17,11 +17,12 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Piece-Servo"
+          "Score-Piece-Servo",
+          "Turn-On-Vision"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "after",
+        "waitTime": 0.5
       }
     },
     {
@@ -69,12 +70,12 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Piece",
-          "Stow"
+          "Stow",
+          "Hold-Power"
         ],
-        "executionBehavior": "sequential",
-        "waitBehavior": "after",
-        "waitTime": 5.0
+        "executionBehavior": "parallelDeadline",
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     },
     {
@@ -122,12 +123,39 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Piece",
-          "Stow"
+          "Score"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
-        "waitTime": 5.0
+        "waitBehavior": "deadline",
+        "waitTime": 0.5
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.65,
+        "y": 2.75
+      },
+      "prevControl": {
+        "x": 2.1250189692083525,
+        "y": 2.751757030675808
+      },
+      "nextControl": {
+        "x": 3.1749810307916473,
+        "y": 2.748242969324192
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Stow",
+          "Stop-Collect"
+        ],
+        "executionBehavior": "parallelDeadline",
+        "waitBehavior": "minimum",
+        "waitTime": 1.5
       }
     },
     {
@@ -136,11 +164,11 @@
         "y": 2.75
       },
       "prevControl": {
-        "x": 2.4750189692083526,
-        "y": 2.751757030675808
+        "x": 3.237968174712771,
+        "y": 2.723399949204017
       },
       "nextControl": null,
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -157,15 +185,21 @@
   ],
   "markers": [
     {
-      "position": 1.2363636363635497,
+      "position": 0.9818181818181936,
       "names": [
         "Ground-Collect-Cube"
       ]
     },
     {
-      "position": 3.781818181817987,
+      "position": 3.672727272727301,
       "names": [
         "High-Score-Cube"
+      ]
+    },
+    {
+      "position": 1.1636363636363076,
+      "names": [
+        "Collect"
       ]
     }
   ]

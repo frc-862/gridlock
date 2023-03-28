@@ -17,9 +17,10 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Piece-Servo"
+          "Score-Piece-Servo",
+          "Turn-On-Vision"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "after",
         "waitTime": 0.0
       }

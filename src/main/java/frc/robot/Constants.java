@@ -191,8 +191,8 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final String FRONT_NAME = "limelight-front";
         public static final String BACK_NAME = "limelight-back";
-        public static final Pose3d FRONT_POSE = new Pose3d(0.28, 0.1, 0.72, new Rotation3d(0, 0, 0));
-        public static final Pose3d BACK_POSE = new Pose3d(0.28, 0.1, 0.83, new Rotation3d(0, 10, 180));
+        public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0));
+        public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180));
 
     }
 
@@ -255,7 +255,8 @@ public final class Constants {
     public static final class CollectorConstants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
-        public static final double HOLD_POWER = 0.25;
+        public static final double HOLD_POWER_CUBE = 0.25;
+        public static final double HOLD_POWER_CONE = 0.35;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
@@ -292,7 +293,7 @@ public final class Constants {
         public static final double TOLERANCE = 12d;
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = 121d;
+        public static final double MAX_ANGLE = 126d;
         public static final double MIN_ANGLE = -90d;
 
         // Min and Max power
@@ -302,7 +303,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -129.96d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -132.0d;
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees

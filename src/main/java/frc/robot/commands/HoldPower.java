@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Collector.GamePiece;
 
 public class HoldPower extends CommandBase {
     Collector collector;
@@ -34,7 +35,11 @@ public class HoldPower extends CommandBase {
             doHoldPower = false;
             power = input.getAsDouble();
         } else if (doHoldPower) {
-            power = CollectorConstants.HOLD_POWER;
+            if(collector.getGamePiece() == GamePiece.CUBE){
+                power = CollectorConstants.HOLD_POWER_CUBE;
+            } else{
+                power = CollectorConstants.HOLD_POWER_CONE;
+            }
         } else {
             power = 0;
         }
