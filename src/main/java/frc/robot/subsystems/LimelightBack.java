@@ -124,12 +124,18 @@ public class LimelightBack extends SubsystemBase {
             // Pose2d botPose = new Pose2d();
             Double[] pose = LimelightHelpers.parseLimeLightData(LimelightHelpers.getJSONDump(limelightName), getTagNum());
             // botPose = new Pose2d(new Translation2d(pose[0] - cameraPose.getX(), pose[1] - cameraPose.getY()), Rotation2d.fromDegrees(pose[5]));
-
-            pose[0] += VisionConstants.ISOLATEDTAGXOFFSET;
+            
+            if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
+                pose[0] += VisionConstants.ISOLATEDTAGXOFFSET;
+                // todo: add rotational offset for only blue alliance
+            } else if (Constants.ALLIANCE == DriverStation.Alliance.Red) {
+                pose[0] *= -1;
+                pose[0] += VisionConstants.ISOLATEDTAGXOFFSET;
+            }
             pose[1] += VisionConstants.ISOLATEDTAGYOFFSET;
 
             return pose;
-            
+
         } else {
             return null;
         }
