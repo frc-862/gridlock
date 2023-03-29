@@ -635,7 +635,7 @@ public class Drivetrain extends SubsystemBase {
 
         Rotation2d driveHeading = getDriveHeading(desiredPose.getX(), desiredPose.getY());
 
-        autoFactory.scheduleManualTrajectory(new PathConstraints(maxVel, maxAccell), getCurrentPathPoint(),
+        autoFactory.createManualTrajectory(new PathConstraints(maxVel, maxAccell), getCurrentPathPoint(),
                 new PathPoint(desiredPose.getTranslation(), driveHeading, desiredPose.getRotation()).withControlLengths(AutoAlignConstants.CONTROL_LENGTHS, AutoAlignConstants.CONTROL_LENGTHS));
 
     }
