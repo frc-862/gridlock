@@ -242,7 +242,7 @@ public final class Constants {
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap ARM_KF_MAP = new InterpolationMap() {
             {
-                put(-120d, -0.005d);
+                put(-135d, -0.005d);
                 put(-90d, 0d);
                 put(-45d, 0.005d);
                 put(10d, 0.02d);
@@ -278,7 +278,7 @@ public final class Constants {
 
         // Motor configuration constants
         public static final boolean MOTOR_INVERT = true;
-        public static final int CURRENT_LIMIT = 20;
+        public static final int CURRENT_LIMIT = 30;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
@@ -325,9 +325,12 @@ public final class Constants {
                 // put(90d, 0d);
                 // put(110d, 0d);
 
+                put(-90d, 0d);
                 put(-45d, -0.01d);
                 put(0d, 0.015d);
                 put(45d, 0.01d);
+                put(90d, 0d);
+
             }
         };
     }

@@ -190,8 +190,8 @@ public class Wrist extends SubsystemBase {
         // upController.setP(LightningShuffleboard.getDouble("Lift", "up wrist kP", WristConstants.UP_kP));
         // downController.setP(LightningShuffleboard.getDouble("Lift", "down wrist kP", WristConstants.DOWN_kP));
 
-        // upController.setD(LightningShuffleboard.getDouble("Lift", "wrist up D", WristConstants.kD));
-        // downController.setD(LightningShuffleboard.getDouble("Lift", "wrist down D", WristConstants.kD));
+        // upController.setD(LightningShuffleboard.getDouble("Lift", "wrist up D", WristConstants.UP_kD));
+        // downController.setD(LightningShuffleboard.getDouble("Lift", "wrist down D", WristConstants.DOWN_kD));
 
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", -90)));
 
