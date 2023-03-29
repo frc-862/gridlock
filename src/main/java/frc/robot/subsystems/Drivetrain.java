@@ -337,6 +337,8 @@ public class Drivetrain extends SubsystemBase {
         // }
     }
 
+    private boolean firstTime = true;
+    
     public void updateVision() {
         if (VisionBase.isVisionEnabled()) {
             Pose2d visionPose2d = null;
@@ -348,14 +350,22 @@ public class Drivetrain extends SubsystemBase {
                 } else{
                     visionPose2d = limelightFront.getRobotPose();
                     latency = limelightFront.getLatencyBotPoseBlue();
+                    if(firstTime){
+                        setInitialPose(visionPose2d);
+                        firstTime = false;
+                    }
                 }
             } else if (limelightBack.hasVision()) {
                 if(aprilTagTarget > 0){
                     visionPose2d = limelightFront.getRobotPose();
                     latency = limelightFront.getLatencyBotPoseBlue();
                 } else{
-                visionPose2d = limelightBack.getRobotPose();
-                latency = limelightBack.getLatencyBotPoseBlue();
+                    visionPose2d = limelightBack.getRobotPose();
+                    latency = limelightBack.getLatencyBotPoseBlue();
+                    if(firstTime){
+                        setInitialPose(visionPose2d);
+                        firstTime = false;
+                    }
                 }
             }
 
