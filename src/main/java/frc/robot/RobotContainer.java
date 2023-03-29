@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.AutoAlignConstants.SlotPosition;
 import frc.robot.commands.AutoBalance;
+import frc.robot.commands.AutoScore;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Collect;
 import frc.robot.commands.SwerveDrive;
@@ -72,7 +73,7 @@ public class RobotContainer extends LightningContainer {
     // Creates our controllers and deadzones
     private static final XboxController driver = new XboxController(ControllerConstants.DRIVER_CONTROLLER_PORT);
     private static final XboxController copilot = new XboxController(ControllerConstants.COPILOT_CONTROLLER_PORT);
-    // private static final Joystick buttonPad = new Joystick(ControllerConstants.BUTTON_PAD_CONTROLLER_PORT);
+    private static final Joystick buttonPad = new Joystick(ControllerConstants.BUTTON_PAD_CONTROLLER_PORT);
 
     // creates Autonomous Command
     private static final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(drivetrain::getPose, drivetrain::resetOdometry, drivetrain.getDriveKinematics(),
@@ -84,7 +85,6 @@ public class RobotContainer extends LightningContainer {
         // RESETS
         new Trigger(driver::getBackButton).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
         // new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.setHeading(180)));
-        new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(2, 7, Rotation2d.fromDegrees(0)))));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
@@ -92,22 +92,25 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getRightBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
         new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
 
-        new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.getPathPoint(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+        new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.moveToDesiredPose(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+
+        new Trigger(driver::getBButton).whileTrue(new AutoScore(drivetrain, collector, lift, autoFactory));
 
         // SET DRIVE PODS TO 45
         // new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
 
         //AUTO ALIGN
-        // new Trigger(() -> buttonPad.getRawButton(5)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_1_POSE)));
-        // new Trigger(() -> buttonPad.getRawButton(3)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_2_POSE)));
-        // new Trigger(() -> buttonPad.getRawButton(4)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_3_POSE)));
-        // new Trigger(() -> buttonPad.getRawButton(6)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_4_POSE)));
-        // new Trigger(() -> buttonPad.getRawAxis(2) > 0.5).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_5_POSE)));
-        // new Trigger(() -> buttonPad.getRawButton(1)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_6_POSE)));
-        // new Trigger(() -> buttonPad.getRawButton(2)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_7_POSE)));
-        // new Trigger(() -> buttonPad.getRawAxis(3) > 0.5).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_8_POSE)));
-        // new Trigger(() -> buttonPad.getRawButton(7)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_8_POSE)));
-        //SERVO
+        new Trigger(() -> buttonPad.getRawButton(1)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_1_POSE)));
+        new Trigger(() -> buttonPad.getRawButton(2)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_2_POSE)));
+        new Trigger(() -> buttonPad.getRawButton(3)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_3_POSE)));
+        new Trigger(() -> buttonPad.getRawButton(4)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_4_POSE)));
+        new Trigger(() -> buttonPad.getRawButton(5)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_5_POSE)));
+        new Trigger(() -> buttonPad.getRawButton(6)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_6_POSE)));
+        new Trigger(() -> buttonPad.getRawButton(7)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_7_POSE)));
+        new Trigger(() -> buttonPad.getRawButton(8)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_8_POSE)));
+        new Trigger(() -> buttonPad.getRawButton(9)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_9_POSE)));
+
+        // SERVO
         new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
         new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_STOW)));
 
@@ -141,7 +144,7 @@ public class RobotContainer extends LightningContainer {
         // COLLECTOR
         new Trigger(() -> (Math.abs(copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1)).onTrue(new HoldPower(collector,
                 () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND)));
-        
+
         //DISABLE LIFT
         new Trigger(() -> copilot.getStartButton() && copilot.getBackButton())
                 .onTrue(new SequentialCommandGroup(new InstantCommand(wrist::disableWrist), new InstantCommand(arm::disableArm), new InstantCommand(elevator::disableEle)));
@@ -158,8 +161,7 @@ public class RobotContainer extends LightningContainer {
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
         autoFactory.makeTrajectory("A1[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Bit silly NOT tested
-        autoFactory.makeTrajectory("A2[3]-M-NEW", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(3,2)); // NOT tested 2 low 1 high
+        autoFactory.makeTrajectory("A2[3]-M-NEW", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), new PathConstraints(3, 2)); // NOT tested 2 low 1 high
         autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
         autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),

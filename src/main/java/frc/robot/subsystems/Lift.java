@@ -165,6 +165,12 @@ public class Lift extends SubsystemBase {
         return lastKnownGoodWristSetPoint;
     }
 
+    public void stop() {
+        elevator.stop();
+        arm.stop();
+        wrist.stop();
+    }
+
     @Override
     public void periodic() {
 
