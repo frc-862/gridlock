@@ -14,13 +14,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.LimelightBack;
 import frc.robot.subsystems.LimelightFront;
 
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Collector.GamePiece;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.LimelightBack;
 import frc.robot.subsystems.ServoTurn;
 import frc.robot.subsystems.Wrist;
 // import frc.robot.subsystems.ShuffleBoard;
@@ -141,7 +141,7 @@ public class RobotContainer extends LightningContainer {
         // COLLECTOR
         new Trigger(() -> (Math.abs(copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1)).onTrue(new HoldPower(collector,
                 () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND)));
-        
+
         //DISABLE LIFT
         new Trigger(() -> copilot.getStartButton() && copilot.getBackButton())
                 .onTrue(new SequentialCommandGroup(new InstantCommand(wrist::disableWrist), new InstantCommand(arm::disableArm), new InstantCommand(elevator::disableEle)));
@@ -158,8 +158,7 @@ public class RobotContainer extends LightningContainer {
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
         autoFactory.makeTrajectory("A1[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Bit silly NOT tested
-        autoFactory.makeTrajectory("A2[3]-M-NEW", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(3,2)); // NOT tested 2 low 1 high
+        autoFactory.makeTrajectory("A2[3]-M-NEW", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), new PathConstraints(3, 2)); // NOT tested 2 low 1 high
         autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
         autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),

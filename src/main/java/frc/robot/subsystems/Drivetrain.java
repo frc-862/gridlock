@@ -338,31 +338,31 @@ public class Drivetrain extends SubsystemBase {
     }
 
     private boolean firstTime = true;
-    
+
     public void updateVision() {
         if (VisionBase.isVisionEnabled()) {
             Pose2d visionPose2d = null;
             double latency = 0;
             if (limelightFront.hasVision()) {
-                if(aprilTagTarget > 0){
+                if (aprilTagTarget > 0) {
                     visionPose2d = limelightFront.getRobotPose();
                     latency = limelightFront.getLatencyBotPoseBlue();
-                } else{
+                } else {
                     visionPose2d = limelightFront.getRobotPose();
                     latency = limelightFront.getLatencyBotPoseBlue();
-                    if(firstTime){
+                    if (firstTime) {
                         setInitialPose(visionPose2d);
                         firstTime = false;
                     }
                 }
             } else if (limelightBack.hasVision()) {
-                if(aprilTagTarget > 0){
+                if (aprilTagTarget > 0) {
                     visionPose2d = limelightFront.getRobotPose();
                     latency = limelightFront.getLatencyBotPoseBlue();
-                } else{
+                } else {
                     visionPose2d = limelightBack.getRobotPose();
                     latency = limelightBack.getLatencyBotPoseBlue();
-                    if(firstTime){
+                    if (firstTime) {
                         setInitialPose(visionPose2d);
                         firstTime = false;
                     }
@@ -379,13 +379,12 @@ public class Drivetrain extends SubsystemBase {
                 return;
             }
 
-                poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
-                pose = poseEstimator.getEstimatedPosition();
+            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
+            pose = poseEstimator.getEstimatedPosition();
 
-                lastKnownGoodVisionX = visionPose2d.getX();
-                lastKnownGoodVisionY = visionPose2d.getY();
-                lastTime = currTime;
-            
+            lastKnownGoodVisionX = visionPose2d.getX();
+            lastKnownGoodVisionY = visionPose2d.getY();
+            lastTime = currTime;
 
             LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
         }
@@ -393,13 +392,14 @@ public class Drivetrain extends SubsystemBase {
 
     /**
      * ta
+     * 
      * @param tag
      */
-    public void setAprilTagTarget(int tag){
+    public void setAprilTagTarget(int tag) {
         aprilTagTarget = tag;
     }
 
-    public void setAprilTagTargetAll(){
+    public void setAprilTagTargetAll() {
         aprilTagTarget = -1;
     }
 
