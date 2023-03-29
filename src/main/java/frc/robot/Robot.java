@@ -1,6 +1,8 @@
 package frc.robot;
 
+import frc.robot.Constants.LimelightConstants;
 import frc.thunder.LightningRobot;
+import frc.thunder.limelightlib.LimelightHelpers;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -12,6 +14,12 @@ public class Robot extends LightningRobot {
 
     public Robot() {
         super(new RobotContainer());
+    }
+
+    @Override 
+    public void teleopInit(){
+        LimelightHelpers.setPipelineIndex(LimelightConstants.BACK_NAME, 0);
+        LimelightHelpers.setPipelineIndex(LimelightConstants.FRONT_NAME, 0);
     }
 
 }

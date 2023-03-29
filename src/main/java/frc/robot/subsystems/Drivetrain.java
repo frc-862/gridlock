@@ -32,6 +32,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -231,7 +232,7 @@ public class Drivetrain extends SubsystemBase {
     public void drive(ChassisSpeeds chassisSpeeds) {
         outputChassisSpeeds = chassisSpeeds;
 
-        // If we havent updated the heading last known good heading, update it
+        // If we havent u    pdated the heading last known good heading, update it
         // if (!updatedHeading) {
         //     lastGoodheading = pose.getRotation().getDegrees();
         //     updatedHeading = true;
@@ -344,28 +345,18 @@ public class Drivetrain extends SubsystemBase {
             Pose2d visionPose2d = null;
             double latency = 0;
             if (limelightFront.hasVision()) {
-                if (aprilTagTarget > 0) {
-                    visionPose2d = limelightFront.getRobotPose();
-                    latency = limelightFront.getLatencyBotPoseBlue();
-                } else {
-                    visionPose2d = limelightFront.getRobotPose();
-                    latency = limelightFront.getLatencyBotPoseBlue();
-                    if (firstTime) {
-                        setInitialPose(visionPose2d);
-                        firstTime = false;
-                    }
+                visionPose2d = limelightFront.getRobotPose();
+                latency = limelightFront.getLatencyBotPoseBlue();
+                if (firstTime) {
+                    setInitialPose(visionPose2d);
+                    firstTime = false;
                 }
             } else if (limelightBack.hasVision()) {
-                if (aprilTagTarget > 0) {
-                    visionPose2d = limelightFront.getRobotPose();
-                    latency = limelightFront.getLatencyBotPoseBlue();
-                } else {
-                    visionPose2d = limelightBack.getRobotPose();
-                    latency = limelightBack.getLatencyBotPoseBlue();
-                    if (firstTime) {
-                        setInitialPose(visionPose2d);
-                        firstTime = false;
-                    }
+                visionPose2d = limelightBack.getRobotPose();
+                latency = limelightBack.getLatencyBotPoseBlue();
+                if (firstTime) {
+                    setInitialPose(visionPose2d);
+                    firstTime = false;
                 }
             }
 
@@ -393,14 +384,21 @@ public class Drivetrain extends SubsystemBase {
     /**
      * ta
      * 
-     * @param tag
+     * @param pos Pos of tag 1 at C nodes
      */
-    public void setAprilTagTarget(int tag) {
-        aprilTagTarget = tag;
+    public void setAprilTagTarget(int pos) {
+        if(DriverStation.getAlliance() == Alliance.Blue){
+            pos += 6;
+        } else {
+            pos += 3;
+        }
+        limelightBack.setPipelineNum(pos);
+        limelightFront.setPipelineNum(pos);
     }
 
     public void setAprilTagTargetAll() {
-        aprilTagTarget = -1;
+        limelightBack.setPipelineNum(0);
+        limelightFront.setPipelineNum(0);
     }
 
     /**
