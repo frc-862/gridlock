@@ -18,7 +18,8 @@
       "stopEvent": {
         "names": [
           "Score-Piece-Servo",
-          "Turn-On-Vison"
+          "Turn-On-Vison",
+          "Pos3"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
