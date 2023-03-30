@@ -53,14 +53,9 @@ public class Maps {
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
         eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
         eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));
-        eventMap.put("Tag1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));
-        eventMap.put("Tag2", new InstantCommand(() -> drivetrain.setAprilTagTarget(2)));
-        eventMap.put("Tag3", new InstantCommand(() -> drivetrain.setAprilTagTarget(3)));
-        eventMap.put("Tag4", new InstantCommand(() -> drivetrain.setAprilTagTarget(4)));
-        eventMap.put("Tag5", new InstantCommand(() -> drivetrain.setAprilTagTarget(5)));
-        eventMap.put("Tag6", new InstantCommand(() -> drivetrain.setAprilTagTarget(6)));
-        eventMap.put("Tag7", new InstantCommand(() -> drivetrain.setAprilTagTarget(7)));
-        eventMap.put("Tag8", new InstantCommand(() -> drivetrain.setAprilTagTarget(8)));
+        eventMap.put("Pos1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));
+        eventMap.put("Pos2", new InstantCommand(() -> drivetrain.setAprilTagTarget(2)));
+        eventMap.put("Pos3", new InstantCommand(() -> drivetrain.setAprilTagTarget(3)));
         eventMap.put("ResetTag", new InstantCommand(() -> drivetrain.setAprilTagTargetAll()));
 
         return eventMap;

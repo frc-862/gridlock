@@ -16,7 +16,6 @@ import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
  * The elevator subsystem

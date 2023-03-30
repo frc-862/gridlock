@@ -32,6 +32,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -317,25 +318,25 @@ public class Drivetrain extends SubsystemBase {
         // }
     }
 
+    private boolean firstTime = true;
+
     public void updateVision() {
         if (VisionBase.isVisionEnabled()) {
             Pose2d visionPose2d = null;
             double latency = 0;
             if (limelightFront.hasVision()) {
-                if (aprilTagTarget > 0) {
-                    visionPose2d = limelightFront.getRobotPose(aprilTagTarget);
-                    latency = limelightFront.getLatencyBotPoseBlue();
-                } else {
-                    visionPose2d = limelightFront.getRobotPose();
-                    latency = limelightFront.getLatencyBotPoseBlue();
+                visionPose2d = limelightFront.getRobotPose();
+                latency = limelightFront.getLatencyBotPoseBlue();
+                if (firstTime) {
+                    setInitialPose(visionPose2d);
+                    firstTime = false;
                 }
             } else if (limelightBack.hasVision()) {
-                if (aprilTagTarget > 0) {
-                    visionPose2d = limelightFront.getRobotPose(aprilTagTarget);
-                    latency = limelightFront.getLatencyBotPoseBlue();
-                } else {
-                    visionPose2d = limelightBack.getRobotPose();
-                    latency = limelightBack.getLatencyBotPoseBlue();
+                visionPose2d = limelightBack.getRobotPose();
+                latency = limelightBack.getLatencyBotPoseBlue();
+                if (firstTime) {
+                    setInitialPose(visionPose2d);
+                    firstTime = false;
                 }
             }
 
@@ -363,14 +364,21 @@ public class Drivetrain extends SubsystemBase {
     /**
      * ta
      * 
-     * @param tag
+     * @param pos Pos of tag 1 at C nodes
      */
-    public void setAprilTagTarget(int tag) {
-        aprilTagTarget = tag;
+    public void setAprilTagTarget(int pos) {
+        if(DriverStation.getAlliance() == Alliance.Blue){
+            pos += 6;
+        } else {
+            pos += 3;
+        }
+        limelightBack.setPipelineNum(pos);
+        limelightFront.setPipelineNum(pos);
     }
 
     public void setAprilTagTargetAll() {
-        aprilTagTarget = -1;
+        limelightBack.setPipelineNum(0);
+        limelightFront.setPipelineNum(0);
     }
 
     /**
