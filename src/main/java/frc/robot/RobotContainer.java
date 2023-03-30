@@ -56,8 +56,8 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final LimelightFront frontLimelight = new LimelightFront();
-    private static final LimelightBack backLimelight = new LimelightBack();
+    private static final LimelightFront frontLimelight = new LimelightFront(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
+    private static final LimelightBack backLimelight = new LimelightBack(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
 
     // Creating our main subsystems
     private static final Drivetrain drivetrain = new Drivetrain(backLimelight, frontLimelight);
