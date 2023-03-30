@@ -495,27 +495,29 @@ public final class Constants {
     public static final class AutoAlignConstants {
 
         public static final class BluePoints {
-            public static final Pose2d SLOT_1_POSE = new Pose2d(2.6, 5.0, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_2_POSE = new Pose2d(2.6, 4.45, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_3_POSE = new Pose2d(2.6, 3.9, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_4_POSE = new Pose2d(2.6, 3.35, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_5_POSE = new Pose2d(2.6, 2.75, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_6_POSE = new Pose2d(2.6, 2.2, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_7_POSE = new Pose2d(2.6, 1.65, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_8_POSE = new Pose2d(2.6, 1.1, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_9_POSE = new Pose2d(2.6, 0.55, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_1_POSE = new Pose2d(2.44, 4.9, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_2_POSE = new Pose2d(2.44, 4.35, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_3_POSE = new Pose2d(2.44, 3.8, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_4_POSE = new Pose2d(2.44, 3.25, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_5_POSE = new Pose2d(2.44, 2.7, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_6_POSE = new Pose2d(2.44, 2.15, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_7_POSE = new Pose2d(2.44, 1.6, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_8_POSE = new Pose2d(2.44, 1.05, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_9_POSE = new Pose2d(2.44, 0.5, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_10_POSE = new Pose2d(14.23, 2.65, Rotation2d.fromDegrees(90));
         }
 
         public static final class RedPoints {
-            public static final Pose2d SLOT_1_POSE = new Pose2d(2.6, 0.55, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_2_POSE = new Pose2d(2.6, 1.1, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_3_POSE = new Pose2d(2.6, 1.65, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_4_POSE = new Pose2d(2.6, 2.2, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_5_POSE = new Pose2d(2.6, 2.75, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_6_POSE = new Pose2d(2.6, 3.35, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_7_POSE = new Pose2d(2.6, 3.9, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_8_POSE = new Pose2d(2.6, 4.45, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_9_POSE = new Pose2d(2.6, 5.0, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_10_POSE = new Pose2d(14.23, 0.9, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_9_POSE = new Pose2d(2.44, 4.9, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_8_POSE = new Pose2d(2.44, 4.35, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_7_POSE = new Pose2d(2.44, 3.8, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_6_POSE = new Pose2d(2.44, 3.25, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_5_POSE = new Pose2d(2.44, 2.7, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_4_POSE = new Pose2d(2.44, 2.15, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_3_POSE = new Pose2d(2.44, 1.6, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_2_POSE = new Pose2d(2.44, 1.05, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_1_POSE = new Pose2d(2.44, 0.5, Rotation2d.fromDegrees(-90));
         }
 
         public static enum SlotPosition {
