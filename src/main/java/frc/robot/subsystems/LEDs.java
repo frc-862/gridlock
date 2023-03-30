@@ -37,9 +37,10 @@ public class LEDs extends SubsystemBase {
     /**
      * Blinks the leds between green and the color of the specified piece
      * needs to be called in a loop
+     * 
      * @param pieceType the piece type
      */
-    public void hasPiece(GamePiece pieceType) {
+    public void isAligned(GamePiece pieceType) {
         if (pieceType == GamePiece.NONE){
             setColor(Color.kBlue);
         } else{

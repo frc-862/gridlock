@@ -91,6 +91,10 @@ public class Lift extends SubsystemBase {
         this.goalState = state;
     }
 
+    public LiftState getCurrentState() {
+        return currentState;
+    }
+
     /**
      * Checks if the all the components of lift are on target
      * 
@@ -159,6 +163,12 @@ public class Lift extends SubsystemBase {
 
     public double getLastKnownGoodWristSetPoint() {
         return lastKnownGoodWristSetPoint;
+    }
+
+    public void stop() {
+        elevator.stop();
+        arm.stop();
+        wrist.stop();
     }
 
     @Override

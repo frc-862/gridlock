@@ -19,6 +19,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.commands.AutoScore;
 import frc.thunder.math.InterpolationMap;
 import frc.thunder.pathplanner.com.pathplanner.lib.auto.PIDConstants;
 import frc.thunder.swervelib.SdsModuleConfigurations;
@@ -437,12 +438,12 @@ public final class Constants {
 
         // Standard deviation for vision, heading is 1000 becuase were using pigeon, so i dont want to use vision heading
         public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1000, 1000, 1000); //(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
-        
+
         // Distance from the center of the field, used for getIsolatedTagPose()
         public static final double ISOLATEDTAGXOFFSET = 7.24;
 
         public static final double ISOLATEDTAGYOFFSET = 1.07;
-        
+
     }
 
     // Constants for the lift
@@ -494,27 +495,27 @@ public final class Constants {
     public static final class AutoAlignConstants {
 
         public static final class BluePoints {
-            public static final Pose2d SLOT_1_POSE = new Pose2d(2, 5.0, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_2_POSE = new Pose2d(2, 4.45, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_3_POSE = new Pose2d(2, 3.9, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_4_POSE = new Pose2d(2, 3.35, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_5_POSE = new Pose2d(2, 2.75, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_6_POSE = new Pose2d(2, 2.2, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_7_POSE = new Pose2d(2, 1.65, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_8_POSE = new Pose2d(2, 1.1, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_9_POSE = new Pose2d(2, 0.55, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_1_POSE = new Pose2d(2.6, 5.0, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_2_POSE = new Pose2d(2.6, 4.45, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_3_POSE = new Pose2d(2.6, 3.9, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_4_POSE = new Pose2d(2.6, 3.35, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_5_POSE = new Pose2d(2.6, 2.75, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_6_POSE = new Pose2d(2.6, 2.2, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_7_POSE = new Pose2d(2.6, 1.65, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_8_POSE = new Pose2d(2.6, 1.1, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_9_POSE = new Pose2d(2.6, 0.55, Rotation2d.fromDegrees(180));
         }
 
         public static final class RedPoints {
-            public static final Pose2d SLOT_1_POSE = new Pose2d(2, 0.55, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_2_POSE = new Pose2d(2, 1.1, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_3_POSE = new Pose2d(2, 1.65, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_4_POSE = new Pose2d(2, 2.2, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_5_POSE = new Pose2d(2, 2.75, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_6_POSE = new Pose2d(2, 3.35, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_7_POSE = new Pose2d(2, 3.9, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_8_POSE = new Pose2d(2, 4.45, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_9_POSE = new Pose2d(2, 5.0, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_1_POSE = new Pose2d(2.6, 0.55, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_2_POSE = new Pose2d(2.6, 1.1, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_3_POSE = new Pose2d(2.6, 1.65, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_4_POSE = new Pose2d(2.6, 2.2, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_5_POSE = new Pose2d(2.6, 2.75, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_6_POSE = new Pose2d(2.6, 3.35, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_7_POSE = new Pose2d(2.6, 3.9, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_8_POSE = new Pose2d(2.6, 4.45, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_9_POSE = new Pose2d(2.6, 5.0, Rotation2d.fromDegrees(180));
         }
 
         public static enum SlotPosition {
@@ -531,5 +532,11 @@ public final class Constants {
         //Log period auto align
         public static final double LOG_PERIOD = 0.25;
 
+    }
+
+    public static final class AutoScoreConstants {
+        public static enum ScoreingState {
+            setLift, moveToScore, score, moveToStow, stow
+        }
     }
 }
