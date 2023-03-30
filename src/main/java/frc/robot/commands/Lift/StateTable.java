@@ -29,7 +29,7 @@ public class StateTable {
 
     private static final double ELEVATOR_STOW_SAFE = 8d;
     private static final double ARM_STOW_SAFE = -105d;
-    private static final double WRIST_STOW_SAFE = 100;
+    private static final double WRIST_STOW_SAFE = 95;
 
     private static final double WRIST_SCORE_TO_COLLECT_SAFE = 0d;
 

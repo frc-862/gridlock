@@ -31,6 +31,7 @@ import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoScore;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Collect;
+import frc.robot.commands.EleUpInCommunity;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.HoldPower;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
@@ -94,7 +95,7 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.moveToDesiredPose(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
 
-        new Trigger(driver::getBButton).whileTrue(new AutoScore(drivetrain, collector, lift, autoFactory));
+        // new Trigger(driver::getBButton).whileTrue(new AutoScore(drivetrain, collector, lift, autoFactory));
 
         // SET DRIVE PODS TO 45
         // new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
@@ -212,6 +213,8 @@ public class RobotContainer extends LightningContainer {
         drivetrain.setDefaultCommand(new SwerveDrive(drivetrain, () -> MathUtil.applyDeadband(driver.getLeftX(), ControllerConstants.DEADBAND),
                 () -> MathUtil.applyDeadband(driver.getLeftY(), ControllerConstants.DEADBAND), () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.DEADBAND),
                 () -> driver.getRightTriggerAxis() > 0.25, () -> driver.getLeftTriggerAxis() > 0.25));
+
+        elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),
