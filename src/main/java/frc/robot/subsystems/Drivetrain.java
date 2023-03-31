@@ -418,10 +418,11 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
                 new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()), new Pair<String, Object>("max accell", (DoubleSupplier) () -> maxAccell),
-                new Pair<String, Object>("max vel", (DoubleSupplier) () -> maxVel), new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()));
+                new Pair<String, Object>("max vel", (DoubleSupplier) () -> maxVel), new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
+                new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
 
-        periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", DrivetrainConstants.LOG_PERIOD, new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
-
+        periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
+                new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
     }
 
     /**

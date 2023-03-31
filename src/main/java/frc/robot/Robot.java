@@ -110,7 +110,6 @@ public class Robot extends LightningRobot {
                 break;
 
             case "NONE":
-                System.out.println("michael you silly, silly goose");
                 VisionBase.disableVision();
                 break;
 
