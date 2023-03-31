@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.subsystems.Drivetrain;
@@ -11,6 +12,7 @@ public class EleUpInCommunity extends CommandBase {
     private Elevator elevator;
     private Lift lift;
     private Drivetrain drivetrain;
+    private double lastTime = 0;
 
     public EleUpInCommunity(Elevator elevator, Lift lift, Drivetrain drivetrain) {
         this.elevator = elevator;
@@ -25,12 +27,15 @@ public class EleUpInCommunity extends CommandBase {
 
     @Override
     public void execute() {
-        if(lift.getCurrentState() == LiftState.stowed && DriverStation.isTeleop()) {
+        double currentTime = Timer.getFPGATimestamp();
+        if(lift.getCurrentState() == LiftState.stowed && lift.getGoalState() != LiftState.stowed && DriverStation.isTeleop() && currentTime - lastTime >= 1) {
             if(drivetrain.getPose().getX() < 4) {
                 elevator.setExtension(4);
-            } else{
+            } else {
                 elevator.setExtension(2);
             }
+
+            lastTime = currentTime;
         }
     }
 

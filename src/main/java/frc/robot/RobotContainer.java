@@ -89,6 +89,12 @@ public class RobotContainer extends LightningContainer {
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
+        new Trigger(() -> driver.getPOV() == 0).onTrue(new InstantCommand(drivetrain::flipFR, drivetrain));
+        new Trigger(() -> driver.getPOV() == 180).onTrue(new InstantCommand(drivetrain::flipBL, drivetrain));
+        new Trigger(() -> driver.getPOV() == 90).onTrue(new InstantCommand(drivetrain::flipBR, drivetrain));
+        new Trigger(() -> driver.getPOV() == 270).onTrue(new InstantCommand(drivetrain::flipFL, drivetrain));
+
+
         // GAME PIECE SET
         new Trigger(driver::getRightBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
         new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
@@ -108,6 +114,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> buttonPad.getRawButton(7)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_7_POSE)));
         new Trigger(() -> buttonPad.getRawButton(8)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_8_POSE)));
         new Trigger(() -> buttonPad.getRawButton(9)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_9_POSE)));
+        new Trigger(() -> buttonPad.getRawButton(12)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_10_POSE)));
 
         // SERVO
         new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DEPLOY)));
@@ -153,8 +160,8 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void configureAutonomousCommands() {
         //Test paths 
-        autoFactory.makeTrajectory("TestVision", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        // autoFactory.makeTrajectory("TestVision", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // Game paths
         //A paths   
         autoFactory.makeTrajectory("A2[2]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
@@ -212,7 +219,7 @@ public class RobotContainer extends LightningContainer {
                 () -> MathUtil.applyDeadband(driver.getLeftY(), ControllerConstants.DEADBAND), () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.DEADBAND),
                 () -> driver.getRightTriggerAxis() > 0.25, () -> driver.getLeftTriggerAxis() > 0.25));
 
-        elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
+        // elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),

@@ -35,9 +35,6 @@ public final class Constants {
     // Path to the blackout directory
     public static final Path BLACKOUT_PATH = Paths.get("home/lvuser/blackout");
 
-    // Getting alliance form driverstation 
-    public static final DriverStation.Alliance ALLIANCE = DriverStation.getAlliance();
-
     // Check if we're on blackout
     public static final boolean isBlackout() {
         return BLACKOUT_PATH.toFile().exists();
@@ -88,7 +85,7 @@ public final class Constants {
         // Our max voltage, velocity, angular velocity, and angular acceleration
         public static final double MAX_VOLTAGE = 12;
         // public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
-        public static final double MAX_VELOCITY_METERS_PER_SECOND = 3.7;
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.5;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
         public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI / 5;
 
@@ -99,8 +96,8 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.18;
 
-        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.6;
-        public static final double SLOW_MODE_ROTATIONAL_MULT = 0.6;
+        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.5;
+        public static final double SLOW_MODE_ROTATIONAL_MULT = 0.5;
 
         // Pigeon heading offset 
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
@@ -228,7 +225,7 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 29.48;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -14.05d;
         public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
@@ -508,16 +505,16 @@ public final class Constants {
         }
 
         public static final class RedPoints {
-            public static final Pose2d SLOT_10_POSE = new Pose2d(14.23, 0.9, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_9_POSE = new Pose2d(2.44, 4.9, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_8_POSE = new Pose2d(2.44, 4.35, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_7_POSE = new Pose2d(2.44, 3.8, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_6_POSE = new Pose2d(2.44, 3.25, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_5_POSE = new Pose2d(2.44, 2.7, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_4_POSE = new Pose2d(2.44, 2.15, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_3_POSE = new Pose2d(2.44, 1.6, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_2_POSE = new Pose2d(2.44, 1.05, Rotation2d.fromDegrees(180));
-            public static final Pose2d SLOT_1_POSE = new Pose2d(2.44, 0.5, Rotation2d.fromDegrees(-90));
+            public static final Pose2d SLOT_10_POSE = new Pose2d(14.23, .09, Rotation2d.fromDegrees(-90));
+            public static final Pose2d SLOT_9_POSE = new Pose2d(2.44, 7.3, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_8_POSE = new Pose2d(2.44, 6.75, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_7_POSE = new Pose2d(2.44, 6.2, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_6_POSE = new Pose2d(2.44, 5.65, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_5_POSE = new Pose2d(2.44, 5.1, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_4_POSE = new Pose2d(2.44, 4.55, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_3_POSE = new Pose2d(2.44, 4.0, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_2_POSE = new Pose2d(2.44, 3.45, Rotation2d.fromDegrees(180));
+            public static final Pose2d SLOT_1_POSE = new Pose2d(2.44, 2.9, Rotation2d.fromDegrees(180));
         }
 
         public static enum SlotPosition {

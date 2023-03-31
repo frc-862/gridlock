@@ -95,6 +95,10 @@ public class Lift extends SubsystemBase {
         return currentState;
     }
 
+    public LiftState getGoalState() {
+        return goalState;
+    }
+
     /**
      * Checks if the all the components of lift are on target
      * 
