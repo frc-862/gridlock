@@ -409,17 +409,13 @@ public class Drivetrain extends SubsystemBase {
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", DrivetrainConstants.LOG_PERIOD, new Pair<String, Object>("Pigeon Yaw", (DoubleSupplier) () -> pigeon.getYaw()),
                 new Pair<String, Object>("roll", (DoubleSupplier) () -> pigeon.getRoll()), new Pair<String, Object>("pitch", (DoubleSupplier) () -> pigeon.getPitch()),
-                new Pair<String, Object>("odo X", (DoubleSupplier) () -> pose.getX()), new Pair<String, Object>("odo Y", (DoubleSupplier) () -> pose.getY()),
-                new Pair<String, Object>("odo Z", (DoubleSupplier) () -> pose.getRotation().getDegrees()),
                 new Pair<String, Object>("fl module position", (DoubleSupplier) () -> modulePositions[0].distanceMeters),
                 new Pair<String, Object>("fr module position", (DoubleSupplier) () -> modulePositions[1].distanceMeters),
                 new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
                 new Pair<String, Object>("br module position", (DoubleSupplier) () -> modulePositions[3].distanceMeters),
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
-                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()), new Pair<String, Object>("max accell", (DoubleSupplier) () -> maxAccell),
-                new Pair<String, Object>("max vel", (DoubleSupplier) () -> maxVel), new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
-                new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
+                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()));
 
         periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
                 new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
