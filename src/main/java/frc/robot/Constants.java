@@ -225,7 +225,7 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -14.05d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -98d;
         public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees

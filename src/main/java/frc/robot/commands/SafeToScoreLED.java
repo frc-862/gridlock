@@ -31,7 +31,7 @@ public class SafeToScoreLED extends CommandBase {
         GamePiece currPiece = collector.getGamePiece();
         
         if(Math.abs(position - 2.4) < .1){
-            leds.setColor(Color.kDarkGreen);
+            leds.setColor(Color.kDarkRed);
         } else{
             leds.wantsPiece(currPiece);
         }
