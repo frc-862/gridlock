@@ -30,7 +30,7 @@ public class SafeToScoreLED extends CommandBase {
         double position = drivetrain.getPose().getX();
         GamePiece currPiece = collector.getGamePiece();
         
-        if(Math.abs(position - 2.4) < .1){
+        if(Math.abs(position - 2.4) < .25){
             leds.setColor(Color.kDarkRed);
         } else{
             leds.wantsPiece(currPiece);
