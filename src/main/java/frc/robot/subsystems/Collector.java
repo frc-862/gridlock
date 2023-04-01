@@ -84,6 +84,10 @@ public class Collector extends SubsystemBase {
 
     }
 
+    public boolean isStalling(){
+        return motor.getOutputCurrent() > CollectorConstants.STALL_POWER;
+    }
+
     /**
      * Gets the game piece detected by the color sensor
      * 

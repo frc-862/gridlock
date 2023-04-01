@@ -258,6 +258,8 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
+        public static final double STALL_POWER = 35d;
+
         public static final double LOG_PERIOD = 0.22;
 
         // // Enum of possible game pieces
@@ -483,8 +485,8 @@ public final class Constants {
         // Max velocity and acceleration for the path planner
         public static final double MAX_VELOCITY = 2;
         public static final double MAX_ACCELERATION = 1;
-        public static final double SERVO_DEPLOY = 0.4;
-        public static final double SERVO_STOW = 0d;
+        public static final double SERVO_UP = 0d;
+        public static final double SERVO_DOWN = 0.4d;
 
     }
 

@@ -28,7 +28,7 @@ public class EleUpInCommunity extends CommandBase {
     @Override
     public void execute() {
         double currentTime = Timer.getFPGATimestamp();
-        if(lift.getCurrentState() == LiftState.stowed && lift.getGoalState() != LiftState.stowed && DriverStation.isTeleop() && currentTime - lastTime >= 1) {
+        if(lift.getCurrentState() == LiftState.stowed && lift.getGoalState() == LiftState.stowed && DriverStation.isTeleop() && currentTime - lastTime >= 1) {
             if(drivetrain.getPose().getX() < 4) {
                 elevator.setExtension(4);
             } else {
