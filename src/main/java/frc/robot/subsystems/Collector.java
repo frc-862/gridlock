@@ -74,14 +74,18 @@ public class Collector extends SubsystemBase {
     @SuppressWarnings("unchecked")
     private void initialiizeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Collector", CollectorConstants.LOG_PERIOD,
-                // new Pair<String, Object>("Collector motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
+                new Pair<String, Object>("Collector motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
                 // new Pair<String, Object>("Collector motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
-                new Pair<String, Object>("Collector motor controller output (amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("Collector motor controller output (amps)", (DoubleSupplier) () -> motor.getOutputCurrent()));
         // new Pair<String, Object>("Collector motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
         // new Pair<String, Object>("Color sensor proximity", (Supplier<Double>) () -> (double) colorSensor.getProximity()),
-        new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> getGamePiece().toString()));
+        // new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> getGamePiece().toString()));
         // new Pair<String, Object>("Color sensor confidence", (DoubleSupplier) () -> getConfidence()));
 
+    }
+
+    public boolean isStalling(){
+        return motor.getOutputCurrent() > CollectorConstants.STALL_POWER;
     }
 
     /**

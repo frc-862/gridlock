@@ -23,7 +23,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
-        "waitTime": 0.0
+        "waitTime": 0.75
       }
     },
     {

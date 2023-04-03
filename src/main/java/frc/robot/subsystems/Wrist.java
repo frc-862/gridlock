@@ -84,12 +84,13 @@ public class Wrist extends SubsystemBase {
     // Method to update the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Wrist", WristConstants.LOG_PERIOD, new Pair<String, Object>("Wrist Target Angle", (DoubleSupplier) () -> targetAngle),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Wrist", WristConstants.LOG_PERIOD, 
+                new Pair<String, Object>("Wrist Target Angle", (DoubleSupplier) () -> targetAngle),
                 new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
                 new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()));
-        new Pair<String, Object>("Wrist built-in encoder", (DoubleSupplier) () -> motor.getEncoder().getPosition());
+                new Pair<String, Object>("Wrist built-in encoder", (DoubleSupplier) () -> motor.getEncoder().getPosition());
         // new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
         // new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
     }

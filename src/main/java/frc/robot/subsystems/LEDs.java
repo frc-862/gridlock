@@ -28,10 +28,7 @@ public class LEDs extends SubsystemBase {
         leds.configAllSettings(ledConfig);
     }
 
-    @Override
-    public void periodic() {
-        wantsPiece(collector.getGamePiece());
-    }
+  
     
 
     /**
@@ -47,12 +44,12 @@ public class LEDs extends SubsystemBase {
             if ((System.currentTimeMillis() % 1000) < 500) {
                 setColor(Color.kGreen);
             } else{ 
-            setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kYellow);}
+            setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kGold);}
         }
     }
 
     public void wantsPiece(GamePiece pieceType){
-        setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kYellow);
+        setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kGold);
     }
 
     /**
