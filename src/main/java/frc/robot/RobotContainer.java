@@ -90,8 +90,8 @@ public class RobotContainer extends LightningContainer {
 
 
         // RESETS
-        new Trigger(driver::getBackButton).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-        new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.setYaw(180)));
+        new Trigger(() -> (driver.getBackButton() && driver.getStartButton())).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
+        // new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.setYaw(180)));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
