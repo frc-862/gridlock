@@ -605,6 +605,30 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
+     * Gets if it is in community
+     * 
+     * @return if in community or not
+     */
+    public boolean isInCommunity() {
+        if(DriverStation.getAlliance() == Alliance.Blue) {
+            if( (1.35 < pose.getX() && pose.getX() < 3.35) && (4.00 < pose.getY() && pose.getY() < 5.25) && // Box 1
+                (1.35 < pose.getX() && pose.getX() < 4.85) && (0.00 < pose.getY() && pose.getY() < 4.00) && // Box 2
+                (9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) && // Box 3
+                (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
+                    return true;
+            }
+        } else if(DriverStation.getAlliance() == Alliance.Red) { // TODO  
+            if( (1.35 < pose.getX() && pose.getX() < 3.35) && (4.00 < pose.getY() && pose.getY() < 5.25) && // Box 1
+                (1.35 < pose.getX() && pose.getX() < 4.85) && (0.00 < pose.getY() && pose.getY() < 4.00) && // Box 2
+                (9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) && // Box 3
+                (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */
     public void stop() {
