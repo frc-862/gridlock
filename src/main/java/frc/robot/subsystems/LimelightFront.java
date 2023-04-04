@@ -88,6 +88,15 @@ public class LimelightFront extends SubsystemBase {
     }
 
     /**
+     * Gets the distance from the seen tag
+     * 
+     * @return the distancce from the tag in meters
+     */
+    public double getTagDistance() {
+        return LimelightHelpers.getBotPose_TargetSpace(limelightName)[0];
+    }
+
+    /**
      * Gets the horizontal offset of the target from the center of the screen
      * 
      * @return double base on the horizontal FOV of the limelight
