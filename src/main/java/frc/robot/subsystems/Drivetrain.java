@@ -617,11 +617,11 @@ public class Drivetrain extends SubsystemBase {
                 (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
                     return true;
             }
-        } else if(DriverStation.getAlliance() == Alliance.Red) { // TODO  
-            if( (1.35 < pose.getX() && pose.getX() < 3.35) && (4.00 < pose.getY() && pose.getY() < 5.25) && // Box 1
-                (1.35 < pose.getX() && pose.getX() < 4.85) && (0.00 < pose.getY() && pose.getY() < 4.00) && // Box 2
-                (9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) && // Box 3
-                (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
+        } else if(DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
+            if( (1.35 < pose.getX() && pose.getX() < 3.35) && (2.77 < pose.getY() && pose.getY() < 4.02) && // Box 1
+                (1.35 < pose.getX() && pose.getX() < 4.85) && (4.02 < pose.getY() && pose.getY() < 8.02) && // Box 2
+                (9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) && // Box 3
+                (13.20 < pose.getX() && pose.getX() < 16.25) && (0.03 < pose.getY() && pose.getY() < 2.51)) { // Box 4
                     return true;
             }
         }
