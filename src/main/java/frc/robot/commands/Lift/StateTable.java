@@ -88,6 +88,7 @@ public class StateTable {
     // A map of all possible state transitions
     private static Map<LiftState, StateTransition> defaultTable = Map.of(
             LiftState.stowed, new StateTransition(ELEVATOR_STOWED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.armAndWristThenEle, LiftState.stowed),
+            LiftState.elevatorDeployed, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.armAndWristThenEle, LiftState.elevatorDeployed),
 
             LiftState.groundCube, new StateTransition(ELEVATOR_GROUND_CUBE_POS, Rotation2d.fromDegrees(ARM_GROUND_CUBE_ANGLE), Rotation2d.fromDegrees(WRIST_GROUND_CUBE_ANGLE), GROUND_CUBE_PLAN, LiftState.groundCube),
             LiftState.groundCone, new StateTransition(ELEVATOR_GROUND_CONE_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(WRIST_GROUND_CONE_ANGLE), GROUND_CONE_PLAN, LiftState.groundCone),
@@ -162,7 +163,9 @@ public class StateTable {
 
             Map.entry(LiftState.stowedCollect, stowCollectTable), 
             Map.entry(LiftState.stowedScore, stowScoreTable), 
-            Map.entry(LiftState.scoreToCollect, stowCollectTable));
+            Map.entry(LiftState.scoreToCollect, stowCollectTable),
+            Map.entry(LiftState.elevatorDeployed, defaultTable));
+            
 
     /**
      * Gets the state transition from the current state to the goal state
