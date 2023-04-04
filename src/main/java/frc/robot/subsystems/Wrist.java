@@ -34,7 +34,7 @@ public class Wrist extends SubsystemBase {
     private double OFFSET;
 
     // The target angle to be set to the wrist
-    private double targetAngle;
+    private double targetAngle = 30;
     private double currentAngle;
     private double minPower;
     private double PIDerror;
@@ -84,13 +84,12 @@ public class Wrist extends SubsystemBase {
     // Method to update the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Wrist", WristConstants.LOG_PERIOD, 
-                new Pair<String, Object>("Wrist Target Angle", (DoubleSupplier) () -> targetAngle),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Wrist", WristConstants.LOG_PERIOD, new Pair<String, Object>("Wrist Target Angle", (DoubleSupplier) () -> targetAngle),
                 new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
                 new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()));
-                new Pair<String, Object>("Wrist built-in encoder", (DoubleSupplier) () -> motor.getEncoder().getPosition());
+        new Pair<String, Object>("Wrist built-in encoder", (DoubleSupplier) () -> motor.getEncoder().getPosition());
         // new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
         // new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
     }
@@ -101,8 +100,10 @@ public class Wrist extends SubsystemBase {
      * @return Rotation2d of the wrist from encoder
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180));
+        // return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180));
         // return Rotation2d.fromDegrees(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET);
+
+        return Rotation2d.fromDegrees(targetAngle);
     }
 
     public Rotation2d getGroundRelativeAngle(Rotation2d armAngle) {

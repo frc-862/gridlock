@@ -38,7 +38,7 @@ public class Arm extends SubsystemBase {
     private double tolerance = ArmConstants.TOLERANCE;
 
     // The target angle to be set to the arm
-    private double targetAngle;
+    private double targetAngle = 30;
 
     private boolean disableArm = false;
 
@@ -108,8 +108,9 @@ public class Arm extends SubsystemBase {
      * @return the angle of the arm as a Rotation2d object
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -180, 180));
+        // return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -180, 180));
         // return Rotation2d.fromDegrees(encoder.getPosition() - OFFSET);
+        return Rotation2d.fromDegrees(targetAngle);
     }
 
     /**
