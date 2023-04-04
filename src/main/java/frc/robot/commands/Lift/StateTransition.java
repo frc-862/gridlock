@@ -8,6 +8,8 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.LiftConstants.LiftPlan;
 import frc.robot.Constants.LiftConstants.LiftState;
+import frc.robot.Constants.WristConstants.WRIST_SCHEDULE;
+import frc.robot.Constants.WristConstants;
 
 /**
  * A class that represents a state transition for the lift
@@ -21,6 +23,9 @@ public class StateTransition {
     private Range<Double> elevatorSafeZone;
     private Range<Double> armSafeZone;
     private Range<Double> wristSafeZone;
+    private WRIST_SCHEDULE wristSchedule;
+
+
 
     /**
      * Creates a new state transition
@@ -32,7 +37,7 @@ public class StateTransition {
      * @param endState The end state of the lift
      */
     public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState, Range<Double> elevatorSafeZone, Range<Double> armSafeZone,
-            Range<Double> wristSafeZone) {
+            Range<Double> wristSafeZone, WRIST_SCHEDULE wristSchedule) {
         this.elevatorExtension = elevatorExtension;
         this.armAngle = armAngle;
         this.wristAngle = wristAngle;
@@ -41,6 +46,7 @@ public class StateTransition {
         this.elevatorSafeZone = elevatorSafeZone;
         this.armSafeZone = armSafeZone;
         this.wristSafeZone = wristSafeZone;
+        this.wristSchedule = wristSchedule;
     }
 
     /**
@@ -54,7 +60,18 @@ public class StateTransition {
      */
     public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState) {
         this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION),
-                Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE));
+                Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE), WRIST_SCHEDULE.SMALL_MOVEMENT);
+    }
+
+    public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState, Range<Double> elevatorSafeZone, Range<Double> armSafeZone,
+    Range<Double> wristSafeZone) {
+        this(elevatorExtension, armAngle, wristAngle, plan, endState,
+        elevatorSafeZone, armSafeZone, wristSafeZone, WRIST_SCHEDULE.SMALL_MOVEMENT);
+    }
+
+    public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState, WRIST_SCHEDULE wristSchedule) {
+        this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION),
+                Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE), wristSchedule);
     }
 
     /**
@@ -130,5 +147,9 @@ public class StateTransition {
      */
     public boolean isInEleSafeZone(double input) {
         return elevatorSafeZone.contains(input);
+    }
+
+    public WRIST_SCHEDULE getWristSchedule() {
+        return wristSchedule;
     }
 }

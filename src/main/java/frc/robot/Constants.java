@@ -283,10 +283,16 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double UP_kP = 0.0065d;
-        public static final double UP_kD = 0.0001d;
-        public static final double DOWN_kP = 0.004d;
-        public static final double DOWN_kD = 0d;
+        public static final double SMALL_UP_kP = 0.0065d;
+        public static final double SMALL_UP_kD = 0.0001d;
+        public static final double SMALL_DOWN_kP = 0.004d;
+        public static final double SMALL_DOWN_kD = 0d;
+
+        public static final double BIG_UP_kP = 0.0065d;
+        public static final double BIG_UP_kD = 0.0001d;
+        public static final double BIG_DOWN_kP = 0.004d;
+        public static final double BIG_DOWN_kD = 0d;    
+
         public static final double kI = 0d;
 
         // Tolernace for our wrist
@@ -312,6 +318,10 @@ public final class Constants {
         // Wrist limit switch types
         public static final SparkMaxLimitSwitch.Type TOP_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
         public static final SparkMaxLimitSwitch.Type BOTTOM_LIMIT_SWITCH_TYPE = SparkMaxLimitSwitch.Type.kNormallyOpen;
+
+        public static enum WRIST_SCHEDULE {
+            BIG_MOVEMENT, SMALL_MOVEMENT
+        }
 
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
         public static InterpolationMap WRIST_KF_MAP = new InterpolationMap() {

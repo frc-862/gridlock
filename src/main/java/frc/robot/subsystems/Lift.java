@@ -202,6 +202,7 @@ public class Lift extends SubsystemBase {
             }
         } else {
             lastKnownGoodWristSetPoint = nextState.getWristAngle().getDegrees();
+            wrist.setWristSchedule(nextState.getWristSchedule());
             // Checks the run plan of the next state
             switch (nextState.getPlan()) {
                 // If parallel, set all the components to their target
