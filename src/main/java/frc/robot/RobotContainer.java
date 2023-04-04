@@ -35,6 +35,7 @@ import frc.robot.commands.Collect;
 import frc.robot.commands.EleUpInCommunity;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.HoldPower;
+import frc.robot.commands.RetroLineUp;
 import frc.robot.commands.SafeToScoreLED;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
 import frc.robot.commands.Lift.Ground;
@@ -122,11 +123,10 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> buttonPad.getRawButton(12)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_10_POSE)));
 
         // SERVO
-        // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_UP)));
-        // new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DOWN)));
+        // new Trigger(driver::getBButton).onTrue(new InstantCommand(servoturn::flickServo));
 
-        new Trigger(driver::getBButton).onTrue(new InstantCommand(servoturn::flickServo));
-        
+        //Retro AutoAlign TODO test
+        new Trigger(driver::getBButton).whileTrue(new RetroLineUp(drivetrain, frontLimelight, collector));
 
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
