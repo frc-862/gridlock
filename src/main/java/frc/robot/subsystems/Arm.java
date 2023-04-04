@@ -4,12 +4,14 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -28,7 +30,8 @@ public class Arm extends SubsystemBase {
     private CANSparkMax motor;
     private PIDController upController = new PIDController(ArmConstants.UP_kP, ArmConstants.UP_kI, ArmConstants.UP_kD);
     private PIDController downController = new PIDController(ArmConstants.DOWN_kP, ArmConstants.DOWN_kI, ArmConstants.DOWN_kD);
-    private SparkMaxAbsoluteEncoder encoder;
+    private SparkMaxAbsoluteEncoder absEncoder;
+    private RelativeEncoder relEncoder;
 
     // The encoder offset 
     private double OFFSET;
@@ -41,6 +44,8 @@ public class Arm extends SubsystemBase {
     private double targetAngle;
 
     private boolean disableArm = false;
+
+    private double lastSyncedTime = 0;
 
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
@@ -61,8 +66,13 @@ public class Arm extends SubsystemBase {
         motor.setClosedLoopRampRate(1);
 
         // Create the absolute encoder and sets the conversion factor
-        encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-        encoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        absEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+        absEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+
+        relEncoder = motor.getEncoder();
+        relEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+
+        relEncoder.setPosition(getAbsoluteAngle());
 
         motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
         motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
@@ -79,9 +89,10 @@ public class Arm extends SubsystemBase {
     // Metod to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm absolute encoder", (DoubleSupplier) () -> getAbsoluteAngle()),
                 new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
-                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()));
+                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("Arm built-in encoder", (DoubleSupplier) () -> getAngle().getDegrees()));
         // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
         // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
         // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
@@ -108,8 +119,18 @@ public class Arm extends SubsystemBase {
      * @return the angle of the arm as a Rotation2d object
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -180, 180));
-        // return Rotation2d.fromDegrees(encoder.getPosition() - OFFSET);
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(relEncoder.getPosition() - OFFSET, -180, 180));
+    }
+
+    private double getAbsoluteAngle() {
+        return MathUtil.inputModulus(absEncoder.getPosition() - OFFSET, -180, 180);
+    }
+
+    public void syncToAbsolute() {
+        double absAngle = getAbsoluteAngle();
+        if(Math.abs(getAngle().getDegrees() - absAngle) < 5) {
+            relEncoder.setPosition(absAngle);
+        }
     }
 
     /**
@@ -204,6 +225,11 @@ public class Arm extends SubsystemBase {
         }
 
         periodicShuffleboard.loop();
+
+        if(Timer.getFPGATimestamp() - lastSyncedTime > 5) {
+            syncToAbsolute();
+            lastSyncedTime = Timer.getFPGATimestamp();
+        }
 
         // upController.setD(LightningShuffleboard.getDouble("Arm", "up kD", ArmConstants.UP_kD));
         // upController.setP(LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP));
