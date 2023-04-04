@@ -93,7 +93,11 @@ public class LimelightFront extends SubsystemBase {
      * @return the distancce from the tag in meters
      */
     public double getTagDistance() {
-        return LimelightHelpers.getBotPose_TargetSpace(limelightName)[0];
+        if (hasVision()) {
+            return LimelightHelpers.getTargetPose_RobotSpace(limelightName)[2];
+        } else {
+            return -1;
+        }
     }
 
     /**

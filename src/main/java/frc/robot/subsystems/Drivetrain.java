@@ -106,7 +106,8 @@ public class Drivetrain extends SubsystemBase {
     private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     // Swerve pose esitmator for odometry
-    SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d(), DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
+    SwerveDrivePoseEstimator poseEstimator =
+            new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d(), DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
     SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions);
 
     // Creates our drivetrain shuffleboard tab for displaying module data and a periodic shuffleboard for data that doesn't need constant updates
@@ -359,9 +360,11 @@ public class Drivetrain extends SubsystemBase {
             if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
                 return;
             }
-            
-            double distanceBasedDev = VisionConstants.visionStandardDevMap.get(tagDistance);
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
+
+            if (tagDistance != -1) {
+                double distanceBasedDev = VisionConstants.visionStandardDevMap.get(tagDistance);
+                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
+            }
 
             poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
             pose = poseEstimator.getEstimatedPosition();
@@ -374,7 +377,6 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
-    
     /**
      * ta
      * 
