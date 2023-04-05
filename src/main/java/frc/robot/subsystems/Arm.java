@@ -70,7 +70,7 @@ public class Arm extends SubsystemBase {
         absEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
         relEncoder = motor.getEncoder();
-        relEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        relEncoder.setPositionConversionFactor(360 / 160);
 
         relEncoder.setPosition(getAbsoluteAngle());
 
@@ -119,7 +119,7 @@ public class Arm extends SubsystemBase {
      * @return the angle of the arm as a Rotation2d object
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(relEncoder.getPosition() - OFFSET, -180, 180));
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(relEncoder.getPosition(), -180, 180));
     }
 
     private double getAbsoluteAngle() {
@@ -226,10 +226,10 @@ public class Arm extends SubsystemBase {
 
         periodicShuffleboard.loop();
 
-        if(Timer.getFPGATimestamp() - lastSyncedTime > 5) {
-            syncToAbsolute();
-            lastSyncedTime = Timer.getFPGATimestamp();
-        }
+        // if(Timer.getFPGATimestamp() - lastSyncedTime > 5) {
+        //     syncToAbsolute();
+        //     lastSyncedTime = Timer.getFPGATimestamp();
+        // }
 
         // upController.setD(LightningShuffleboard.getDouble("Arm", "up kD", ArmConstants.UP_kD));
         // upController.setP(LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP));
