@@ -232,7 +232,7 @@ public class RobotContainer extends LightningContainer {
         
         leds.setDefaultCommand(new SafeToScoreLED(leds, drivetrain, collector));
 
-        // elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
+        elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),

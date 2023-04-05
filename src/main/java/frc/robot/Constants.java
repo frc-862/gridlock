@@ -461,7 +461,7 @@ public final class Constants {
             midCubeScore, highCubeScore, midConeScore, highConeScore,
 
             //substates
-            stowedCollect, stowedScore, stowedSingleSub, scoreToCollect,
+            stowedCollect, stowedScore, stowedSingleSub, scoreToCollect, elevatorDeployed,
 
             //s t o w e d
             stowed

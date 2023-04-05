@@ -13,6 +13,7 @@ public class EleUpInCommunity extends CommandBase {
     private Lift lift;
     private Drivetrain drivetrain;
     private double lastTime = 0;
+    private double currentTime = -1;
 
     public EleUpInCommunity(Elevator elevator, Lift lift, Drivetrain drivetrain) {
         this.elevator = elevator;
@@ -23,24 +24,18 @@ public class EleUpInCommunity extends CommandBase {
     }
 
     @Override
-    public void initialize() {}
-
-    @Override
     public void execute() {
-        double currentTime = Timer.getFPGATimestamp();
-        if(lift.getCurrentState() == LiftState.stowed && lift.getGoalState() == LiftState.stowed && DriverStation.isTeleop() && currentTime - lastTime >= 1) {
-            if(drivetrain.getPose().getX() < 4) {
-                elevator.setExtension(4);
+        currentTime = Timer.getFPGATimestamp();
+        if((lift.getCurrentState() == LiftState.stowed && lift.getGoalState() == LiftState.stowed) || (lift.getCurrentState() == LiftState.elevatorDeployed && lift.getGoalState() == LiftState.elevatorDeployed) && DriverStation.isTeleop() && currentTime - lastTime >= 1) {
+            if(drivetrain.isInCommunity()) {
+                lift.setGoalState(LiftState.elevatorDeployed);
             } else {
-                elevator.setExtension(2);
+                lift.setGoalState(LiftState.stowed);
             }
 
             lastTime = currentTime;
         }
     }
-
-    @Override
-    public void end(boolean interrupted) {}
 
     @Override
     public boolean isFinished() {

@@ -361,6 +361,7 @@ public class Drivetrain extends SubsystemBase {
             lastTime = currTime;
 
             LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
+            LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Y", lastKnownGoodVisionY);
         }
     }
 
@@ -417,7 +418,7 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
                 new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()));
-
+                
         periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
                 new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
     }
@@ -602,6 +603,30 @@ public class Drivetrain extends SubsystemBase {
      */
     public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
         this.chassisSpeeds = chassisSpeeds;
+    }
+
+    /**
+     * Gets if it is in community
+     * 
+     * @return if in community or not
+     */
+    public boolean isInCommunity() {
+        if(DriverStation.getAlliance() == Alliance.Blue) {
+            if( (1.35 < pose.getX() && pose.getX() < 3.35) && (1.50 < pose.getY() && pose.getY() < 5.25) || // Box 1
+                (1.35 < pose.getX() && pose.getX() < 4.85) && (0.00 < pose.getY() && pose.getY() < 1.50) || // Box 2
+                (9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) || // Box 3
+                (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
+                    return true;
+            }
+        } else if(DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
+            if( (1.35 < pose.getX() && pose.getX() < 3.35) && (2.40 < pose.getY() && pose.getY() < 6.45) || // Box 1
+                (1.35 < pose.getX() && pose.getX() < 4.85) && (6.45 < pose.getY() && pose.getY() < 8.02) || // Box 2
+                (9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) || // Box 3
+                (13.20 < pose.getX() && pose.getX() < 16.25) && (0.03 < pose.getY() && pose.getY() < 2.51)) { // Box 4
+                    return true;
+            }
+        }
+        return false;
     }
 
     /**
