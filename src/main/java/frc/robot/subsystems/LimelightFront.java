@@ -66,8 +66,8 @@ public class LimelightFront extends SubsystemBase {
                         new Pair<String, Object>(limelightName + "Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
                         new Pair<String, Object>(limelightName + "Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
                         new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
-                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()));
-
+                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()),
+                        new Pair<String, Object>(limelightName + "Tag distance", (DoubleSupplier) () -> getTagDistance()));
     }
 
     /**

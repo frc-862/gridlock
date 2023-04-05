@@ -66,7 +66,8 @@ public class LimelightBack extends SubsystemBase {
                         new Pair<String, Object>(limelightName + "Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
                         new Pair<String, Object>(limelightName + "Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
                         new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
-                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()));
+                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()),
+                        new Pair<String, Object>(limelightName + "Tag distance", (DoubleSupplier) () -> getTagDistance()));
 
     }
 
@@ -93,7 +94,11 @@ public class LimelightBack extends SubsystemBase {
      * @return the distancce from the tag in meters
      */
     public double getTagDistance() {
-        return LimelightHelpers.getBotPose_TargetSpace(limelightName)[0];
+        if (hasVision()) {
+            return LimelightHelpers.getTargetPose_RobotSpace(limelightName)[2];
+        } else {
+            return -1;
+        }
     }
 
     /**

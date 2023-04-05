@@ -145,6 +145,8 @@ public class Drivetrain extends SubsystemBase {
     private double maxVel = 0d;
     private double maxAccell = 0d;
 
+    private double velocity = 0;
+
     public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
         this.limelightFront = limelightFront;
@@ -214,6 +216,10 @@ public class Drivetrain extends SubsystemBase {
 
         periodicShuffleboard.loop();
         periodicShuffleboardAuto.loop();
+    }
+
+    public double getDriveVelocity() {
+        return (frontLeftModule.getDriveVelocity() + frontRightModule.getDriveVelocity() + backLeftModule.getDriveVelocity() + backRightModule.getDriveVelocity()) / 4;
     }
 
     /**
@@ -351,7 +357,7 @@ public class Drivetrain extends SubsystemBase {
                 }
             }
 
-            if (visionPose2d == null || (visionPose2d.getX() > 4.5 && visionPose2d.getX() < 12.15) || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
+            if (visionPose2d == null || visionPose2d.getX() > 23.04 || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0 || tagDistance > 4) {
                 return;
             }
 
@@ -361,10 +367,10 @@ public class Drivetrain extends SubsystemBase {
                 return;
             }
 
-            if (tagDistance != -1) {
-                double distanceBasedDev = VisionConstants.visionStandardDevMap.get(tagDistance);
-                poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
-            }
+            // if (tagDistance != -1) {
+            //     double distanceBasedDev = VisionConstants.visionStandardDevMap.get(tagDistance + getDriveVelocity());
+            //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
+            // }
 
             poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
             pose = poseEstimator.getEstimatedPosition();
@@ -547,6 +553,7 @@ public class Drivetrain extends SubsystemBase {
 
     public void poseReset(Pose2d pose) {
         poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
+        odometry.resetPosition(getHeading(), modulePositions, pose);
     }
 
     /**
