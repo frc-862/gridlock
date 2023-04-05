@@ -66,8 +66,8 @@ public class LimelightFront extends SubsystemBase {
                         new Pair<String, Object>(limelightName + "Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
                         new Pair<String, Object>(limelightName + "Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
                         new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
-                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()));
-
+                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()),
+                        new Pair<String, Object>(limelightName + "Tag distance", (DoubleSupplier) () -> getTagDistance()));
     }
 
     /**
@@ -85,6 +85,19 @@ public class LimelightFront extends SubsystemBase {
             robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
         }
         return robotPose;
+    }
+
+    /**
+     * Gets the distance from the seen tag
+     * 
+     * @return the distancce from the tag in meters
+     */
+    public double getTagDistance() {
+        if (hasVision()) {
+            return LimelightHelpers.getTargetPose_RobotSpace(limelightName)[2];
+        } else {
+            return -1;
+        }
     }
 
     /**

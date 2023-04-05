@@ -20,6 +20,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.Num;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -89,6 +90,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Creating new pose, odometry, cahssis speeds
     private Pose2d pose = new Pose2d();
+    private Pose2d rawPose = new Pose2d();
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our modules
@@ -104,7 +106,9 @@ public class Drivetrain extends SubsystemBase {
     private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     // Swerve pose esitmator for odometry
-    SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d()); // , DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
+    SwerveDrivePoseEstimator poseEstimator =
+            new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d(), DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
+    SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions);
 
     // Creates our drivetrain shuffleboard tab for displaying module data and a periodic shuffleboard for data that doesn't need constant updates
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -140,6 +144,8 @@ public class Drivetrain extends SubsystemBase {
     private Pose2d desiredPose = new Pose2d();
     private double maxVel = 0d;
     private double maxAccell = 0d;
+
+    private double velocity = 0;
 
     public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
@@ -210,6 +216,10 @@ public class Drivetrain extends SubsystemBase {
 
         periodicShuffleboard.loop();
         periodicShuffleboardAuto.loop();
+    }
+
+    public double getDriveVelocity() {
+        return (frontLeftModule.getDriveVelocity() + frontRightModule.getDriveVelocity() + backLeftModule.getDriveVelocity() + backRightModule.getDriveVelocity()) / 4;
     }
 
     /**
@@ -314,6 +324,7 @@ public class Drivetrain extends SubsystemBase {
     public void updateOdometry() {
         updateModulePositions();
         pose = poseEstimator.update(getYaw2d(), modulePositions);
+        rawPose = odometry.update(getYaw2d(), modulePositions);
 
         // if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
         //     pose = new Pose2d(16.48 - pose.getX(), pose.getY(), pose.getRotation());
@@ -326,9 +337,11 @@ public class Drivetrain extends SubsystemBase {
         if (VisionBase.isVisionEnabled()) {
             Pose2d visionPose2d = null;
             double latency = 0;
+            double tagDistance = 0;
             if (limelightFront.hasVision()) {
                 visionPose2d = limelightFront.getRobotPose();
                 latency = limelightFront.getLatencyBotPoseBlue();
+                tagDistance = limelightFront.getTagDistance();
                 if (firstTime) {
                     setInitialPose(visionPose2d);
                     firstTime = false;
@@ -336,6 +349,7 @@ public class Drivetrain extends SubsystemBase {
             } else if (limelightBack.hasVision()) {
                 visionPose2d = limelightBack.getRobotPose();
                 latency = limelightBack.getLatencyBotPoseBlue();
+                tagDistance = limelightBack.getTagDistance();
                 if (firstTime) {
                     setInitialPose(visionPose2d);
 
@@ -343,7 +357,7 @@ public class Drivetrain extends SubsystemBase {
                 }
             }
 
-            if (visionPose2d == null || (visionPose2d.getX() > 4.5 && visionPose2d.getX() < 12.15) || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
+            if (visionPose2d == null || visionPose2d.getX() > 23.04 || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0 || tagDistance > 4) {
                 return;
             }
 
@@ -352,6 +366,11 @@ public class Drivetrain extends SubsystemBase {
             if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
                 return;
             }
+
+            // if (tagDistance != -1) {
+            //     double distanceBasedDev = VisionConstants.visionStandardDevMap.get(tagDistance + getDriveVelocity());
+            //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
+            // }
 
             poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
             pose = poseEstimator.getEstimatedPosition();
@@ -365,7 +384,6 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
-    
     /**
      * ta
      * 
@@ -416,6 +434,7 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
                 new Pair<String, Object>("br module position", (DoubleSupplier) () -> modulePositions[3].distanceMeters),
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
+                new Pair<String, Object>("raw Pose", (Supplier<double[]>) () -> new double[] {rawPose.getX(), rawPose.getY(), rawPose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
                 new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()));
                 
@@ -531,6 +550,11 @@ public class Drivetrain extends SubsystemBase {
      */
     public void resetOdometry(Pose2d pose) {
         // poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
+    }
+
+    public void poseReset(Pose2d pose) {
+        poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
+        odometry.resetPosition(getHeading(), modulePositions, pose);
     }
 
     /**

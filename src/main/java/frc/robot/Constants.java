@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
@@ -103,7 +104,7 @@ public final class Constants {
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
 
         // Standard dev for robot pose
-        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(0, 0, 0);// (1, 1, 0.0368);
+        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(0.1, 0.1, 0.1);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -436,12 +437,23 @@ public final class Constants {
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
         // Standard deviation for vision, heading is 1000 becuase were using pigeon, so i dont want to use vision heading
-        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1000, 1000, 1000); //(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
+        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(0.6, 0.6, 0.6);
 
         // Distance from the center of the field, used for getIsolatedTagPose()
         public static final double ISOLATEDTAGXOFFSET = 7.24;
 
         public static final double ISOLATEDTAGYOFFSET = 1.07;
+
+        public static final InterpolationMap visionStandardDevMap = new InterpolationMap() {
+            {
+                put(0d, 0.3);
+                put(2d, 0.4);
+                put(5d, 0.5);
+                put(7d, 1d);
+                put(8d, 1.5d);
+                put(12d, 10d);
+            }
+        };
 
     }
 
