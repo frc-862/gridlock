@@ -9,10 +9,9 @@ import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LimelightFront;
 import frc.robot.subsystems.Collector.GamePiece;
-import frc.thunder.LightningContainer;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
-public class RetroLineUp extends CommandBase {
+public class AprilTagLineUp extends CommandBase {
     private Drivetrain drivetrain;
     private LimelightFront limelightFront;
     private PIDController Xcontroller = new PIDController(-0.05, 0, -0.03);
@@ -22,7 +21,7 @@ public class RetroLineUp extends CommandBase {
     private double ROutput = 0;
     private double distance = 0;
 
-    public RetroLineUp(Drivetrain drivetrain, LimelightFront limelightFront, Collector collector) {
+    public AprilTagLineUp(Drivetrain drivetrain, LimelightFront limelightFront, Collector collector) {
         this.drivetrain = drivetrain;
         this.limelightFront = limelightFront;
         this.collector = collector;
@@ -32,22 +31,25 @@ public class RetroLineUp extends CommandBase {
 
     @Override
     public void initialize() {
-        limelightFront.setPipelineNum(2); // TODO check if this is the right pipeline
-        distance = limelightFront.getHorizontalOffset();
+        limelightFront.setPipelineNum(0); // TODO see if pipeline 10 is working for non game tags
 
         Xcontroller.setSetpoint(0d);
         Xcontroller.setTolerance(AutoAlignConstants.X_TOLERANCE);
 
-        Rcontroller.setSetpoint(90);
+        Rcontroller.setSetpoint(90);// TODO figure out what it is to face the wall Might be different between red and blue
         Rcontroller.setTolerance(AutoAlignConstants.R_TOLERANCE);
     }
 
+    //90 is 180
+
     @Override
     public void execute() {
-        if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 2) {
+        if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 0) {//TODO make right pipeline
             if (collector.getGamePiece() == GamePiece.CUBE) {
                 //TODO figure out the difference between the two on the x to change the offset
                 Xcontroller.setSetpoint(LimelightConstants.CUBE_OFFSET);
+            } else {
+                Xcontroller.setSetpoint(0d);
             }
 
             if (drivetrain.getYaw2d().getDegrees() < AutoAlignConstants.R_TOLERANCE) {
@@ -56,6 +58,7 @@ public class RetroLineUp extends CommandBase {
             } else {
                 XOutput = 0d;
             }
+
         } else {
             XOutput = 0d;
         }
@@ -66,27 +69,26 @@ public class RetroLineUp extends CommandBase {
             ROutput = Rcontroller.calculate(drivetrain.getYaw2d().getDegrees());
         }
 
+
         drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
             drivetrain.percentOutputToMetersPerSecond(XOutput),
             drivetrain.percentOutputToMetersPerSecond(0), 
             drivetrain.percentOutputToRadiansPerSecond(ROutput), 
             drivetrain.getYaw2d()));
 
-
-        LightningShuffleboard.setDouble("Retro-Align", "horizontal offset", distance);
-        LightningShuffleboard.setDouble("Retro-Align", "X Pid output", Xcontroller.calculate(distance));
-        LightningShuffleboard.setDouble("Retro-Align", "R Pid output", Rcontroller.calculate(drivetrain.getYaw2d().getDegrees()));
-        LightningShuffleboard.setDouble("Retro-Align", "ROutput", ROutput);
-        LightningShuffleboard.setDouble("Retro-Align", "XOutput", XOutput);
+        
+        LightningShuffleboard.setDouble("April-Align", "horizontal offset", distance);
+        LightningShuffleboard.setDouble("April-Align", "X Pid output", Xcontroller.calculate(distance));
+        LightningShuffleboard.setDouble("April-Align", "R Pid output", Rcontroller.calculate(drivetrain.getYaw2d().getDegrees()));
+        LightningShuffleboard.setDouble("April-Align", "ROutput", ROutput);
+        LightningShuffleboard.setDouble("April-Align", "XOutput", XOutput);
     }
 
     @Override
     public void end(boolean interrupted) {
-        limelightFront.setPipelineNum(0);
         drivetrain.stop();
     }
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         return false;

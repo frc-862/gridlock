@@ -528,7 +528,8 @@ public final class Constants {
         public static final double CONTROL_LENGTHS = 0.001;
 
         // Tolerance for auto align
-        public static final double TOLERANCE = 10d;
+        public static final double X_TOLERANCE = 7d;
+        public static final double R_TOLERANCE = 5d;
 
         //Log period auto align
         public static final double LOG_PERIOD = 0.25;
