@@ -176,7 +176,7 @@ public class StateTable {
             Map.entry(LiftState.stowedCollect, stowCollectTable), 
             Map.entry(LiftState.stowedScore, stowScoreTable), 
             Map.entry(LiftState.scoreToCollect, stowCollectTable),
-            Map.entry(LiftState.elevatorDeployed, defaultTable));
+            Map.entry(LiftState.elevatorDeployed, eleDeployedTable));
             
 
     /**
