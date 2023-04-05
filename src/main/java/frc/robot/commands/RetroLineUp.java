@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import org.opencv.core.TickMeter;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -11,14 +9,18 @@ import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LimelightFront;
 import frc.robot.subsystems.Collector.GamePiece;
+import frc.thunder.LightningContainer;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class RetroLineUp extends CommandBase {
     private Drivetrain drivetrain;
     private LimelightFront limelightFront;
-    private PIDController controller = new PIDController(0.009, 0, 0);
+    private PIDController Xcontroller = new PIDController(-0.05, 0, -0.03);
+    private PIDController Rcontroller = new PIDController(0.005, 0, 0);
     private Collector collector;
-
-    private double distance;
+    private double XOutput = 0;
+    private double ROutput = 0;
+    private double distance = 0;
 
     public RetroLineUp(Drivetrain drivetrain, LimelightFront limelightFront, Collector collector) {
         this.drivetrain = drivetrain;
@@ -30,34 +32,55 @@ public class RetroLineUp extends CommandBase {
 
     @Override
     public void initialize() {
-        limelightFront.setPipelineNum(1); // TODO check if this is the right pipeline
+        limelightFront.setPipelineNum(2); // TODO check if this is the right pipeline
         distance = limelightFront.getHorizontalOffset();
 
-        controller.setSetpoint(LimelightConstants.FRONT_POSE.getX());
-        controller.setTolerance(AutoAlignConstants.TOLERANCE);
+        Xcontroller.setSetpoint(0d);
+        Xcontroller.setTolerance(AutoAlignConstants.TOLERANCE);
+
+        Rcontroller.setSetpoint(90);
+        Rcontroller.setTolerance(10);
     }
 
     @Override
     public void execute() {
-        if(limelightFront.hasVision()){
-            if(collector.getGamePiece() == GamePiece.CUBE){
+        if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 2) {
+            if (collector.getGamePiece() == GamePiece.CUBE) {
                 //TODO figure out the difference between the two on the x to change the offset
-                controller.setSetpoint(LimelightConstants.FRONT_POSE.getX() + LimelightConstants.CUBE_OFFSET);
-            } else {
-                distance = limelightFront.getHorizontalOffset();
+                Xcontroller.setSetpoint(LimelightConstants.CUBE_OFFSET);
             }
 
-            drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-            drivetrain.percentOutputToMetersPerSecond(controller.calculate(distance)),
-            drivetrain.percentOutputToMetersPerSecond(0),
-            drivetrain.percentOutputToRadiansPerSecond(0),
-            drivetrain.getYaw2d()));
+            if(drivetrain.getYaw2d().getDegrees() < 5){
+            distance = limelightFront.getHorizontalOffset();
+            XOutput = Xcontroller.calculate(distance);
+            }
+            
+        } else {
+            XOutput = 0;
         }
+
+        ROutput = Rcontroller.calculate(drivetrain.getYaw2d().getDegrees());
+
+        if (drivetrain.getYaw2d().getDegrees() < 5) {
+            ROutput = 0;
+        }
+
+        drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+            drivetrain.percentOutputToMetersPerSecond(XOutput), //controller.calculate(distance)),
+                drivetrain.percentOutputToMetersPerSecond(0), 
+                drivetrain.percentOutputToRadiansPerSecond(ROutput), 
+                drivetrain.getYaw2d()));
+
+        LightningShuffleboard.setDouble("Align", "horizontal offset", distance);
+        LightningShuffleboard.setDouble("Align", "X Pid output", Xcontroller.calculate(distance));
+        LightningShuffleboard.setDouble("Align", "R Pid output", Rcontroller.calculate(drivetrain.getYaw2d().getDegrees()));
+        LightningShuffleboard.setDouble("Align", "ROutput", ROutput);
+        LightningShuffleboard.setDouble("Align", "XOutput", XOutput);
     }
 
     @Override
     public void end(boolean interrupted) {
-        limelightFront.setPipelineNum(0);
+        // limelightFront.setPipelineNum(0);
         drivetrain.stop();
     }
 
