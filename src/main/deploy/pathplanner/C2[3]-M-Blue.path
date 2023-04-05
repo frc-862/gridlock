@@ -18,7 +18,8 @@
       "stopEvent": {
         "names": [
           "Score-Piece-Servo",
-          "Turn-On-Vision"
+          "Turn-On-Vision",
+          "Pos1"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
@@ -133,25 +134,19 @@
   ],
   "markers": [
     {
-      "position": 0.0,
-      "names": [
-        "Ground-Collect-Cube"
-      ]
-    },
-    {
-      "position": 0.6109090909091057,
+      "position": 0.6109090909090974,
       "names": [
         "Collect"
       ]
     },
     {
-      "position": 2.094545454545279,
+      "position": 2.05,
       "names": [
         "Stop-Collect"
       ]
     },
     {
-      "position": 2.6763636363635035,
+      "position": 2.530909090908958,
       "names": [
         "Collect"
       ]
