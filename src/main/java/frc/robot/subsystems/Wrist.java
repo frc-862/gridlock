@@ -34,7 +34,7 @@ public class Wrist extends SubsystemBase {
     private double OFFSET;
 
     // The target angle to be set to the wrist
-    private double targetAngle = 30;
+    private double targetAngle ;
     private double currentAngle;
     private double minPower;
     private double PIDerror;
@@ -100,10 +100,8 @@ public class Wrist extends SubsystemBase {
      * @return Rotation2d of the wrist from encoder
      */
     public Rotation2d getAngle() {
-        // return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180));
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180));
         // return Rotation2d.fromDegrees(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET);
-
-        return Rotation2d.fromDegrees(targetAngle);
     }
 
     public Rotation2d getGroundRelativeAngle(Rotation2d armAngle) {
