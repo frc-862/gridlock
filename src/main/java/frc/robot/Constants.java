@@ -192,7 +192,7 @@ public final class Constants {
         public static final String BACK_NAME = "limelight-back";
         public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0));
         public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180));
-
+        public static final double CUBE_OFFSET = 0.0; // TODO find this value
     }
 
     public static final class ArmConstants {
@@ -540,7 +540,8 @@ public final class Constants {
         public static final double CONTROL_LENGTHS = 0.001;
 
         // Tolerance for auto align
-        public static final double TOLERANCE = 1d;
+        public static final double X_TOLERANCE = 7d;
+        public static final double R_TOLERANCE = 5d;
 
         //Log period auto align
         public static final double LOG_PERIOD = 0.25;

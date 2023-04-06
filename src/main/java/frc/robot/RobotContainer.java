@@ -35,6 +35,8 @@ import frc.robot.commands.Collect;
 import frc.robot.commands.EleUpInCommunity;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.HoldPower;
+import frc.robot.commands.RetroLineUp;
+import frc.robot.commands.AprilTagLineUp;
 import frc.robot.commands.SafeToScoreLED;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
 import frc.robot.commands.Lift.Ground;
@@ -84,15 +86,14 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureButtonBindings() {
+        new Trigger(collector::isStalling)
+        .onTrue(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 1)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 1))));
+        new Trigger(collector::isStalling)
+        .onFalse(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 0)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 0))));
+        
         /* driver Controls */
-        new Trigger(collector::isStalling).onTrue(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 1)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 1))));
-        new Trigger(collector::isStalling).onFalse(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 0)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 0))));
-
-
         // RESETS
         new Trigger(() -> (driver.getBackButton() && driver.getStartButton())).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-        new Trigger(() -> driver.getBButton()).onTrue(new InstantCommand(() -> drivetrain.poseReset(new Pose2d()), drivetrain));
-        // new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.setYaw(180)));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
@@ -123,11 +124,13 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> buttonPad.getRawButton(12)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_10_POSE)));
 
         // SERVO
-        // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_UP)));
-        // new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DOWN)));
-
         // new Trigger(driver::getBButton).onTrue(new InstantCommand(servoturn::flickServo));
-        
+
+        //Retro AutoAlign TODO test
+        // new Trigger(driver::getBButton).whileTrue(new RetroLineUp(drivetrain, frontLimelight, collector)); TODO buttons
+
+        //AprilTag AutoAlign TODO test
+        // new Trigger(driver::getBButton).whileTrue(new AprilTagLineUp(drivetrain, frontLimelight, collector)); TODO buttons
 
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
@@ -169,8 +172,7 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void configureAutonomousCommands() {
         //Test paths 
-        // autoFactory.makeTrajectory("TestVision", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
-        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+
         // Game paths
         //A paths   
         autoFactory.makeTrajectory("A2[2]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
@@ -192,8 +194,7 @@ public class RobotContainer extends LightningContainer {
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Works
         autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION), 
-                new PathConstraints(1, .5),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION), new PathConstraints(1, .5),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
         autoFactory.makeTrajectory("B2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Needs more testing
@@ -212,9 +213,10 @@ public class RobotContainer extends LightningContainer {
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
         autoFactory.makeTrajectory("C2[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
-        autoFactory.makeTrajectory("C2[3]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        autoFactory.makeTrajectory("C2[3]-M-Blue", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
-        // autoFactory.makeTrajectory(null, null, null, null);
+        autoFactory.makeTrajectory("C2[3]-M-Red", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
     }
 
     @Override
@@ -230,7 +232,6 @@ public class RobotContainer extends LightningContainer {
                 () -> MathUtil.applyDeadband(driver.getLeftY(), ControllerConstants.DEADBAND), () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.DEADBAND),
                 () -> driver.getRightTriggerAxis() > 0.25, () -> driver.getLeftTriggerAxis() > 0.25));
 
-        
         leds.setDefaultCommand(new SafeToScoreLED(leds, drivetrain, collector));
 
         elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
