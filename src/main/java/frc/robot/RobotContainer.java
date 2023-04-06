@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.LimelightFront;
@@ -124,13 +125,10 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> buttonPad.getRawButton(12)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_10_POSE)));
 
         // SERVO
-        // new Trigger(driver::getBButton).onTrue(new InstantCommand(servoturn::flickServo));
+        new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo));
 
-        //Retro AutoAlign TODO test
-        // new Trigger(driver::getBButton).whileTrue(new RetroLineUp(drivetrain, frontLimelight, collector)); TODO buttons
-
-        //AprilTag AutoAlign TODO test
-        // new Trigger(driver::getBButton).whileTrue(new AprilTagLineUp(drivetrain, frontLimelight, collector)); TODO buttons
+        // AutoAlign based on cone or cube
+        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new RetroLineUp(drivetrain, frontLimelight, collector), new AprilTagLineUp(drivetrain, frontLimelight, collector), () -> collector.getGamePiece() == GamePiece.CONE));
 
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
