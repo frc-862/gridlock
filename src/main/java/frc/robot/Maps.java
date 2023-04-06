@@ -50,7 +50,7 @@ public class Maps {
         eventMap.put("Stop-Collect", new InstantCommand(() -> collector.stop(), collector));
         eventMap.put("Collect", new InstantCommand(() -> collector.setPower(1d))); //TODO: switch until to be until piece
         eventMap.put("Hold-Power", new InstantCommand(() -> collector.setPower(CollectorConstants.HOLD_POWER_CUBE)));
-        eventMap.put("Score", new InstantCommand(() -> collector.setPower(-1d))); //TODO: switch until to be until no piece
+        eventMap.put("Score", new InstantCommand(() -> collector.setPower(-.30))); //TODO: switch until to be until no piece
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
         eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
         eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));
