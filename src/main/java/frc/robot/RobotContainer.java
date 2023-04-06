@@ -107,7 +107,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getRightBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
         new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
 
-        new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.moveToDesiredPose(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+        // new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.moveToDesiredPose(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+        new Trigger(driver::getYButton).onTrue(new AprilTagLineUp(drivetrain, frontLimelight, collector));
 
         // SET DRIVE PODS TO 45
         new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
@@ -128,7 +129,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo));
 
         // AutoAlign based on cone or cube
-        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector), () -> (collector.getGamePiece() == GamePiece.CUBE || drivetrain.isInLoadZone())));
+        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector), () -> collector.getGamePiece() == GamePiece.CUBE));
 
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
@@ -180,7 +181,7 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("A2[3]-M-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
                 new PathConstraints(3, 2)); // works 3 low
         autoFactory.makeTrajectory("A2[3]-M-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
-                new PathConstraints(3, 2)); //Not tested 3 low
+                new PathConstraints(3.5, 2.25)); //Not tested 3 low
         // autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
         autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),

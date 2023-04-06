@@ -97,8 +97,10 @@ public class Elevator extends SubsystemBase {
      */
     public void setExtension(double target) {
         // if the target is reachable, set the target and enable the controller
+        if(!disableEle) {
         targetExtension = MathUtil.clamp(target, ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION);
         controller.setReference(targetExtension, CANSparkMax.ControlType.kPosition, 0);
+        }
 
         // otherwise, do nothing
     }

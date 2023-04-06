@@ -52,7 +52,7 @@ public class SwerveDrive extends CommandBase {
         // Get values from double suppliers
 
         if(slowMode.getAsBoolean()) {
-            if(drivetrain.isInLoadZone()) {
+            if(!drivetrain.isInLoadZone()) {
                 leftX = m_translationXSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
                 leftY = m_translationYSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
                 rightX = m_rotationSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_ROTATIONAL_MULT;
