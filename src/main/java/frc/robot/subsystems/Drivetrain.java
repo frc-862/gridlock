@@ -653,6 +653,21 @@ public class Drivetrain extends SubsystemBase {
         return false;
     }
 
+    public boolean isInLoadZone() {
+        if(DriverStation.getAlliance() == Alliance.Blue) {
+            if((9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) || // Box 3
+               (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
+                    return true;
+            }
+        } else if(DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
+            if((9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) || // Box 3
+               (13.20 < pose.getX() && pose.getX() < 16.25) && (0.03 < pose.getY() && pose.getY() < 2.51)) { // Box 4
+                    return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */

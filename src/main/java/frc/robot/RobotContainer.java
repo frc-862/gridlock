@@ -128,7 +128,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo));
 
         // AutoAlign based on cone or cube
-        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new RetroLineUp(drivetrain, frontLimelight, collector), new AprilTagLineUp(drivetrain, frontLimelight, collector), () -> collector.getGamePiece() == GamePiece.CONE));
+        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector), () -> (collector.getGamePiece() == GamePiece.CUBE || drivetrain.isInLoadZone())));
 
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
