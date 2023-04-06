@@ -97,7 +97,7 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.18;
 
-        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.5;
+        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.7;
         public static final double SLOW_MODE_ROTATIONAL_MULT = 0.5;
 
         // Pigeon heading offset 

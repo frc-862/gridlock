@@ -26,7 +26,7 @@ public class EleUpInCommunity extends CommandBase {
     @Override
     public void execute() {
         currentTime = Timer.getFPGATimestamp();
-        if((lift.getCurrentState() == LiftState.stowed && lift.getGoalState() == LiftState.stowed) || (lift.getCurrentState() == LiftState.elevatorDeployed && lift.getGoalState() == LiftState.elevatorDeployed) && DriverStation.isTeleop() && currentTime - lastTime >= 1) {
+        if(((lift.getCurrentState() == LiftState.stowed && lift.getGoalState() == LiftState.stowed) || (lift.getCurrentState() == LiftState.elevatorDeployed && lift.getGoalState() == LiftState.elevatorDeployed)) && DriverStation.isTeleop() && currentTime - lastTime >= 1) {
             if(drivetrain.isInCommunity()) {
                 lift.setGoalState(LiftState.elevatorDeployed);
             } else {

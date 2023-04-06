@@ -50,7 +50,7 @@ public class RetroLineUp extends CommandBase {
                 Xcontroller.setSetpoint(LimelightConstants.CUBE_OFFSET);
             }
 
-            if (drivetrain.getYaw2d().getDegrees() < AutoAlignConstants.R_TOLERANCE) {
+            if (drivetrain.getYaw2d().getDegrees() - 90 < AutoAlignConstants.R_TOLERANCE) {
                 distance = limelightFront.getHorizontalOffset();
                 XOutput = Xcontroller.calculate(distance);
             } else {
@@ -60,7 +60,7 @@ public class RetroLineUp extends CommandBase {
             XOutput = 0d;
         }
         
-        if (drivetrain.getYaw2d().getDegrees() < AutoAlignConstants.R_TOLERANCE) {
+        if (drivetrain.getYaw2d().getDegrees() - 90 < AutoAlignConstants.R_TOLERANCE) {
             ROutput = 0;
         } else {
             ROutput = Rcontroller.calculate(drivetrain.getYaw2d().getDegrees());
@@ -78,6 +78,12 @@ public class RetroLineUp extends CommandBase {
         LightningShuffleboard.setDouble("Retro-Align", "R Pid output", Rcontroller.calculate(drivetrain.getYaw2d().getDegrees()));
         LightningShuffleboard.setDouble("Retro-Align", "ROutput", ROutput);
         LightningShuffleboard.setDouble("Retro-Align", "XOutput", XOutput);
+
+        Xcontroller.setP(LightningShuffleboard.getDouble("Retro-Alig", "X Pee", Xcontroller.getP()));
+        Xcontroller.setD(LightningShuffleboard.getDouble("Retro-Alig", "X D", Xcontroller.getD()));
+
+        Rcontroller.setP(LightningShuffleboard.getDouble("Retro-Align", "R Pee", Rcontroller.getP()));
+        Rcontroller.setD(LightningShuffleboard.getDouble("Retro-Alig", "R D", Rcontroller.getD()));
     }
 
     @Override

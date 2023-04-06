@@ -52,7 +52,7 @@ public class AprilTagLineUp extends CommandBase {
                 Xcontroller.setSetpoint(0d);
             }
 
-            if (drivetrain.getYaw2d().getDegrees() < AutoAlignConstants.R_TOLERANCE) {
+            if (drivetrain.getYaw2d().getDegrees() - 90 < AutoAlignConstants.R_TOLERANCE) {
                 distance = limelightFront.getHorizontalOffset();
                 XOutput = Xcontroller.calculate(distance);
             } else {
@@ -63,7 +63,7 @@ public class AprilTagLineUp extends CommandBase {
             XOutput = 0d;
         }
         
-        if (drivetrain.getYaw2d().getDegrees() < AutoAlignConstants.R_TOLERANCE) {
+        if (drivetrain.getYaw2d().getDegrees() - 90 < AutoAlignConstants.R_TOLERANCE) {
             ROutput = 0;
         } else {
             ROutput = Rcontroller.calculate(drivetrain.getYaw2d().getDegrees());
@@ -82,11 +82,18 @@ public class AprilTagLineUp extends CommandBase {
         LightningShuffleboard.setDouble("April-Align", "R Pid output", Rcontroller.calculate(drivetrain.getYaw2d().getDegrees()));
         LightningShuffleboard.setDouble("April-Align", "ROutput", ROutput);
         LightningShuffleboard.setDouble("April-Align", "XOutput", XOutput);
+
+        Xcontroller.setP(LightningShuffleboard.getDouble("April-Align", "X Pee", Xcontroller.getP()));
+        Xcontroller.setD(LightningShuffleboard.getDouble("April-Align", "X D", Xcontroller.getD()));
+
+        Rcontroller.setP(LightningShuffleboard.getDouble("April-Align", "R Pee", Rcontroller.getP()));
+        Rcontroller.setD(LightningShuffleboard.getDouble("April-Align", "R D", Rcontroller.getD()));
     }
 
     @Override
     public void end(boolean interrupted) {
         drivetrain.stop();
+        limelightFront.setPipelineNum(0);
     }
 
     @Override
