@@ -181,7 +181,7 @@ public class RobotContainer extends LightningContainer {
         autoFactory.makeTrajectory("A2[3]-M-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
                 new PathConstraints(3, 2)); // works 3 low
         autoFactory.makeTrajectory("A2[3]-M-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
-                new PathConstraints(3.5, 2.25)); //Not tested 3 low
+                new PathConstraints(3, 2)); //Not tested 3 low
         // autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
         autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
@@ -233,7 +233,7 @@ public class RobotContainer extends LightningContainer {
 
         leds.setDefaultCommand(new SafeToScoreLED(leds, drivetrain, collector));
 
-        elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
+        // elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),

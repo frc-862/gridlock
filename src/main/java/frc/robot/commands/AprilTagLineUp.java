@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.LimelightConstants;
@@ -16,6 +18,7 @@ public class AprilTagLineUp extends CommandBase {
     private LimelightFront limelightFront;
     private PIDController Xcontroller = new PIDController(-0.05, 0, -0.03);
     private PIDController Rcontroller = new PIDController(0.005, 0, 0);
+    private double RSetpoint = 0;
     private Collector collector;
     private double XOutput = 0;
     private double ROutput = 0;
@@ -38,21 +41,25 @@ public class AprilTagLineUp extends CommandBase {
 
         Rcontroller.setSetpoint(90);// TODO figure out what it is to face the wall Might be different between red and blue
         Rcontroller.setTolerance(AutoAlignConstants.R_TOLERANCE);
+
+        Rcontroller.enableContinuousInput(0, 360);
     }
 
     //90 is 180
 
     @Override
     public void execute() {
-        if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 0) {//TODO make right pipeline
-            if (collector.getGamePiece() == GamePiece.CUBE) {
-                //TODO figure out the difference between the two on the x to change the offset
-                Xcontroller.setSetpoint(LimelightConstants.CUBE_OFFSET);
+        if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 0) {
+
+            if(DriverStation.getAlliance() == Alliance.Blue) {
+                RSetpoint = 0;
             } else {
-                Xcontroller.setSetpoint(0d);
+                RSetpoint = 180;
             }
 
-            if (drivetrain.getYaw2d().getDegrees() - 90 < AutoAlignConstants.R_TOLERANCE) {
+            Rcontroller.setSetpoint(RSetpoint);
+
+            if (drivetrain.getYaw2d().getDegrees() - RSetpoint < AutoAlignConstants.R_TOLERANCE) {
                 distance = limelightFront.getHorizontalOffset();
                 XOutput = Xcontroller.calculate(distance);
             } else {
@@ -63,7 +70,7 @@ public class AprilTagLineUp extends CommandBase {
             XOutput = 0d;
         }
         
-        if (drivetrain.getYaw2d().getDegrees() - 90 < AutoAlignConstants.R_TOLERANCE) {
+        if (drivetrain.getYaw2d().getDegrees() - RSetpoint < AutoAlignConstants.R_TOLERANCE) {
             ROutput = 0;
         } else {
             ROutput = Rcontroller.calculate(drivetrain.getYaw2d().getDegrees());
