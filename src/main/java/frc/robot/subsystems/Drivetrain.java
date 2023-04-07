@@ -9,6 +9,7 @@ import javax.accessibility.AccessibleHyperlink;
 import org.apache.commons.lang3.Range;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
@@ -26,6 +27,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -231,6 +233,12 @@ public class Drivetrain extends SubsystemBase {
      */
     public PIDController getHeadingController() {
         return headingController;
+    }
+
+    public void hardResetToVision() {
+        if(visionPose2d != null) {
+            poseEstimator.resetPosition(getHeading(), modulePositions, visionPose2d);
+        }
     }
 
     /**
@@ -727,4 +735,10 @@ public class Drivetrain extends SubsystemBase {
     public boolean onTarget() {
         return Math.abs(pose.getTranslation().getDistance(desiredPose.getTranslation())) < 0.1;
     }
+
+    // public void getPoseFromIMU() {
+    //     short[] xyz = new short[3];
+	// 	pigeon.getBiasedAccelerometer(xyz);
+	// 	Translation3d transVector =  new Translation3d(xyz[0] / 16384d * 9.81d, xyz[1] / 16384d * 9.81d, xyz[2] / 16384d * 9.81d);
+    // }
 }
