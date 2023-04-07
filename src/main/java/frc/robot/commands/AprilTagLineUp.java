@@ -21,7 +21,7 @@ public class AprilTagLineUp extends CommandBase {
     private double RSetpoint = 0;
     private Collector collector;
     private double XOutput = 0;
-    private double ROutput = 0;
+    private double ROutput = 90;
     private double distance = 0;
 
     public AprilTagLineUp(Drivetrain drivetrain, LimelightFront limelightFront, Collector collector) {
@@ -39,7 +39,7 @@ public class AprilTagLineUp extends CommandBase {
         Xcontroller.setSetpoint(0d);
         Xcontroller.setTolerance(AutoAlignConstants.X_TOLERANCE);
 
-        Rcontroller.setSetpoint(90);// TODO figure out what it is to face the wall Might be different between red and blue
+        Rcontroller.setSetpoint(RSetpoint);// TODO figure out what it is to face the wall Might be different between red and blue
         Rcontroller.setTolerance(AutoAlignConstants.R_TOLERANCE);
 
         Rcontroller.enableContinuousInput(0, 360);
@@ -49,16 +49,8 @@ public class AprilTagLineUp extends CommandBase {
 
     @Override
     public void execute() {
-        if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 0) {
-
-            if(DriverStation.getAlliance() == Alliance.Blue) {
-                RSetpoint = 0;
-            } else {
-                RSetpoint = 180;
-            }
-
-            Rcontroller.setSetpoint(RSetpoint);
-
+        Rcontroller.setSetpoint(RSetpoint);
+        if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 3) {
             if (drivetrain.getYaw2d().getDegrees() - RSetpoint < AutoAlignConstants.R_TOLERANCE) {
                 distance = limelightFront.getHorizontalOffset();
                 XOutput = Xcontroller.calculate(distance);
@@ -69,21 +61,18 @@ public class AprilTagLineUp extends CommandBase {
         } else {
             XOutput = 0d;
         }
-        
-        if (drivetrain.getYaw2d().getDegrees() - RSetpoint < AutoAlignConstants.R_TOLERANCE) {
+
+        if (Math.abs(drivetrain.getYaw2d().getDegrees() - RSetpoint) < AutoAlignConstants.R_TOLERANCE) {
             ROutput = 0;
         } else {
             ROutput = Rcontroller.calculate(drivetrain.getYaw2d().getDegrees());
         }
 
+        drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(XOutput), 
+        drivetrain.percentOutputToMetersPerSecond(0),
+        drivetrain.percentOutputToRadiansPerSecond(ROutput), 
+        drivetrain.getYaw2d()));
 
-        drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-            drivetrain.percentOutputToMetersPerSecond(XOutput),
-            drivetrain.percentOutputToMetersPerSecond(0), 
-            drivetrain.percentOutputToRadiansPerSecond(ROutput), 
-            drivetrain.getYaw2d()));
-
-        
         LightningShuffleboard.setDouble("April-Align", "horizontal offset", distance);
         LightningShuffleboard.setDouble("April-Align", "X Pid output", Xcontroller.calculate(distance));
         LightningShuffleboard.setDouble("April-Align", "R Pid output", Rcontroller.calculate(drivetrain.getYaw2d().getDegrees()));

@@ -60,7 +60,7 @@ public class RetroLineUp extends CommandBase {
             XOutput = 0d;
         }
         
-        if (drivetrain.getYaw2d().getDegrees() - 90 < AutoAlignConstants.R_TOLERANCE) {
+        if (Math.abs(drivetrain.getYaw2d().getDegrees() - 90) < AutoAlignConstants.R_TOLERANCE) {
             ROutput = 0;
         } else {
             ROutput = Rcontroller.calculate(drivetrain.getYaw2d().getDegrees());
