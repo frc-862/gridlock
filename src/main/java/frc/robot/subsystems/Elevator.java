@@ -15,6 +15,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotMap.CAN;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.config.SparkMaxPIDGains;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**

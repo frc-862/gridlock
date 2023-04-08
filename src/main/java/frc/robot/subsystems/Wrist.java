@@ -199,12 +199,20 @@ public class Wrist extends SubsystemBase {
 
         currentAngle = getAngle().getDegrees();
 
-        if (targetAngle - currentAngle > 0) {
-            PIDOutput = upController.calculate(getAngle().getDegrees(), targetAngle);
+        if (arm.getAngle().getDegrees() < 90) {
+            if (targetAngle - currentAngle > 0) {
+                PIDOutput = upController.calculate(currentAngle, targetAngle);
+            } else {
+                PIDOutput = downController.calculate(currentAngle, targetAngle);
+            }
         } else {
-            PIDOutput = downController.calculate(getAngle().getDegrees(), targetAngle);
+            if (targetAngle - currentAngle > 0) {
+                PIDOutput = downController.calculate(currentAngle, targetAngle);
+            } else {
+                PIDOutput = upController.calculate(currentAngle, targetAngle);
+            }
         }
-        FOutput = WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees());
+        FOutput = WristConstants.WRIST_KF_MAP.get(arm.getAngle().getDegrees());
         // FOutput = LightningShuffleboard.getDouble("Lift", "F input", 0d);
         if (disableWrist) {
             setPower(0);

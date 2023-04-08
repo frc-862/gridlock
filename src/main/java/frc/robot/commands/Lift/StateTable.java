@@ -77,6 +77,11 @@ public class StateTable {
     private static final double WRIST_DOUBLE_SUB_ANGLE = -63d;
     private static final LiftPlan DOUBLE_SUB_PLAN = LiftPlan.parallel;
 
+    private static final double ELEVATOR_OTP_POS = 0d;
+    private static final double ARM_OTP_ANGLE = 37.7d;
+    private static final double WRIST_OTP_ANGLE = -63d;
+    private static final LiftPlan OTP_PLAN = LiftPlan.parallel;
+
     private static final double ELEVATOR_SINGLE_SUB_POS = 6.3d;
     private static final double ARM_SINGLE_SUB_ANGLE = -66d;
     private static final double WRIST_SINGLE_SUB_ANGLE = 119d;

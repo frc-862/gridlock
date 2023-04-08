@@ -67,6 +67,9 @@ public class Arm extends SubsystemBase {
         motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
         motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
 
+        upController.enableContinuousInput(-180, 180);
+        downController.enableContinuousInput(-180, 180);
+
         // Create the PID controller and set the output range
         targetAngle = getAngle().getDegrees();
 
@@ -191,10 +194,18 @@ public class Arm extends SubsystemBase {
         double currentAngle = getAngle().getDegrees();
         // double kFOut = LightningShuffleboard.getDouble("Arm", "kF in", 0);
         double kFOut = ArmConstants.ARM_KF_MAP.get(currentAngle);
-        if (targetAngle - currentAngle > 0) {
-            PIDOUT = upController.calculate(currentAngle, targetAngle);
+        if (currentAngle < 90 && currentAngle > -90) {
+            if (targetAngle - currentAngle > 0) {
+                PIDOUT = upController.calculate(currentAngle, targetAngle);
+            } else {
+                PIDOUT = downController.calculate(currentAngle, targetAngle);
+            }
         } else {
-            PIDOUT = downController.calculate(currentAngle, targetAngle);
+            if (targetAngle - currentAngle > 0) {
+                PIDOUT = downController.calculate(currentAngle, targetAngle);
+            } else {
+                PIDOUT = upController.calculate(currentAngle, targetAngle);
+            }
         }
         double power = kFOut + PIDOUT;
 
@@ -213,6 +224,7 @@ public class Arm extends SubsystemBase {
         // downController.setP(LightningShuffleboard.getDouble("Arm", "down kP", ArmConstants.DOWN_kP));
 
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", -60)));
+        LightningShuffleboard.setDouble("Arm", "OUTPUT APPLIED", power);
         // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
     }
 }

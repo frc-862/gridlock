@@ -216,7 +216,7 @@ public final class Constants {
 
         // Min and Max arm angles in degrees
         // TODO: change to actual values
-        public static final double MAX_ANGLE = 90d;
+        public static final double MAX_ANGLE = 180;
         public static final double MIN_ANGLE = -113d;
 
         // Min and Max power
@@ -244,9 +244,11 @@ public final class Constants {
                 put(-135d, -0.005d);
                 put(-90d, 0d);
                 put(-45d, 0.005d);
-                put(10d, 0.02d);
-                put(15d, 0d);
-                put(90d, -0.1);
+                put(10d, 0.02);
+                put(45d, 0.005d);
+                put(90d, 0d);
+                put(135d, -0.005d);
+
             }
         };
     }
