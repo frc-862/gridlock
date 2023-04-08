@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1814777466930115,
-        "y": 4.505570437674399
+        "x": 2.895591297601996,
+        "y": 4.837198718619977
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
@@ -18,7 +18,8 @@
       "stopEvent": {
         "names": [
           "Score-Piece-Servo",
-          "Turn-On-Vision"
+          "Turn-Off-Vision",
+          "Pos3"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
@@ -27,16 +28,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.526335456517069,
-        "y": 4.576588480100038
+        "x": 6.6,
+        "y": 4.85
       },
       "prevControl": {
-        "x": 4.988280104948227,
-        "y": 4.551312269528961
+        "x": 5.061944648431157,
+        "y": 4.824723789428923
       },
       "nextControl": {
-        "x": 4.988280104948227,
-        "y": 4.551312269528961
+        "x": 5.061944648431157,
+        "y": 4.824723789428923
       },
       "holonomicAngle": 0.0,
       "isReversal": true,
@@ -59,12 +60,12 @@
         "y": 4.780021428801773
       },
       "prevControl": {
-        "x": 5.079763768657352,
-        "y": 4.7457150549108515
+        "x": 5.445698423493851,
+        "y": 4.825763260656336
       },
       "nextControl": {
-        "x": 3.3364803095074755,
-        "y": 4.798013558685348
+        "x": 3.336485784201954,
+        "y": 4.761847726132339
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -107,7 +108,7 @@
   ],
   "markers": [
     {
-      "position": 0.2836363636363661,
+      "position": 0.0,
       "names": [
         "Ground-Collect-Cube"
       ]
