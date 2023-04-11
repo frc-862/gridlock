@@ -18,7 +18,9 @@
       "stopEvent": {
         "names": [
           "High-Score-Cube",
-          "Hold-Power"
+          "Hold-Power",
+          "Pos1",
+          "Enable-Vision"
         ],
         "executionBehavior": "parallelDeadline",
         "waitBehavior": "minimum",

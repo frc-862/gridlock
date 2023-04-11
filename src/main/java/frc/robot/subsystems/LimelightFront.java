@@ -94,10 +94,11 @@ public class LimelightFront extends SubsystemBase {
      */
     public double getTagDistance() {
         if (hasVision()) {
+            if(LimelightHelpers.getTargetPose_RobotSpace(limelightName).length != 0) {
             return LimelightHelpers.getTargetPose_RobotSpace(limelightName)[2];
-        } else {
+            }
+        } 
             return -1;
-        }
     }
 
     /**

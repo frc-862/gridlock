@@ -88,7 +88,7 @@ public final class Constants {
         // public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.5;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI / 5;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = +MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI / 5;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -97,7 +97,7 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.18;
 
-        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.5;
+        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.7;
         public static final double SLOW_MODE_ROTATIONAL_MULT = 0.5;
 
         // Pigeon heading offset 
@@ -192,7 +192,7 @@ public final class Constants {
         public static final String BACK_NAME = "limelight-back";
         public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0));
         public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180));
-
+        public static final double CUBE_OFFSET = 0.0; // TODO find this value
     }
 
     public static final class ArmConstants {
@@ -216,7 +216,7 @@ public final class Constants {
 
         // Min and Max arm angles in degrees
         // TODO: change to actual values
-        public static final double MAX_ANGLE = 90d;
+        public static final double MAX_ANGLE = 180;
         public static final double MIN_ANGLE = -113d;
 
         // Min and Max power
@@ -244,9 +244,11 @@ public final class Constants {
                 put(-135d, -0.005d);
                 put(-90d, 0d);
                 put(-45d, 0.005d);
-                put(10d, 0.02d);
-                put(15d, 0d);
-                put(90d, -0.1);
+                put(10d, 0.02);
+                put(45d, 0.005d);
+                put(90d, 0d);
+                put(135d, -0.005d);
+
             }
         };
     }
@@ -540,7 +542,8 @@ public final class Constants {
         public static final double CONTROL_LENGTHS = 0.001;
 
         // Tolerance for auto align
-        public static final double TOLERANCE = 1d;
+        public static final double X_TOLERANCE = 7d;
+        public static final double R_TOLERANCE = 5d;
 
         //Log period auto align
         public static final double LOG_PERIOD = 0.25;

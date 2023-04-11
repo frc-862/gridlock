@@ -88,8 +88,8 @@ public class Wrist extends SubsystemBase {
                 new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
                 new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()),
-                new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()));
-        new Pair<String, Object>("Wrist built-in encoder", (DoubleSupplier) () -> motor.getEncoder().getPosition());
+                new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()));
         // new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
         // new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
     }
@@ -199,12 +199,20 @@ public class Wrist extends SubsystemBase {
 
         currentAngle = getAngle().getDegrees();
 
-        if (targetAngle - currentAngle > 0) {
-            PIDOutput = upController.calculate(getAngle().getDegrees(), targetAngle);
+        if (arm.getAngle().getDegrees() < 90) {
+            if (targetAngle - currentAngle > 0) {
+                PIDOutput = upController.calculate(currentAngle, targetAngle);
+            } else {
+                PIDOutput = downController.calculate(currentAngle, targetAngle);
+            }
         } else {
-            PIDOutput = downController.calculate(getAngle().getDegrees(), targetAngle);
+            if (targetAngle - currentAngle > 0) {
+                PIDOutput = downController.calculate(currentAngle, targetAngle);
+            } else {
+                PIDOutput = upController.calculate(currentAngle, targetAngle);
+            }
         }
-        FOutput = WristConstants.WRIST_KF_MAP.get(getGroundRelativeAngle(arm.getAngle()).getDegrees());
+        FOutput = WristConstants.WRIST_KF_MAP.get(arm.getAngle().getDegrees());
         // FOutput = LightningShuffleboard.getDouble("Lift", "F input", 0d);
         if (disableWrist) {
             setPower(0);

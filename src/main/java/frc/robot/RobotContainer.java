@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.LimelightFront;
@@ -35,7 +36,10 @@ import frc.robot.commands.Collect;
 import frc.robot.commands.EleUpInCommunity;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.HoldPower;
+import frc.robot.commands.RetroLineUp;
+import frc.robot.commands.AprilTagLineUp;
 import frc.robot.commands.SafeToScoreLED;
+import frc.robot.commands.SingleSubstationAlign;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
 import frc.robot.commands.Lift.Ground;
 import frc.robot.commands.Lift.HighScore;
@@ -50,6 +54,7 @@ import frc.thunder.LightningContainer;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.LimelightConstants;
+import frc.thunder.auto.Autonomous;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
@@ -84,15 +89,14 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureButtonBindings() {
+        new Trigger(collector::isStalling)
+                .onTrue(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 1)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 1))));
+        new Trigger(collector::isStalling)
+                .onFalse(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 0)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 0))));
+
         /* driver Controls */
-        new Trigger(collector::isStalling).onTrue(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 1)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 1))));
-        new Trigger(collector::isStalling).onFalse(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 0)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 0))));
-
-
         // RESETS
         new Trigger(() -> (driver.getBackButton() && driver.getStartButton())).onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
-        new Trigger(() -> driver.getBButton()).onTrue(new InstantCommand(() -> drivetrain.poseReset(new Pose2d()), drivetrain));
-        // new Trigger(driver::getStartButton).onTrue(new InstantCommand(() -> drivetrain.setYaw(180)));
 
         new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::resetNeoAngle));
 
@@ -105,7 +109,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getRightBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CONE)));
         new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
 
-        new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.moveToDesiredPose(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+        // new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.moveToDesiredPose(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
+        new Trigger(driver::getYButton).whileTrue(new SingleSubstationAlign(drivetrain, frontLimelight, collector));
 
         // SET DRIVE PODS TO 45
         new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
@@ -123,11 +128,11 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> buttonPad.getRawButton(12)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_10_POSE)));
 
         // SERVO
-        // new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_UP)));
-        // new Trigger(driver::getBButton).onFalse(new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_DOWN)));
+        new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo));
 
-        // new Trigger(driver::getBButton).onTrue(new InstantCommand(servoturn::flickServo));
-        
+        // AutoAlign based on cone or cube
+        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector),
+                () -> collector.getGamePiece() == GamePiece.CUBE));
 
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
@@ -169,52 +174,65 @@ public class RobotContainer extends LightningContainer {
     @Override
     protected void configureAutonomousCommands() {
         //Test paths 
-        // autoFactory.makeTrajectory("TestVision", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
-        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+
         // Game paths
-        //A paths   
-        autoFactory.makeTrajectory("A2[2]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //A paths
+        autoFactory.makeTrajectory("A2[2]-M-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
-        autoFactory.makeTrajectory("A1[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Bit silly NOT tested
-        autoFactory.makeTrajectory("A2[3]-M-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
-                new PathConstraints(3, 2)); // works 3 low
-        autoFactory.makeTrajectory("A2[3]-M-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), 
-                new PathConstraints(3, 2)); //Not tested 3 low
-        autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
-        autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Should work
-        autoFactory.makeTrajectory("A2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested autoBalance better from other side
+        autoFactory.makeTrajectory("A2[2]-M-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
+        autoFactory.makeTrajectory("A2[2]-M-HIGH-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
+        autoFactory.makeTrajectory("A2[2]-M-HIGH-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
+        autoFactory.makeTrajectory("A2[2.25]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
+        autoFactory.makeTrajectory("A2[2.5]-M-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(2.25, 1.25)); // Tested double ground
+        autoFactory.makeTrajectory("A2[2.5]-M-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
+        // autoFactory.makeTrajectory("A1[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Bit silly NOT tested
+        // autoFactory.makeTrajectory("A2[3]-M-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), new PathConstraints(3.25, 2.125)); // works 3 low
+        // autoFactory.makeTrajectory("A2[3]-M-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), new PathConstraints(3.25, 2.125)); //Not tested 3 low
+        // autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
+        // autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Should work
+        // autoFactory.makeTrajectory("A2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested autoBalance better from other side
         //B paths
         autoFactory.makeTrajectory("B2[1]-C-LOW", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Works
-        autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION), 
-                new PathConstraints(1, .5),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
+        // autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION), new PathConstraints(1, .5),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
         autoFactory.makeTrajectory("B2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Needs more testing
-        autoFactory.makeTrajectory("B2[1]-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        // autoFactory.makeTrajectory("B2[1]-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Works
+        autoFactory.makeTrajectory("B2[1.5]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Works
-        autoFactory.makeTrajectory("B2[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
+        // autoFactory.makeTrajectory("B2[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
         //C paths
         autoFactory.makeTrajectory("C2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Should Work
         autoFactory.makeTrajectory("C2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
-        autoFactory.makeTrajectory("C2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested autoBalance better from other side
+        // autoFactory.makeTrajectory("C2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested autoBalance better from other side
         autoFactory.makeTrajectory("C2[2]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
-        autoFactory.makeTrajectory("C2[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
-        autoFactory.makeTrajectory("C2[3]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
-        // autoFactory.makeTrajectory(null, null, null, null);
+        // autoFactory.makeTrajectory("C2[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
+        // autoFactory.makeTrajectory("C2[3]-M-Blue", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
+        // autoFactory.makeTrajectory("C2[3]-M-Red", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
+
+        Autonomous.register("ruh roh flick auto", new InstantCommand(servoturn::flickServo, servoturn));
     }
 
     @Override
@@ -230,10 +248,9 @@ public class RobotContainer extends LightningContainer {
                 () -> MathUtil.applyDeadband(driver.getLeftY(), ControllerConstants.DEADBAND), () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.DEADBAND),
                 () -> driver.getRightTriggerAxis() > 0.25, () -> driver.getLeftTriggerAxis() > 0.25));
 
-        
         leds.setDefaultCommand(new SafeToScoreLED(leds, drivetrain, collector));
 
-        elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
+        // elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
 
         // elevator.setDefaultCommand(
         // new ManualLift(() -> driver.getRightTriggerAxis() - driver.getLeftTriggerAxis(),

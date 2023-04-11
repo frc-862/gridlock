@@ -9,6 +9,7 @@ import javax.accessibility.AccessibleHyperlink;
 import org.apache.commons.lang3.Range;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
@@ -26,6 +27,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -147,6 +149,8 @@ public class Drivetrain extends SubsystemBase {
 
     private double velocity = 0;
 
+    private Pose2d visionPose2d;
+
     public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
         this.limelightFront = limelightFront;
@@ -229,6 +233,12 @@ public class Drivetrain extends SubsystemBase {
      */
     public PIDController getHeadingController() {
         return headingController;
+    }
+
+    public void hardResetToVision() {
+        if(visionPose2d != null) {
+            poseEstimator.resetPosition(getHeading(), modulePositions, visionPose2d);
+        }
     }
 
     /**
@@ -335,7 +345,7 @@ public class Drivetrain extends SubsystemBase {
 
     public void updateVision() {
         if (VisionBase.isVisionEnabled()) {
-            Pose2d visionPose2d = null;
+            visionPose2d = null;
             double latency = 0;
             double tagDistance = 0;
             if (limelightFront.hasVision()) {
@@ -372,7 +382,7 @@ public class Drivetrain extends SubsystemBase {
             //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
             // }
 
-            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency);
+            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency - .0472);
             pose = poseEstimator.getEstimatedPosition();
 
             lastKnownGoodVisionX = visionPose2d.getX();
@@ -427,7 +437,7 @@ public class Drivetrain extends SubsystemBase {
     // Method to start sending values to the dashboard and start logging
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", DrivetrainConstants.LOG_PERIOD, new Pair<String, Object>("Pigeon Yaw", (DoubleSupplier) () -> pigeon.getYaw()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", DrivetrainConstants.LOG_PERIOD, new Pair<String, Object>("Pigeon Yaw", (DoubleSupplier) () -> getYaw2d().getDegrees()),
                 new Pair<String, Object>("roll", (DoubleSupplier) () -> pigeon.getRoll()), new Pair<String, Object>("pitch", (DoubleSupplier) () -> pigeon.getPitch()),
                 new Pair<String, Object>("fl module position", (DoubleSupplier) () -> modulePositions[0].distanceMeters),
                 new Pair<String, Object>("fr module position", (DoubleSupplier) () -> modulePositions[1].distanceMeters),
@@ -437,7 +447,7 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("raw Pose", (Supplier<double[]>) () -> new double[] {rawPose.getX(), rawPose.getY(), rawPose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
                 new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()));
-                
+
         periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
                 new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
     }
@@ -447,6 +457,13 @@ public class Drivetrain extends SubsystemBase {
      */
     public PathPoint getCurrentPathPoint() {
         return PathPoint.fromCurrentHolonomicState(pose, chassisSpeeds).withControlLengths(AutoAlignConstants.CONTROL_LENGTHS, AutoAlignConstants.CONTROL_LENGTHS);
+    }
+
+    public void instantSyncVision() {
+        if (visionPose2d != null) {
+            pose = visionPose2d;
+            System.out.println("Ran the Sync");
+        }
     }
 
     /**
@@ -461,7 +478,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Gets the heading of the robot from odometry in degrees from 0 to 360
+     * Gets the heading of the robot from odometry in rotation 2d
      */
     public Rotation2d getHeading() {
         return pose.getRotation();
@@ -635,19 +652,34 @@ public class Drivetrain extends SubsystemBase {
      * @return if in community or not
      */
     public boolean isInCommunity() {
-        if(DriverStation.getAlliance() == Alliance.Blue) {
-            if( (1.35 < pose.getX() && pose.getX() < 3.35) && (1.50 < pose.getY() && pose.getY() < 5.25) || // Box 1
-                (1.35 < pose.getX() && pose.getX() < 4.85) && (0.00 < pose.getY() && pose.getY() < 1.50) || // Box 2
-                (9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) || // Box 3
-                (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
-                    return true;
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+            if ((1.35 < pose.getX() && pose.getX() < 3.35) && (1.50 < pose.getY() && pose.getY() < 5.25) || // Box 1
+                    (1.35 < pose.getX() && pose.getX() < 4.85) && (0.00 < pose.getY() && pose.getY() < 1.50) || // Box 2
+                    (9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) || // Box 3
+                    (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
+                return true;
             }
-        } else if(DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
-            if( (1.35 < pose.getX() && pose.getX() < 3.35) && (2.40 < pose.getY() && pose.getY() < 6.45) || // Box 1
-                (1.35 < pose.getX() && pose.getX() < 4.85) && (6.45 < pose.getY() && pose.getY() < 8.02) || // Box 2
-                (9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) || // Box 3
-                (13.20 < pose.getX() && pose.getX() < 16.25) && (0.03 < pose.getY() && pose.getY() < 2.51)) { // Box 4
-                    return true;
+        } else if (DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
+            if ((1.35 < pose.getX() && pose.getX() < 3.35) && (2.40 < pose.getY() && pose.getY() < 6.45) || // Box 1
+                    (1.35 < pose.getX() && pose.getX() < 4.85) && (6.45 < pose.getY() && pose.getY() < 8.02) || // Box 2
+                    (9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) || // Box 3
+                    (13.20 < pose.getX() && pose.getX() < 16.25) && (0.03 < pose.getY() && pose.getY() < 2.51)) { // Box 4
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isInLoadZone() {
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+            if ((9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) || // Box 3
+                    (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
+                return true;
+            }
+        } else if (DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
+            if ((9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) || // Box 3
+                    (13.20 < pose.getX() && pose.getX() < 16.25) && (0.03 < pose.getY() && pose.getY() < 2.51)) { // Box 4
+                return true;
             }
         }
         return false;
@@ -703,4 +735,10 @@ public class Drivetrain extends SubsystemBase {
     public boolean onTarget() {
         return Math.abs(pose.getTranslation().getDistance(desiredPose.getTranslation())) < 0.1;
     }
+
+    // public void getPoseFromIMU() {
+    //     short[] xyz = new short[3];
+	// 	pigeon.getBiasedAccelerometer(xyz);
+	// 	Translation3d transVector =  new Translation3d(xyz[0] / 16384d * 9.81d, xyz[1] / 16384d * 9.81d, xyz[2] / 16384d * 9.81d);
+    // }
 }
