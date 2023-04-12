@@ -42,6 +42,11 @@ public class Arm extends SubsystemBase {
 
     private boolean disableArm = false;
 
+    private boolean doOTB = false;
+
+    private double[] OTBTargs = {0, 45, 70, 90, 110, 150, 170};
+    private int currOTBState = 0;
+
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
@@ -156,7 +161,12 @@ public class Arm extends SubsystemBase {
      * @return true if the arm is within the tolerance of the target angle
      */
     public boolean onTarget() {
-        return Math.abs(getAngle().getDegrees() - targetAngle) < tolerance;
+        //if we're doing over the back, only return onTarget as true if we reach our final state
+        if(doOTB) {
+            return Math.abs(getAngle().getDegrees() - OTBTargs[OTBTargs.length - 1]) < tolerance;
+        } else {
+            return Math.abs(getAngle().getDegrees() - targetAngle) < tolerance;
+        }
         // return true;
     }
 
@@ -174,6 +184,10 @@ public class Arm extends SubsystemBase {
 
     public void setTolerance(double tolerance) {
         this.tolerance = tolerance;
+    }
+
+    public void setDoOTB(boolean doOTB) {
+        this.doOTB = doOTB;
     }
 
     /**
@@ -194,6 +208,14 @@ public class Arm extends SubsystemBase {
         double currentAngle = getAngle().getDegrees();
         // double kFOut = LightningShuffleboard.getDouble("Arm", "kF in", 0);
         double kFOut = ArmConstants.ARM_KF_MAP.get(currentAngle);
+
+        if(doOTB) {
+            targetAngle = OTBTargs[currOTBState];
+            if(onTarget(targetAngle) && currOTBState != OTBTargs[OTBTargs.length - 1]) {
+                currOTBState++;
+            }
+        }
+        //swap up and down controllers when in applicable quadrants
         if (currentAngle < 90 && currentAngle > -90) {
             if (targetAngle - currentAngle > 0) {
                 PIDOUT = upController.calculate(currentAngle, targetAngle);

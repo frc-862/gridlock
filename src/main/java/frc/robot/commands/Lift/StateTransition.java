@@ -21,6 +21,7 @@ public class StateTransition {
     private Range<Double> elevatorSafeZone;
     private Range<Double> armSafeZone;
     private Range<Double> wristSafeZone;
+    private boolean doOTB;
 
     /**
      * Creates a new state transition
@@ -55,6 +56,12 @@ public class StateTransition {
     public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState) {
         this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION),
                 Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE));
+    }
+
+    public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState, boolean doOTB) {
+        this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION),
+                Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE));
+                this.doOTB = doOTB;
     }
 
     /**
@@ -130,5 +137,9 @@ public class StateTransition {
      */
     public boolean isInEleSafeZone(double input) {
         return elevatorSafeZone.contains(input);
+    }
+
+    public boolean doingOTB() {
+        return doOTB;
     }
 }

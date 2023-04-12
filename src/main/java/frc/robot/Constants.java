@@ -471,8 +471,8 @@ public final class Constants {
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
             doubleSubstationCollect, singleSubstationCollect,
 
-            //score states1000
-            midCubeScore, highCubeScore, midConeScore, highConeScore,
+            //score states
+            midCubeScore, highCubeScore, midConeScore, highConeScore, OTB,
 
             //substates
             stowedCollect, stowedScore, stowedSingleSub, scoreToCollect, elevatorDeployed,
