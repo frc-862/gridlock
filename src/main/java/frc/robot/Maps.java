@@ -46,6 +46,8 @@ public class Maps {
         eventMap.put("Ground-Collect-Cube", new RunCommand(() -> lift.setGoalState(LiftState.groundCube), lift).until(lift::goalReached));
         eventMap.put("High-Score-Cone", new RunCommand(() -> lift.setGoalState(LiftState.highConeScore), lift).until(lift::goalReached));
         eventMap.put("High-Score-Cube", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
+        // eventMap.put("High-Score-Cube-Back", new RunCommand(() -> lift.setGoalState(LiftState.OTB), lift).until(lift::goalReached));
+        // eventMap.put("Mid-Score-Cube-Back", new RunCommand(() -> lift.setGoalState(LiftState.OTB), lift).until(lift::goalReached));
         eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
         eventMap.put("Instant-Sync", new InstantCommand(() -> drivetrain.instantSyncVision()));
         eventMap.put("Stop-Collect", new InstantCommand(() -> collector.stop(), collector));
