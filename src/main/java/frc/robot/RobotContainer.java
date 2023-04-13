@@ -151,7 +151,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getBButton).whileTrue(new Stow(lift));
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getLeftBumper).whileTrue(new SingleSubstationCollect(lift));
+        new Trigger(copilot::getLeftBumper).whileTrue(new SingleSubstationCollect(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getRightBumper).whileTrue(new DoubleSubstationCollect(lift));
 
         //FLICK
