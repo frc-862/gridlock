@@ -199,6 +199,7 @@ public class Drivetrain extends SubsystemBase {
         setInitialPose(new Pose2d(0, 0, new Rotation2d()));
 
         // Setting states of the modules
+        states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
         updateOdometry();
         updateDriveStates(states);
 
@@ -213,6 +214,10 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        if(DriverStation.isDisabled()) {
+            states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
+        }
 
         // Update our odometry
         updateOdometry();
