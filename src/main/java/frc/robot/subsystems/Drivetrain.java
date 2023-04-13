@@ -154,8 +154,6 @@ public class Drivetrain extends SubsystemBase {
 
     private Pose2d visionPose2d;
 
-    private Encoder blEncoder = new Encoder(0, 1, false, EncodingType.k4X);
-
     public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
         this.limelightFront = limelightFront;
@@ -463,7 +461,6 @@ public class Drivetrain extends SubsystemBase {
         modulePositions[1] = frontRightModule.getPosition();
         modulePositions[2] = backLeftModule.getPosition();
         modulePositions[3] = backRightModule.getPosition();
-        modulePositions[2].distanceMeters = blEncoder.getDistance() / 2048 / 6.746 * 0.3150362;
     }
 
     // Method to start sending values to the dashboard and start logging
@@ -478,8 +475,7 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
                 new Pair<String, Object>("raw Pose", (Supplier<double[]>) () -> new double[] {rawPose.getX(), rawPose.getY(), rawPose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
-                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()), 
-                new Pair<String, Object>("back left module encoder", (DoubleSupplier) () -> blEncoder.getDistance() / 2048 / 6.746 * 0.3150362));
+                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()));
 
         periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
                 new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
