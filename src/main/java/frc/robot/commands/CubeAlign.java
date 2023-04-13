@@ -37,8 +37,9 @@ public class CubeAlign extends CommandBase {
         if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 3){
             horizOffset = limelightFront.getHorizontalOffset();
             horizOffset *= AutoAlignConstants.HORIZONTAL_MULTIPLIER;
+            XOffset = horizOffset / Math.sin(0d/*GET FROM VISION*/);
+            YOffset = horizOffset / Math.tan(0d/*GET FROM VISION*/);
         }
-
 
         translatedPose = new Pose2d(new Translation2d(drivetrain.getPose().getX() - XOffset, drivetrain.getPose().getY() - YOffset), drivetrain.getPose().getRotation());
 
