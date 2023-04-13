@@ -20,112 +20,112 @@ import frc.thunder.vision.VisionBase;
  */
 public class Robot extends LightningRobot {
 
-    private double timer = 0;
-    private boolean timerStart = false;
+    // private double timer = 0;
+    // private boolean timerStart = false;
 
-    private SendableChooser<String> chooser = new SendableChooser<>();
-    private int pos = -1;
+    // private SendableChooser<String> chooser = new SendableChooser<>();
+    // private int pos = -1;
 
     public Robot() {
         super(new RobotContainer());
     }
 
-    @Override
-    public void robotInit() {
-        super.robotInit();
+    // @Override
+    // public void robotInit() {
+    //     super.robotInit();
 
-        ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
-        chooser.setDefaultOption("CLICK HERE, MIKE", "NONE");
-        chooser.addOption("A", "A");
-        chooser.addOption("B", "B");
-        chooser.addOption("C", "C");
-        tab.add("Auton type", chooser);
-    }
+    //     ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
+    //     chooser.setDefaultOption("CLICK HERE, MIKE", "NONE");
+    //     chooser.addOption("A", "A");
+    //     chooser.addOption("B", "B");
+    //     chooser.addOption("C", "C");
+    //     tab.add("Auton type", chooser);
+    // }
 
-    @Override
-    public void disabledPeriodic() {
-        super.disabledPeriodic();
-        switch (chooser.getSelected()) {
-            case "A":
-                if (!timerStart) {
-                    timer = Timer.getFPGATimestamp();
-                }
+    // @Override
+    // public void disabledPeriodic() {
+    //     super.disabledPeriodic();
+    //     switch (chooser.getSelected()) {
+    //         case "A":
+    //             if (!timerStart) {
+    //                 timer = Timer.getFPGATimestamp();
+    //             }
 
-                timerStart = true;
-                pos = 3;
-                if (DriverStation.getAlliance() == Alliance.Blue) {
-                    pos += 6;
-                } else {
-                    pos += 3;
-                }
+    //             timerStart = true;
+    //             pos = 3;
+    //             if (DriverStation.getAlliance() == Alliance.Blue) {
+    //                 pos += 6;
+    //             } else {
+    //                 pos += 3;
+    //             }
 
-                LimelightHelpers.setPipelineIndex(LimelightConstants.BACK_NAME, pos);
-                LimelightHelpers.setPipelineIndex(LimelightConstants.FRONT_NAME, pos);
+    //             LimelightHelpers.setPipelineIndex(LimelightConstants.BACK_NAME, pos);
+    //             LimelightHelpers.setPipelineIndex(LimelightConstants.FRONT_NAME, pos);
 
-                if (Timer.getFPGATimestamp() - timer > 1) {
-                    VisionBase.enableVision();
-                }
+    //             if (Timer.getFPGATimestamp() - timer > 1) {
+    //                 VisionBase.enableVision();
+    //             }
 
-                break;
+    //             break;
 
-            case "B":
-                if (!timerStart) {
-                    timer = Timer.getFPGATimestamp();
-                }
+    //         case "B":
+    //             if (!timerStart) {
+    //                 timer = Timer.getFPGATimestamp();
+    //             }
 
-                timerStart = true;
-                pos = 2;
-                if (DriverStation.getAlliance() == Alliance.Blue) {
-                    pos += 6;
-                } else {
-                    pos += 3;
-                }
-                LimelightHelpers.setPipelineIndex(LimelightConstants.BACK_NAME, pos);
-                LimelightHelpers.setPipelineIndex(LimelightConstants.FRONT_NAME, pos);
+    //             timerStart = true;
+    //             pos = 2;
+    //             if (DriverStation.getAlliance() == Alliance.Blue) {
+    //                 pos += 6;
+    //             } else {
+    //                 pos += 3;
+    //             }
+    //             LimelightHelpers.setPipelineIndex(LimelightConstants.BACK_NAME, pos);
+    //             LimelightHelpers.setPipelineIndex(LimelightConstants.FRONT_NAME, pos);
 
-                if (Timer.getFPGATimestamp() - timer > 1) {
-                    VisionBase.enableVision();
-                }
-                break;
+    //             if (Timer.getFPGATimestamp() - timer > 1) {
+    //                 VisionBase.enableVision();
+    //             }
+    //             break;
 
-            case "C":
-                if (!timerStart) {
-                    timer = Timer.getFPGATimestamp();
-                }
+    //         case "C":
+    //             if (!timerStart) {
+    //                 timer = Timer.getFPGATimestamp();
+    //             }
 
-                timerStart = true;
-                pos = 1;
-                if (DriverStation.getAlliance() == Alliance.Blue) {
-                    pos += 6;
-                } else {
-                    pos += 3;
-                }
-                LimelightHelpers.setPipelineIndex(LimelightConstants.BACK_NAME, pos);
-                LimelightHelpers.setPipelineIndex(LimelightConstants.FRONT_NAME, pos);
+    //             timerStart = true;
+    //             pos = 1;
+    //             if (DriverStation.getAlliance() == Alliance.Blue) {
+    //                 pos += 6;
+    //             } else {
+    //                 pos += 3;
+    //             }
+    //             LimelightHelpers.setPipelineIndex(LimelightConstants.BACK_NAME, pos);
+    //             LimelightHelpers.setPipelineIndex(LimelightConstants.FRONT_NAME, pos);
 
-                if (Timer.getFPGATimestamp() - timer > 1) {
-                    VisionBase.enableVision();
-                }
+    //             if (Timer.getFPGATimestamp() - timer > 1) {
+    //                 VisionBase.enableVision();
+    //             }
 
-                break;
+    //             break;
 
-            case "NONE":
-                VisionBase.disableVision();
-                break;
+    //         case "NONE":
+    //             VisionBase.disableVision();
+    //             break;
 
-        }
-    }
+    //     }
+    // }
 
-    @Override
-    public void autonomousInit() {
-        super.autonomousInit();
-    }
+    // @Override
+    // public void autonomousInit() {
+    //     super.autonomousInit();
+    // }
 
-    @Override
-    public void teleopInit() {
-        super.teleopInit();
-        LimelightHelpers.setPipelineIndex(LimelightConstants.BACK_NAME, 0);
-        LimelightHelpers.setPipelineIndex(LimelightConstants.FRONT_NAME, 0);
-    }
+    // @Override
+    // public void teleopInit() {
+    //     super.teleopInit();
+    //     LimelightHelpers.setPipelineIndex(LimelightConstants.BACK_NAME, 0);
+    //     LimelightHelpers.setPipelineIndex(LimelightConstants.FRONT_NAME, 0);
+    // }
 
 }

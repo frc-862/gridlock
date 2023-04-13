@@ -89,10 +89,10 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureButtonBindings() {
-        new Trigger(collector::isStalling)
-                .onTrue(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 1)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 1))));
-        new Trigger(collector::isStalling)
-                .onFalse(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 0)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 0))));
+        // new Trigger(collector::isStalling)
+        //         .onTrue(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 1)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 1))));
+        // new Trigger(collector::isStalling)
+        //         .onFalse(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 0)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 0))));
 
         /* driver Controls */
         // RESETS
@@ -110,7 +110,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
 
         // new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.moveToDesiredPose(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
-        new Trigger(driver::getYButton).whileTrue(new SingleSubstationAlign(drivetrain, frontLimelight, collector));
+        // new Trigger(driver::getYButton).whileTrue(new SingleSubstationAlign(drivetrain, frontLimelight, collector));
+        new Trigger(driver::getYButton).whileTrue(new InstantCommand(() -> drivetrain.poseReset(new Pose2d())));
 
         // SET DRIVE PODS TO 45
         new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));

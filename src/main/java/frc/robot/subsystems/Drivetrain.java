@@ -28,13 +28,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -151,6 +154,8 @@ public class Drivetrain extends SubsystemBase {
 
     private Pose2d visionPose2d;
 
+    private Encoder blEncoder = new Encoder(0, 1, false, EncodingType.k4X);
+
     public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
         this.limelightFront = limelightFront;
@@ -205,6 +210,8 @@ public class Drivetrain extends SubsystemBase {
         // Initialize the shuffleboard values and start logging data
         initializeShuffleboard();
 
+        // blEncoder.setDistancePerPulse((1 / 2048) * 6.746);
+
         // Zero our gyro
         zeroHeading();
 
@@ -236,7 +243,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void hardResetToVision() {
-        if(visionPose2d != null) {
+        if (visionPose2d != null) {
             poseEstimator.resetPosition(getHeading(), modulePositions, visionPose2d);
         }
     }
@@ -247,7 +254,7 @@ public class Drivetrain extends SubsystemBase {
      * @param chassisSpeeds the chassis speeds to convert to module states
      */
     public void drive(ChassisSpeeds chassisSpeeds) {
-        outputChassisSpeeds = chassisSpeeds;
+        outputChassisSpeeds = correctForDynamics(chassisSpeeds);
 
         // If were not commanding any thing to the motors, make sure our states speeds are 0
         if (states != null && chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0 && chassisSpeeds.omegaRadiansPerSecond == 0) {
@@ -276,6 +283,30 @@ public class Drivetrain extends SubsystemBase {
 
         // Sets the states to the modules
         setStates(states);
+    }
+
+    private static ChassisSpeeds correctForDynamics(ChassisSpeeds originalSpeeds) {
+        final double LOOP_TIME_S = 0.02;
+        Pose2d futureRobotPose =
+                new Pose2d(originalSpeeds.vxMetersPerSecond * LOOP_TIME_S, originalSpeeds.vyMetersPerSecond * LOOP_TIME_S, Rotation2d.fromRadians(originalSpeeds.omegaRadiansPerSecond * LOOP_TIME_S));
+        Twist2d twistForPose = log(futureRobotPose);
+        ChassisSpeeds updatedSpeeds = new ChassisSpeeds(twistForPose.dx / LOOP_TIME_S, twistForPose.dy / LOOP_TIME_S, twistForPose.dtheta / LOOP_TIME_S);
+        return updatedSpeeds;
+    }
+
+    public static Twist2d log(final Pose2d transform) {
+        double kEps = 1E-9;
+        final double dtheta = transform.getRotation().getRadians();
+        final double half_dtheta = 0.5 * dtheta;
+        final double cos_minus_one = Math.cos(transform.getRotation().getRadians()) - 1.0;
+        double halftheta_by_tan_of_halfdtheta;
+        if (Math.abs(cos_minus_one) < kEps) {
+            halftheta_by_tan_of_halfdtheta = 1.0 - 1.0 / 12.0 * dtheta * dtheta;
+        } else {
+            halftheta_by_tan_of_halfdtheta = -(half_dtheta * Math.sin(transform.getRotation().getRadians())) / cos_minus_one;
+        }
+        final Translation2d translation_part = transform.getTranslation().rotateBy(new Rotation2d(halftheta_by_tan_of_halfdtheta, -half_dtheta));
+        return new Twist2d(translation_part.getX(), translation_part.getY(), dtheta);
     }
 
     public ChassisSpeeds getOutputChassisSpeeds() {
@@ -344,7 +375,7 @@ public class Drivetrain extends SubsystemBase {
     private boolean firstTime = true;
 
     public void updateVision() {
-        if (VisionBase.isVisionEnabled()) {
+        if (VisionBase.isVisionEnabled() && DriverStation.isTeleop()) {
             visionPose2d = null;
             double latency = 0;
             double tagDistance = 0;
@@ -432,6 +463,7 @@ public class Drivetrain extends SubsystemBase {
         modulePositions[1] = frontRightModule.getPosition();
         modulePositions[2] = backLeftModule.getPosition();
         modulePositions[3] = backRightModule.getPosition();
+        modulePositions[2].distanceMeters = blEncoder.getDistance() / 2048 / 6.746 * 0.3150362;
     }
 
     // Method to start sending values to the dashboard and start logging
@@ -446,7 +478,8 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
                 new Pair<String, Object>("raw Pose", (Supplier<double[]>) () -> new double[] {rawPose.getX(), rawPose.getY(), rawPose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
-                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()));
+                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()), 
+                new Pair<String, Object>("back left module encoder", (DoubleSupplier) () -> blEncoder.getDistance() / 2048 / 6.746 * 0.3150362));
 
         periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
                 new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
@@ -566,7 +599,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        // poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
+        poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
     }
 
     public void poseReset(Pose2d pose) {
@@ -738,7 +771,7 @@ public class Drivetrain extends SubsystemBase {
 
     // public void getPoseFromIMU() {
     //     short[] xyz = new short[3];
-	// 	pigeon.getBiasedAccelerometer(xyz);
-	// 	Translation3d transVector =  new Translation3d(xyz[0] / 16384d * 9.81d, xyz[1] / 16384d * 9.81d, xyz[2] / 16384d * 9.81d);
+    // 	pigeon.getBiasedAccelerometer(xyz);
+    // 	Translation3d transVector =  new Translation3d(xyz[0] / 16384d * 9.81d, xyz[1] / 16384d * 9.81d, xyz[2] / 16384d * 9.81d);
     // }
 }
