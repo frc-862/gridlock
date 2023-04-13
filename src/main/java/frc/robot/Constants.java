@@ -226,7 +226,7 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 52.3d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -104.68;
         public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
@@ -305,8 +305,9 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.24;
 
-        // Offsets in degrees
+        // Offsets in degrees        
         public static final double ENCODER_OFFSET_GRIDLOCK = -131d;
+
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
