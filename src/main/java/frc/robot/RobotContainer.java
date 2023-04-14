@@ -33,6 +33,7 @@ import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoScore;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Collect;
+import frc.robot.commands.CubeAlign;
 import frc.robot.commands.EleUpInCommunity;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.HoldPower;
@@ -132,9 +133,10 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo));
 
         // AutoAlign based on cone or cube
-        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector),
-                () -> collector.getGamePiece() == GamePiece.CUBE));
+        // new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector),
+        //         () -> collector.getGamePiece() == GamePiece.CUBE));
 
+        new Trigger(driver::getBButton).whileTrue(new CubeAlign(drivetrain, frontLimelight));
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
