@@ -286,7 +286,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double UP_kP = 0.0065d;
+        public static final double UP_kP = 0.0073d;
         public static final double UP_kD = 0.0001d;
         public static final double DOWN_kP = 0.004d;
         public static final double DOWN_kD = 0d;
@@ -470,10 +470,10 @@ public final class Constants {
             groundCone, groundCube,
 
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
-            doubleSubstationCollect, singleSubstationCollect,
+            doubleSubstationCollect, singleSubCone, singleSubCube,
 
-            //score states1000
-            midCubeScore, highCubeScore, midConeScore, highConeScore,
+            //score states
+            midCubeScore, highCubeScore, midConeScore, highConeScore, OTB,
 
             //substates
             stowedCollect, stowedScore, stowedSingleSub, scoreToCollect, elevatorDeployed,
@@ -484,7 +484,11 @@ public final class Constants {
 
         // All of the different plans the lift can follow
         public enum LiftPlan {
-            parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle
+            parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle, OTB
+        }
+
+        public enum OTBState {
+            normal, toOTB, fromOTB
         }
 
         public static final double LOG_PERIOD = 0.23;
