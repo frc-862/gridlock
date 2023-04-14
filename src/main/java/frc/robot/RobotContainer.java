@@ -173,7 +173,9 @@ public class RobotContainer extends LightningContainer {
     // Creates the autonomous commands
     @Override
     protected void configureAutonomousCommands() {
-        //Test paths 
+        //Test paths
+        autoFactory.makeTrajectory("Test-Behind-Back", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(1, .5));
 
         // Game paths
         //A paths

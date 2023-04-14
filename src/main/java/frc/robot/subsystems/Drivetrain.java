@@ -571,7 +571,7 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
-        // poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
+        poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
     }
 
     public void poseReset(Pose2d pose) {
