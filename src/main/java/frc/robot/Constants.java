@@ -484,7 +484,11 @@ public final class Constants {
 
         // All of the different plans the lift can follow
         public enum LiftPlan {
-            parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle
+            parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle, OTB
+        }
+
+        public enum OTBState {
+            normal, toOTB, fromOTB
         }
 
         public static final double LOG_PERIOD = 0.23;

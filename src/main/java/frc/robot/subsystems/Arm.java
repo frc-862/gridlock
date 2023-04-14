@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Constants.LiftConstants.OTBState;
 import frc.thunder.config.NeoConfig;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
@@ -42,9 +43,12 @@ public class Arm extends SubsystemBase {
 
     private boolean disableArm = false;
 
-    private boolean doOTB = false;
+    private OTBState OTBSTATE = OTBState.normal;
 
-    private double[] OTBTargs = {0, 45, 70, 90, 110, 150, 170};
+    // private double[] OTBTargs = {0, 45, 70, 90, 110, 150, 170};
+    private double[] OTBpositions = {-70.5, 20, 70, 110, 130, 160};
+
+
     private int currOTBState = 0;
 
     // Periodic Shuffleboard
@@ -89,7 +93,7 @@ public class Arm extends SubsystemBase {
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
-                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), new Pair<String, Object>("curr OTB state", (DoubleSupplier) () -> currOTBState),
                 new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()));
         // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
         // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
@@ -162,8 +166,10 @@ public class Arm extends SubsystemBase {
      */
     public boolean onTarget() {
         //if we're doing over the back, only return onTarget as true if we reach our final state
-        if(doOTB) {
-            return Math.abs(getAngle().getDegrees() - OTBTargs[OTBTargs.length - 1]) < tolerance;
+        if (OTBSTATE == OTBState.toOTB) {
+            return Math.abs(getAngle().getDegrees() - OTBpositions[OTBpositions.length - 1]) < tolerance;
+        } else if (OTBSTATE == OTBState.fromOTB) {
+            return Math.abs(getAngle().getDegrees() - OTBpositions[0]) < tolerance;
         } else {
             return Math.abs(getAngle().getDegrees() - targetAngle) < tolerance;
         }
@@ -186,8 +192,14 @@ public class Arm extends SubsystemBase {
         this.tolerance = tolerance;
     }
 
-    public void setDoOTB(boolean doOTB) {
-        this.doOTB = doOTB;
+    public void setOTBState(OTBState OTBSTATE, double finalPos) {
+        this.OTBSTATE = OTBSTATE;
+
+        //alter your final position (if youre scoring high or mid)
+        if(OTBSTATE == OTBState.toOTB) {
+            OTBpositions[OTBpositions.length - 1] = finalPos;
+        } 
+        //we arent defining the same thing for fromOTB because the only theoretical target state from OTB is ground collect.
     }
 
     /**
@@ -209,12 +221,26 @@ public class Arm extends SubsystemBase {
         // double kFOut = LightningShuffleboard.getDouble("Arm", "kF in", 0);
         double kFOut = ArmConstants.ARM_KF_MAP.get(currentAngle);
 
-        if(doOTB) {
-            targetAngle = OTBTargs[currOTBState];
-            if(onTarget(targetAngle) && currOTBState != OTBTargs[OTBTargs.length - 1]) {
+        if (OTBSTATE == OTBState.toOTB) {
+            targetAngle = OTBpositions[currOTBState];
+            if (onTarget(targetAngle) && currOTBState < OTBpositions.length - 1) {
                 currOTBState++;
             }
+        } else if(OTBSTATE == OTBState.fromOTB) {
+            targetAngle = OTBpositions[currOTBState];
+            if (onTarget(targetAngle) && currOTBState > 0) {
+                currOTBState--;
+            } 
+            
+            if(currOTBState == 0 && onTarget()) {
+                OTBSTATE = OTBState.normal;
+            }
         }
+
+        LightningShuffleboard.setBool("Arm", "ontarg", onTarget(targetAngle));
+        LightningShuffleboard.setBool("Arm", "is done", currOTBState != OTBpositions[OTBpositions.length - 1]);
+        LightningShuffleboard.setString("Arm", "over the back state", OTBSTATE.toString());
+
         //swap up and down controllers when in applicable quadrants
         if (currentAngle < 90 && currentAngle > -90) {
             if (targetAngle - currentAngle > 0) {
@@ -245,7 +271,7 @@ public class Arm extends SubsystemBase {
         // downController.setD(LightningShuffleboard.getDouble("Arm", "down kD", ArmConstants.DOWN_kD));
         // downController.setP(LightningShuffleboard.getDouble("Arm", "down kP", ArmConstants.DOWN_kP));
 
-        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", -60)));
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", -60)));
         LightningShuffleboard.setDouble("Arm", "OUTPUT APPLIED", power);
         // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
     }

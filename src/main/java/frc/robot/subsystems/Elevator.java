@@ -203,7 +203,7 @@ public class Elevator extends SubsystemBase {
         //     encoder.setPosition(ElevatorConstants.MIN_EXTENSION);
         // }
 
-        setExtension(LightningShuffleboard.getDouble("Lift", "ele targ", 0));
+        // setExtension(LightningShuffleboard.getDouble("Lift", "ele targ", 0));
 
         if (disableEle) {
             motor.set(0);

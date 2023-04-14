@@ -17,6 +17,6 @@ public class DoubleSubstationCollect extends InstantCommand {
 
     @Override
     public void initialize() {
-        lift.setGoalState(LiftState.doubleSubstationCollect);
+        lift.setGoalState(LiftState.OTB);
     }
 }
