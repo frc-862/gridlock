@@ -31,9 +31,7 @@ public class Collect extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        collector.stop();
-    }
+    public void end(boolean interrupted) {}
 
     @Override
     public boolean isFinished() {

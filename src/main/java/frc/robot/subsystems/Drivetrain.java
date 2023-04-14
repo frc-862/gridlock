@@ -4,23 +4,30 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import javax.accessibility.AccessibleHyperlink;
+
 import org.apache.commons.lang3.Range;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
+import frc.thunder.vision.VisionBase;
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.MathUsageId;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.Num;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -28,6 +35,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -35,6 +43,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DrivetrainConstants;
@@ -43,6 +53,8 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
+import frc.thunder.LightningRobot;
+import frc.thunder.auto.Autonomous;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.config.SparkMaxPIDGains;
 import frc.thunder.limelightlib.LimelightHelpers;
@@ -68,6 +80,9 @@ public class Drivetrain extends SubsystemBase {
             // Back right
             new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
+    //Target to focus on
+    private int aprilTagTarget = -1;
+
     // Creating new pigeon2 IMU
     private final WPI_Pigeon2 pigeon = new WPI_Pigeon2(RobotMap.CAN.PIGEON_ID);
 
@@ -77,6 +92,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Creating new pose, odometry, cahssis speeds
     private Pose2d pose = new Pose2d();
+    private Pose2d rawPose = new Pose2d();
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     // Creating our modules
@@ -92,11 +108,14 @@ public class Drivetrain extends SubsystemBase {
     private double BACK_RIGHT_STEER_OFFSET = Offsets.Gridlock.BACK_RIGHT_STEER_OFFSET;
 
     // Swerve pose esitmator for odometry
-    SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d()); // , DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
+    SwerveDrivePoseEstimator poseEstimator =
+            new SwerveDrivePoseEstimator(kinematics, getYaw2d(), modulePositions, new Pose2d(), DrivetrainConstants.STANDARD_DEV_POSE_MATRIX, VisionConstants.STANDARD_DEV_VISION_MATRIX);
+    SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw2d(), modulePositions);
 
     // Creates our drivetrain shuffleboard tab for displaying module data and a periodic shuffleboard for data that doesn't need constant updates
     private ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     private LightningShuffleboardPeriodic periodicShuffleboard;
+    private LightningShuffleboardPeriodic periodicShuffleboardAuto;
     private final Mk4ModuleConfiguration swerveConfiguration = new Mk4ModuleConfiguration();
     private final Mk4ModuleConfiguration blSwerveConfiguration = new Mk4ModuleConfiguration();
 
@@ -127,6 +146,10 @@ public class Drivetrain extends SubsystemBase {
     private Pose2d desiredPose = new Pose2d();
     private double maxVel = 0d;
     private double maxAccell = 0d;
+
+    private double velocity = 0;
+
+    private Pose2d visionPose2d;
 
     public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
@@ -176,6 +199,7 @@ public class Drivetrain extends SubsystemBase {
         setInitialPose(new Pose2d(0, 0, new Rotation2d()));
 
         // Setting states of the modules
+        states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
         updateOdometry();
         updateDriveStates(states);
 
@@ -191,11 +215,20 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
 
+        if(DriverStation.isDisabled()) {
+            states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
+        }
+
         // Update our odometry
         updateOdometry();
         updateVision();
 
         periodicShuffleboard.loop();
+        periodicShuffleboardAuto.loop();
+    }
+
+    public double getDriveVelocity() {
+        return (frontLeftModule.getDriveVelocity() + frontRightModule.getDriveVelocity() + backLeftModule.getDriveVelocity() + backRightModule.getDriveVelocity()) / 4;
     }
 
     /**
@@ -207,10 +240,11 @@ public class Drivetrain extends SubsystemBase {
         return headingController;
     }
 
-    // Checks if all the modules states speeds are 0
-    // private boolean checkModuleStates() {
-    //     return Math.abs(states[0].speedMetersPerSecond + states[1].speedMetersPerSecond + states[2].speedMetersPerSecond + states[3].speedMetersPerSecond) == 0;
-    // }
+    public void hardResetToVision() {
+        if(visionPose2d != null) {
+            poseEstimator.resetPosition(getHeading(), modulePositions, visionPose2d);
+        }
+    }
 
     /**
      * This takes chassis speeds and converts them to module states and then sets states.
@@ -219,21 +253,6 @@ public class Drivetrain extends SubsystemBase {
      */
     public void drive(ChassisSpeeds chassisSpeeds) {
         outputChassisSpeeds = chassisSpeeds;
-
-        // If we havent updated the heading last known good heading, update it
-        // if (!updatedHeading) {
-        //     lastGoodheading = pose.getRotation().getDegrees();
-        //     updatedHeading = true;
-        // }
-
-        // If we are not command a rotation for the robot and are moudle states are not 0 comensate for any rotational drift
-        // if (chassisSpeeds.omegaRadiansPerSecond == 0 && !checkModuleStates()) {
-        //     outputChassisSpeeds.omegaRadiansPerSecond =
-        //             headingController.calculate(pose.getRotation().getDegrees(), lastGoodheading);
-        // } else {
-        //     // If we are command a rotation then our updated heading is no longer valid so this will help reset it 
-        //     updatedHeading = false;
-        // }
 
         // If were not commanding any thing to the motors, make sure our states speeds are 0
         if (states != null && chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0 && chassisSpeeds.omegaRadiansPerSecond == 0) {
@@ -320,36 +339,55 @@ public class Drivetrain extends SubsystemBase {
     public void updateOdometry() {
         updateModulePositions();
         pose = poseEstimator.update(getYaw2d(), modulePositions);
+        rawPose = odometry.update(getYaw2d(), modulePositions);
 
-        // if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
+        // if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
         //     pose = new Pose2d(16.48 - pose.getX(), pose.getY(), pose.getRotation());
         // }
     }
 
-    public void resetPigeonYaw(Rotation2d yaw) {
-        // setYaw(yaw.getDegrees());
-    }
+    private boolean firstTime = true;
 
     public void updateVision() {
-        if (doVisionUpdate) {
-            Pose2d visionPose2d = null;
-            if (limelightBack.hasVision() && Range.between(-90d, 90d).contains(getHeading().getDegrees())) {
-                visionPose2d = limelightBack.getRobotPose();
-            } else if (limelightBack.hasVision()) {
+        if (VisionBase.isVisionEnabled()) {
+            visionPose2d = null;
+            double latency = 0;
+            double tagDistance = 0;
+            if (limelightFront.hasVision()) {
                 visionPose2d = limelightFront.getRobotPose();
+                latency = limelightFront.getLatencyBotPoseBlue();
+                tagDistance = limelightFront.getTagDistance();
+                if (firstTime) {
+                    setInitialPose(visionPose2d);
+                    firstTime = false;
+                }
+            } else if (limelightBack.hasVision()) {
+                visionPose2d = limelightBack.getRobotPose();
+                latency = limelightBack.getLatencyBotPoseBlue();
+                tagDistance = limelightBack.getTagDistance();
+                if (firstTime) {
+                    setInitialPose(visionPose2d);
+
+                    firstTime = false;
+                }
             }
-            if (visionPose2d == null || visionPose2d.getX() > 3 || visionPose2d.getY() > 4 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {// if (visionPose2d.getX() > 20 || visionPose2d.getY() > 10 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0) {
+
+            if (visionPose2d == null || visionPose2d.getX() > 23.04 || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0 || tagDistance > 4) {
                 return;
             }
 
             double currTime = Timer.getFPGATimestamp();
             LightningShuffleboard.setDouble("Drivetrain", "Velocity between points", pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime));
             if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
-                // if(visionPose[0] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND || visionPose[1] / (lastTime - currTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
                 return;
             }
 
-            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - limelightBack.getLatencyBotPoseBlue());
+            // if (tagDistance != -1) {
+            //     double distanceBasedDev = VisionConstants.visionStandardDevMap.get(tagDistance + getDriveVelocity());
+            //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
+            // }
+
+            poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency - .0472);
             pose = poseEstimator.getEstimatedPosition();
 
             lastKnownGoodVisionX = visionPose2d.getX();
@@ -357,7 +395,28 @@ public class Drivetrain extends SubsystemBase {
             lastTime = currTime;
 
             LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
+            LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Y", lastKnownGoodVisionY);
         }
+    }
+
+    /**
+     * ta
+     * 
+     * @param pos Pos of tag 1 at C nodes
+     */
+    public void setAprilTagTarget(int pos) {
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+            pos += 6;
+        } else {
+            pos += 3;
+        }
+        limelightBack.setPipelineNum(pos);
+        limelightFront.setPipelineNum(pos);
+    }
+
+    public void setAprilTagTargetAll() {
+        limelightBack.setPipelineNum(0);
+        limelightFront.setPipelineNum(0);
     }
 
     /**
@@ -383,42 +442,33 @@ public class Drivetrain extends SubsystemBase {
     // Method to start sending values to the dashboard and start logging
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", DrivetrainConstants.LOG_PERIOD,
-                // new Pair<String, Object>("Front left drive voltage", (DoubleSupplier) () -> frontLeftModule.getDriveVoltage()),
-                // new Pair<String, Object>("Front right drive voltage", (DoubleSupplier) () -> frontRightModule.getDriveVoltage()),
-                // new Pair<String, Object>("Back left drive voltage", (DoubleSupplier) () -> backLeftModule.getDriveVoltage()),
-                // new Pair<String, Object>("Back right drive voltage", (DoubleSupplier) () -> backRightModule.getDriveVoltage()),
-                // new Pair<String, Object>("Front left target angle", (DoubleSupplier) () -> states[0].angle.getDegrees()),
-                // new Pair<String, Object>("Front right target angle", (DoubleSupplier) () -> states[1].angle.getDegrees()),
-                // new Pair<String, Object>("Back left target angle", (DoubleSupplier) () -> states[2].angle.getDegrees()),
-                // new Pair<String, Object>("Back right target angle", (DoubleSupplier) () -> states[3].angle.getDegrees()),
-                new Pair<String, Object>("fl target velocity", (DoubleSupplier) () -> states[0].speedMetersPerSecond), // TODO: cpare these to acutal speeds
-                new Pair<String, Object>("fr target velocity", (DoubleSupplier) () -> states[1].speedMetersPerSecond),
-                new Pair<String, Object>("bl target velocity", (DoubleSupplier) () -> states[2].speedMetersPerSecond),
-                new Pair<String, Object>("br target velocity", (DoubleSupplier) () -> states[3].speedMetersPerSecond),
-                new Pair<String, Object>("fl target angle", (DoubleSupplier) () -> states[0].angle.getDegrees()),
-                new Pair<String, Object>("fr target angle", (DoubleSupplier) () -> states[1].angle.getDegrees()),
-                new Pair<String, Object>("bl target angle", (DoubleSupplier) () -> states[2].angle.getDegrees()),
-                new Pair<String, Object>("br target angle", (DoubleSupplier) () -> states[3].angle.getDegrees()), new Pair<String, Object>("Pigeon Yaw", (DoubleSupplier) () -> pigeon.getYaw()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", DrivetrainConstants.LOG_PERIOD, new Pair<String, Object>("Pigeon Yaw", (DoubleSupplier) () -> getYaw2d().getDegrees()),
                 new Pair<String, Object>("roll", (DoubleSupplier) () -> pigeon.getRoll()), new Pair<String, Object>("pitch", (DoubleSupplier) () -> pigeon.getPitch()),
-                new Pair<String, Object>("odo X", (DoubleSupplier) () -> pose.getX()), new Pair<String, Object>("odo Y", (DoubleSupplier) () -> pose.getY()),
-                new Pair<String, Object>("odo Z", (DoubleSupplier) () -> pose.getRotation().getDegrees()),
                 new Pair<String, Object>("fl module position", (DoubleSupplier) () -> modulePositions[0].distanceMeters),
                 new Pair<String, Object>("fr module position", (DoubleSupplier) () -> modulePositions[1].distanceMeters),
                 new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
                 new Pair<String, Object>("br module position", (DoubleSupplier) () -> modulePositions[3].distanceMeters),
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
+                new Pair<String, Object>("raw Pose", (Supplier<double[]>) () -> new double[] {rawPose.getX(), rawPose.getY(), rawPose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
-                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()), new Pair<String, Object>("max accell", (DoubleSupplier) () -> maxAccell),
-                new Pair<String, Object>("max vel", (DoubleSupplier) () -> maxVel), new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()));
+                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()));
 
+        periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
+                new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
     }
 
     /**
      * Gets the current pathplanner path point of the robot in meters using
      */
     public PathPoint getCurrentPathPoint() {
-        return new PathPoint(pose.getTranslation(), pose.getRotation());
+        return PathPoint.fromCurrentHolonomicState(pose, chassisSpeeds).withControlLengths(AutoAlignConstants.CONTROL_LENGTHS, AutoAlignConstants.CONTROL_LENGTHS);
+    }
+
+    public void instantSyncVision() {
+        if (visionPose2d != null) {
+            pose = visionPose2d;
+            System.out.println("Ran the Sync");
+        }
     }
 
     /**
@@ -433,7 +483,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Gets the heading of the robot from odometry in degrees from 0 to 360
+     * Gets the heading of the robot from odometry in rotation 2d
      */
     public Rotation2d getHeading() {
         return pose.getRotation();
@@ -446,7 +496,6 @@ public class Drivetrain extends SubsystemBase {
      */
     public Rotation2d getYaw2d() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(pigeon.getYaw() - 90, 0, 360));
-        // return Rotation2d.fromDegrees(90);
     }
 
     /**
@@ -522,7 +571,12 @@ public class Drivetrain extends SubsystemBase {
      * @param pose the pose to which to set the odometry
      */
     public void resetOdometry(Pose2d pose) {
+        // poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
+    }
+
+    public void poseReset(Pose2d pose) {
         poseEstimator.resetPosition(getYaw2d(), modulePositions, pose);
+        odometry.resetPosition(getHeading(), modulePositions, pose);
     }
 
     /**
@@ -598,6 +652,45 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
+     * Gets if it is in community
+     * 
+     * @return if in community or not
+     */
+    public boolean isInCommunity() {
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+            if ((1.35 < pose.getX() && pose.getX() < 3.35) && (1.50 < pose.getY() && pose.getY() < 5.25) || // Box 1
+                    (1.35 < pose.getX() && pose.getX() < 4.85) && (0.00 < pose.getY() && pose.getY() < 1.50) || // Box 2
+                    (9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) || // Box 3
+                    (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
+                return true;
+            }
+        } else if (DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
+            if ((1.35 < pose.getX() && pose.getX() < 3.35) && (2.40 < pose.getY() && pose.getY() < 6.45) || // Box 1
+                    (1.35 < pose.getX() && pose.getX() < 4.85) && (6.45 < pose.getY() && pose.getY() < 8.02) || // Box 2
+                    (9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) || // Box 3
+                    (13.20 < pose.getX() && pose.getX() < 16.25) && (0.03 < pose.getY() && pose.getY() < 2.51)) { // Box 4
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isInLoadZone() {
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+            if ((9.85 < pose.getX() && pose.getX() < 13.20) && (6.78 < pose.getY() && pose.getY() < 7.99) || // Box 3
+                    (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
+                return true;
+            }
+        } else if (DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
+            if ((9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) || // Box 3
+                    (13.20 < pose.getX() && pose.getX() < 16.25) && (0.03 < pose.getY() && pose.getY() < 2.51)) { // Box 4
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Sets all motor speeds to 0 and sets the modules to their respective resting angles
      */
     public void stop() {
@@ -620,7 +713,11 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
-    public void getPathPoint(AutonomousCommandFactory autoFactory) {
+    public Pose2d getDesiredPose() {
+        return desiredPose;
+    }
+
+    public void moveToDesiredPose(AutonomousCommandFactory autoFactory) {
 
         maxVel = MathUtil.clamp(pose.getTranslation().getDistance(desiredPose.getTranslation()) * 2, 0.5, DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND);
         maxAccell = 5;
@@ -635,9 +732,18 @@ public class Drivetrain extends SubsystemBase {
 
         Rotation2d driveHeading = getDriveHeading(desiredPose.getX(), desiredPose.getY());
 
-        autoFactory.createManualTrajectory(new PathConstraints(maxVel, maxAccell),
-                PathPoint.fromCurrentHolonomicState(pose, chassisSpeeds).withControlLengths(AutoAlignConstants.CONTROL_LENGTHS, AutoAlignConstants.CONTROL_LENGTHS),
+        autoFactory.createManualTrajectory(new PathConstraints(maxVel, maxAccell), getCurrentPathPoint(),
                 new PathPoint(desiredPose.getTranslation(), driveHeading, desiredPose.getRotation()).withControlLengths(AutoAlignConstants.CONTROL_LENGTHS, AutoAlignConstants.CONTROL_LENGTHS));
 
     }
+
+    public boolean onTarget() {
+        return Math.abs(pose.getTranslation().getDistance(desiredPose.getTranslation())) < 0.1;
+    }
+
+    // public void getPoseFromIMU() {
+    //     short[] xyz = new short[3];
+	// 	pigeon.getBiasedAccelerometer(xyz);
+	// 	Translation3d transVector =  new Translation3d(xyz[0] / 16384d * 9.81d, xyz[1] / 16384d * 9.81d, xyz[2] / 16384d * 9.81d);
+    // }
 }

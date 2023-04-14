@@ -28,30 +28,28 @@ public class LEDs extends SubsystemBase {
         leds.configAllSettings(ledConfig);
     }
 
-    @Override
-    public void periodic() {
-        wantsPiece(collector.getGamePiece());
-    }
+  
     
 
     /**
      * Blinks the leds between green and the color of the specified piece
      * needs to be called in a loop
+     * 
      * @param pieceType the piece type
      */
-    public void hasPiece(GamePiece pieceType) {
+    public void isAligned(GamePiece pieceType) {
         if (pieceType == GamePiece.NONE){
             setColor(Color.kBlue);
         } else{
             if ((System.currentTimeMillis() % 1000) < 500) {
                 setColor(Color.kGreen);
             } else{ 
-            setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kYellow);}
+            setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kGold);}
         }
     }
 
     public void wantsPiece(GamePiece pieceType){
-        setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kYellow);
+        setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kGold);
     }
 
     /**

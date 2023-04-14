@@ -29,7 +29,6 @@ public class LimelightBack extends SubsystemBase {
     // Started logging
     private boolean loggingStarted = false;
 
-
     // position of the limelight relative to the center and bottom of the robot
     private Pose3d cameraPose;
 
@@ -67,7 +66,8 @@ public class LimelightBack extends SubsystemBase {
                         new Pair<String, Object>(limelightName + "Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
                         new Pair<String, Object>(limelightName + "Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
                         new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
-                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()));
+                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()),
+                        new Pair<String, Object>(limelightName + "Tag distance", (DoubleSupplier) () -> getTagDistance()));
 
     }
 
@@ -78,14 +78,28 @@ public class LimelightBack extends SubsystemBase {
      */
     public Pose2d getRobotPose() {
         Pose2d robotPose = new Pose2d();
-        if (Constants.ALLIANCE == DriverStation.Alliance.Blue) {
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
             double[] botPose = LimelightHelpers.getBotPose_wpiBlue(limelightName);
-            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
-        } else if (Constants.ALLIANCE == DriverStation.Alliance.Red) {
+            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), (botPose[1]) - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5] + 180));
+        } else if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
             double[] botPose = LimelightHelpers.getBotPose_wpiRed(limelightName);
-            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
+            robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5] + 180));
         }
         return robotPose;
+    }
+
+    /**
+     * Gets the distance from the seen tag
+     * 
+     * @return the distancce from the tag in meters
+     */
+    public double getTagDistance() {
+        if (hasVision()) {
+            if(LimelightHelpers.getTargetPose_RobotSpace(limelightName).length != 0){
+            return LimelightHelpers.getTargetPose_RobotSpace(limelightName)[2];
+            }
+        }
+        return -1;
     }
 
     /**
@@ -285,7 +299,6 @@ public class LimelightBack extends SubsystemBase {
         if (loggingStarted) {
             periodicShuffleboard.loop();
         }
-
     }
 
 }

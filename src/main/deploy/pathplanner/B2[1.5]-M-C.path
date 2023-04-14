@@ -18,7 +18,7 @@
       "stopEvent": {
         "names": [
           "Score-Piece-Servo",
-          "Turn-On-Vision",
+          "Turn-Off-Vision",
           "Pos2"
         ],
         "executionBehavior": "parallel",
@@ -32,18 +32,18 @@
         "y": 2.75
       },
       "prevControl": {
-        "x": 5.206350989625058,
-        "y": 2.7652229342920234
+        "x": 5.891681284075835,
+        "y": 2.8245581170192295
       },
       "nextControl": {
-        "x": 6.083301275030089,
-        "y": 2.748402203216223
+        "x": 6.236631808193085,
+        "y": 2.587121203891636
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -53,12 +53,40 @@
     },
     {
       "anchorPoint": {
+        "x": 7.2,
+        "y": 2.3328334245826827
+      },
+      "prevControl": {
+        "x": 6.776888055345298,
+        "y": 2.6530262475646205
+      },
+      "nextControl": {
+        "x": 6.776888055345298,
+        "y": 2.6530262475646205
+      },
+      "holonomicAngle": -5.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Hold-Power",
+          "Stow"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
         "x": 4.43,
         "y": 2.75
       },
       "prevControl": {
-        "x": 4.255414216213049,
-        "y": 2.7652229342920234
+        "x": 6.92087250080349,
+        "y": 2.744509911273745
       },
       "nextControl": null,
       "holonomicAngle": 0.0,
@@ -76,5 +104,18 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.8727272727272507,
+      "names": [
+        "Collect"
+      ]
+    },
+    {
+      "position": 0.72,
+      "names": [
+        "Ground-Collect-Cube"
+      ]
+    }
+  ]
 }

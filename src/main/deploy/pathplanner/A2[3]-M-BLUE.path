@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.85,
-        "y": 5.04
+        "x": 1.81,
+        "y": 4.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3900241028727411,
-        "y": 5.04
+        "x": 2.5952868251890377,
+        "y": 4.672937711260038
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
@@ -17,77 +17,133 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece-Servo"
+          "Score-Piece-Servo",
+          "Turn-On-Vison",
+          "Pos3"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
+        "waitTime": 0.5
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.657856967639755,
+        "y": 4.425522231928914
+      },
+      "prevControl": {
+        "x": 5.594359377021179,
+        "y": 4.52844135360168
+      },
+      "nextControl": {
+        "x": 5.594359377021179,
+        "y": 4.52844135360168
+      },
+      "holonomicAngle": -1.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Hold-Power"
+        ],
+        "executionBehavior": "parallelDeadline",
+        "waitBehavior": "none",
         "waitTime": 1.0
       }
     },
     {
       "anchorPoint": {
-        "x": 6.634986051712475,
-        "y": 4.585618643419883
+        "x": 4.885360983275461,
+        "y": 4.985859672147304
       },
       "prevControl": {
-        "x": 5.834503994257632,
-        "y": 4.6313604752744455
+        "x": 5.090383901581341,
+        "y": 4.964278312325631
       },
       "nextControl": {
-        "x": 5.834503994257632,
-        "y": 4.6313604752744455
+        "x": 4.668087281966289,
+        "y": 5.008730588074585
       },
-      "holonomicAngle": 0.0,
+      "holonomicAngle": -180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.3809956892381683,
+        "y": 3.842313875783243
+      },
+      "prevControl": {
+        "x": 3.0442522511293237,
+        "y": 5.9578735990567555
+      },
+      "nextControl": {
+        "x": 3.0442522511293237,
+        "y": 5.9578735990567555
+      },
+      "holonomicAngle": 180.0,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Collect-Game-Piece-One"
+          "Score"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "deadline",
+        "waitTime": 0.01
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.440583266330584,
+        "y": 3.4535083050194633
+      },
+      "prevControl": {
+        "x": 6.737905173385239,
+        "y": 4.940117840292743
+      },
+      "nextControl": {
+        "x": 6.737905173385239,
+        "y": 4.940117840292743
+      },
+      "holonomicAngle": -58.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Hold-Power"
         ],
         "executionBehavior": "parallelDeadline",
-        "waitBehavior": "deadline",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 4.119185299711541,
-        "y": 4.597054101383524
-      },
-      "prevControl": {
-        "x": 5.3656502177483665,
-        "y": 4.597054101383524
-      },
-      "nextControl": {
-        "x": 2.8865935744829008,
-        "y": 4.597054101383524
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 1.0
       }
     },
     {
       "anchorPoint": {
-        "x": 1.85,
-        "y": 5.05
+        "x": 1.9,
+        "y": 4.8
       },
       "prevControl": {
-        "x": 1.719921665663589,
-        "y": 5.007117032636347
+        "x": 3.7118151869114007,
+        "y": 4.848634176583617
       },
       "nextControl": {
-        "x": 1.9800783343364114,
-        "y": 5.092882967363653
+        "x": 1.8806871145550725,
+        "y": 4.799481588250361
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -96,7 +152,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Score-Game-Piece-One"
+          "Score"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -105,89 +161,12 @@
     },
     {
       "anchorPoint": {
-        "x": 4.95,
-        "y": 4.75
+        "x": 2.2,
+        "y": 4.8
       },
       "prevControl": {
-        "x": 4.869936671219437,
-        "y": 4.841286599493222
-      },
-      "nextControl": {
-        "x": 5.171511336910198,
-        "y": 4.497437222462344
-      },
-      "holonomicAngle": 160.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 6.73790517338524,
-        "y": 3.373460099273978
-      },
-      "prevControl": {
-        "x": 6.040722928828491,
-        "y": 3.499340226763386
-      },
-      "nextControl": {
-        "x": 6.040722928828491,
-        "y": 3.499340226763386
-      },
-      "holonomicAngle": 0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": true,
-      "isStopPoint": true,
-      "stopEvent": {
-        "names": [
-          "Collect-Game-Piece-Two"
-        ],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 5.25,
-        "y": 4.52
-      },
-      "prevControl": {
-        "x": 5.8805073588129835,
-        "y": 4.489962847917293
-      },
-      "nextControl": {
-        "x": 4.580668768910687,
-        "y": 4.551886707904226
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 1.8549646229107004,
-        "y": 4.45
-      },
-      "prevControl": {
-        "x": 3.1173600385066518,
-        "y": 4.705619531720991
+        "x": 2.1787409962684365,
+        "y": 4.8030472347934055
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -196,17 +175,37 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Score-Game-Piece-Two"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "maxVelocity": 5.0,
-  "maxAcceleration": 3.0,
-  "isReversed": null,
-  "markers": []
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "Ground-Collect-Cube"
+      ]
+    },
+    {
+      "position": 0.5,
+      "names": [
+        "Collect"
+      ]
+    },
+    {
+      "position": 3.2,
+      "names": [
+        "Stop-Collect"
+      ]
+    },
+    {
+      "position": 3.45,
+      "names": [
+        "Collect"
+      ]
+    }
+  ]
 }

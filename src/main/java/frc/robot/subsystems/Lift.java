@@ -4,9 +4,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
-import org.apache.commons.lang3.Range;
-
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,7 +12,6 @@ import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Lift.StateTable;
 import frc.robot.commands.Lift.StateTransition;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
-import frc.thunder.shuffleboard.LightningShuffleboard;
 
 /**
  * The lift subsystem
@@ -95,6 +91,14 @@ public class Lift extends SubsystemBase {
         this.goalState = state;
     }
 
+    public LiftState getCurrentState() {
+        return currentState;
+    }
+
+    public LiftState getGoalState() {
+        return goalState;
+    }
+
     /**
      * Checks if the all the components of lift are on target
      * 
@@ -163,6 +167,12 @@ public class Lift extends SubsystemBase {
 
     public double getLastKnownGoodWristSetPoint() {
         return lastKnownGoodWristSetPoint;
+    }
+
+    public void stop() {
+        elevator.stop();
+        arm.stop();
+        wrist.stop();
     }
 
     @Override
@@ -253,6 +263,12 @@ public class Lift extends SubsystemBase {
                             elevator.setExtension(nextState.getElevatorExtension());
                         }
                     }
+                    break;
+
+                case OTB:
+                    elevator.setExtension(nextState.getElevatorExtension());
+                    wrist.setAngle(nextState.getWristAngle());
+                    arm.setOTBState(nextState.getOTBState(), nextState.getArmAngle().getDegrees());                    
                     break;
 
             }
