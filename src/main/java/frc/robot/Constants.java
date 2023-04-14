@@ -254,7 +254,14 @@ public final class Constants {
 
         public static InterpolationMap ARM_VELOCITY_KF_MAP = new InterpolationMap() {
             {
+                put(300d, -.3);
+                put(200d, -.1);
+                put(80d, -.01);
                 put(0d, 0d);
+                put(-80d, .01);
+                put(-200d, .1);
+                put(-300d, .3);
+
             }
         };
     }
@@ -292,7 +299,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double UP_kP = 0.0073d;
+        public static final double UP_kP = 0.007d;
         public static final double UP_kD = 0.0001d;
         public static final double DOWN_kP = 0.004d;
         public static final double DOWN_kD = 0d;

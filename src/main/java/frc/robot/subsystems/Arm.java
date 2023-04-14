@@ -81,8 +81,8 @@ public class Arm extends SubsystemBase {
         motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
         motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
 
-        upController.enableContinuousInput(-180, 180);
-        downController.enableContinuousInput(-180, 180);
+        // upController.enableContinuousInput(-140, 220);
+        // downController.enableContinuousInput(-140, 220);
 
         // Create the PID controller and set the output range
         targetAngle = getAngle().getDegrees();
@@ -99,7 +99,7 @@ public class Arm extends SubsystemBase {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()),
-                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), new Pair<String, Object>("curr OTB state", (DoubleSupplier) () -> toOTBIndex),
+                new Pair<String, Object>("curr OTB state", (DoubleSupplier) () -> toOTBIndex),
                 new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()));
         // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
         // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
@@ -127,7 +127,7 @@ public class Arm extends SubsystemBase {
      * @return the angle of the arm as a Rotation2d object
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -180, 180));
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() - OFFSET, -140, 220));
         // return Rotation2d.fromDegrees(encoder.getPosition() - OFFSET);
     }
 
