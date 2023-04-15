@@ -14,6 +14,8 @@ import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
 import frc.robot.commands.HoldPower;
+import frc.robot.commands.ThrowCube;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LEDs;
@@ -38,7 +40,7 @@ public class Maps {
      * @param leds
      * @return
      */
-    public static HashMap<String, Command> getPathMap(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector, LEDs leds) {
+    public static HashMap<String, Command> getPathMap(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector, LEDs leds, Arm arm) {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("Score-Piece-Servo", new InstantCommand(servoturn::flickServo, servoturn));
         eventMap.put("Ground-Collect-Cone", new RunCommand(() -> lift.setGoalState(LiftState.groundCone), lift).until(lift::goalReached));
@@ -55,6 +57,7 @@ public class Maps {
         eventMap.put("Score-Slow", new InstantCommand(() -> collector.setPower(-.50))); //Lower power for no roll out
         eventMap.put("Score", new InstantCommand(() -> collector.setPower(-1d)));
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
+        eventMap.put("Throw-Cube", new ThrowCube(lift, arm, collector));
         // eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
         eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));
         // eventMap.put("Pos1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));

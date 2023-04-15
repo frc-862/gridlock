@@ -121,6 +121,8 @@ public class StateTable {
     private static Map<LiftState, StateTransition> stowScoreTable = new HashMap<LiftState, StateTransition>();
     private static Map<LiftState, StateTransition> scoreToCollectTable = new HashMap<LiftState, StateTransition>();
     private static Map<LiftState, StateTransition> eleDeployedTable = new HashMap<LiftState, StateTransition>();
+    private static Map<LiftState, StateTransition> OTBTable = new HashMap<LiftState, StateTransition>();
+
 
     static {
         scoreTable.putAll(defaultTable);
@@ -177,7 +179,14 @@ public class StateTable {
             eleDeployedTable.replace(LiftState.singleSubCube, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(ARM_SINGLE_SUB_CUBE_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.eleArmWrist, LiftState.singleSubCone, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(-90d, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
             eleDeployedTable.replace(LiftState.midCubeScore, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.parallel, LiftState.stowedScore));
             eleDeployedTable.replace(LiftState.midConeScore, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.parallel, LiftState.stowedScore));
-    }
+        
+        OTBTable.putAll(defaultTable);
+            OTBTable.replace(LiftState.stowed, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.eleAndWristThenArm, LiftState.stowedScore, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_MIN_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_MIN_ANGLE, WRIST_MAX_ANGLE)));
+            OTBTable.replace(LiftState.groundCube, new StateTransition(ELEVATOR_GROUND_CUBE_POS, Rotation2d.fromDegrees(ARM_GROUND_CUBE_ANGLE), Rotation2d.fromDegrees(100), GROUND_CUBE_PLAN, LiftState.scoreToCollect, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_MIN_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
+            OTBTable.replace(LiftState.groundCone, new StateTransition(ELEVATOR_GROUND_CONE_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(100), GROUND_CONE_PLAN, LiftState.scoreToCollect, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_MIN_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
+
+    
+        }
 
     // Index is current state, goal state; outputs a StateTransition
     private static Map<LiftState, Map<LiftState, StateTransition>> stateTable = Map.ofEntries(
@@ -189,8 +198,8 @@ public class StateTable {
             Map.entry(LiftState.midCubeScore, scoreTable), 
             Map.entry(LiftState.highCubeScore, scoreTable),
             Map.entry(LiftState.highConeScore, scoreTable),
-            Map.entry(LiftState.OTB_High, scoreTable),
-            Map.entry(LiftState.OTB_Mid, scoreTable),
+            Map.entry(LiftState.OTB_High, OTBTable),
+            Map.entry(LiftState.OTB_Mid, OTBTable),
 
             Map.entry(LiftState.doubleSubstationCollect, scoreTable), 
             Map.entry(LiftState.singleSubCone, scoreTable),
