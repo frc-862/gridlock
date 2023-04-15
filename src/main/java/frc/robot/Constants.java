@@ -254,13 +254,13 @@ public final class Constants {
 
         public static InterpolationMap ARM_VELOCITY_KF_MAP = new InterpolationMap() {
             {
-                put(300d, -.3);
+                put(300d, -.2);
                 put(200d, -.1);
                 put(80d, -.01);
                 put(0d, 0d);
                 put(-80d, .01);
-                put(-200d, .1);
-                put(-300d, .3);
+                put(-200d, .07);
+                put(-300d, .1);
 
             }
         };
