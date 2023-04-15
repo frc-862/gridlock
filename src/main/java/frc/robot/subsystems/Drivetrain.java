@@ -151,6 +151,9 @@ public class Drivetrain extends SubsystemBase {
 
     private Pose2d visionPose2d;
 
+    private boolean initialSync = false;
+    private double initialTimeStamp = 0;
+
     public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
         this.limelightFront = limelightFront;
@@ -195,13 +198,7 @@ public class Drivetrain extends SubsystemBase {
         backRightModule = Mk4iSwerveModuleHelper.createNeo(tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0), swerveConfiguration,
                 Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
-        // Setting start position and creating estimator
-        setInitialPose(new Pose2d(0, 0, new Rotation2d()));
-
-        // Setting states of the modules
-        states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
-        updateOdometry();
-        updateDriveStates(states);
+        initialTimeStamp = Timer.getFPGATimestamp();
 
         // Initialize the shuffleboard values and start logging data
         initializeShuffleboard();
@@ -215,9 +212,22 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if(DriverStation.isDisabled()) {
-            states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
-        }
+        if(Timer.getFPGATimestamp() - initialTimeStamp < 1) {
+            if(initialSync) {
+                // Setting start position and creating estimator
+                setInitialPose(new Pose2d(0, 0, new Rotation2d()));
+
+                // Setting states of the modules
+                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
+                updateOdometry();
+                updateDriveStates(states);
+
+                initialSync = true;
+            } else {
+                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
+                updateOdometry();
+            }
+        } else {       
 
         // Update our odometry
         updateOdometry();
@@ -225,6 +235,7 @@ public class Drivetrain extends SubsystemBase {
 
         periodicShuffleboard.loop();
         periodicShuffleboardAuto.loop();
+        }
     }
 
     public double getDriveVelocity() {
