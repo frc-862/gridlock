@@ -254,13 +254,13 @@ public final class Constants {
 
         public static InterpolationMap ARM_VELOCITY_KF_MAP = new InterpolationMap() {
             {
-                put(300d, -.3);
+                put(300d, -.2);
                 put(200d, -.1);
                 put(80d, -.01);
                 put(0d, 0d);
                 put(-80d, .01);
-                put(-200d, .1);
-                put(-300d, .3);
+                put(-200d, .07);
+                put(-300d, .1);
 
             }
         };
@@ -486,7 +486,7 @@ public final class Constants {
             doubleSubstationCollect, singleSubCone, singleSubCube,
 
             //score states
-            midCubeScore, highCubeScore, midConeScore, highConeScore, OTB,
+            midCubeScore, highCubeScore, midConeScore, highConeScore, OTB_Mid, OTB_High,
 
             //substates
             stowedCollect, stowedScore, stowedSingleSub, scoreToCollect, elevatorDeployed,
@@ -497,13 +497,8 @@ public final class Constants {
 
         // All of the different plans the lift can follow
         public enum LiftPlan {
-            parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle, OTB
+            parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle
         }
-
-        public enum OTBState {
-            normal, toOTB, fromOTB
-        }
-
         public static final double LOG_PERIOD = 0.23;
     }
 
