@@ -218,12 +218,12 @@ public class RobotContainer extends LightningContainer {
         //C paths
         autoFactory.makeTrajectory("C2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Should Work
-        autoFactory.makeTrajectory("C2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
+        autoFactory.makeTrajectory("C2[2]-M-M-H", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
         // autoFactory.makeTrajectory("C2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested autoBalance better from other side
-        autoFactory.makeTrajectory("C2[2]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
+        autoFactory.makeTrajectory("C2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
+                new PathConstraints(3.5, 2)); // Tested
         // autoFactory.makeTrajectory("C2[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested
         // autoFactory.makeTrajectory("C2[3]-M-Blue", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
