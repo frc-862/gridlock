@@ -71,8 +71,8 @@ public class Arm extends SubsystemBase {
         motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
         motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
 
-        // upController.enableContinuousInput(-140, 220);
-        // downController.enableContinuousInput(-140, 220);
+        upController.disableContinuousInput();
+        downController.disableContinuousInput();
 
         // Create the PID controller and set the output range
         targetAngle = getAngle().getDegrees();

@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.7977873330924976,
-        "y": 2.7216389953464644
+        "x": 0.0,
+        "y": 0.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.797787333092499,
-        "y": 2.7216389953464644
+        "x": 1.0,
+        "y": 0.0
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -17,47 +17,51 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Throw-Cube",
+          "Ground-Collect-Cube",
+          "Score-Piece-Servo",
           "Turn-Off-Vision"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "minimum",
-        "waitTime": 1.5
+        "waitBehavior": "deadline",
+        "waitTime": 0.05
       }
     },
     {
       "anchorPoint": {
-        "x": 6.4,
-        "y": 2.72
+        "x": 3.776121560802322,
+        "y": 0.034306373890920804
       },
       "prevControl": {
-        "x": 5.4,
-        "y": 2.72
+        "x": 2.776121560802322,
+        "y": 0.034306373890920804
       },
       "nextControl": {
-        "x": 5.4,
-        "y": 2.72
+        "x": 4.776121560802323,
+        "y": 0.034306373890920804
       },
       "holonomicAngle": 0,
-      "isReversal": true,
+      "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "High-Score-Cube-Back",
+          "Hold-Power"
+        ],
         "executionBehavior": "parallel",
-        "waitBehavior": "after",
-        "waitTime": 1.5
+        "waitBehavior": "deadline",
+        "waitTime": 0.05
       }
     },
     {
       "anchorPoint": {
-        "x": 4.5,
-        "y": 2.72
+        "x": 0.0,
+        "y": 0.0
       },
       "prevControl": {
-        "x": 4.965693626109078,
-        "y": 2.6799758971272585
+        "x": 0.47982888119841816,
+        "y": 0.011435457963640872
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -67,7 +71,8 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Auto-Balance"
+          "Score",
+          "Stow"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -77,10 +82,9 @@
   ],
   "markers": [
     {
-      "position": 0.058181818181818994,
+      "position": 0.5818181818181735,
       "names": [
-        "Stow",
-        "Stop-Collect"
+        "Collect"
       ]
     }
   ]

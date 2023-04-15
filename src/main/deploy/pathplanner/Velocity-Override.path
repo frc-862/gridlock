@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.7977873330924976,
-        "y": 2.7216389953464644
+        "x": 1.8206582490197787,
+        "y": 2.744509911273745
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.797787333092499,
-        "y": 2.7216389953464644
+        "x": 2.82065824901978,
+        "y": 2.744509911273745
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -16,27 +16,24 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Throw-Cube",
-          "Turn-Off-Vision"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
-        "waitBehavior": "minimum",
-        "waitTime": 1.5
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 6.4,
-        "y": 2.72
+        "x": 5.903116742039475,
+        "y": 2.7216389953464644
       },
       "prevControl": {
-        "x": 5.4,
-        "y": 2.72
+        "x": 4.903116742039475,
+        "y": 2.7216389953464644
       },
       "nextControl": {
-        "x": 5.4,
-        "y": 2.72
+        "x": 4.903116742039475,
+        "y": 2.7216389953464644
       },
       "holonomicAngle": 0,
       "isReversal": true,
@@ -46,18 +43,18 @@
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
-        "waitBehavior": "after",
-        "waitTime": 1.5
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 4.5,
-        "y": 2.72
+        "x": 1.3861108464014356,
+        "y": 2.755945369237385
       },
       "prevControl": {
-        "x": 4.965693626109078,
-        "y": 2.6799758971272585
+        "x": 3.730379728947762,
+        "y": 2.778816285164666
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -66,22 +63,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Auto-Balance"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.058181818181818994,
-      "names": [
-        "Stow",
-        "Stop-Collect"
-      ]
-    }
-  ]
+  "markers": []
 }
