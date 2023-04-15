@@ -130,6 +130,7 @@ public class Drivetrain extends SubsystemBase {
     private boolean doVisionUpdate = true;
     private double lastKnownGoodVisionX = 0;
     private double lastKnownGoodVisionY = 0;
+    private double lastKnownGoodVisionRotation = 0;
     private double lastTime = 0;
 
     // Heading compenstaion variables
@@ -392,10 +393,12 @@ public class Drivetrain extends SubsystemBase {
 
             lastKnownGoodVisionX = visionPose2d.getX();
             lastKnownGoodVisionY = visionPose2d.getY();
+            lastKnownGoodVisionRotation = visionPose2d.getRotation().getDegrees();
             lastTime = currTime;
 
             LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
             LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Y", lastKnownGoodVisionY);
+            LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Rotation", lastKnownGoodVisionRotation);
         }
     }
 
