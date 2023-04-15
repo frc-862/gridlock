@@ -8,7 +8,6 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.LiftConstants.LiftPlan;
 import frc.robot.Constants.LiftConstants.LiftState;
-import frc.robot.Constants.LiftConstants.OTBState;
 
 /**
  * A class that represents a state transition for the lift
@@ -22,7 +21,6 @@ public class StateTransition {
     private Range<Double> elevatorSafeZone;
     private Range<Double> armSafeZone;
     private Range<Double> wristSafeZone;
-    private OTBState OTBState;
 
     /**
      * Creates a new state transition
@@ -57,12 +55,6 @@ public class StateTransition {
     public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState) {
         this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION),
                 Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE));
-    }
-
-    public StateTransition(double elevatorExtension, Rotation2d armAngle, Rotation2d wristAngle, LiftPlan plan, LiftState endState, OTBState OTBState) {
-        this(elevatorExtension, armAngle, wristAngle, plan, endState, Range.between(ElevatorConstants.MIN_EXTENSION, ElevatorConstants.MAX_EXTENSION),
-                Range.between(ArmConstants.MIN_ANGLE, ArmConstants.MAX_ANGLE), Range.between(WristConstants.MIN_ANGLE, WristConstants.MAX_ANGLE));
-                this.OTBState = OTBState;
     }
 
     /**
@@ -138,9 +130,5 @@ public class StateTransition {
      */
     public boolean isInEleSafeZone(double input) {
         return elevatorSafeZone.contains(input);
-    }
-
-    public OTBState getOTBState() {
-        return OTBState;
     }
 }
