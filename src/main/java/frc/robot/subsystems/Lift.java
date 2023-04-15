@@ -66,8 +66,7 @@ public class Lift extends SubsystemBase {
 
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, 
-                new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
                 new Pair<String, Object>("Lift goal state", (Supplier<String>) () -> goalState.toString()), new Pair<String, Object>("Lift on target", (BooleanSupplier) () -> onTarget()));
         if (nextState != null) {
             periodicShuffleboardNextState = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD,
@@ -264,6 +263,12 @@ public class Lift extends SubsystemBase {
                             elevator.setExtension(nextState.getElevatorExtension());
                         }
                     }
+                    break;
+
+                case OTB:
+                    elevator.setExtension(nextState.getElevatorExtension());
+                    wrist.setAngle(nextState.getWristAngle());
+                    arm.setOTBState(nextState.getOTBState(), nextState.getArmAngle().getDegrees());                    
                     break;
 
             }
