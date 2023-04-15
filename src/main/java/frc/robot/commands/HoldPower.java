@@ -2,6 +2,9 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.CollectorConstants;
 import frc.robot.subsystems.Collector;
@@ -12,6 +15,7 @@ public class HoldPower extends CommandBase {
     DoubleSupplier input;
     boolean doHoldPower = false;
     double power = 0;
+    XboxController driver;
 
     /**
      * Creates a new Collect command
@@ -19,9 +23,10 @@ public class HoldPower extends CommandBase {
      * @param collector the collector subsystem
      * @param input the input speed for the collector
      */
-    public HoldPower(Collector collector, DoubleSupplier input) {
+    public HoldPower(Collector collector, DoubleSupplier input, XboxController driver) {
         this.collector = collector;
         this.input = input;
+        this.driver = driver;
 
         addRequirements(collector);
     }
@@ -44,7 +49,15 @@ public class HoldPower extends CommandBase {
             power = 0;
         }
 
-        collector.setPower(power);
+        if(DriverStation.isTeleop()) {
+            collector.setPower(power);
+
+            if(collector.isStalling()) {
+                driver.setRumble(RumbleType.kBothRumble, 1);
+            } else {
+                driver.setRumble(RumbleType.kBothRumble, 0);
+            }
+        }
     }
 
     @Override

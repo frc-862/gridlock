@@ -152,7 +152,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getLeftBumper).whileTrue(new SingleSubstationCollect(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getRightBumper).whileTrue(new InstantCommand(() -> lift.setGoalState(LiftState.OTB_High), lift));
+        new Trigger(copilot::getRightBumper).whileTrue(new DoubleSubstationCollect(lift), lift);
 
         //FLICK
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
@@ -162,8 +162,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::breakLift));
 
         // COLLECTOR
-        new Trigger(() -> (Math.abs(copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1)).onTrue(new HoldPower(collector,
-                () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND)));
+        // new Trigger(() -> (Math.abs(copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1)).onTrue(new HoldPower(collector,
+        //         () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND)));
 
         //DISABLE LIFT
         new Trigger(() -> copilot.getStartButton() && copilot.getBackButton())
@@ -248,6 +248,9 @@ public class RobotContainer extends LightningContainer {
                 () -> driver.getRightTriggerAxis() > 0.25, () -> driver.getLeftTriggerAxis() > 0.25));
 
         leds.setDefaultCommand(new SafeToScoreLED(leds, drivetrain, collector));
+
+        collector.setDefaultCommand(new HoldPower(collector,
+        () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND), driver));
 
         // elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
 
