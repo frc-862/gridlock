@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.147171372802089,
-        "y": 4.8829405504745385
+        "x": 2.79267217592923,
+        "y": 4.7457150549108515
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -19,12 +19,11 @@
         "names": [
           "Turn-Off-Vision",
           "Score-Piece-Servo",
-          "Ground-Collect-Cube",
-          "Pos3"
+          "Ground-Collect-Cube"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "deadline",
+        "waitTime": 0.01
       }
     },
     {
@@ -51,32 +50,30 @@
           "High-Score-Cube-Back"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "deadline",
+        "waitTime": 0.01
       }
     },
     {
       "anchorPoint": {
-        "x": 1.8,
+        "x": 1.5,
         "y": 4.4
       },
       "prevControl": {
-        "x": 3.055687709092964,
-        "y": 4.860069634547257
+        "x": 1.524748891049163,
+        "y": 4.392127883459711
       },
       "nextControl": {
-        "x": 3.055687709092964,
-        "y": 4.860069634547257
+        "x": 1.524748891049163,
+        "y": 4.392127883459711
       },
       "holonomicAngle": 0,
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Score"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -84,16 +81,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.93802568774895,
-        "y": 3.6479110904013528
+        "x": 6.886566126912568,
+        "y": 3.670782006328634
       },
       "prevControl": {
-        "x": 6.377688247530561,
-        "y": 5.306052495129241
+        "x": 6.37197051854874,
+        "y": 5.637680776074819
       },
       "nextControl": {
-        "x": 6.377688247530561,
-        "y": 5.306052495129241
+        "x": 6.37197051854874,
+        "y": 5.637680776074819
       },
       "holonomicAngle": -60.0,
       "isReversal": true,
@@ -106,18 +103,18 @@
           "Mid-Score-Cube-Back"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "deadline",
+        "waitTime": 0.01
       }
     },
     {
       "anchorPoint": {
-        "x": 1.8,
-        "y": 4.4
+        "x": 1.7634809592015757,
+        "y": 4.3912158580379925
       },
       "prevControl": {
-        "x": 3.4559287378203853,
-        "y": 4.802892344729054
+        "x": 2.895591297601996,
+        "y": 4.654231391201726
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -130,7 +127,7 @@
           "Score-Slow",
           "Stow"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -138,21 +135,33 @@
   ],
   "markers": [
     {
-      "position": 0.6,
+      "position": 0.45,
       "names": [
         "Collect"
       ]
     },
     {
-      "position": 2.6,
+      "position": 2.2254545454543546,
       "names": [
-        "Collect"
+        "Stop-Collect"
       ]
     },
     {
-      "position": 2.0945454545454636,
+      "position": 1.75,
+      "names": [
+        "Score"
+      ]
+    },
+    {
+      "position": 2.1527272727272986,
       "names": [
         "Ground-Collect-Cube"
+      ]
+    },
+    {
+      "position": 2.35,
+      "names": [
+        "Collect"
       ]
     }
   ]

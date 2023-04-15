@@ -18,9 +18,7 @@
       "stopEvent": {
         "names": [
           "High-Score-Cube",
-          "Hold-Power",
-          "Turn-On-Vison",
-          "Pos3"
+          "Hold-Power"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "minimum",
@@ -56,12 +54,12 @@
     },
     {
       "anchorPoint": {
-        "x": 5.22842472218468,
-        "y": 4.780021428801773
+        "x": 6.497760556148787,
+        "y": 4.8715050925108985
       },
       "prevControl": {
-        "x": 3.9030417495624325,
-        "y": 4.610823602509575
+        "x": 5.3770856757120065,
+        "y": 4.9858596721473045
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -77,5 +75,13 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 1.3381818181817517,
+      "names": [
+        "Stow",
+        "Stop-Collect"
+      ]
+    }
+  ]
 }

@@ -89,10 +89,10 @@ public class RobotContainer extends LightningContainer {
 
     @Override
     protected void configureButtonBindings() {
-        new Trigger(collector::isStalling)
-                .onTrue(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 1)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 1))));
-        new Trigger(collector::isStalling)
-                .onFalse(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 0)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 0))));
+        // new Trigger(collector::isStalling)
+        //         .onTrue(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 1)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 1))));
+        // new Trigger(collector::isStalling)
+        //         .onFalse(new InstantCommand(() -> driver.setRumble(RumbleType.kBothRumble, 0)).alongWith(new InstantCommand(() -> copilot.setRumble(RumbleType.kBothRumble, 0))));
 
         /* driver Controls */
         // RESETS
@@ -176,7 +176,8 @@ public class RobotContainer extends LightningContainer {
         //Test paths
         autoFactory.makeTrajectory("Test-Behind-Back", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(1, .5));
-
+        autoFactory.makeTrajectory("Velocity-Override", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(3, 1.5));
         // Game paths
         //A paths
         autoFactory.makeTrajectory("A2[2]-M-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
@@ -193,18 +194,12 @@ public class RobotContainer extends LightningContainer {
                 new PathConstraints(2.25, 1.25)); // Tested double ground
         autoFactory.makeTrajectory("A2[2.5]-M-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
+        autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Should work
+        autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); 
         autoFactory.makeTrajectory("A2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested double ground
-        // autoFactory.makeTrajectory("A1[2]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Bit silly NOT tested
-        // autoFactory.makeTrajectory("A2[3]-M-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), new PathConstraints(3.25, 2.125)); // works 3 low
-        // autoFactory.makeTrajectory("A2[3]-M-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds), new PathConstraints(3.25, 2.125)); //Not tested 3 low
-        // autoFactory.makeTrajectory("A2[1]-M", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Tested
-        // autoFactory.makeTrajectory("A2[1]-M-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Should work
-        // autoFactory.makeTrajectory("A2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
-        //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // NOT tested autoBalance better from other side
+                new PathConstraints(3.5, 2)); 
         //B paths
         autoFactory.makeTrajectory("B2[1]-C-LOW", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Works

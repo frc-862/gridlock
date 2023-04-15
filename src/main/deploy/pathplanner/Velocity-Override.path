@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 1.8206582490197787,
+        "y": 2.744509911273745
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0,
-        "y": 0.0
+        "x": 2.82065824901978,
+        "y": 2.744509911273745
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -16,52 +16,45 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Ground-Collect-Cube",
-          "Score-Piece-Servo",
-          "Turn-Off-Vision"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
-        "waitBehavior": "deadline",
-        "waitTime": 0.05
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 3.776121560802322,
-        "y": 0.034306373890920804
+        "x": 5.903116742039475,
+        "y": 2.7216389953464644
       },
       "prevControl": {
-        "x": 2.776121560802322,
-        "y": 0.034306373890920804
+        "x": 4.903116742039475,
+        "y": 2.7216389953464644
       },
       "nextControl": {
-        "x": 4.776121560802323,
-        "y": 0.034306373890920804
+        "x": 4.903116742039475,
+        "y": 2.7216389953464644
       },
       "holonomicAngle": 0,
-      "isReversal": false,
+      "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [
-          "High-Score-Cube-Back",
-          "Hold-Power"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
-        "waitBehavior": "deadline",
-        "waitTime": 0.05
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 1.3861108464014356,
+        "y": 2.755945369237385
       },
       "prevControl": {
-        "x": 0.47982888119841816,
-        "y": 0.011435457963640872
+        "x": 3.730379728947762,
+        "y": 2.778816285164666
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -70,22 +63,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Score",
-          "Stow"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.5818181818181735,
-      "names": [
-        "Collect"
-      ]
-    }
-  ]
+  "markers": []
 }

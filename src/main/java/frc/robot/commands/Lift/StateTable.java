@@ -79,7 +79,7 @@ public class StateTable {
 
     private static final double ELEVATOR_OTB_HIGH_POS = 0d;
     private static final double ARM_OTB_HIGH_ANGLE = 160d;
-    private static final double WRIST_OTB_HIGH_ANGLE = 0d;
+    private static final double WRIST_OTB_HIGH_ANGLE = -20d;
 
     private static final double ELEVATOR_OTB_MID_POS = 0d;
     private static final double ARM_OTB_MID_ANGLE = 160d;

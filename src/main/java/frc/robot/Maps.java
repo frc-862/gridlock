@@ -40,14 +40,13 @@ public class Maps {
      */
     public static HashMap<String, Command> getPathMap(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector, LEDs leds) {
         HashMap<String, Command> eventMap = new HashMap<>();
-        // eventMap.put("Score-Piece-Servo", new InstantCommand(() -> servoturn.turnServo(AutonomousConstants.SERVO_UP), servoturn));
         eventMap.put("Score-Piece-Servo", new InstantCommand(servoturn::flickServo, servoturn));
         eventMap.put("Ground-Collect-Cone", new RunCommand(() -> lift.setGoalState(LiftState.groundCone), lift).until(lift::goalReached));
         eventMap.put("Ground-Collect-Cube", new RunCommand(() -> lift.setGoalState(LiftState.groundCube), lift).until(lift::goalReached));
         eventMap.put("High-Score-Cone", new RunCommand(() -> lift.setGoalState(LiftState.highConeScore), lift).until(lift::goalReached));
         eventMap.put("High-Score-Cube", new RunCommand(() -> lift.setGoalState(LiftState.highCubeScore), lift).until(lift::goalReached));
-        eventMap.put("High-Score-Cube-Back", new RunCommand(() -> lift.setGoalState(LiftState.OTB), lift).until(lift::goalReached));
-        // eventMap.put("Mid-Score-Cube-Back", new RunCommand(() -> lift.setGoalState(LiftState.OTB), lift).until(lift::goalReached));
+        eventMap.put("High-Score-Cube-Back", new RunCommand(() -> lift.setGoalState(LiftState.OTB_High), lift).until(lift::goalReached));
+        eventMap.put("Mid-Score-Cube-Back", new RunCommand(() -> lift.setGoalState(LiftState.OTB_Mid), lift).until(lift::goalReached));
         eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
         eventMap.put("Instant-Sync", new InstantCommand(() -> drivetrain.instantSyncVision()));
         eventMap.put("Stop-Collect", new InstantCommand(() -> collector.stop(), collector));
@@ -56,12 +55,12 @@ public class Maps {
         eventMap.put("Score-Slow", new InstantCommand(() -> collector.setPower(-.50))); //Lower power for no roll out
         eventMap.put("Score", new InstantCommand(() -> collector.setPower(-1d)));
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
-        eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
+        // eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
         eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));
-        eventMap.put("Pos1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));
-        eventMap.put("Pos2", new InstantCommand(() -> drivetrain.setAprilTagTarget(2)));
-        eventMap.put("Pos3", new InstantCommand(() -> drivetrain.setAprilTagTarget(3)));
-        eventMap.put("ResetTag", new InstantCommand(() -> drivetrain.setAprilTagTargetAll()));
+        // eventMap.put("Pos1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));
+        // eventMap.put("Pos2", new InstantCommand(() -> drivetrain.setAprilTagTarget(2)));
+        // eventMap.put("Pos3", new InstantCommand(() -> drivetrain.setAprilTagTarget(3)));
+        // eventMap.put("ResetTag", new InstantCommand(() -> drivetrain.setAprilTagTargetAll()));
 
         return eventMap;
     }
