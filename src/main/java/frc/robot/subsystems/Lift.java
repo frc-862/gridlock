@@ -264,13 +264,6 @@ public class Lift extends SubsystemBase {
                         }
                     }
                     break;
-
-                case OTB:
-                    elevator.setExtension(nextState.getElevatorExtension());
-                    wrist.setAngle(nextState.getWristAngle());
-                    arm.setOTBState(nextState.getOTBState(), nextState.getArmAngle().getDegrees());                    
-                    break;
-
             }
         }
 
