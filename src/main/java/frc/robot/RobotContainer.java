@@ -152,7 +152,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getLeftBumper).whileTrue(new SingleSubstationCollect(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getRightBumper).whileTrue(new DoubleSubstationCollect(lift), lift);
+        new Trigger(copilot::getRightBumper).whileTrue(new DoubleSubstationCollect(lift));
 
         //FLICK
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
