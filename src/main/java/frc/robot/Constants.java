@@ -483,7 +483,7 @@ public final class Constants {
             groundCone, groundCube,
 
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
-            doubleSubstationCollect, singleSubCone, singleSubCube,
+            doubleSubstationCollect, singleSubCone, singleSubCube, OTB_DoubleSubstationCollect,
 
             //score states
             midCubeScore, highCubeScore, midConeScore, highConeScore, OTB_Mid, OTB_High,

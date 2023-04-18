@@ -85,9 +85,14 @@ public class StateTable {
     private static final double ARM_OTB_MID_ANGLE = 160d;
     private static final double WRIST_OTB_MID_ANGLE = 0d;
 
+    private static final double ELEVATOR_OTB_DOUBLE_SUB_POS = 0d;
+    private static final double ARM_OTB_DOUBLE_SUB_ANGLE = 0d;
+    private static final double WRIST_OTB_DOUBLE_SUB_ANGLE = 0d;
+
     private static final double ELEVATOR_SINGLE_SUB_CONE_POS = 6.3d;
     private static final double ARM_SINGLE_SUB_CONE_ANGLE = -66d;
     private static final double WRIST_SINGLE_SUB_CONE_ANGLE = 119d;
+
     private static final double ELEVATOR_SINGLE_SUB_CUBE_POS = 14.5d;
     private static final double ARM_SINGLE_SUB_CUBE_ANGLE = -59d;
     private static final double WRIST_SINGLE_SUB_CUBE_ANGLE = 115d;
@@ -112,7 +117,8 @@ public class StateTable {
             Map.entry(LiftState.singleSubCone, new StateTransition(ELEVATOR_SINGLE_SUB_CONE_POS, Rotation2d.fromDegrees(ARM_SINGLE_SUB_CONE_ANGLE), Rotation2d.fromDegrees(WRIST_SINGLE_SUB_CONE_ANGLE), SINGLE_SUB_PLAN, LiftState.singleSubCone)),
             Map.entry(LiftState.singleSubCube, new StateTransition(ELEVATOR_SINGLE_SUB_CUBE_POS, Rotation2d.fromDegrees(ARM_SINGLE_SUB_CUBE_ANGLE), Rotation2d.fromDegrees(WRIST_SINGLE_SUB_CUBE_ANGLE), SINGLE_SUB_PLAN, LiftState.singleSubCone)),
             Map.entry(LiftState.OTB_High, new StateTransition(ELEVATOR_OTB_HIGH_POS, Rotation2d.fromDegrees(ARM_OTB_HIGH_ANGLE), Rotation2d.fromDegrees(WRIST_OTB_HIGH_ANGLE), LiftPlan.parallel, LiftState.OTB_High)),
-            Map.entry(LiftState.OTB_Mid, new StateTransition(ELEVATOR_OTB_MID_POS, Rotation2d.fromDegrees(ARM_OTB_MID_ANGLE), Rotation2d.fromDegrees(WRIST_OTB_MID_ANGLE), LiftPlan.parallel, LiftState.OTB_Mid)));
+            Map.entry(LiftState.OTB_Mid, new StateTransition(ELEVATOR_OTB_MID_POS, Rotation2d.fromDegrees(ARM_OTB_MID_ANGLE), Rotation2d.fromDegrees(WRIST_OTB_MID_ANGLE), LiftPlan.parallel, LiftState.OTB_Mid)),
+            Map.entry(LiftState.OTB_DoubleSubstationCollect, new StateTransition(ELEVATOR_OTB_DOUBLE_SUB_POS, Rotation2d.fromDegrees(ARM_OTB_DOUBLE_SUB_ANGLE), Rotation2d.fromDegrees(WRIST_OTB_DOUBLE_SUB_ANGLE), LiftPlan.parallel, LiftState.OTB_DoubleSubstationCollect)));
 
     private static Map<LiftState, StateTransition> scoreTable = new HashMap<LiftState, StateTransition>();
     private static Map<LiftState, StateTransition> groundTable = new HashMap<LiftState, StateTransition>();
