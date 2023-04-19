@@ -223,6 +223,8 @@ public class Drivetrain extends SubsystemBase {
                 updateOdometry();
                 updateDriveStates(states);
 
+                resetNeoAngle();                
+
                 initialSync = true;
             } else {
                 states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};

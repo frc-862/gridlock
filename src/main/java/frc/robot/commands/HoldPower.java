@@ -16,6 +16,7 @@ public class HoldPower extends CommandBase {
     boolean doHoldPower = false;
     double power = 0;
     XboxController driver;
+    XboxController copilot;
 
     /**
      * Creates a new Collect command
@@ -23,11 +24,12 @@ public class HoldPower extends CommandBase {
      * @param collector the collector subsystem
      * @param input the input speed for the collector
      */
-    public HoldPower(Collector collector, DoubleSupplier input, XboxController driver) {
+    public HoldPower(Collector collector, DoubleSupplier input, XboxController driver, XboxController copilot ) {
         this.collector = collector;
         this.input = input;
         this.driver = driver;
-
+        this.copilot = copilot;
+        
         addRequirements(collector);
     }
 
@@ -54,8 +56,10 @@ public class HoldPower extends CommandBase {
 
             if(collector.isStalling()) {
                 driver.setRumble(RumbleType.kBothRumble, 1);
+                copilot.setRumble(RumbleType.kBothRumble, 1);
             } else {
                 driver.setRumble(RumbleType.kBothRumble, 0);
+                copilot.setRumble(RumbleType.kBothRumble, 0);
             }
         }
     }
