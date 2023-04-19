@@ -3,12 +3,12 @@
     {
       "anchorPoint": {
         "x": 1.8,
-        "y": 4.4
+        "y": 4.35
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.79267217592923,
-        "y": 4.7457150549108515
+        "y": 4.695715054910851
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -110,11 +110,11 @@
     {
       "anchorPoint": {
         "x": 1.7634809592015757,
-        "y": 4.3912158580379925
+        "y": 4.39
       },
       "prevControl": {
         "x": 2.895591297601996,
-        "y": 4.654231391201726
+        "y": 4.6530155331637335
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -153,7 +153,7 @@
       ]
     },
     {
-      "position": 2.1527272727272986,
+      "position": 2.0654545454545765,
       "names": [
         "Ground-Collect-Cube"
       ]

@@ -3,12 +3,12 @@
     {
       "anchorPoint": {
         "x": 1.7977873330924976,
-        "y": 2.7216389953464644
+        "y": 2.67
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.797787333092499,
-        "y": 2.7216389953464644
+        "y": 2.67
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -18,7 +18,8 @@
       "stopEvent": {
         "names": [
           "Throw-Cube",
-          "Turn-Off-Vision"
+          "Turn-On-Vision",
+          "Pos2"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "minimum",
@@ -27,15 +28,15 @@
     },
     {
       "anchorPoint": {
-        "x": 6.4,
+        "x": 6.5,
         "y": 2.72
       },
       "prevControl": {
-        "x": 5.4,
+        "x": 5.5,
         "y": 2.72
       },
       "nextControl": {
-        "x": 5.4,
+        "x": 5.5,
         "y": 2.72
       },
       "holonomicAngle": 0,
@@ -44,20 +45,22 @@
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "Stow"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
-        "waitTime": 1.5
+        "waitTime": 0.5
       }
     },
     {
       "anchorPoint": {
-        "x": 4.5,
-        "y": 2.72
+        "x": 4.820954064985054,
+        "y": 2.7170483187120227
       },
       "prevControl": {
-        "x": 4.965693626109078,
-        "y": 2.6799758971272585
+        "x": 5.2866476910941325,
+        "y": 2.677024215839281
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -79,7 +82,6 @@
     {
       "position": 0.058181818181818994,
       "names": [
-        "Stow",
         "Stop-Collect"
       ]
     }

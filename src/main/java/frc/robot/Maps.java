@@ -58,11 +58,11 @@ public class Maps {
         eventMap.put("Score", new InstantCommand(() -> collector.setPower(-1d)));
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
         eventMap.put("Throw-Cube", new ThrowCube(lift, arm, collector));
-        // eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
+        eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
         eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));
-        // eventMap.put("Pos1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));
-        // eventMap.put("Pos2", new InstantCommand(() -> drivetrain.setAprilTagTarget(2)));
-        // eventMap.put("Pos3", new InstantCommand(() -> drivetrain.setAprilTagTarget(3)));
+        eventMap.put("Pos1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));
+        eventMap.put("Pos2", new InstantCommand(() -> drivetrain.setAprilTagTarget(2)));
+        eventMap.put("Pos3", new InstantCommand(() -> drivetrain.setAprilTagTarget(3)));
         // eventMap.put("ResetTag", new InstantCommand(() -> drivetrain.setAprilTagTargetAll()));
 
         return eventMap;

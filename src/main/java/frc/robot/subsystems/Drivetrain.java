@@ -401,6 +401,7 @@ public class Drivetrain extends SubsystemBase {
             //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
             // }
 
+            visionPose2d = new Pose2d(visionPose2d.getX(), pose.getY(), getHeading());
             poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency - .0472);
             pose = poseEstimator.getEstimatedPosition();
 
