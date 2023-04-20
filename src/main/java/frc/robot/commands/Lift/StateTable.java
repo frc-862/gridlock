@@ -212,6 +212,7 @@ public class StateTable {
 
             Map.entry(LiftState.doubleSubstationCollect, scoreTable), 
             Map.entry(LiftState.singleSubCone, scoreTable),
+            Map.entry(LiftState.singleSubCube, scoreTable),
 
             Map.entry(LiftState.stowedCollect, stowCollectTable), 
             Map.entry(LiftState.stowedScore, stowScoreTable), 
