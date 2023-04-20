@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -39,6 +40,9 @@ public class Arm extends SubsystemBase {
     private double power;
 
     private double tolerance = ArmConstants.TOLERANCE;
+
+    private boolean isDrawingMax = false;
+    private double drawMaxTime = 0;
 
     // The target angle to be set to the arm
     private double targetAngle;
@@ -227,6 +231,19 @@ public class Arm extends SubsystemBase {
             motor.set(power);
         }
 
+        if(motor.getOutputCurrent() > 49.5 && !isDrawingMax) {
+            isDrawingMax = true;
+            drawMaxTime = Timer.getFPGATimestamp();
+        } else if(motor.getOutputCurrent() < 49.5){
+            isDrawingMax = false;
+        }
+
+        if(isDrawingMax) {
+            if(Timer.getFPGATimestamp() - drawMaxTime > 2) {
+                disableArm = true;
+            }
+        }
+
         periodicShuffleboard.loop();
 
         // upController.setD(LightningShuffleboard.getDouble("Arm", "up kD", ArmConstants.UP_kD));
@@ -238,5 +255,7 @@ public class Arm extends SubsystemBase {
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", -60)));
         LightningShuffleboard.setDouble("Arm", "OUTPUT APPLIED", power);
         // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
+
+
     }
 }
