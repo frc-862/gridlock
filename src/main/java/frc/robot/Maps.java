@@ -52,7 +52,7 @@ public class Maps {
         eventMap.put("Stow", new RunCommand(() -> lift.setGoalState(LiftState.stowed), lift).until(lift::goalReached));
         eventMap.put("Instant-Sync", new InstantCommand(() -> drivetrain.instantSyncVision()));
         eventMap.put("Stop-Collect", new InstantCommand(() -> collector.stop(), collector));
-        eventMap.put("Collect", new InstantCommand(() -> collector.setPower(1d))); //TODO: switch until to be until piece
+        eventMap.put("Collect", new InstantCommand(() -> collector.setPower(1d)));
         eventMap.put("Hold-Power", new InstantCommand(() -> collector.setPower(CollectorConstants.HOLD_POWER_CUBE)));
         eventMap.put("Score-Slow", new InstantCommand(() -> collector.setPower(-.50))); //Lower power for no roll out
         eventMap.put("Score", new InstantCommand(() -> collector.setPower(-1d)));

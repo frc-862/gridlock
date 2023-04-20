@@ -206,6 +206,7 @@ public class StateTable {
             Map.entry(LiftState.midCubeScore, scoreTable), 
             Map.entry(LiftState.highCubeScore, scoreTable),
             Map.entry(LiftState.highConeScore, scoreTable),
+            
             Map.entry(LiftState.OTB_High, OTBTable),
             Map.entry(LiftState.OTB_Mid, OTBTable),
             Map.entry(LiftState.OTB_DoubleSubstationCollect, OTBTable),

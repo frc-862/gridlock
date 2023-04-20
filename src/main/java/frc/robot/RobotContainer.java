@@ -148,13 +148,13 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> copilot.getRightY() > 0.1).onTrue(new InstantCommand(() -> lift.adjustElevator(-1)));
 
         //SETPOINTS
-        new Trigger(copilot::getAButton).whileTrue(new Ground(lift, collector, () -> collector.getGamePiece()));
-        new Trigger(copilot::getBButton).whileTrue(new Stow(lift));
-        new Trigger(copilot::getYButton).whileTrue(new HighScore(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getXButton).whileTrue(new MidScore(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getLeftBumper).whileTrue(new SingleSubstationCollect(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getRightBumper).whileTrue(new DoubleSubstationCollect(lift));
-        // new Trigger(copilot::getRightBumper).whileTrue(new ReverseDoubleSubStationCollect(lift));
+        new Trigger(copilot::getAButton).onTrue(new Ground(lift, collector, () -> collector.getGamePiece()));
+        new Trigger(copilot::getBButton).onTrue(new Stow(lift));
+        new Trigger(copilot::getYButton).onTrue(new HighScore(lift, () -> collector.getGamePiece()));
+        new Trigger(copilot::getXButton).onTrue(new MidScore(lift, () -> collector.getGamePiece()));
+        new Trigger(copilot::getLeftBumper).onTrue(new SingleSubstationCollect(lift, () -> collector.getGamePiece()));
+        new Trigger(copilot::getRightBumper).onTrue(new DoubleSubstationCollect(lift));
+        // new Trigger(copilot::getRightBumper).onTrue(new ReverseDoubleSubStationCollect(lift));
         
         //FLICK
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
@@ -180,7 +180,10 @@ public class RobotContainer extends LightningContainer {
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
 
         //A paths
-        autoFactory.makeTrajectory("A2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), new PathConstraints(3.5, 2));
+        autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
+                new PathConstraints(3.5, 2));
+        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
+                new PathConstraints(3.5, 2));
         //B paths
         autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), new PathConstraints(AutonomousConstants.MAX_VELOCITY, .75)); // NOT tested
         autoFactory.makeTrajectory("B2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),

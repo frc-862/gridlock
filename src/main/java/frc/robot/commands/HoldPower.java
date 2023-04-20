@@ -38,17 +38,27 @@ public class HoldPower extends CommandBase {
         if (input.getAsDouble() > 0) {
             doHoldPower = true;
             power = input.getAsDouble();
+
         } else if (input.getAsDouble() < 0) {
             doHoldPower = false;
             power = input.getAsDouble();
+
         } else if (doHoldPower) {
             if(collector.getGamePiece() == GamePiece.CUBE){
                 power = CollectorConstants.HOLD_POWER_CUBE;
             } else{
                 power = CollectorConstants.HOLD_POWER_CONE;
             }
+
         } else {
             power = 0;
+        }
+
+        if (input.getAsDouble() < 0) {
+            collector.setCurrentLimit(60);
+        } else {
+            collector.setCurrentLimit(CollectorConstants.CURRENT_LIMIT);
+
         }
 
         if(DriverStation.isTeleop()) {

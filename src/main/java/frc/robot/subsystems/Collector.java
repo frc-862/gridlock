@@ -38,6 +38,8 @@ public class Collector extends SubsystemBase {
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
+    private int currCurrentLimit = CollectorConstants.CURRENT_LIMIT;
+
     // Enum of possible game pieces
     public enum GamePiece {
         CONE, CUBE, NONE
@@ -82,6 +84,13 @@ public class Collector extends SubsystemBase {
         // new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> getGamePiece().toString()));
         // new Pair<String, Object>("Color sensor confidence", (DoubleSupplier) () -> getConfidence()));
 
+    }
+
+    public void setCurrentLimit(int currentLimit) {
+        if(currentLimit != currCurrentLimit) {
+            motor.setSmartCurrentLimit(currentLimit);
+        }
+        currCurrentLimit = currentLimit;        
     }
 
     public boolean isStalling(){
