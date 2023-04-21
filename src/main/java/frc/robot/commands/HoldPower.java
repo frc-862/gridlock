@@ -56,6 +56,8 @@ public class HoldPower extends CommandBase {
 
         if (input.getAsDouble() < 0) {
             collector.setCurrentLimit(60);
+        }else if(input.getAsDouble() > 0 && collector.getGamePiece() == GamePiece.CONE) {
+            collector.setCurrentLimit(50);
         } else {
             collector.setCurrentLimit(CollectorConstants.CURRENT_LIMIT);
 
