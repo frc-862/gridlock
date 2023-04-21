@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -93,7 +94,8 @@ public class Arm extends SubsystemBase {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()),
-                new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()));
+                new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
+                new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
         // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
         // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
         // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
@@ -255,7 +257,5 @@ public class Arm extends SubsystemBase {
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", -60)));
         LightningShuffleboard.setDouble("Arm", "OUTPUT APPLIED", power);
         // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
-
-
     }
 }

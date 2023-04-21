@@ -57,8 +57,8 @@ public class Maps {
         eventMap.put("Score-Slow", new InstantCommand(() -> collector.setPower(-.50))); //Lower power for no roll out
         eventMap.put("Score", new InstantCommand(() -> collector.setPower(-1d)));
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
-        // eventMap.put("Throw-Cube", new ThrowCube(lift, arm, collector).withTimeout(1.5));
-        eventMap.put("Throw-Cube", new ThrowCube(lift, arm, collector));
+        eventMap.put("Throw-Cube", new ThrowCube(lift, arm, collector).withTimeout(4));
+        // eventMap.put("Throw-Cube", new ThrowCube(lift, arm, collector));
         eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
         eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));
         eventMap.put("Pos1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));
