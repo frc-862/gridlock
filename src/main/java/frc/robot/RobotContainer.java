@@ -213,7 +213,7 @@ public class RobotContainer extends LightningContainer {
 
         collector.setDefaultCommand(new HoldPower(collector,
                 () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND),
-                driver, copilot));
+                driver, copilot, lift));
 
         // elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
 

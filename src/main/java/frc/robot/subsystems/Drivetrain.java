@@ -143,6 +143,8 @@ public class Drivetrain extends SubsystemBase {
     private LimelightBack limelightBack;
     private LimelightFront limelightFront;
 
+    private boolean hasLimitChanged = false;
+
     // Manual trajectory variables
     private Pose2d desiredPose = new Pose2d();
     private double maxVel = 0d;
@@ -213,31 +215,48 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if(Timer.getFPGATimestamp() - initialTimeStamp < 1) {
-            if(initialSync) {
+        if (Timer.getFPGATimestamp() - initialTimeStamp < 1) {
+            if (initialSync) {
                 // Setting start position and creating estimator
                 setInitialPose(new Pose2d(0, 0, new Rotation2d()));
 
                 // Setting states of the modules
-                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
+                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
                 updateOdometry();
                 updateDriveStates(states);
 
-                resetNeoAngle();                
+                resetNeoAngle();
 
                 initialSync = true;
             } else {
-                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle), new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
+                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
                 updateOdometry();
             }
-        } else {       
+        } else {
 
-        // Update our odometry
-        updateOdometry();
-        updateVision();
+            // Update our odometry
+            updateOdometry();
+            updateVision();
 
-        periodicShuffleboard.loop();
-        periodicShuffleboardAuto.loop();
+            periodicShuffleboard.loop();
+            periodicShuffleboardAuto.loop();
+
+            if (DriverStation.isTeleop() && !hasLimitChanged) {
+                int newLimit = 53;
+                frontLeftModule.setDriveCurrentLimit(newLimit);
+                frontRightModule.setDriveCurrentLimit(newLimit);
+                backLeftModule.setDriveCurrentLimit(newLimit);
+                backRightModule.setDriveCurrentLimit(newLimit);
+
+                hasLimitChanged = true;
+            }
+
         }
     }
 
@@ -255,7 +274,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void hardResetToVision() {
-        if(visionPose2d != null) {
+        if (visionPose2d != null) {
             poseEstimator.resetPosition(getHeading(), modulePositions, visionPose2d);
         }
     }
@@ -465,6 +484,10 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("fr module position", (DoubleSupplier) () -> modulePositions[1].distanceMeters),
                 new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
                 new Pair<String, Object>("br module position", (DoubleSupplier) () -> modulePositions[3].distanceMeters),
+                new Pair<String, Object>("fl amperage", (DoubleSupplier) () -> frontLeftModule.getDriveAmperage()),
+                new Pair<String, Object>("fr amperage", (DoubleSupplier) () -> frontRightModule.getDriveAmperage()),
+                new Pair<String, Object>("bl amperage", (DoubleSupplier) () -> backLeftModule.getDriveAmperage()),
+                new Pair<String, Object>("br amperage", (DoubleSupplier) () -> backRightModule.getDriveAmperage()),
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
                 new Pair<String, Object>("raw Pose", (Supplier<double[]>) () -> new double[] {rawPose.getX(), rawPose.getY(), rawPose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
@@ -760,7 +783,7 @@ public class Drivetrain extends SubsystemBase {
 
     // public void getPoseFromIMU() {
     //     short[] xyz = new short[3];
-	// 	pigeon.getBiasedAccelerometer(xyz);
-	// 	Translation3d transVector =  new Translation3d(xyz[0] / 16384d * 9.81d, xyz[1] / 16384d * 9.81d, xyz[2] / 16384d * 9.81d);
+    // 	pigeon.getBiasedAccelerometer(xyz);
+    // 	Translation3d transVector =  new Translation3d(xyz[0] / 16384d * 9.81d, xyz[1] / 16384d * 9.81d, xyz[2] / 16384d * 9.81d);
     // }
 }

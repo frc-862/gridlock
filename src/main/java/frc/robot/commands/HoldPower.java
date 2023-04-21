@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.CollectorConstants;
+import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Collector.GamePiece;
 
 public class HoldPower extends CommandBase {
@@ -17,6 +19,7 @@ public class HoldPower extends CommandBase {
     double power = 0;
     XboxController driver;
     XboxController copilot;
+    Lift lift;
 
     /**
      * Creates a new Collect command
@@ -24,11 +27,12 @@ public class HoldPower extends CommandBase {
      * @param collector the collector subsystem
      * @param input the input speed for the collector
      */
-    public HoldPower(Collector collector, DoubleSupplier input, XboxController driver, XboxController copilot ) {
+    public HoldPower(Collector collector, DoubleSupplier input, XboxController driver, XboxController copilot, Lift lift) {
         this.collector = collector;
         this.input = input;
         this.driver = driver;
         this.copilot = copilot;
+        this.lift = lift;
         
         addRequirements(collector);
     }
@@ -47,7 +51,11 @@ public class HoldPower extends CommandBase {
             if(collector.getGamePiece() == GamePiece.CUBE){
                 power = CollectorConstants.HOLD_POWER_CUBE;
             } else{
-                power = CollectorConstants.HOLD_POWER_CONE;
+                if(lift.getGoalState() != LiftState.stowed) {
+                    power = .5;
+                } else {
+                    power = CollectorConstants.HOLD_POWER_CONE;
+                }
             }
 
         } else {
