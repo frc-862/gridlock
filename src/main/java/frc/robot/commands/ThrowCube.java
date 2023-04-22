@@ -30,9 +30,11 @@ public class ThrowCube extends CommandBase {
     public void execute() {
         if (arm.getAngle().getDegrees() >= 110) {
             collector.setPower(-1);
-        } else if (arm.getAngle().getDegrees() >= -70) {
-            collector.setPower(.35);
-        } else {
+        } 
+        // else if (arm.getAngle().getDegrees() >= -70) {
+        //     collector.setPower(CollectorConstants.HOLD_POWER_CUBE);
+        // } 
+        else {
             collector.setPower(1);
         }
     }
