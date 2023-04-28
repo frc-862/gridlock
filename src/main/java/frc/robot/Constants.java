@@ -299,9 +299,9 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double UP_kP = 0.007d;
+        public static final double UP_kP = 0.0072d;
         public static final double UP_kD = 0.0001d;
-        public static final double DOWN_kP = 0.004d;
+        public static final double DOWN_kP = 0.005d;
         public static final double DOWN_kD = 0d;
         public static final double kI = 0d;
 
@@ -483,7 +483,7 @@ public final class Constants {
             groundCone, groundCube,
 
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
-            doubleSubstationCollect, singleSubCone, singleSubCube,
+            doubleSubstationCollect, singleSubCone, singleSubCube, OTB_DoubleSubstationCollect,
 
             //score states
             midCubeScore, highCubeScore, midConeScore, highConeScore, OTB_Mid, OTB_High,

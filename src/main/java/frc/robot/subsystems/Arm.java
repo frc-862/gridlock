@@ -10,6 +10,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -39,6 +41,9 @@ public class Arm extends SubsystemBase {
     private double power;
 
     private double tolerance = ArmConstants.TOLERANCE;
+
+    private boolean isDrawingMax = false;
+    private double drawMaxTime = 0;
 
     // The target angle to be set to the arm
     private double targetAngle;
@@ -89,7 +94,8 @@ public class Arm extends SubsystemBase {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
                 new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()),
-                new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()));
+                new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
+                new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
         // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
         // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
         // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
@@ -225,6 +231,19 @@ public class Arm extends SubsystemBase {
             motor.set(0);
         } else {
             motor.set(power);
+        }
+
+        if(motor.getOutputCurrent() > 49.5 && !isDrawingMax) {
+            isDrawingMax = true;
+            drawMaxTime = Timer.getFPGATimestamp();
+        } else if(motor.getOutputCurrent() < 49.5){
+            isDrawingMax = false;
+        }
+
+        if(isDrawingMax) {
+            if(Timer.getFPGATimestamp() - drawMaxTime > 2) {
+                disableArm = true;
+            }
         }
 
         periodicShuffleboard.loop();

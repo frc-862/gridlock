@@ -89,7 +89,8 @@ public class Wrist extends SubsystemBase {
                 new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
                 new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()),
                 new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
-                new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()));
+                new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
+                new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
         // new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
         // new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));
     }
