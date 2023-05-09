@@ -436,15 +436,23 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * ta
+     * tag 
      * 
      * @param pos Pos of tag 1 at C nodes
      */
     public void setAprilTagTarget(int pos) {
         if (DriverStation.getAlliance() == Alliance.Blue) {
-            pos += 6;
-        } else {
-            pos += 3;
+            switch(pos){
+                case 1:
+                    pos = 6;
+                    break;
+                case 2:
+                    pos = 7;
+                    break;
+                case 3:
+                    pos = 8;
+                    break;
+            }
         }
         limelightBack.setPipelineNum(pos);
         limelightFront.setPipelineNum(pos);
