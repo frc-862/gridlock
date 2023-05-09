@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.commands.AutoScore;
@@ -59,7 +58,6 @@ public final class Constants {
         public static final double DEADBAND = 0.1d;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 1d;
-
     }
 
     // Constants for our system tests    
@@ -70,10 +68,9 @@ public final class Constants {
         public static final int MAX_ROTATIONS_PER_DIRECTION = 2;
     }
 
-    // COnstants for our drivetrain
+    // Constants for our drivetrain
     public static final class DrivetrainConstants {
-        // Our drivetrain and track width
-        // TODO: remeasure these
+        // Our drivetrain track width and Wheelbase
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.8125d);
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
@@ -120,7 +117,6 @@ public final class Constants {
             public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
-
         }
 
         // PID gains for our heading compensation
@@ -132,7 +128,7 @@ public final class Constants {
 
         // Steer offsets for our modules
         public static final class Offsets {
-            // Gridlocks steer offsets
+            // Gridlocks swerve module absolute encoder offsets
             public static final class Gridlock {
                 public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(193.535);
                 public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(145.547);
@@ -140,7 +136,7 @@ public final class Constants {
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(210.938);
             }
 
-            // Blackouts steer offsets
+            // Blackouts swerve module absolute encoder offsets
             public static final class Blackout {
                 public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(253.916);
                 public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(222.451);
@@ -164,7 +160,6 @@ public final class Constants {
         public static final double kD = 0d;
         public static final double kF = 0.007d;
 
-        // TODO: set a tolerance
         public static final double TOLERANCE = 1d;
 
         // Conversion factor for our elevator
@@ -190,8 +185,8 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final String FRONT_NAME = "limelight-front";
         public static final String BACK_NAME = "limelight-back";
-        public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0));
-        public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180));
+        public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0)); // Position on robot
+        public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180)); // Position on robot
         public static final double CUBE_OFFSET = 0.0; // TODO find this value
     }
 
@@ -215,7 +210,6 @@ public final class Constants {
         public static final double TOLERANCE = 10d;
 
         // Min and Max arm angles in degrees
-        // TODO: change to actual values
         public static final double MAX_ANGLE = 180;
         public static final double MIN_ANGLE = -113d;
 
@@ -248,7 +242,6 @@ public final class Constants {
                 put(45d, 0.005d);
                 put(90d, 0d);
                 put(135d, -0.005d);
-
             }
         };
 
@@ -261,7 +254,6 @@ public final class Constants {
                 put(-80d, .01);
                 put(-200d, .07);
                 put(-300d, .1);
-
             }
         };
     }
@@ -274,7 +266,7 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double STALL_POWER = 35d;
+        public static final double STALL_POWER = 35d; // Used to detect wether or not the collector is stalling meaning it has a game piece
 
         public static final double LOG_PERIOD = 0.22;
 
@@ -298,7 +290,7 @@ public final class Constants {
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        // PID gains for our wrist going up
+        // PID gains for our wrist going up and down
         public static final double UP_kP = 0.0072d;
         public static final double UP_kD = 0.0001d;
         public static final double DOWN_kP = 0.005d;
@@ -321,7 +313,7 @@ public final class Constants {
         // Offsets in degrees        
         public static final double ENCODER_OFFSET_GRIDLOCK = -131d;
 
-        public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
+        public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: check this
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;
@@ -347,8 +339,7 @@ public final class Constants {
                 put(0d, 0.015d);
                 put(45d, 0.01d);
                 put(90d, 0d);
-
-            }
+           }
         };
     }
 
@@ -413,7 +404,7 @@ public final class Constants {
 
         // Upper and lower magnitude thresholds for checking if we are on the charge station at all
         public static final double UPPER_MAGNITUDE_THRESHOLD = 11;
-        public static final double LOWER_MAGNITUDE_THRESHOLD = 7; // TODO RESET Value if possible was 2.5 If mag jumps during Auton
+        public static final double LOWER_MAGNITUDE_THRESHOLD = 7;
         // Min and max speeds for our auto balance
         public static final double MIN_SPEED_THRESHOLD = 0.35;
         public static final double MAX_SPEED_THRESHOLD = 1.5;
@@ -449,7 +440,7 @@ public final class Constants {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;
 
-        // Arbitrary value for how close the robot needs to be to the target (in angles)
+        // Arbitrary value for how close the robot needs to be to the target (in degrees)
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
         // Standard deviation for vision, heading is 1000 becuase were using pigeon, so i dont want to use vision heading
@@ -546,7 +537,7 @@ public final class Constants {
             public static final Pose2d SLOT_1_POSE = new Pose2d(2.44, 2.9, Rotation2d.fromDegrees(180));
         }
 
-        public static enum SlotPosition {
+        public static enum SlotPosition { // Position of each colum of scoring nodes for AutoScoring
             slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9
         }
 
@@ -560,7 +551,6 @@ public final class Constants {
 
         //Log period auto align
         public static final double LOG_PERIOD = 0.25;
-
     }
 
     public static final class AutoScoreConstants {
