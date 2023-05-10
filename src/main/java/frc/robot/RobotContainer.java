@@ -95,7 +95,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
 
         // new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.moveToDesiredPose(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
-        new Trigger(driver::getYButton).whileTrue(new SingleSubstationAlign(drivetrain, frontLimelight, collector));
+        new Trigger(driver::getYButton).whileTrue(new SingleSubstationAlign(drivetrain, frontLimelight));
 
         // SET DRIVE PODS TO 45
         new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain)); // Locks wheels to prevent sliding especially once balanced
@@ -116,7 +116,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo)); // For testing Servo in the pits
 
         // AutoAlign based on cone or cube
-        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector),
+        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight), new RetroLineUp(drivetrain, frontLimelight, collector),
                 () -> collector.getGamePiece() == GamePiece.CUBE)); // WorKS but is slow
 
         //AUTOBALANCE
@@ -195,7 +195,7 @@ public class RobotContainer extends LightningContainer {
                 () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND),
                 driver, copilot, lift));
 
-        elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain)); // Works problem is that Pos is not accurate enough
+        elevator.setDefaultCommand(new EleUpInCommunity(lift, drivetrain)); // Works problem is that Pos is not accurate enough
     }
 
     @Override
