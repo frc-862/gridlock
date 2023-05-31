@@ -309,8 +309,8 @@ public final class Constants {
         public static final double TOLERANCE = 12d;
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = 126d;
-        public static final double MIN_ANGLE = -90d;
+        public static final double MAX_ANGLE = 151d;
+        public static final double MIN_ANGLE = -100d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -319,7 +319,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees        
-        public static final double ENCODER_OFFSET_GRIDLOCK = -131d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -161.5d;
 
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 

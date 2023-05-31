@@ -202,69 +202,69 @@ public class Lift extends SubsystemBase {
         } else {
             lastKnownGoodWristSetPoint = nextState.getWristAngle().getDegrees();
             // Checks the run plan of the next state
-            switch (nextState.getPlan()) {
-                // If parallel, set all the components to their target
-                case parallel:
-                    elevator.setExtension(nextState.getElevatorExtension());
-                    arm.setAngle(nextState.getArmAngle());
-                    wrist.setAngle(nextState.getWristAngle());
-                    break;
-                case armThenWristAndEle:
-                    arm.setAngle(nextState.getArmAngle());
-                    if (nextState.isInArmSafeZone(arm.getAngle().getDegrees())) {
-                        elevator.setExtension(nextState.getElevatorExtension());
-                        wrist.setAngle(nextState.getWristAngle());
-                    }
-                    break;
-                case eleWristArm:
-                    elevator.setExtension(nextState.getElevatorExtension());
-                    if (nextState.isInEleSafeZone(elevator.getExtension())) {
-                        wrist.setAngle(nextState.getWristAngle());
-                        if (nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
-                            arm.setAngle(nextState.getArmAngle());
-                        }
-                    }
-                    break;
-                case eleArmWrist:
-                    elevator.setExtension(nextState.getElevatorExtension());
-                    if (nextState.isInEleSafeZone(elevator.getExtension())) {
-                        arm.setAngle(nextState.getArmAngle());
-                        if (nextState.isInArmSafeZone(arm.getAngle().getDegrees())) {
-                            wrist.setAngle(nextState.getWristAngle());
-                        }
-                    }
-                    break;
-                case armAndWristThenEle:
-                    arm.setAngle(nextState.getArmAngle());
-                    wrist.setAngle(nextState.getWristAngle());
-                    if (nextState.isInArmSafeZone(arm.getAngle().getDegrees()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
-                        elevator.setExtension(nextState.getElevatorExtension());
-                    }
-                    break;
-                case eleThenArmAndWrist:
-                    elevator.setExtension(nextState.getElevatorExtension());
-                    if (nextState.isInEleSafeZone(elevator.getExtension())) {
-                        arm.setAngle(nextState.getArmAngle());
-                        wrist.setAngle(nextState.getWristAngle());
-                    }
-                    break;
-                case eleAndWristThenArm:
-                    elevator.setExtension(nextState.getElevatorExtension());
-                    wrist.setAngle(nextState.getWristAngle());
-                    if (nextState.isInEleSafeZone(elevator.getExtension()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
-                        arm.setAngle(nextState.getArmAngle());
-                    }
-                    break;
-                case wristArmEle:
-                    wrist.setAngle(nextState.getWristAngle());
-                    if (nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
-                        arm.setAngle(nextState.getArmAngle());
-                        if (nextState.isInArmSafeZone(arm.getAngle().getDegrees())) {
-                            elevator.setExtension(nextState.getElevatorExtension());
-                        }
-                    }
-                    break;
-            }
+            // switch (nextState.getPlan()) {
+            //     // If parallel, set all the components to their target
+            //     case parallel:
+            //         elevator.setExtension(nextState.getElevatorExtension());
+            //         arm.setAngle(nextState.getArmAngle());
+            //         wrist.setAngle(nextState.getWristAngle());
+            //         break;
+            //     case armThenWristAndEle:
+            //         arm.setAngle(nextState.getArmAngle());
+            //         if (nextState.isInArmSafeZone(arm.getAngle().getDegrees())) {
+            //             elevator.setExtension(nextState.getElevatorExtension());
+            //             wrist.setAngle(nextState.getWristAngle());
+            //         }
+            //         break;
+            //     case eleWristArm:
+            //         elevator.setExtension(nextState.getElevatorExtension());
+            //         if (nextState.isInEleSafeZone(elevator.getExtension())) {
+            //             wrist.setAngle(nextState.getWristAngle());
+            //             if (nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
+            //                 arm.setAngle(nextState.getArmAngle());
+            //             }
+            //         }
+            //         break;
+            //     case eleArmWrist:
+            //         elevator.setExtension(nextState.getElevatorExtension());
+            //         if (nextState.isInEleSafeZone(elevator.getExtension())) {
+            //             arm.setAngle(nextState.getArmAngle());
+            //             if (nextState.isInArmSafeZone(arm.getAngle().getDegrees())) {
+            //                 wrist.setAngle(nextState.getWristAngle());
+            //             }
+            //         }
+            //         break;
+            //     case armAndWristThenEle:
+            //         arm.setAngle(nextState.getArmAngle());
+            //         wrist.setAngle(nextState.getWristAngle());
+            //         if (nextState.isInArmSafeZone(arm.getAngle().getDegrees()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
+            //             elevator.setExtension(nextState.getElevatorExtension());
+            //         }
+            //         break;
+            //     case eleThenArmAndWrist:
+            //         elevator.setExtension(nextState.getElevatorExtension());
+            //         if (nextState.isInEleSafeZone(elevator.getExtension())) {
+            //             arm.setAngle(nextState.getArmAngle());
+            //             wrist.setAngle(nextState.getWristAngle());
+            //         }
+            //         break;
+            //     case eleAndWristThenArm:
+            //         elevator.setExtension(nextState.getElevatorExtension());
+            //         wrist.setAngle(nextState.getWristAngle());
+            //         if (nextState.isInEleSafeZone(elevator.getExtension()) && nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
+            //             arm.setAngle(nextState.getArmAngle());
+            //         }
+            //         break;
+            //     case wristArmEle:
+            //         wrist.setAngle(nextState.getWristAngle());
+            //         if (nextState.isInWristSafeZone(wrist.getAngle().getDegrees())) {
+            //             arm.setAngle(nextState.getArmAngle());
+            //             if (nextState.isInArmSafeZone(arm.getAngle().getDegrees())) {
+            //                 elevator.setExtension(nextState.getElevatorExtension());
+            //             }
+            //         }
+            //         break;
+            // }
         }
 
         // if (nextState != null) {
