@@ -72,6 +72,9 @@ public class HoldPower extends CommandBase {
         }
 
         if(DriverStation.isTeleop()) {
+            if(collector.getGamePiece() == GamePiece.CONE){
+                power = -power;
+            }
             collector.setPower(power);
 
             if(collector.isStalling()) {
