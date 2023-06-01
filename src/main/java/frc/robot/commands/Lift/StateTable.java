@@ -47,6 +47,11 @@ public class StateTable {
     private static final double WRIST_GROUND_CONE_ANGLE = 51d;
     private static final LiftPlan GROUND_CONE_PLAN = LiftPlan.parallel;
 
+    private static final double ELEVATOR_GROUND_VERTICAL_CONE_POS = 0;
+    private static final double ARM_GROUND_VERTICAL_CONE_ANGLE = -74;
+    private static final double WRIST_GROUND_VERTICAL_CONE_ANGLE = 51d;
+    private static final LiftPlan GROUND_VERTICAL_CONE_PLAN = LiftPlan.parallel;
+
     private static final double ELEVATOR_GROUND_CUBE_POS = 0;
     private static final double ARM_GROUND_CUBE_ANGLE = -70.5;
     private static final double WRIST_GROUND_CUBE_ANGLE = 91;
@@ -108,6 +113,7 @@ public class StateTable {
 
             Map.entry(LiftState.groundCube, new StateTransition(ELEVATOR_GROUND_CUBE_POS, Rotation2d.fromDegrees(ARM_GROUND_CUBE_ANGLE), Rotation2d.fromDegrees(WRIST_GROUND_CUBE_ANGLE), GROUND_CUBE_PLAN, LiftState.groundCube)), 
             Map.entry(LiftState.groundCone, new StateTransition(ELEVATOR_GROUND_CONE_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(WRIST_GROUND_CONE_ANGLE), GROUND_CONE_PLAN, LiftState.groundCone)),
+            Map.entry(LiftState.groundConeVertical, new StateTransition(ELEVATOR_GROUND_VERTICAL_CONE_POS, Rotation2d.fromDegrees(ARM_GROUND_VERTICAL_CONE_ANGLE), Rotation2d.fromDegrees(WRIST_GROUND_VERTICAL_CONE_ANGLE), GROUND_VERTICAL_CONE_PLAN, LiftState.groundConeVertical)),
 
             Map.entry(LiftState.midCubeScore, new StateTransition(ELEVATOR_MID_CUBE_POS, Rotation2d.fromDegrees(ARM_MID_CUBE_ANGLE), Rotation2d.fromDegrees(WRIST_MID_CUBE_ANGLE), MID_CUBE_PLAN, LiftState.midCubeScore)),
             Map.entry(LiftState.midConeScore, new StateTransition(ELEVATOR_MID_CONE_POS, Rotation2d.fromDegrees(ARM_MID_CONE_ANGLE), Rotation2d.fromDegrees(WRIST_MID_CONE_ANGLE), MID_CONE_PLAN, LiftState.midConeScore)),

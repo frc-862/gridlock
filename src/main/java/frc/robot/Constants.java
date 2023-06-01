@@ -481,7 +481,7 @@ public final class Constants {
         // All of the different states the lift can be in
         public enum LiftState {
             //ground collects
-            groundCone, groundCube,
+            groundCone, groundCube, groundConeVertical, 
 
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
             doubleSubstationCollect, singleSubCone, singleSubCube, OTB_DoubleSubstationCollect,

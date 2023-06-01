@@ -33,6 +33,7 @@ public class Lift extends SubsystemBase {
     private StateTransition nextState;
 
     private boolean doTargetOverride = false;
+    private boolean vertical = false;
 
     // Periodic Shuffleboard 
     // private LightningShuffleboardPeriodic periodicShuffleboardNextState;
@@ -173,6 +174,14 @@ public class Lift extends SubsystemBase {
         elevator.stop();
         arm.stop();
         wrist.stop();
+    }
+
+    public void setVertical(boolean vertical){
+        this.vertical = vertical;
+    }
+
+    public boolean getVertical(){
+        return vertical;
     }
 
     @Override

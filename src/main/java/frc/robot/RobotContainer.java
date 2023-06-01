@@ -148,7 +148,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> copilot.getRightY() > 0.1).onTrue(new InstantCommand(() -> lift.adjustElevator(-1)));
 
         //SETPOINTS
-        new Trigger(copilot::getAButton).onTrue(new Ground(lift, collector, () -> collector.getGamePiece()));
+        new Trigger(copilot::getAButton).onTrue(new Ground(lift, collector, () -> collector.getGamePiece(), lift.getVertical()));
         new Trigger(copilot::getBButton).onTrue(new Stow(lift));
         new Trigger(copilot::getYButton).onTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).onTrue(new MidScore(lift, () -> collector.getGamePiece()));
