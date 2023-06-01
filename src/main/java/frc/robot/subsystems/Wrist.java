@@ -188,13 +188,13 @@ public class Wrist extends SubsystemBase {
     @Override
     public void periodic() {
 
-        upController.setP(LightningShuffleboard.getDouble("Lift", "up wrist kP", WristConstants.UP_kP));
-        downController.setP(LightningShuffleboard.getDouble("Lift", "down wrist kP", WristConstants.DOWN_kP));
+        // upController.setP(LightningShuffleboard.getDouble("Lift", "up wrist kP", WristConstants.UP_kP));
+        // downController.setP(LightningShuffleboard.getDouble("Lift", "down wrist kP", WristConstants.DOWN_kP));
 
-        upController.setD(LightningShuffleboard.getDouble("Lift", "wrist up D", WristConstants.UP_kD));
-        downController.setD(LightningShuffleboard.getDouble("Lift", "wrist down D", WristConstants.DOWN_kD));
+        // upController.setD(LightningShuffleboard.getDouble("Lift", "wrist up D", WristConstants.UP_kD));
+        // downController.setD(LightningShuffleboard.getDouble("Lift", "wrist down D", WristConstants.DOWN_kD));
 
-        setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", getAngle().getDegrees())));
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Lift", "wrist setpoint", getAngle().getDegrees())));
 
         LightningShuffleboard.setDouble("Lift", "GR wrist angle", getGroundRelativeAngle(arm.getAngle()).getDegrees());
 

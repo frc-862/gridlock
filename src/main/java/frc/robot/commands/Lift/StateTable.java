@@ -43,13 +43,13 @@ public class StateTable {
     private static final double WRIST_STOW_COLLECT_TRANSITION_ANGLE = 90;
 
     private static final double ELEVATOR_GROUND_CONE_POS = 0;
-    private static final double ARM_GROUND_CONE_ANGLE = -70.5;
-    private static final double WRIST_GROUND_CONE_ANGLE = 38d;
+    private static final double ARM_GROUND_CONE_ANGLE = -74;
+    private static final double WRIST_GROUND_CONE_ANGLE = 51d;
     private static final LiftPlan GROUND_CONE_PLAN = LiftPlan.parallel;
 
-    private static final double ELEVATOR_GROUND_CUBE_POS = 5.5;
+    private static final double ELEVATOR_GROUND_CUBE_POS = 0;
     private static final double ARM_GROUND_CUBE_ANGLE = -70.5;
-    private static final double WRIST_GROUND_CUBE_ANGLE = 22;
+    private static final double WRIST_GROUND_CUBE_ANGLE = 91;
     private static final LiftPlan GROUND_CUBE_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_MID_CUBE_POS = 2;
