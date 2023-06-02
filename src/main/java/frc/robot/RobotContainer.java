@@ -153,19 +153,15 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getYButton).onTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).onTrue(new MidScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getLeftBumper).onTrue(new SingleSubstationCollect(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getRightBumper).onTrue(new DoubleSubstationCollect(lift));
-        // new Trigger(copilot::getRightBumper).onTrue(new ReverseDoubleSubStationCollect(lift));
+        // new Trigger(copilot::getRightBumper).onTrue(new DoubleSubstationCollect(lift));
+        new Trigger(copilot::getRightBumper).onTrue(new ReverseDoubleSubStationCollect(lift));
         
         //FLICK
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
         new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(lift.getLastKnownGoodWristSetPoint()))));
 
-        //BREAK
+        //BREAK OUT
         new Trigger(copilot::getRightStickButton).onTrue(new InstantCommand(lift::breakLift));
-
-        // COLLECTOR
-        // new Trigger(() -> (Math.abs(copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis()) > 0.1)).onTrue(new HoldPower(collector,
-        //         () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND)));
 
         //DISABLE LIFT
         new Trigger(() -> copilot.getStartButton() && copilot.getBackButton())
