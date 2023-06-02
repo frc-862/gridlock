@@ -11,6 +11,7 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Lift.StateTable;
 import frc.robot.commands.Lift.StateTransition;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -176,11 +177,15 @@ public class Lift extends SubsystemBase {
         wrist.stop();
     }
 
-    public void setVertical(boolean vertical){
-        this.vertical = vertical;
+    public void switchVertical() {
+        if(vertical){
+            vertical = false;
+        } else {
+            vertical = true;
+        }
     }
 
-    public boolean getVertical(){
+    public boolean getVertical() {
         return vertical;
     }
 
@@ -275,6 +280,8 @@ public class Lift extends SubsystemBase {
                     break;
             }
         }
+
+        LightningShuffleboard.setBool("Lift", "vertical", getVertical());
 
         // if (nextState != null) {
         //     LightningShuffleboard.setBool("Lift", "ele on targ", elevator.onTarget(nextState.getElevatorExtension()));

@@ -131,6 +131,7 @@ public class RobotContainer extends LightningContainer {
         // SERVO
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo));
 
+        new Trigger(driver::getBackButton).onTrue(new InstantCommand(() -> lift.switchVertical()));
         // AutoAlign based on cone or cube
         new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector),
                 () -> collector.getGamePiece() == GamePiece.CUBE));
@@ -155,7 +156,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getLeftBumper).onTrue(new SingleSubstationCollect(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getRightBumper).onTrue(new DoubleSubstationCollect(lift));
         // new Trigger(copilot::getRightBumper).onTrue(new ReverseDoubleSubStationCollect(lift));
-        
+
         //FLICK
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
         new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(lift.getLastKnownGoodWristSetPoint()))));
@@ -180,10 +181,8 @@ public class RobotContainer extends LightningContainer {
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
 
         //A paths
-        autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
-                new PathConstraints(3.5, 2));
-        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
-                new PathConstraints(3.5, 2));
+        autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), new PathConstraints(3.5, 2));
+        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), new PathConstraints(3.5, 2));
         //B paths
         autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), new PathConstraints(AutonomousConstants.MAX_VELOCITY, .75)); // NOT tested
         autoFactory.makeTrajectory("B2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
@@ -212,8 +211,8 @@ public class RobotContainer extends LightningContainer {
         leds.setDefaultCommand(new SafeToScoreLED(leds, drivetrain, collector));
 
         collector.setDefaultCommand(new HoldPower(collector,
-                () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND),
-                driver, copilot, lift));
+                () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND), driver,
+                copilot, lift));
 
         // elevator.setDefaultCommand(new EleUpInCommunity(elevator, lift, drivetrain));
 

@@ -156,7 +156,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
-        public static final IdleMode NEUTRAL_MODE = IdleMode.kCoast;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our elevator
         public static final double kP = .35d;
@@ -200,7 +200,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = true;
         public static final int CURRENT_LIMIT = 50;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
-        public static final IdleMode NEUTRAL_MODE = IdleMode.kCoast;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our arm
         public static final double UP_kP = 0.013d;
@@ -296,7 +296,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = true;
         public static final int CURRENT_LIMIT = 30;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
-        public static final IdleMode NEUTRAL_MODE = IdleMode.kCoast;
+        public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
         public static final double UP_kP = 0.007d;
