@@ -93,9 +93,9 @@ public class StateTable {
     private static final double ARM_OTB_DOUBLE_SUB_ANGLE = 160d;
     private static final double WRIST_OTB_DOUBLE_SUB_ANGLE = 0d;
 
-    private static final double ELEVATOR_SINGLE_SUB_CONE_POS = 17d;
-    private static final double ARM_SINGLE_SUB_CONE_ANGLE = -73d;
-    private static final double WRIST_SINGLE_SUB_CONE_ANGLE = 126d;
+    private static final double ELEVATOR_SINGLE_SUB_CONE_POS = 10d;
+    private static final double ARM_SINGLE_SUB_CONE_ANGLE = -98d;
+    private static final double WRIST_SINGLE_SUB_CONE_ANGLE = 146d;
 
     private static final double ELEVATOR_SINGLE_SUB_CUBE_POS = 14.5d;
     private static final double ARM_SINGLE_SUB_CUBE_ANGLE = -59d;
