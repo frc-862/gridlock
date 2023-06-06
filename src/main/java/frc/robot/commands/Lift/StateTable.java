@@ -61,8 +61,8 @@ public class StateTable {
     private static final LiftPlan MID_CUBE_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_MID_CONE_POS = 0;
-    private static final double ARM_MID_CONE_ANGLE = 5.5;
-    private static final double WRIST_MID_CONE_ANGLE = 134d;
+    private static final double ARM_MID_CONE_ANGLE = 36;
+    private static final double WRIST_MID_CONE_ANGLE = -97d;
     private static final LiftPlan MID_CONE_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_HIGH_CUBE_POS = 0d;
@@ -71,8 +71,8 @@ public class StateTable {
     private static final LiftPlan HIGH_CUBE_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_HIGH_CONE_POS = 18;
-    private static final double ARM_HIGH_CONE_ANGLE = 15d;
-    private static final double WRIST_HIGH_CONE_ANGLE = -80d;
+    private static final double ARM_HIGH_CONE_ANGLE = 28d;
+    private static final double WRIST_HIGH_CONE_ANGLE = -84d;
     private static final LiftPlan HIGH_CONE_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_DOUBLE_SUB_POS = 9d;
