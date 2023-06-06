@@ -267,4 +267,9 @@ public class Arm extends SubsystemBase {
         LightningShuffleboard.setDouble("Arm", "OUTPUT APPLIED", power);
         // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
     }
+
+    //TODO make work
+    public boolean getSquishToggle() {
+        return false;
+    }
 }
