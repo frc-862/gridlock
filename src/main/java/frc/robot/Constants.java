@@ -319,7 +319,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees        
-        public static final double ENCODER_OFFSET_GRIDLOCK = -161.5d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = 138.36; //-161.5d;
 
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
@@ -481,7 +481,7 @@ public final class Constants {
         // All of the different states the lift can be in
         public enum LiftState {
             //ground collects
-            groundCone, groundCube, groundConeVertical, 
+            groundCone, groundCube, groundConeVertical,
 
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
             doubleSubstationCollect, singleSubCone, singleSubCube, OTB_DoubleSubstationCollect,
@@ -500,6 +500,7 @@ public final class Constants {
         public enum LiftPlan {
             parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle
         }
+
         public static final double LOG_PERIOD = 0.23;
     }
 

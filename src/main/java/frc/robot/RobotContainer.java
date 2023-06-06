@@ -60,8 +60,6 @@ import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
 import frc.thunder.filter.JoystickFilter.Mode;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathConstraints;
-import frc.thunder.pathplanner.com.pathplanner.lib.PathPlanner;
-import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
 import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
