@@ -16,8 +16,8 @@ public class Collect extends CommandBase {
     /**
      * Creates a new Collect command
      * 
-     * @param collector    the collector subsystem
-     * @param input        the input speed for the collector
+     * @param collector the collector subsystem
+     * @param input     the input speed for the collector
      */
     public Collect(Collector collector, DoubleSupplier input) {
         this.collector = collector;

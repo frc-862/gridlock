@@ -32,6 +32,8 @@ public class Arm extends SubsystemBase {
     private PIDController downController = new PIDController(ArmConstants.DOWN_kP, ArmConstants.DOWN_kI, ArmConstants.DOWN_kD);
     private SparkMaxAbsoluteEncoder encoder;
 
+    private int currCurrentLimit = ArmConstants.CURRENT_LIMIT;
+
     // The encoder offset 
     private double OFFSET;
 
@@ -114,6 +116,13 @@ public class Arm extends SubsystemBase {
 
     public double getTargetAngle() {
         return targetAngle;
+    }
+
+    public void setCurrentLimit(int currentLimit) {
+        if(currentLimit != currCurrentLimit) {
+            motor.setSmartCurrentLimit(currentLimit);
+        }
+        currCurrentLimit = currentLimit;        
     }
 
     /**

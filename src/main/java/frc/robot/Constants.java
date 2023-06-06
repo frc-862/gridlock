@@ -100,7 +100,7 @@ public final class Constants {
         public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.7;
         public static final double SLOW_MODE_ROTATIONAL_MULT = 0.5;
 
-        // Pigeon heading offset 
+        // Pigeon heading offset
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
 
         // Standard dev for robot pose
