@@ -2,7 +2,6 @@ package frc.robot.commands.Lift;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.lang3.Range;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -56,29 +55,29 @@ public class StateTable {
     private static final double WRIST_GROUND_CUBE_ANGLE = 91;
     private static final LiftPlan GROUND_CUBE_PLAN = LiftPlan.parallel;
 
-    private static final double ELEVATOR_MID_CUBE_POS = 2;
-    private static final double ARM_MID_CUBE_ANGLE = 0;
-    private static final double WRIST_MID_CUBE_ANGLE = -6d;
+    private static final double ELEVATOR_MID_CUBE_POS = 14.2;
+    private static final double ARM_MID_CUBE_ANGLE = -68;
+    private static final double WRIST_MID_CUBE_ANGLE = 152d;
     private static final LiftPlan MID_CUBE_PLAN = LiftPlan.parallel;
 
-    private static final double ELEVATOR_MID_CONE_POS = 6;
-    private static final double ARM_MID_CONE_ANGLE = 16.1;
-    private static final double WRIST_MID_CONE_ANGLE = -90d;
+    private static final double ELEVATOR_MID_CONE_POS = 0;
+    private static final double ARM_MID_CONE_ANGLE = 5.5;
+    private static final double WRIST_MID_CONE_ANGLE = 134d;
     private static final LiftPlan MID_CONE_PLAN = LiftPlan.parallel;
 
-    private static final double ELEVATOR_HIGH_CUBE_POS = 12d;
-    private static final double ARM_HIGH_CUBE_ANGLE = 6d;
-    private static final double WRIST_HIGH_CUBE_ANGLE = -6d;
+    private static final double ELEVATOR_HIGH_CUBE_POS = 0d;
+    private static final double ARM_HIGH_CUBE_ANGLE = 5.5d;
+    private static final double WRIST_HIGH_CUBE_ANGLE = 134d;
     private static final LiftPlan HIGH_CUBE_PLAN = LiftPlan.parallel;
 
-    private static final double ELEVATOR_HIGH_CONE_POS = 24;
-    private static final double ARM_HIGH_CONE_ANGLE = 10d;
-    private static final double WRIST_HIGH_CONE_ANGLE = -69d;
+    private static final double ELEVATOR_HIGH_CONE_POS = 18;
+    private static final double ARM_HIGH_CONE_ANGLE = 15d;
+    private static final double WRIST_HIGH_CONE_ANGLE = -80d;
     private static final LiftPlan HIGH_CONE_PLAN = LiftPlan.parallel;
 
-    private static final double ELEVATOR_DOUBLE_SUB_POS = 0d;
-    private static final double ARM_DOUBLE_SUB_ANGLE = 37.7d;
-    private static final double WRIST_DOUBLE_SUB_ANGLE = -63d;
+    private static final double ELEVATOR_DOUBLE_SUB_POS = 9d;
+    private static final double ARM_DOUBLE_SUB_ANGLE = 0d;
+    private static final double WRIST_DOUBLE_SUB_ANGLE = 34.7d;
     private static final LiftPlan DOUBLE_SUB_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_OTB_HIGH_POS = 0d;
@@ -97,9 +96,9 @@ public class StateTable {
     private static final double ARM_SINGLE_SUB_CONE_ANGLE = -98d;
     private static final double WRIST_SINGLE_SUB_CONE_ANGLE = 146d;
 
-    private static final double ELEVATOR_SINGLE_SUB_CUBE_POS = 14.5d;
-    private static final double ARM_SINGLE_SUB_CUBE_ANGLE = -59d;
-    private static final double WRIST_SINGLE_SUB_CUBE_ANGLE = 115d;
+    private static final double ELEVATOR_SINGLE_SUB_CUBE_POS = 15d;
+    private static final double ARM_SINGLE_SUB_CUBE_ANGLE = -69d;
+    private static final double WRIST_SINGLE_SUB_CUBE_ANGLE = 145d;
     private static final LiftPlan SINGLE_SUB_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_DEPLOYED_POS = 8;
