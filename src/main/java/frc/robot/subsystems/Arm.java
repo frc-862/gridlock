@@ -258,7 +258,7 @@ public class Arm extends SubsystemBase {
         }
 
         if (enable) {
-            setCurrentLimit(5);
+            setCurrentLimit(2);
         } else {
             setCurrentLimit(ArmConstants.CURRENT_LIMIT);
         }
@@ -273,6 +273,7 @@ public class Arm extends SubsystemBase {
         LightningShuffleboard.setDouble("Arm", "Current", motor.getOutputCurrent());
         // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", getAngle().getDegrees())));
         LightningShuffleboard.setDouble("Arm", "OUTPUT APPLIED", power);
+        LightningShuffleboard.setBool("Arm", "Squish", enable);
         // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
     }
 
