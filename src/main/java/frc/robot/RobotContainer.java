@@ -46,7 +46,6 @@ import frc.robot.commands.Lift.Ground;
 import frc.robot.commands.Lift.HighScore;
 import frc.robot.commands.Lift.MidScore;
 import frc.robot.commands.Lift.SingleSubstationCollect;
-import frc.robot.commands.Lift.Squish;
 import frc.robot.commands.Lift.Stow;
 import frc.robot.commands.tests.DriveTrainSystemTest;
 import frc.robot.subsystems.Drivetrain;

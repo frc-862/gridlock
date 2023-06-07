@@ -178,7 +178,7 @@ public class Lift extends SubsystemBase {
     }
 
     public void switchVertical() {
-        if(vertical){
+        if (vertical) {
             vertical = false;
         } else {
             vertical = true;
@@ -191,6 +191,10 @@ public class Lift extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        if(getCurrentState() != getGoalState()) {
+            arm.squishToggle(false);
+        }
 
         // Updates the shuffleboard values
         runPeriodicShuffleboardLoop();
@@ -280,6 +284,13 @@ public class Lift extends SubsystemBase {
                     break;
             }
         }
+
+        if (onTarget()) { // IF at the right state allow arm to squish
+            if (getCurrentState() == LiftState.singleSubCone || getCurrentState() == LiftState.singleSubCube || getCurrentState() == LiftState.midCubeScore) {
+                arm.squishToggle(true);
+            }
+        }
+        // Single Cone + Cube    Mid Cube   Ground Collect
 
         LightningShuffleboard.setBool("Lift", "vertical", getVertical());
 
