@@ -100,7 +100,7 @@ public final class Constants {
         public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.7;
         public static final double SLOW_MODE_ROTATIONAL_MULT = 0.5;
 
-        // Pigeon heading offset 
+        // Pigeon heading offset
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
 
         // Standard dev for robot pose
@@ -226,7 +226,7 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 52.3d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -104.68;
         public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
@@ -239,7 +239,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.21;
 
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
-        public static InterpolationMap ARM_KF_MAP = new InterpolationMap() {
+        public static InterpolationMap ARM_POSITIONAL_KF_MAP = new InterpolationMap() {
             {
                 put(-135d, -0.005d);
                 put(-90d, 0d);
@@ -248,6 +248,19 @@ public final class Constants {
                 put(45d, 0.005d);
                 put(90d, 0d);
                 put(135d, -0.005d);
+
+            }
+        };
+
+        public static InterpolationMap ARM_VELOCITY_KF_MAP = new InterpolationMap() {
+            {
+                put(300d, -.2);
+                put(200d, -.1);
+                put(80d, -.01);
+                put(0d, 0d);
+                put(-80d, .01);
+                put(-200d, .07);
+                put(-300d, .1);
 
             }
         };
@@ -286,9 +299,9 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up
-        public static final double UP_kP = 0.0065d;
+        public static final double UP_kP = 0.007d;
         public static final double UP_kD = 0.0001d;
-        public static final double DOWN_kP = 0.004d;
+        public static final double DOWN_kP = 0.005d;
         public static final double DOWN_kD = 0d;
         public static final double kI = 0d;
 
@@ -296,8 +309,8 @@ public final class Constants {
         public static final double TOLERANCE = 12d;
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = 126d;
-        public static final double MIN_ANGLE = -90d;
+        public static final double MAX_ANGLE = 151d;
+        public static final double MIN_ANGLE = -100d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -305,8 +318,9 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.24;
 
-        // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -131d;
+        // Offsets in degrees        
+        public static final double ENCODER_OFFSET_GRIDLOCK = 138.36; //-161.5d;
+
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
@@ -329,10 +343,11 @@ public final class Constants {
                 // put(110d, 0d);
 
                 put(-90d, 0d);
-                put(-45d, -0.01d);
-                put(0d, 0.015d);
-                put(45d, 0.01d);
+                put(-45d, -0.008d);
+                put(0d, 0.013d);
+                put(45d, 0.008d);
                 put(90d, 0d);
+                put(135d, 0.008d);
 
             }
         };
@@ -466,13 +481,13 @@ public final class Constants {
         // All of the different states the lift can be in
         public enum LiftState {
             //ground collects
-            groundCone, groundCube,
+            groundCone, groundCube, groundConeVertical,
 
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
-            doubleSubstationCollect, singleSubstationCollect,
+            doubleSubstationCollect, singleSubCone, singleSubCube, OTB_DoubleSubstationCollect,
 
-            //score states1000
-            midCubeScore, highCubeScore, midConeScore, highConeScore,
+            //score states
+            midCubeScore, highCubeScore, midConeScore, highConeScore, OTB_Mid, OTB_High,
 
             //substates
             stowedCollect, stowedScore, stowedSingleSub, scoreToCollect, elevatorDeployed,

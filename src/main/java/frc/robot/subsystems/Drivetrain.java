@@ -133,6 +133,7 @@ public class Drivetrain extends SubsystemBase {
     private boolean doVisionUpdate = true;
     private double lastKnownGoodVisionX = 0;
     private double lastKnownGoodVisionY = 0;
+    private double lastKnownGoodVisionRotation = 0;
     private double lastTime = 0;
 
     // Heading compenstaion variables
@@ -145,6 +146,8 @@ public class Drivetrain extends SubsystemBase {
     private LimelightBack limelightBack;
     private LimelightFront limelightFront;
 
+    private boolean hasLimitChanged = false;
+
     // Manual trajectory variables
     private Pose2d desiredPose = new Pose2d();
     private double maxVel = 0d;
@@ -153,6 +156,9 @@ public class Drivetrain extends SubsystemBase {
     private double velocity = 0;
 
     private Pose2d visionPose2d;
+
+    private boolean initialSync = false;
+    private double initialTimeStamp = 0;
 
     public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
@@ -198,12 +204,7 @@ public class Drivetrain extends SubsystemBase {
         backRightModule = Mk4iSwerveModuleHelper.createNeo(tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0), swerveConfiguration,
                 Mk4iSwerveModuleHelper.GearRatio.L2, RobotMap.CAN.BACK_RIGHT_DRIVE_MOTOR, RobotMap.CAN.BACK_RIGHT_AZIMUTH_MOTOR, RobotMap.CAN.BACK_RIGHT_CANCODER, BACK_RIGHT_STEER_OFFSET);
 
-        // Setting start position and creating estimator
-        setInitialPose(new Pose2d(0, 0, new Rotation2d()));
-
-        // Setting states of the modules
-        updateOdometry();
-        updateDriveStates(states);
+        initialTimeStamp = Timer.getFPGATimestamp();
 
         // Initialize the shuffleboard values and start logging data
         initializeShuffleboard();
@@ -219,12 +220,49 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // Update our odometry
-        updateOdometry();
-        updateVision();
+        if (Timer.getFPGATimestamp() - initialTimeStamp < 1) {
+            if (initialSync) {
+                // Setting start position and creating estimator
+                setInitialPose(new Pose2d(0, 0, new Rotation2d()));
 
-        periodicShuffleboard.loop();
-        periodicShuffleboardAuto.loop();
+                // Setting states of the modules
+                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
+                updateOdometry();
+                updateDriveStates(states);
+
+                resetNeoAngle();
+
+                initialSync = true;
+            } else {
+                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle),
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
+                updateOdometry();
+            }
+        } else {
+
+            // Update our odometry
+            updateOdometry();
+            updateVision();
+
+            periodicShuffleboard.loop();
+            periodicShuffleboardAuto.loop();
+
+            if (DriverStation.isTeleop() && !hasLimitChanged) {
+                int newLimit = 53;
+                frontLeftModule.setDriveCurrentLimit(newLimit);
+                frontRightModule.setDriveCurrentLimit(newLimit);
+                backLeftModule.setDriveCurrentLimit(newLimit);
+                backRightModule.setDriveCurrentLimit(newLimit);
+
+                hasLimitChanged = true;
+            }
+
+        }
     }
 
     public double getDriveVelocity() {
@@ -411,15 +449,18 @@ public class Drivetrain extends SubsystemBase {
             //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
             // }
 
+            visionPose2d = new Pose2d(visionPose2d.getX(), pose.getY(), getHeading());
             poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency - .0472);
             pose = poseEstimator.getEstimatedPosition();
 
             lastKnownGoodVisionX = visionPose2d.getX();
             lastKnownGoodVisionY = visionPose2d.getY();
+            lastKnownGoodVisionRotation = visionPose2d.getRotation().getDegrees();
             lastTime = currTime;
 
             LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
             LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Y", lastKnownGoodVisionY);
+            LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Rotation", lastKnownGoodVisionRotation);
         }
     }
 
@@ -472,6 +513,10 @@ public class Drivetrain extends SubsystemBase {
                 new Pair<String, Object>("fr module position", (DoubleSupplier) () -> modulePositions[1].distanceMeters),
                 new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
                 new Pair<String, Object>("br module position", (DoubleSupplier) () -> modulePositions[3].distanceMeters),
+                new Pair<String, Object>("fl amperage", (DoubleSupplier) () -> frontLeftModule.getDriveAmperage()),
+                new Pair<String, Object>("fr amperage", (DoubleSupplier) () -> frontRightModule.getDriveAmperage()),
+                new Pair<String, Object>("bl amperage", (DoubleSupplier) () -> backLeftModule.getDriveAmperage()),
+                new Pair<String, Object>("br amperage", (DoubleSupplier) () -> backRightModule.getDriveAmperage()),
                 new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
                 new Pair<String, Object>("raw Pose", (Supplier<double[]>) () -> new double[] {rawPose.getX(), rawPose.getY(), rawPose.getRotation().getRadians()}),
                 new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),

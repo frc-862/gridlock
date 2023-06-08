@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.7977873330924976,
-        "y": 2.67
+        "x": 1.8206582490197787,
+        "y": 2.744509911273745
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.797787333092499,
-        "y": 2.67
+        "x": 2.82065824901978,
+        "y": 2.744509911273745
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -16,28 +16,24 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Throw-Cube",
-          "Turn-On-Vision",
-          "Pos2"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
-        "waitBehavior": "minimum",
-        "waitTime": 1.5
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 6.5,
-        "y": 2.72
+        "x": 5.903116742039475,
+        "y": 2.7216389953464644
       },
       "prevControl": {
-        "x": 5.5,
-        "y": 2.72
+        "x": 4.903116742039475,
+        "y": 2.7216389953464644
       },
       "nextControl": {
-        "x": 5.5,
-        "y": 2.72
+        "x": 4.903116742039475,
+        "y": 2.7216389953464644
       },
       "holonomicAngle": 0,
       "isReversal": true,
@@ -45,22 +41,20 @@
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [
-          "Stow"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
-        "waitBehavior": "after",
-        "waitTime": 0.5
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 4.820954064985054,
-        "y": 2.7170483187120227
+        "x": 1.3861108464014356,
+        "y": 2.755945369237385
       },
       "prevControl": {
-        "x": 5.2866476910941325,
-        "y": 2.677024215839281
+        "x": 3.730379728947762,
+        "y": 2.778816285164666
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -69,21 +63,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Auto-Balance"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.058181818181818994,
-      "names": [
-        "Stop-Collect"
-      ]
-    }
-  ]
+  "markers": []
 }

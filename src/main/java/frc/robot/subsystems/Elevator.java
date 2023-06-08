@@ -70,7 +70,8 @@ public class Elevator extends SubsystemBase {
                 new Pair<String, Object>("Elevator target height", (DoubleSupplier) () -> targetExtension),
                 new Pair<String, Object>("Elevator height", (DoubleSupplier) () -> getExtension()), 
                 new Pair<String, Object>("Elevator on target", (BooleanSupplier) () -> onTarget()),
-                new Pair<String, Object>("Elecator amps", (DoubleSupplier) () -> motor.getOutputCurrent()));
+                new Pair<String, Object>("Elecator amps", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
         // new Pair<String, Object>("Elevator motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
         // new Pair<String, Object>("Elevator motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
         // new Pair<String, Object>("Elevator motor controller output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),

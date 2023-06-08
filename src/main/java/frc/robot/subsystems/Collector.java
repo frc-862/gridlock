@@ -38,6 +38,8 @@ public class Collector extends SubsystemBase {
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
 
+    private int currCurrentLimit = CollectorConstants.CURRENT_LIMIT;
+
     // Enum of possible game pieces
     public enum GamePiece {
         CONE, CUBE, NONE
@@ -76,12 +78,21 @@ public class Collector extends SubsystemBase {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Collector", CollectorConstants.LOG_PERIOD,
                 new Pair<String, Object>("Collector motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
                 // new Pair<String, Object>("Collector motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
-                new Pair<String, Object>("Collector motor controller output (amps)", (DoubleSupplier) () -> motor.getOutputCurrent()));
+                new Pair<String, Object>("Collector motor controller output (amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+                new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()),
+                new Pair<String, Object>("collector rpm", (DoubleSupplier) () -> (double) motor.getEncoder().getVelocity()));
         // new Pair<String, Object>("Collector motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
         // new Pair<String, Object>("Color sensor proximity", (Supplier<Double>) () -> (double) colorSensor.getProximity()),
         // new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> getGamePiece().toString()));
         // new Pair<String, Object>("Color sensor confidence", (DoubleSupplier) () -> getConfidence()));
 
+    }
+
+    public void setCurrentLimit(int currentLimit) {
+        if(currentLimit != currCurrentLimit) {
+            motor.setSmartCurrentLimit(currentLimit);
+        }
+        currCurrentLimit = currentLimit;        
     }
 
     public boolean isStalling(){

@@ -1,6 +1,10 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
@@ -35,12 +39,13 @@ public class SwerveDrive extends CommandBase {
      * @param translationYSupplier The control input for the translation in the Y direction
      * @param rotationSupplier The control input for rotation
      */
-    public SwerveDrive(Drivetrain drivetrainSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier, BooleanSupplier slowMode, BooleanSupplier robotCentric) {
+    public SwerveDrive(Drivetrain drivetrainSubsystem, DoubleSupplier translationXSupplier, DoubleSupplier translationYSupplier, DoubleSupplier rotationSupplier, BooleanSupplier slowMode,
+            BooleanSupplier robotCentric) {
         this.drivetrain = drivetrainSubsystem;
         this.m_translationXSupplier = translationXSupplier;
         this.m_translationYSupplier = translationYSupplier;
         this.m_rotationSupplier = rotationSupplier;
-        this.slowMode = slowMode;
+        this.slowMode = () -> true;
         this.robotCentric = robotCentric;
 
         addRequirements(drivetrainSubsystem);
@@ -51,7 +56,7 @@ public class SwerveDrive extends CommandBase {
 
         // Get values from double suppliers
 
-        if(slowMode.getAsBoolean()) {
+        if (slowMode.getAsBoolean()) {
             // if(!drivetrain.isInLoadZone()) {
             //     leftX = m_translationXSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
             //     leftY = m_translationYSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
@@ -62,34 +67,43 @@ public class SwerveDrive extends CommandBase {
             //     rightX = m_rotationSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_ROTATIONAL_MULT;
             // }
             leftY = m_translationYSupplier.getAsDouble() * 0.5;
-                leftX = m_translationXSupplier.getAsDouble() * 0.5;
-                rightX = m_rotationSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_ROTATIONAL_MULT;
+            leftX = m_translationXSupplier.getAsDouble() * 0.5;
+            rightX = m_rotationSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_ROTATIONAL_MULT;
         } else {
             leftX = m_translationXSupplier.getAsDouble();
             leftY = m_translationYSupplier.getAsDouble();
             rightX = m_rotationSupplier.getAsDouble() * 0.8;
         }
 
-        Rotation2d theta = Rotation2d.fromRadians(Math.atan2(leftY, leftX));
-        double mag = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2));
+        // Rotation2d theta = Rotation2d.fromRadians(Math.atan2(leftY, leftX));
+        // double mag = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2));
 
-        double xOut = Math.pow(mag, 3) * theta.getCos();
+        // double xOut = Math.pow(mag, 3) * theta.getCos();
 
-        double yOut = Math.pow(mag, 3) * theta.getSin();
+        // double yOut = Math.pow(mag, 3) * theta.getSin();
 
-        double zOut = Math.pow(rightX, 3);
+        // double zOut = Math.pow(rightX, 3);
 
-        if(!robotCentric.getAsBoolean()) {
+        // Get direction and magnitude of linear axes
+        double linearMagnitude = Math.hypot(leftX, leftY);
+        Rotation2d linearDirection = new Rotation2d(leftX, leftY);
+
+        // Apply squaring
+        linearMagnitude = Math.pow(linearMagnitude, 3);
+        rightX = Math.pow(rightX, 3);
+
+        // Calcaulate new linear components
+        Translation2d linearVelocity = new Pose2d(new Translation2d(), linearDirection).transformBy(new Transform2d(new Translation2d(linearMagnitude, 0.0), new Rotation2d())).getTranslation();
+
+        if (!robotCentric.getAsBoolean()) {
             drivetrain.drive(
-                // Supply chassie speeds from the translation suppliers using feild relative control
-                // TODO: x and y fliped
-                ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(-xOut), drivetrain.percentOutputToMetersPerSecond(yOut),
-                        drivetrain.percentOutputToRadiansPerSecond(zOut), drivetrain.getYaw2d()));
+                    // Supply chassie speeds from the translation suppliers using feild relative control
+                    // TODO: x and y fliped
+                    ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(-linearVelocity.getX()), drivetrain.percentOutputToMetersPerSecond(linearVelocity.getY()),
+                            drivetrain.percentOutputToRadiansPerSecond(rightX), drivetrain.getYaw2d()));
         } else {
             // create robot relative speeds
-            drivetrain.drive(
-                    new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-yOut), drivetrain.percentOutputToMetersPerSecond(-xOut),
-                            drivetrain.percentOutputToRadiansPerSecond(zOut)));
+            drivetrain.drive(new ChassisSpeeds(drivetrain.percentOutputToMetersPerSecond(-linearVelocity.getY()), drivetrain.percentOutputToMetersPerSecond(-linearVelocity.getX()), drivetrain.percentOutputToRadiansPerSecond(rightX)));
         }
     }
 

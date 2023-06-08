@@ -11,6 +11,7 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Lift.StateTable;
 import frc.robot.commands.Lift.StateTransition;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -33,6 +34,7 @@ public class Lift extends SubsystemBase {
     private StateTransition nextState;
 
     private boolean doTargetOverride = false;
+    private boolean vertical = false;
 
     // Periodic Shuffleboard 
     // private LightningShuffleboardPeriodic periodicShuffleboardNextState;
@@ -66,8 +68,7 @@ public class Lift extends SubsystemBase {
 
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, 
-                new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
                 new Pair<String, Object>("Lift goal state", (Supplier<String>) () -> goalState.toString()), new Pair<String, Object>("Lift on target", (BooleanSupplier) () -> onTarget()));
         if (nextState != null) {
             periodicShuffleboardNextState = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD,
@@ -176,8 +177,24 @@ public class Lift extends SubsystemBase {
         wrist.stop();
     }
 
+    public void switchVertical() {
+        if (vertical) {
+            vertical = false;
+        } else {
+            vertical = true;
+        }
+    }
+
+    public boolean getVertical() {
+        return vertical;
+    }
+
     @Override
     public void periodic() {
+
+        if(getCurrentState() != getGoalState()) {
+            arm.squishToggle(false);
+        }
 
         // Updates the shuffleboard values
         runPeriodicShuffleboardLoop();
@@ -265,9 +282,17 @@ public class Lift extends SubsystemBase {
                         }
                     }
                     break;
-
             }
         }
+
+        if (onTarget()) { // IF at the right state allow arm to squish
+            if (getCurrentState() == LiftState.singleSubCone || getCurrentState() == LiftState.singleSubCube || getCurrentState() == LiftState.midCubeScore) {
+                arm.squishToggle(true);
+            }
+        }
+        // Single Cone + Cube    Mid Cube   Ground Collect
+
+        LightningShuffleboard.setBool("Lift", "vertical", getVertical());
 
         // if (nextState != null) {
         //     LightningShuffleboard.setBool("Lift", "ele on targ", elevator.onTarget(nextState.getElevatorExtension()));
