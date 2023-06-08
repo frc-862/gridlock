@@ -10,7 +10,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,8 +56,7 @@ public class Arm extends SubsystemBase {
         if (Constants.isBlackout()) {
             // If blackout, use the blackout offset
             OFFSET = ArmConstants.ENCODER_OFFSET_BLACKOUT;
-        } else {
-            // Otherwise, assume gridlock offset
+        } else { // Otherwise, assume gridlock offset
             OFFSET = ArmConstants.ENCODER_OFFSET_GRIDLOCK;
         }
 
@@ -91,15 +89,18 @@ public class Arm extends SubsystemBase {
     // Metod to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
-                new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
-                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()),
-                new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
-                new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
-        // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
-        // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
-        // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
-        // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, 
+            new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
+            new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), 
+            new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
+            new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), 
+            new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()),
+            new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
+            new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
+            // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
+            // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
+            // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
+            // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
     }
 
     /**
@@ -197,6 +198,9 @@ public class Arm extends SubsystemBase {
         return angle.getDegrees() >= ArmConstants.MIN_ANGLE && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
     }
 
+    /**
+     * Permenatly disables the arm, requires a reboot to re-enable
+     */
     public void disableArm() {
         disableArm = true;
     }
@@ -248,6 +252,7 @@ public class Arm extends SubsystemBase {
 
         periodicShuffleboard.loop();
 
+        // For Testing and Tuning
         // upController.setD(LightningShuffleboard.getDouble("Arm", "up kD", ArmConstants.UP_kD));
         // upController.setP(LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP));
 
