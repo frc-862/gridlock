@@ -137,7 +137,7 @@ public class RobotContainer extends LightningContainer {
         // new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector),
         //         () -> collector.getGamePiece() == GamePiece.CUBE));
 
-        new Trigger(driver::getBButton).whileTrue(new CubeAlign(drivetrain, frontLimelight));
+        new Trigger(driver::getBButton).whileTrue(new CubeAlign(drivetrain, frontLimelight, servoturn, lift, leds, arm, collector, -1));
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));
 
@@ -183,18 +183,26 @@ public class RobotContainer extends LightningContainer {
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
 
         //A paths
-        autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), new PathConstraints(3.5, 2));
-        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), new PathConstraints(3.5, 2));
+        autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, frontLimelight, -1), 
+            new PathConstraints(3.5, 2));
+        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, frontLimelight, -1), 
+            new PathConstraints(3.5, 2));
         //B paths
-        autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), new PathConstraints(AutonomousConstants.MAX_VELOCITY, .75)); // NOT tested
-        autoFactory.makeTrajectory("B2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Needs more testing
+        autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, frontLimelight, -1), 
+            new PathConstraints(AutonomousConstants.MAX_VELOCITY, .75)); // NOT tested
+        autoFactory.makeTrajectory("B2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, frontLimelight, -1),
+            new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION)); // Needs more testing
         //C paths
-        autoFactory.makeTrajectory("C2[2]-M-M-H", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
-                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("C2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), new PathConstraints(3.5, 2));
+        autoFactory.makeTrajectory("C2[2]-M-M-H", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, frontLimelight, -1),
+            new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
+        autoFactory.makeTrajectory("C2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, frontLimelight, -1), 
+            new PathConstraints(3.5, 2));
         //ANYWHERE
         Autonomous.register("ruh roh flick auto", new InstantCommand(servoturn::flickServo, servoturn));
+
+        //TEST Auto Align
+        autoFactory.makeTrajectory("CUBE-TEST-1", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, frontLimelight, -1), 
+            new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
     }
 
     @Override

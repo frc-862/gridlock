@@ -13,6 +13,7 @@ import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.Collect;
+import frc.robot.commands.CubeAlign;
 import frc.robot.commands.HoldPower;
 import frc.robot.commands.ThrowCube;
 import frc.robot.subsystems.Arm;
@@ -20,6 +21,7 @@ import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.LimelightFront;
 import frc.robot.subsystems.ServoTurn;
 import frc.thunder.command.core.TimedCommand;
 import frc.thunder.vision.VisionBase;
@@ -40,7 +42,7 @@ public class Maps {
      * @param leds
      * @return
      */
-    public static HashMap<String, Command> getPathMap(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector, LEDs leds, Arm arm) {
+    public static HashMap<String, Command> getPathMap(Drivetrain drivetrain, ServoTurn servoturn, Lift lift, Collector collector, LEDs leds, Arm arm, LimelightFront frontLimelight, int cycle) {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("Score-Piece-Servo", new InstantCommand(servoturn::flickServo, servoturn));
         eventMap.put("Ground-Collect-Cone", new RunCommand(() -> lift.setGoalState(LiftState.groundCone), lift).until(lift::goalReached));
@@ -58,14 +60,13 @@ public class Maps {
         eventMap.put("Score", new InstantCommand(() -> collector.setPower(-1d)));
         eventMap.put("Auto-Balance", new AutoBalance(drivetrain));
         eventMap.put("Throw-Cube", new ThrowCube(lift, arm, collector).withTimeout(4));
-        // eventMap.put("Throw-Cube", new ThrowCube(lift, arm, collector));
         eventMap.put("Turn-On-Vision", new InstantCommand(() -> VisionBase.enableVision()));
         eventMap.put("Turn-Off-Vision", new InstantCommand(() -> VisionBase.disableVision()));
         eventMap.put("Pos1", new InstantCommand(() -> drivetrain.setAprilTagTarget(1)));
         eventMap.put("Pos2", new InstantCommand(() -> drivetrain.setAprilTagTarget(2)));
         eventMap.put("Pos3", new InstantCommand(() -> drivetrain.setAprilTagTarget(3)));
         // eventMap.put("ResetTag", new InstantCommand(() -> drivetrain.setAprilTagTargetAll()));
-
+        eventMap.put("Auto-Align-Cube", new CubeAlign(drivetrain, frontLimelight, servoturn, lift, leds, arm, collector, cycle));
         return eventMap;
     }
 }

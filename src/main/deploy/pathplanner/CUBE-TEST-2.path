@@ -1,0 +1,106 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 7.069533454330818,
+        "y": 4.597054101383524
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.537182087202976,
+        "y": 4.665666849165367
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "High-Score-Cube-Back",
+          "Hold-Power"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "deadline",
+        "waitTime": 0.01
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.8206582490197787,
+        "y": 4.425522231928914
+      },
+      "prevControl": {
+        "x": 3.478799653747666,
+        "y": 4.825763260656336
+      },
+      "nextControl": {
+        "x": 3.478799653747666,
+        "y": 4.825763260656336
+      },
+      "holonomicAngle": 0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Score"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.669292425603397,
+        "y": 3.819442959855962
+      },
+      "prevControl": {
+        "x": 6.280486854839616,
+        "y": 5.054472419929148
+      },
+      "nextControl": null,
+      "holonomicAngle": -45.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "Auto-Align-Cube"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": [
+    {
+      "position": 1.076363636363586,
+      "names": [
+        "Ground-Collect-Cube"
+      ]
+    },
+    {
+      "position": 1.425454545454495,
+      "names": [
+        "Collect"
+      ]
+    },
+    {
+      "position": 0.930909090909094,
+      "names": [
+        "Score"
+      ]
+    },
+    {
+      "position": 1.0618181818181407,
+      "names": [
+        "Stop-Collect"
+      ]
+    }
+  ]
+}
