@@ -66,16 +66,19 @@ public class Lift extends SubsystemBase {
 
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
-                new Pair<String, Object>("Lift goal state", (Supplier<String>) () -> goalState.toString()), new Pair<String, Object>("Lift on target", (BooleanSupplier) () -> onTarget()));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD, 
+            new Pair<String, Object>("Lift current state", (Supplier<String>) () -> currentState.toString()),
+            new Pair<String, Object>("Lift goal state", (Supplier<String>) () -> goalState.toString()), 
+            new Pair<String, Object>("Lift on target", (BooleanSupplier) () -> onTarget()));
         if (nextState != null) {
             periodicShuffleboardNextState = new LightningShuffleboardPeriodic("Lift", LiftConstants.LOG_PERIOD,
-                    new Pair<String, Object>("Lift next state elevator extension", (DoubleSupplier) () -> nextState.getElevatorExtension()),
-                    new Pair<String, Object>("Lift next state arm angle", (DoubleSupplier) () -> nextState.getArmAngle().getDegrees()),
-                    new Pair<String, Object>("Lift next state wrist angle", (DoubleSupplier) () -> nextState.getWristAngle().getDegrees()),
-                    new Pair<String, Object>("Lift next state plan", (Supplier<String>) () -> nextState.getPlan().toString()));
+                new Pair<String, Object>("Lift next state elevator extension", (DoubleSupplier) () -> nextState.getElevatorExtension()),
+                new Pair<String, Object>("Lift next state arm angle", (DoubleSupplier) () -> nextState.getArmAngle().getDegrees()),
+                new Pair<String, Object>("Lift next state wrist angle", (DoubleSupplier) () -> nextState.getWristAngle().getDegrees()),
+                new Pair<String, Object>("Lift next state plan", (Supplier<String>) () -> nextState.getPlan().toString()));
         }
 
+        // For mechanism 2D logging
         // mech_elevator.setLength(elevator.getExtension());
         // mech_arm.setAngle(arm.getAngle());
         // mech_wrist.setAngle(wrist.getAngle());
@@ -123,6 +126,9 @@ public class Lift extends SubsystemBase {
         }
     }
 
+    /**
+     * Sets the current position to goal position, so if the elevator was stuck it can be given a new setpoint
+     */
     public void breakLift() {
         elevator.setExtension(elevator.getExtension());
         arm.setAngle(arm.getAngle());
@@ -147,6 +153,7 @@ public class Lift extends SubsystemBase {
         periodicShuffleboard.loop();
     }
 
+    // The next 3 are for manual adjustment of goal position
     public void adjustArm(double angle) {
         goalState = currentState;
         nextState = null;
@@ -181,14 +188,12 @@ public class Lift extends SubsystemBase {
         // Updates the shuffleboard values
         runPeriodicShuffleboardLoop();
 
-        // Checks if were on target or if the next state is null
         // Checks if were on target or if the next state is null, also makes sure our biassese havent changed
         if (onTarget() || nextState == null) {
             // Checks if the current state is not the goal state
             if (currentState != goalState) {
                 // Gets the next state from the state table
                 nextState = StateTable.get(currentState, goalState);
-
             } else {
                 // sets the next state to null
                 nextState = null;
@@ -267,6 +272,7 @@ public class Lift extends SubsystemBase {
             }
         }
 
+        // This is faster logging for debuging and testing 
         // if (nextState != null) {
         //     LightningShuffleboard.setBool("Lift", "ele on targ", elevator.onTarget(nextState.getElevatorExtension()));
         //     LightningShuffleboard.setBool("Lift", "arm on targ", arm.onTarget(nextState.getArmAngle().getDegrees()));
@@ -278,7 +284,6 @@ public class Lift extends SubsystemBase {
         //     LightningShuffleboard.setBool("Lift", "ele in safe zone", nextState.isInEleSafeZone(elevator.getExtension()));
         //     LightningShuffleboard.setBool("Lift", "arm in safe zone", nextState.isInArmSafeZone(arm.getAngle().getDegrees()));
         //     LightningShuffleboard.setBool("Lift", "wrist in safe zone", nextState.isInWristSafeZone(wrist.getAngle().getDegrees()));
-
         // }
 
         runPeriodicShuffleboardLoop();

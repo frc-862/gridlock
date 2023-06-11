@@ -39,42 +39,38 @@ public class HoldPower extends CommandBase {
 
     @Override
     public void execute() {
-        if (input.getAsDouble() > 0) {
+        if (input.getAsDouble() > 0) { // Collector spins inwards
             doHoldPower = true;
             power = input.getAsDouble();
-
-        } else if (input.getAsDouble() < 0) {
+        } else if (input.getAsDouble() < 0) { // Collector spins outwards
             doHoldPower = false;
             power = input.getAsDouble();
-
-        } else if (doHoldPower) {
-            if(collector.getGamePiece() == GamePiece.CUBE){
+        } else if (doHoldPower) { // Hold power if no input and last input was inwards
+            if(collector.getGamePiece() == GamePiece.CUBE){ // If the collector is holding a cube, hold at a lower power
                 power = CollectorConstants.HOLD_POWER_CUBE;
             } else{
-                if(lift.getGoalState() != LiftState.stowed) {
+                if (lift.getGoalState() != LiftState.stowed) {
                     power = .5;
                 } else {
                     power = CollectorConstants.HOLD_POWER_CONE;
                 }
             }
-
         } else {
             power = 0;
         }
 
         if (input.getAsDouble() < 0) {
             collector.setCurrentLimit(60);
-        }else if(input.getAsDouble() > 0 && collector.getGamePiece() == GamePiece.CONE) {
+        } else if (input.getAsDouble() > 0 && collector.getGamePiece() == GamePiece.CONE) {
             collector.setCurrentLimit(50);
         } else {
             collector.setCurrentLimit(CollectorConstants.CURRENT_LIMIT);
-
         }
 
-        if(DriverStation.isTeleop()) {
+        if (DriverStation.isTeleop()) {
             collector.setPower(power);
 
-            if(collector.isStalling()) {
+            if (collector.isStalling()) { // For Drivers to know when the piece is in
                 driver.setRumble(RumbleType.kBothRumble, 1);
                 copilot.setRumble(RumbleType.kBothRumble, 1);
             } else {
