@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+
+import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -291,6 +293,7 @@ public class Lift extends SubsystemBase {
         }
 
         if (onTarget()) { // IF at the right state allow arm to squish
+           // if (Arrays.asList().contains(LiftConstants.squishList, getCurrentState())) { THIS IS STUPID
             if (getCurrentState() == LiftState.singleSubCone || getCurrentState() == LiftState.singleSubCube || getCurrentState() == LiftState.midCubeScore) {
                 arm.squishToggle(true);
             }

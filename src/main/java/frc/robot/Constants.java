@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -342,9 +343,9 @@ public final class Constants {
                 put(135d, 0.008d);
 
             }
-           }
         };
-    }
+    };
+
 
     // RobotMap Constants
     public static final class RobotMap {
@@ -493,6 +494,8 @@ public final class Constants {
         public enum LiftPlan {
             parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle
         }
+
+        public static final Object[] squishList = new Object[] {LiftState.singleSubCone, LiftState.singleSubCube, LiftState.midCubeScore, LiftState.groundCube};
 
         public static final double LOG_PERIOD = 0.23;
     }
