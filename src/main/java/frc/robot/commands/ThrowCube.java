@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.CollectorConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Collector;
@@ -30,11 +29,7 @@ public class ThrowCube extends CommandBase {
     public void execute() {
         if (arm.getAngle().getDegrees() >= 110) {
             collector.setPower(-1);
-        } 
-        // else if (arm.getAngle().getDegrees() >= -70) {
-        //     collector.setPower(CollectorConstants.HOLD_POWER_CUBE);
-        // } 
-        else {
+        } else {
             collector.setPower(1);
         }
     }

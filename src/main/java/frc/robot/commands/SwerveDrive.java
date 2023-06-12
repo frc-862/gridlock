@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -9,9 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
 /**
  * Our servedrive command to control the drivetrain
@@ -53,11 +52,10 @@ public class SwerveDrive extends CommandBase {
 
     @Override
     public void execute() {
-
         // Get values from double suppliers
 
-        if (slowMode.getAsBoolean()) {
-            // if(!drivetrain.isInLoadZone()) {
+        if (slowMode.getAsBoolean()) { // Works switch back from Commented to 3 lines uncommented inside if statement
+            // if(!drivetrain.isInLoadZone()) { // Was removed because the driver wanted a consistant speed in slow Mode  
             //     leftX = m_translationXSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
             //     leftY = m_translationYSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_TRANSLATIONAL_MULT;
             //     rightX = m_rotationSupplier.getAsDouble() * DrivetrainConstants.SLOW_MODE_ROTATIONAL_MULT;
@@ -75,15 +73,6 @@ public class SwerveDrive extends CommandBase {
             rightX = m_rotationSupplier.getAsDouble() * 0.8;
         }
 
-        // Rotation2d theta = Rotation2d.fromRadians(Math.atan2(leftY, leftX));
-        // double mag = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2));
-
-        // double xOut = Math.pow(mag, 3) * theta.getCos();
-
-        // double yOut = Math.pow(mag, 3) * theta.getSin();
-
-        // double zOut = Math.pow(rightX, 3);
-
         // Get direction and magnitude of linear axes
         double linearMagnitude = Math.hypot(leftX, leftY);
         Rotation2d linearDirection = new Rotation2d(leftX, leftY);
@@ -95,7 +84,7 @@ public class SwerveDrive extends CommandBase {
         // Calcaulate new linear components
         Translation2d linearVelocity = new Pose2d(new Translation2d(), linearDirection).transformBy(new Transform2d(new Translation2d(linearMagnitude, 0.0), new Rotation2d())).getTranslation();
 
-        if (!robotCentric.getAsBoolean()) {
+        if (!robotCentric.getAsBoolean()) { // Changes from field relative to robot relative to help with line up
             drivetrain.drive(
                     // Supply chassie speeds from the translation suppliers using feild relative control
                     // TODO: x and y fliped
@@ -108,8 +97,7 @@ public class SwerveDrive extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        // Stops drivetrain
+    public void end(boolean interrupted) { // Stops drivetrain
         drivetrain.stop();
     }
 }

@@ -20,6 +20,10 @@ import frc.thunder.vision.VisionBase;
  */
 public class Robot extends LightningRobot {
 
+
+    // ALL COMMENTED out code is for tag isolation on the field before auton starts for correct positioning
+    // Current match code hard sets its position and goes off of dead reckoning until teleop
+
     // private double timer = 0;
     // private boolean timerStart = false;
 
@@ -114,11 +118,6 @@ public class Robot extends LightningRobot {
     //             break;
 
     //     }
-    // }
-
-    // @Override
-    // public void autonomousInit() {
-    //     super.autonomousInit();
     // }
 
     // @Override

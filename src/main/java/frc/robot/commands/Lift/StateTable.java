@@ -17,7 +17,6 @@ import frc.robot.Constants.LiftConstants.LiftState;
 public class StateTable {
 
     //SAFE ZONES
-
     private static final double ELEVATOR_MAX_EXTENSION = ElevatorConstants.MAX_EXTENSION;
     private static final double ARM_MAX_ANGLE = ArmConstants.MAX_ANGLE;
     private static final double WRIST_MAX_ANGLE = WristConstants.MAX_ANGLE;
@@ -184,7 +183,6 @@ public class StateTable {
             stowScoreTable.replace(LiftState.OTB_High, new StateTransition(ELEVATOR_OTB_HIGH_POS, Rotation2d.fromDegrees(ARM_OTB_HIGH_ANGLE), Rotation2d.fromDegrees(WRIST_OTB_HIGH_ANGLE), LiftPlan.armThenWristAndEle, LiftState.OTB_High, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_DEPLOYED_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_MIN_ANGLE, WRIST_MAX_ANGLE)));
             stowScoreTable.replace(LiftState.OTB_Mid, new StateTransition(ELEVATOR_OTB_MID_POS, Rotation2d.fromDegrees(ARM_OTB_MID_ANGLE), Rotation2d.fromDegrees(WRIST_OTB_MID_ANGLE), LiftPlan.armThenWristAndEle, LiftState.OTB_Mid, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_DEPLOYED_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_MIN_ANGLE, WRIST_MAX_ANGLE)));
             stowScoreTable.replace(LiftState.OTB_DoubleSubstationCollect, new StateTransition(ELEVATOR_OTB_DOUBLE_SUB_POS, Rotation2d.fromDegrees(ARM_OTB_DOUBLE_SUB_ANGLE), Rotation2d.fromDegrees(WRIST_OTB_DOUBLE_SUB_ANGLE), LiftPlan.armThenWristAndEle, LiftState.OTB_DoubleSubstationCollect, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_DEPLOYED_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_MIN_ANGLE, WRIST_MAX_ANGLE)));
-
 
         scoreToCollectTable.putAll(defaultTable);
             scoreToCollectTable.replace(LiftState.stowed, new StateTransition(ELEVATOR_STOW_COLLECT_TRANSITION_POS, Rotation2d.fromDegrees(ARM_STOW_COLLECT_TRANSITION_ANGLE), Rotation2d.fromDegrees(WRIST_STOW_COLLECT_TRANSITION_ANGLE), STOWED_PLAN, LiftState.stowedCollect, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(ARM_MIN_ANGLE, ARM_STOW_SAFE), Range.between(WRIST_SCORE_TO_COLLECT_SAFE, WRIST_MAX_ANGLE)));
