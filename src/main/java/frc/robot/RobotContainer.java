@@ -17,7 +17,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.LimelightFront;
-
+import frc.robot.subsystems.PhotonBack;
+import frc.robot.subsystems.PhotonFront;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Collector.GamePiece;
@@ -40,7 +41,7 @@ import frc.robot.commands.RetroLineUp;
 import frc.robot.commands.AprilTagLineUp;
 import frc.robot.commands.SafeToScoreLED;
 import frc.robot.commands.SingleSubstationAlign;
-import frc.robot.commands.Lift.ReverseDoubleSubStationCollect;
+// import frc.robot.commands.Lift.ReverseDoubleSubStationCollect;
 import frc.robot.commands.Lift.DoubleSubstationCollect;
 import frc.robot.commands.Lift.Ground;
 import frc.robot.commands.Lift.HighScore;
@@ -55,6 +56,7 @@ import frc.thunder.LightningContainer;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.PhotonConstants;
 import frc.thunder.auto.Autonomous;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.filter.JoystickFilter;
@@ -66,11 +68,13 @@ import frc.thunder.testing.SystemTest;
 
 public class RobotContainer extends LightningContainer {
 
-    private static final LimelightFront frontLimelight = new LimelightFront(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
-    private static final LimelightBack backLimelight = new LimelightBack(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
+    // private static final LimelightFront frontLimelight = new LimelightFront(LimelightConstants.FRONT_NAME, LimelightConstants.FRONT_POSE);
+    // private static final LimelightBack backLimelight = new LimelightBack(LimelightConstants.BACK_NAME, LimelightConstants.BACK_POSE);
+    private static final PhotonFront frontCamera = new PhotonFront(PhotonConstants.FRONT_NAME);
+    private static final PhotonBack backCamera = new PhotonBack(PhotonConstants.BACK_NAME);
 
     // Creating our main subsystems
-    private static final Drivetrain drivetrain = new Drivetrain(backLimelight, frontLimelight);
+    private static final Drivetrain drivetrain = new Drivetrain(backCamera, frontCamera);
     private static final Arm arm = new Arm();
     private static final Wrist wrist = new Wrist(arm);
     private static final Elevator elevator = new Elevator();
@@ -111,7 +115,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getLeftBumper).onTrue(new InstantCommand(() -> collector.setGamePiece(GamePiece.CUBE)));
 
         // new Trigger(driver::getYButton).onTrue(new InstantCommand(() -> drivetrain.moveToDesiredPose(autoFactory), drivetrain)).onFalse(new InstantCommand(drivetrain::stop, drivetrain));
-        new Trigger(driver::getYButton).whileTrue(new SingleSubstationAlign(drivetrain, frontLimelight, collector));
+        // new Trigger(driver::getYButton).whileTrue(new SingleSubstationAlign(drivetrain, frontLimelight, collector));
 
         // SET DRIVE PODS TO 45
         new Trigger(driver::getXButton).whileTrue(new RunCommand(() -> drivetrain.stop(), drivetrain));
@@ -132,8 +136,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo));
 
         // AutoAlign based on cone or cube
-        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector),
-                () -> collector.getGamePiece() == GamePiece.CUBE));
+        // new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight, collector), new RetroLineUp(drivetrain, frontLimelight, collector),
+        //         () -> collector.getGamePiece() == GamePiece.CUBE));
 
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain));

@@ -49,7 +49,8 @@ public class LimelightFront extends SubsystemBase {
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
         periodicShuffleboard =
-                new LightningShuffleboardPeriodic("Vision", 0.17, new Pair<String, Object>(limelightName + "Vision bot pose TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[0]),
+                new LightningShuffleboardPeriodic("Vision", 0.17, 
+                        new Pair<String, Object>(limelightName + "Vision bot pose TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[0]),
                         new Pair<String, Object>(limelightName + "Vision bot pose TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[1]),
                         new Pair<String, Object>(limelightName + "Vision bot pose RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[5]),
                         new Pair<String, Object>(limelightName + "Vision bot pose Blue TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[0]),

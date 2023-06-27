@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -8,12 +9,16 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.revrobotics.SparkMaxLimitSwitch;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -193,6 +198,34 @@ public final class Constants {
         public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0));
         public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180));
         public static final double CUBE_OFFSET = 0.0; // TODO find this value
+    }
+
+    public static final class PhotonConstants {
+        public static final String FRONT_NAME = "photon-front";
+        public static final String BACK_NAME = "photon-back";
+        public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0));
+        public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180));
+        public static final double CAMERA_HEIGHT = 0.72;
+        public static final double TARGET_HEIGHT = Units.inchesToMeters(98.19) - Units.inchesToMeters(81.19);
+        public static final double TARGET_WIDTH = Units.inchesToMeters(41.30) - Units.inchesToMeters(6.70);
+        public static final Transform3d ROBOT_TO_CAM =
+                new Transform3d(
+                        new Translation3d(.1, .28, .72),
+                        new Rotation3d(
+                                0, 0,
+                                0)); // Cam mounted facing forward, half a meter forward of center, half a meter up
+        // from center.
+        public static AprilTagFieldLayout FIELD_LAYOUT;
+
+        static {
+            try {
+                FIELD_LAYOUT = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
+            } 
+            catch(IOException e) {
+                // TODO decide what you want to do if the layout fails to load
+            }
+        }
+        
     }
 
     public static final class ArmConstants {
