@@ -51,7 +51,7 @@ public class StateTable {
 
     private static final double ELEVATOR_GROUND_CUBE_POS = 0;
     private static final double ARM_GROUND_CUBE_ANGLE = -70.5;
-    private static final double WRIST_GROUND_CUBE_ANGLE = 91;
+    private static final double WRIST_GROUND_CUBE_ANGLE = 75;
     private static final LiftPlan GROUND_CUBE_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_MID_CUBE_POS = 14.2;

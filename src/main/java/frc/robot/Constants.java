@@ -312,7 +312,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees        
-        public static final double ENCODER_OFFSET_GRIDLOCK = 138.36; //-161.5d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = 20.8; //-161.5d;
 
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: check this
 
