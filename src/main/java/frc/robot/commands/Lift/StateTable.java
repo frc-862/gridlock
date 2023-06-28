@@ -212,7 +212,7 @@ public class StateTable {
             Map.entry(LiftState.groundCube, groundTable),
             Map.entry(LiftState.groundConeVertical, groundTable),
 
-            Map.entry(LiftState.midConeScore, scoreTable), 
+            Map.entry(LiftState.midConeScore, groundTable), 
             Map.entry(LiftState.midCubeScore, scoreTable), 
             Map.entry(LiftState.highCubeScore, scoreTable),
             Map.entry(LiftState.highConeScore, scoreTable),
