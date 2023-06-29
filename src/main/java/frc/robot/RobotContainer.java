@@ -137,8 +137,8 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getYButton).onTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).onTrue(new MidScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getLeftBumper).onTrue(new SingleSubstationCollect(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getRightBumper).onTrue(new DoubleSubstationCollect(lift)); 
-        // new Trigger(copilot::getRightBumper).onTrue(new ReverseDoubleSubStationCollect(lift)); Disabled in teleop Used for testing
+        // new Trigger(copilot::getRightBumper).onTrue(new DoubleSubstationCollect(lift)); 
+        new Trigger(copilot::getRightBumper).onTrue(new ReverseDoubleSubStationCollect(lift)); // Disabled in teleop Used for testing
         
         //FLICK
         new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
@@ -191,11 +191,13 @@ public class RobotContainer extends LightningContainer {
 
         leds.setDefaultCommand(new SafeToScoreLED(leds, drivetrain, collector)); // Changes LED color to RED when the arm will not hit when deploying 
 
-        collector.setDefaultCommand(new HoldPower(collector,
-                () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND), driver,
-                copilot, lift));
+        // collector.setDefaultCommand(new HoldPower(collector,
+        //         () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND), driver,
+        //         copilot, lift));
 
-        elevator.setDefaultCommand(new EleUpInCommunity(lift, drivetrain)); // Works problem is that Pos is not accurate enough
+        collector.setDefaultCommand(new Collect(collector, () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND)));
+
+        // elevator.setDefaultCommand(new EleUpInCommunity(lift, drivetrain)); // Works problem is that Pos is not accurate enough
     }
 
     @Override
