@@ -39,18 +39,18 @@ public class HoldPower extends CommandBase {
 
     @Override
     public void execute() {
-        if (input.getAsDouble() > 0) { // Collector spins inwards
+        if (input.getAsDouble() > 0) { // Collector collects
             doHoldPower = true;
             power = input.getAsDouble();
-        } else if (input.getAsDouble() < 0) { // Collector spins outwards
+        } else if (input.getAsDouble() < 0) { // Collector spits 
             doHoldPower = false;
             power = input.getAsDouble();
         } else if (doHoldPower) { // Hold power if no input and last input was inwards
             if(collector.getGamePiece() == GamePiece.CUBE){ // If the collector is holding a cube, hold at a lower power
                 power = CollectorConstants.HOLD_POWER_CUBE;
             } else{
-                if (lift.getGoalState() != LiftState.stowed) {
-                    power = .5;
+                if(lift.getGoalState() == LiftState.stowed){
+                    power = .35;
                 } else {
                     power = CollectorConstants.HOLD_POWER_CONE;
                 }
@@ -80,6 +80,7 @@ public class HoldPower extends CommandBase {
                 copilot.setRumble(RumbleType.kBothRumble, 0);
             }
         }
+        collector.setPower(power);
     }
 
     @Override
