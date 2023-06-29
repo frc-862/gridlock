@@ -141,7 +141,7 @@ public class RobotContainer extends LightningContainer {
         new Trigger(copilot::getRightBumper).onTrue(new ReverseDoubleSubStationCollect(lift)); // Disabled in teleop Used for testing
         
         //FLICK
-        new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
+        new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(150))));
         new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(lift.getLastKnownGoodWristSetPoint()))));
 
         //BREAK
