@@ -160,9 +160,7 @@ public class RobotContainer extends LightningContainer {
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
 
         //A paths OPEN 
-        autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
-                new PathConstraints(3.5, 2));
-        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
+        autoFactory.makeTrajectory("A2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
                 new PathConstraints(3.5, 2));
         //B paths MIDDLE
         autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
@@ -172,8 +170,8 @@ public class RobotContainer extends LightningContainer {
         //C paths CABLE
         autoFactory.makeTrajectory("C2[2]-M-M-H", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("C2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
-                new PathConstraints(3.5, 2));
+        // autoFactory.makeTrajectory("C2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
+        //         new PathConstraints(3.5, 2));
         //ANYWHERE
         Autonomous.register("ruh roh flick auto", new InstantCommand(servoturn::flickServo, servoturn)); // Emergency Auton that doesn't drive
     }
