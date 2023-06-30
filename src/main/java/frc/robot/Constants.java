@@ -293,7 +293,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up and down
-        public static final double UP_kP = 0.007d;
+        public static final double UP_kP = 0.0075d;
         public static final double UP_kD = 0.0001d;
         public static final double DOWN_kP = 0.005d;
         public static final double DOWN_kD = 0d;
@@ -338,7 +338,7 @@ public final class Constants {
 
                 put(-90d, 0d);
                 put(-45d, -0.008d);
-                put(0d, 0.013d);
+                put(0d, 0.017d);
                 put(45d, 0.008d);
                 put(90d, 0d);
                 put(135d, 0.008d);
