@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -97,7 +98,7 @@ public final class Constants {
         public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.7;
         public static final double SLOW_MODE_ROTATIONAL_MULT = 0.5;
 
-        // Pigeon heading offset 
+        // Pigeon heading offset
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
 
         // Standard dev for robot pose
@@ -132,7 +133,8 @@ public final class Constants {
             public static final class Gridlock {
                 public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(193.535);
                 public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(145.547);
-                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(198.721);
+                // public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(198.721);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(199.688);
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(210.938);
             }
 
@@ -262,7 +264,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
         public static final double HOLD_POWER_CUBE = 0.25;
-        public static final double HOLD_POWER_CONE = 0.35;
+        public static final double HOLD_POWER_CONE = 0.50;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
@@ -291,7 +293,7 @@ public final class Constants {
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up and down
-        public static final double UP_kP = 0.0072d;
+        public static final double UP_kP = 0.0075d;
         public static final double UP_kD = 0.0001d;
         public static final double DOWN_kP = 0.005d;
         public static final double DOWN_kD = 0d;
@@ -301,8 +303,8 @@ public final class Constants {
         public static final double TOLERANCE = 12d;
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = 126d;
-        public static final double MIN_ANGLE = -90d;
+        public static final double MAX_ANGLE = 151d;
+        public static final double MIN_ANGLE = -100d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -311,7 +313,7 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees        
-        public static final double ENCODER_OFFSET_GRIDLOCK = -131d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = 20.8; //-161.5d;
 
         public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: check this
 
@@ -335,13 +337,16 @@ public final class Constants {
                 // put(110d, 0d);
 
                 put(-90d, 0d);
-                put(-45d, -0.01d);
-                put(0d, 0.015d);
-                put(45d, 0.01d);
+                put(-45d, -0.008d);
+                put(0d, 0.017d);
+                put(45d, 0.008d);
                 put(90d, 0d);
-           }
+                put(135d, 0.008d);
+
+            }
         };
-    }
+    };
+
 
     // RobotMap Constants
     public static final class RobotMap {
@@ -471,7 +476,7 @@ public final class Constants {
         // All of the different states the lift can be in
         public enum LiftState {
             //ground collects
-            groundCone, groundCube,
+            groundCone, groundCube, groundConeVertical,
 
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
             doubleSubstationCollect, singleSubCone, singleSubCube, OTB_DoubleSubstationCollect,
@@ -490,6 +495,9 @@ public final class Constants {
         public enum LiftPlan {
             parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle
         }
+
+        public static final Object[] squishList = new Object[] {LiftState.singleSubCone, LiftState.singleSubCube, LiftState.midCubeScore, LiftState.groundCube};
+
         public static final double LOG_PERIOD = 0.23;
     }
 

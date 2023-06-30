@@ -19,11 +19,11 @@ import frc.robot.subsystems.LimelightBack;
 import frc.robot.subsystems.ServoTurn;
 import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AutoAlignConstants;
+import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.AutoAlignConstants.SlotPosition;
 import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoScore;
-import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Collect;
 import frc.robot.commands.EleUpInCommunity;
 import frc.robot.commands.SwerveDrive;
@@ -44,8 +44,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LEDs;
 import frc.thunder.LightningContainer;
-import frc.robot.Constants.AutoAlignConstants;
-import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.thunder.auto.Autonomous;
 import frc.thunder.auto.AutonomousCommandFactory;
@@ -115,9 +113,11 @@ public class RobotContainer extends LightningContainer {
         // SERVO
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo)); // For testing Servo in the pits
 
+        new Trigger(driver::getBButton).onTrue(new InstantCommand(() -> lift.switchVertical()));
+        
         // AutoAlign based on cone or cube
-        new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight), new RetroLineUp(drivetrain, frontLimelight, collector),
-                () -> collector.getGamePiece() == GamePiece.CUBE)); // WorKS but is slow
+        // new Trigger(driver::getBButton).whileTrue(new ConditionalCommand(new AprilTagLineUp(drivetrain, frontLimelight), new RetroLineUp(drivetrain, frontLimelight, collector),
+        //         () -> collector.getGamePiece() == GamePiece.CUBE)); // WorKS but is slow
 
         //AUTOBALANCE
         // new Trigger(driver::getBButton).whileTrue(new AutoBalance(drivetrain)); // FOR TESTING
@@ -132,16 +132,16 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> copilot.getRightY() > 0.1).onTrue(new InstantCommand(() -> lift.adjustElevator(-1)));
 
         //SETPOINTS
-        new Trigger(copilot::getAButton).onTrue(new Ground(lift, collector, () -> collector.getGamePiece()));
+        new Trigger(copilot::getAButton).onTrue(new Ground(lift, collector, () -> collector.getGamePiece(), lift.getVertical()));
         new Trigger(copilot::getBButton).onTrue(new Stow(lift));
         new Trigger(copilot::getYButton).onTrue(new HighScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getXButton).onTrue(new MidScore(lift, () -> collector.getGamePiece()));
         new Trigger(copilot::getLeftBumper).onTrue(new SingleSubstationCollect(lift, () -> collector.getGamePiece()));
-        new Trigger(copilot::getRightBumper).onTrue(new DoubleSubstationCollect(lift)); 
-        // new Trigger(copilot::getRightBumper).onTrue(new ReverseDoubleSubStationCollect(lift)); Disabled in teleop Used for testing
+        // new Trigger(copilot::getRightBumper).onTrue(new DoubleSubstationCollect(lift)); 
+        new Trigger(copilot::getRightBumper).onTrue(new ReverseDoubleSubStationCollect(lift)); // Disabled in teleop Used for testing
         
         //FLICK
-        new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(112))));
+        new Trigger(() -> -copilot.getLeftY() > 0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(150))));
         new Trigger(() -> -copilot.getLeftY() < -0.25).onTrue(new InstantCommand(() -> wrist.setAngle(Rotation2d.fromDegrees(lift.getLastKnownGoodWristSetPoint()))));
 
         //BREAK
@@ -160,9 +160,7 @@ public class RobotContainer extends LightningContainer {
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
 
         //A paths OPEN 
-        autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
-                new PathConstraints(3.5, 2));
-        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
+        autoFactory.makeTrajectory("A2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
                 new PathConstraints(3.5, 2));
         //B paths MIDDLE
         autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
@@ -172,8 +170,8 @@ public class RobotContainer extends LightningContainer {
         //C paths CABLE
         autoFactory.makeTrajectory("C2[2]-M-M-H", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("C2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
-                new PathConstraints(3.5, 2));
+        // autoFactory.makeTrajectory("C2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
+        //         new PathConstraints(3.5, 2));
         //ANYWHERE
         Autonomous.register("ruh roh flick auto", new InstantCommand(servoturn::flickServo, servoturn)); // Emergency Auton that doesn't drive
     }
@@ -191,11 +189,12 @@ public class RobotContainer extends LightningContainer {
 
         leds.setDefaultCommand(new SafeToScoreLED(leds, drivetrain, collector)); // Changes LED color to RED when the arm will not hit when deploying 
 
-        collector.setDefaultCommand(new HoldPower(collector,
-                () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND),
-                driver, copilot, lift));
+        collector.setDefaultCommand(new HoldPower(collector, () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) 
+        - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND), driver, copilot, lift));
 
-        elevator.setDefaultCommand(new EleUpInCommunity(lift, drivetrain)); // Works problem is that Pos is not accurate enough
+        // collector.setDefaultCommand(new Collect(collector, () -> MathUtil.applyDeadband(copilot.getRightTriggerAxis(), ControllerConstants.DEADBAND) - MathUtil.applyDeadband(copilot.getLeftTriggerAxis(), ControllerConstants.DEADBAND)));
+
+        // elevator.setDefaultCommand(new EleUpInCommunity(lift, drivetrain)); // Works problem is that Pos is not accurate enough
     }
 
     @Override

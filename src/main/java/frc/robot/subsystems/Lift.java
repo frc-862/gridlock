@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+
+import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -11,6 +13,7 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Lift.StateTable;
 import frc.robot.commands.Lift.StateTransition;
+import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
 /**
@@ -33,6 +36,7 @@ public class Lift extends SubsystemBase {
     private StateTransition nextState;
 
     private boolean doTargetOverride = false;
+    private boolean vertical = false;
 
     // Periodic Shuffleboard 
     // private LightningShuffleboardPeriodic periodicShuffleboardNextState;
@@ -182,8 +186,24 @@ public class Lift extends SubsystemBase {
         wrist.stop();
     }
 
+    public void switchVertical() {
+        if (vertical) {
+            vertical = false;
+        } else {
+            vertical = true;
+        }
+    }
+
+    public boolean getVertical() {
+        return vertical;
+    }
+
     @Override
     public void periodic() {
+
+        if(getCurrentState() != getGoalState()) {
+            arm.squishToggle(false);
+        }
 
         // Updates the shuffleboard values
         runPeriodicShuffleboardLoop();
@@ -271,6 +291,16 @@ public class Lift extends SubsystemBase {
                     break;
             }
         }
+
+        if (onTarget()) { // IF at the right state allow arm to squish
+           // if (Arrays.asList().contains(LiftConstants.squishList, getCurrentState())) { THIS IS STUPID
+            if (getCurrentState() == LiftState.singleSubCone || getCurrentState() == LiftState.singleSubCube || getCurrentState() == LiftState.midCubeScore) {
+                arm.squishToggle(true);
+            }
+        }
+        // Single Cone + Cube    Mid Cube   Ground Collect
+
+        LightningShuffleboard.setBool("Lift", "vertical", getVertical());
 
         // This is faster logging for debuging and testing 
         // if (nextState != null) {

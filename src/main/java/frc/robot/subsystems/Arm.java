@@ -31,6 +31,8 @@ public class Arm extends SubsystemBase {
     private PIDController downController = new PIDController(ArmConstants.DOWN_kP, ArmConstants.DOWN_kI, ArmConstants.DOWN_kD);
     private SparkMaxAbsoluteEncoder encoder;
 
+    private int currCurrentLimit = ArmConstants.CURRENT_LIMIT;
+
     // The encoder offset 
     private double OFFSET;
 
@@ -43,6 +45,8 @@ public class Arm extends SubsystemBase {
 
     private boolean isDrawingMax = false;
     private double drawMaxTime = 0;
+
+    private boolean enable = false; // For squsih
 
     // The target angle to be set to the arm
     private double targetAngle;
@@ -115,6 +119,13 @@ public class Arm extends SubsystemBase {
 
     public double getTargetAngle() {
         return targetAngle;
+    }
+
+    public void setCurrentLimit(int currentLimit) {
+        if (currentLimit != currCurrentLimit) {
+            motor.setSmartCurrentLimit(currentLimit);
+        }
+        currCurrentLimit = currentLimit;
     }
 
     /**
@@ -237,17 +248,23 @@ public class Arm extends SubsystemBase {
             motor.set(power);
         }
 
-        if(motor.getOutputCurrent() > 49.5 && !isDrawingMax) {
+        if (motor.getOutputCurrent() > 49.5 && !isDrawingMax) {
             isDrawingMax = true;
             drawMaxTime = Timer.getFPGATimestamp();
-        } else if(motor.getOutputCurrent() < 49.5){
+        } else if (motor.getOutputCurrent() < 49.5) {
             isDrawingMax = false;
         }
 
-        if(isDrawingMax) {
-            if(Timer.getFPGATimestamp() - drawMaxTime > 2) {
+        if (isDrawingMax) {
+            if (Timer.getFPGATimestamp() - drawMaxTime > 2) {
                 disableArm = true;
             }
+        }
+
+        if (enable) {
+            setCurrentLimit(2);
+        } else {
+            setCurrentLimit(ArmConstants.CURRENT_LIMIT);
         }
 
         periodicShuffleboard.loop();
@@ -258,9 +275,19 @@ public class Arm extends SubsystemBase {
 
         // downController.setD(LightningShuffleboard.getDouble("Arm", "down kD", ArmConstants.DOWN_kD));
         // downController.setP(LightningShuffleboard.getDouble("Arm", "down kP", ArmConstants.DOWN_kP));
-
-        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", -60)));
+        LightningShuffleboard.setDouble("Arm", "Current", motor.getOutputCurrent());
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", getAngle().getDegrees())));
         LightningShuffleboard.setDouble("Arm", "OUTPUT APPLIED", power);
+        LightningShuffleboard.setBool("Arm", "Squish", enable);
         // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
+    }
+
+    /**
+     * Makes the arm lower current to allow squishing against wall
+     * 
+     * @param enable true = on, fase = off
+     */
+    public void squishToggle(boolean enable) {
+        this.enable = enable;
     }
 }

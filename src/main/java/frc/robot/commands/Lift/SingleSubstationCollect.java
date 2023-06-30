@@ -23,11 +23,11 @@ public class SingleSubstationCollect extends InstantCommand {
     }
 
     @Override
-    public void initialize() { //TODO do we need to leave the singleSubCube state? We decided that cone is better Right
-        // if (gamePiece.get() == GamePiece.CONE) {
-        lift.setGoalState(LiftState.singleSubCone);
-        // } else {
-        //     lift.setGoalState(LiftState.singleSubCube);
-        // }
+    public void initialize() {
+        if (gamePiece.get() == GamePiece.CUBE) {
+        lift.setGoalState(LiftState.singleSubCube);
+        } else {
+            lift.setGoalState(LiftState.singleSubCone);
+        }
     }
 }
