@@ -165,7 +165,7 @@ public class RobotContainer extends LightningContainer {
         //B paths MIDDLE
         autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, .75));
-        autoFactory.makeTrajectory("B2[1]-M-C", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
+        autoFactory.makeTrajectory("B2[1]-M-C-LOW", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         //C paths CABLE
         autoFactory.makeTrajectory("C2[2]-M-M-H", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
@@ -224,4 +224,19 @@ public class RobotContainer extends LightningContainer {
     protected AutonomousCommandFactory getCommandFactory() {
         return autoFactory;
     }
+
+
+    /* Hello this is your favorite programing monster
+     * 
+     * I haunt your code and your dreams, you wont sleep at night while thinking about 
+     * the code issues you've been having. 
+     * 
+     * have fun
+     * 
+     * bu bye >:)
+     */
+
+
+
+
 }

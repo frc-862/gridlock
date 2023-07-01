@@ -124,7 +124,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Slow",
+          "Score",
           "Stow"
         ],
         "executionBehavior": "sequential",
