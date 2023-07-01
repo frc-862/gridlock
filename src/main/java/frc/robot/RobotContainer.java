@@ -163,24 +163,27 @@ public class RobotContainer extends LightningContainer {
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
 
         //A paths OPEN 
-        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
+        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, null, 0), 
                 new PathConstraints(3.5, 2));
-        autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
+        autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, null, 0), 
                 new PathConstraints(3.5, 2));
         //B paths MIDDLE
-        autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
+        autoFactory.makeTrajectory("B2[1]-M-C-HIGH", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, null, 0), 
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, .75));
-        autoFactory.makeTrajectory("B2[1]-M-C-LOW", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
+        autoFactory.makeTrajectory("B2[1]-M-C-LOW", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, null, 0),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         //C paths CABLE
-        autoFactory.makeTrajectory("C2[2]-M-M-H-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
+        autoFactory.makeTrajectory("C2[2]-M-M-H-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, null, 0),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
-        autoFactory.makeTrajectory("C2[2]-M-M-H-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm),
+        autoFactory.makeTrajectory("C2[2]-M-M-H-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, null, 0),
                 new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
         // autoFactory.makeTrajectory("C2[3]-M-BACK", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
         //         new PathConstraints(3.5, 2));
         //ANYWHERE
         Autonomous.register("ruh roh flick auto", new InstantCommand(servoturn::flickServo, servoturn)); // Emergency Auton that doesn't drive
+
+        autoFactory.makeTrajectory("CUBE-TEST-1", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm, frontLimelight, 0),
+                new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
     }
 
     @Override
