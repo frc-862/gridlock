@@ -14,11 +14,8 @@ public class LEDs extends SubsystemBase {
     private CANdleConfiguration ledConfig;
     private int orangeSwirlPosition = 0;
     private int blueSwirlPosition = (LedConstants.LED_LENGTH / 2) + 1;
-    private Collector collector;
 
     public LEDs(Collector collector) {
-        this.collector = collector;
-
         ledConfig = new CANdleConfiguration();
         ledConfig.stripType = LedConstants.STRIP_TYPE;
         ledConfig.brightnessScalar = LedConstants.BRIGHTNESS;
@@ -28,9 +25,6 @@ public class LEDs extends SubsystemBase {
         leds.configAllSettings(ledConfig);
     }
 
-  
-    
-
     /**
      * Blinks the leds between green and the color of the specified piece
      * needs to be called in a loop
@@ -38,16 +32,17 @@ public class LEDs extends SubsystemBase {
      * @param pieceType the piece type
      */
     public void isAligned(GamePiece pieceType) {
-        if (pieceType == GamePiece.NONE){
+        if (pieceType == GamePiece.NONE) {
             setColor(Color.kBlue);
-        } else{
+        } else {
             if ((System.currentTimeMillis() % 1000) < 500) {
                 setColor(Color.kGreen);
-            } else{ 
+            } else { 
             setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kGold);}
         }
     }
 
+    // Sets the color of the LEDs to the color of the desired and current piece
     public void wantsPiece(GamePiece pieceType){
         setColor(pieceType == GamePiece.CUBE ? Color.kPurple : Color.kGold);
     }
@@ -55,7 +50,7 @@ public class LEDs extends SubsystemBase {
     /**
      * Swirls orange and blue
      */
-     public void swirl() { //TODO: make a way to periodically update the swirl
+     public void swirl() {
         // swirl pattern wooooooo (swirls orange and blue)
         leds.setLEDs(0, 0, 255);
         for (int i = 0; i < (LedConstants.LED_LENGTH/2); i++) {
@@ -63,7 +58,6 @@ public class LEDs extends SubsystemBase {
         }
         for (int i = 0; i < (LedConstants.LED_LENGTH/2); i++) {
             setColor(Color.kBlue, ((i + blueSwirlPosition) % LedConstants.LED_LENGTH), 1);
-            	            
         }
         orangeSwirlPosition += 1;
         blueSwirlPosition += 1;

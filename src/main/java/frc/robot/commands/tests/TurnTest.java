@@ -3,7 +3,6 @@ package frc.robot.commands.tests;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SystemTestConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.thunder.logging.DataLogger;
 import frc.thunder.swervelib.SwerveModule;
 
 /**
@@ -12,8 +11,8 @@ import frc.thunder.swervelib.SwerveModule;
 public class TurnTest extends CommandBase {
     private final SwerveModule module;
     private final Drivetrain drivetrain;
-    private double driveSpeed = 0;
-    private double driveAngle = 0;
+    private double driveSpeed;
+    private double driveAngle;
     private boolean direction = false;
     private int revolutions = 0;
 
@@ -36,8 +35,7 @@ public class TurnTest extends CommandBase {
     public void execute() {
         // Set power
         module.set(driveSpeed, Math.toRadians(driveAngle));
-        // Checks if the module made it to the angle with in 3 degrees and has gone around less than
-        // 2 times
+        // Checks if the module made it to the angle with in 3 degrees and has gone around less than 2 times
         if ((Math.abs(getBearingDifference()) < SystemTestConstants.ANGLE_DEAD_ZONE) && (revolutions < SystemTestConstants.MAX_ROTATIONS_PER_DIRECTION)) {
             // If true clockwise, if false counterclockwise
             if (direction) {

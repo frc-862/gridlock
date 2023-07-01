@@ -4,24 +4,14 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-import javax.accessibility.AccessibleHyperlink;
-
-import org.apache.commons.lang3.Range;
-
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.thunder.swervelib.Mk4ModuleConfiguration;
 import frc.thunder.swervelib.Mk4iSwerveModuleHelper;
 import frc.thunder.swervelib.SwerveModule;
 import frc.thunder.vision.VisionBase;
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.math.MathUsageId;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.Num;
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -43,27 +33,19 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoAlignConstants;
-import frc.robot.Constants.AutonomousConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.Offsets;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DrivetrainConstants.Gains;
 import frc.robot.Constants.DrivetrainConstants.HeadingGains;
-import frc.thunder.LightningRobot;
-import frc.thunder.auto.Autonomous;
 import frc.thunder.auto.AutonomousCommandFactory;
 import frc.thunder.config.SparkMaxPIDGains;
-import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathConstraints;
 import frc.thunder.pathplanner.com.pathplanner.lib.PathPoint;
-import frc.thunder.pathplanner.com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
@@ -160,14 +142,15 @@ public class Drivetrain extends SubsystemBase {
     private boolean initialSync = false;
     private double initialTimeStamp = 0;
 
+    /**
+     * Creates a new Drivetrain.
+     * 
+     * @param limelightBack  The back Limelight
+     * @param limelightFront The front Limelight
+     */
     public Drivetrain(LimelightBack limelightBack, LimelightFront limelightFront) {
         this.limelightBack = limelightBack;
         this.limelightFront = limelightFront;
-        /**
-         * Creates a new Drivetrain.
-         * 
-         * @param vision the vision subsystem
-         */
 
         if (Constants.isBlackout()) {
             FRONT_LEFT_STEER_OFFSET = Offsets.Blackout.FRONT_LEFT_STEER_OFFSET;
@@ -219,33 +202,32 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         if (Timer.getFPGATimestamp() - initialTimeStamp < 1) {
             if (initialSync) {
                 // Setting start position and creating estimator
                 setInitialPose(new Pose2d(0, 0, new Rotation2d()));
 
                 // Setting states of the modules
-                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle),
+                states = new SwerveModuleState[] {
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle),
                         new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle),
                         new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle),
                         new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
+
                 updateOdometry();
                 updateDriveStates(states);
-
                 resetNeoAngle();
 
                 initialSync = true;
             } else {
-                states = new SwerveModuleState[] {new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle),
+                states = new SwerveModuleState[] {
+                        new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontLeftModule.getPosition().angle),
                         new SwerveModuleState(frontLeftModule.getDriveVelocity(), frontRightModule.getPosition().angle),
                         new SwerveModuleState(frontLeftModule.getDriveVelocity(), backLeftModule.getPosition().angle),
                         new SwerveModuleState(frontLeftModule.getDriveVelocity(), backRightModule.getPosition().angle)};
                 updateOdometry();
             }
         } else {
-
-            // Update our odometry
             updateOdometry();
             updateVision();
 
@@ -410,6 +392,7 @@ public class Drivetrain extends SubsystemBase {
 
     private boolean firstTime = true;
 
+    // Takes out vision data and filters it then adds it to the odometry position calculation
     public void updateVision() {
         if (VisionBase.isVisionEnabled() && DriverStation.isTeleop()) {
             visionPose2d = null;
@@ -429,11 +412,11 @@ public class Drivetrain extends SubsystemBase {
                 tagDistance = limelightBack.getTagDistance();
                 if (firstTime) {
                     setInitialPose(visionPose2d);
-
                     firstTime = false;
                 }
             }
 
+            // Filters if on field and within the range values return good data
             if (visionPose2d == null || visionPose2d.getX() > 23.04 || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0 || tagDistance > 4) {
                 return;
             }
@@ -465,15 +448,23 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * ta
+     * tag 
      * 
      * @param pos Pos of tag 1 at C nodes
      */
     public void setAprilTagTarget(int pos) {
         if (DriverStation.getAlliance() == Alliance.Blue) {
-            pos += 6;
-        } else {
-            pos += 3;
+            switch(pos){
+                case 1:
+                    pos = 6;
+                    break;
+                case 2:
+                    pos = 7;
+                    break;
+                case 3:
+                    pos = 8;
+                    break;
+            }
         }
         limelightBack.setPipelineNum(pos);
         limelightFront.setPipelineNum(pos);
@@ -507,23 +498,27 @@ public class Drivetrain extends SubsystemBase {
     // Method to start sending values to the dashboard and start logging
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", DrivetrainConstants.LOG_PERIOD, new Pair<String, Object>("Pigeon Yaw", (DoubleSupplier) () -> getYaw2d().getDegrees()),
-                new Pair<String, Object>("roll", (DoubleSupplier) () -> pigeon.getRoll()), new Pair<String, Object>("pitch", (DoubleSupplier) () -> pigeon.getPitch()),
-                new Pair<String, Object>("fl module position", (DoubleSupplier) () -> modulePositions[0].distanceMeters),
-                new Pair<String, Object>("fr module position", (DoubleSupplier) () -> modulePositions[1].distanceMeters),
-                new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
-                new Pair<String, Object>("br module position", (DoubleSupplier) () -> modulePositions[3].distanceMeters),
-                new Pair<String, Object>("fl amperage", (DoubleSupplier) () -> frontLeftModule.getDriveAmperage()),
-                new Pair<String, Object>("fr amperage", (DoubleSupplier) () -> frontRightModule.getDriveAmperage()),
-                new Pair<String, Object>("bl amperage", (DoubleSupplier) () -> backLeftModule.getDriveAmperage()),
-                new Pair<String, Object>("br amperage", (DoubleSupplier) () -> backRightModule.getDriveAmperage()),
-                new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
-                new Pair<String, Object>("raw Pose", (Supplier<double[]>) () -> new double[] {rawPose.getX(), rawPose.getY(), rawPose.getRotation().getRadians()}),
-                new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
-                new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Drivetrain", DrivetrainConstants.LOG_PERIOD, 
+            new Pair<String, Object>("Pigeon Yaw", (DoubleSupplier) () -> getYaw2d().getDegrees()),
+            new Pair<String, Object>("roll", (DoubleSupplier) () -> pigeon.getRoll()), 
+            new Pair<String, Object>("pitch", (DoubleSupplier) () -> pigeon.getPitch()),
+            new Pair<String, Object>("fl module position", (DoubleSupplier) () -> modulePositions[0].distanceMeters),
+            new Pair<String, Object>("fr module position", (DoubleSupplier) () -> modulePositions[1].distanceMeters),
+            new Pair<String, Object>("bl module position", (DoubleSupplier) () -> modulePositions[2].distanceMeters),
+            new Pair<String, Object>("br module position", (DoubleSupplier) () -> modulePositions[3].distanceMeters),
+            new Pair<String, Object>("fl amperage", (DoubleSupplier) () -> frontLeftModule.getDriveAmperage()),
+            new Pair<String, Object>("fr amperage", (DoubleSupplier) () -> frontRightModule.getDriveAmperage()),
+            new Pair<String, Object>("bl amperage", (DoubleSupplier) () -> backLeftModule.getDriveAmperage()),
+            new Pair<String, Object>("br amperage", (DoubleSupplier) () -> backRightModule.getDriveAmperage()),
+            new Pair<String, Object>("odo Pose", (Supplier<double[]>) () -> new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()}),
+            new Pair<String, Object>("raw Pose", (Supplier<double[]>) () -> new double[] {rawPose.getX(), rawPose.getY(), rawPose.getRotation().getRadians()}),
+            new Pair<String, Object>("desired X", (DoubleSupplier) () -> desiredPose.getX()), 
+            new Pair<String, Object>("desired Y", (DoubleSupplier) () -> desiredPose.getY()),
+            new Pair<String, Object>("desired Z", (DoubleSupplier) () -> desiredPose.getRotation().getDegrees()));
 
-        periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
-                new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
+        periodicShuffleboardAuto = new LightningShuffleboardPeriodic("Autonomous", 
+            new Pair<String, Object>("has vision", (BooleanSupplier) () -> limelightBack.hasVision()),
+            new Pair<String, Object>("Vison GOOD", (BooleanSupplier) () -> !firstTime));
     }
 
     /**
@@ -533,6 +528,7 @@ public class Drivetrain extends SubsystemBase {
         return PathPoint.fromCurrentHolonomicState(pose, chassisSpeeds).withControlLengths(AutoAlignConstants.CONTROL_LENGTHS, AutoAlignConstants.CONTROL_LENGTHS);
     }
 
+    // Testing for auton
     public void instantSyncVision() {
         if (visionPose2d != null) {
             pose = visionPose2d;
@@ -733,7 +729,7 @@ public class Drivetrain extends SubsystemBase {
                     (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
                 return true;
             }
-        } else if (DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
+        } else if (DriverStation.getAlliance() == Alliance.Red) {
             if ((1.35 < pose.getX() && pose.getX() < 3.35) && (2.40 < pose.getY() && pose.getY() < 6.45) || // Box 1
                     (1.35 < pose.getX() && pose.getX() < 4.85) && (6.45 < pose.getY() && pose.getY() < 8.02) || // Box 2
                     (9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) || // Box 3
@@ -750,7 +746,7 @@ public class Drivetrain extends SubsystemBase {
                     (13.20 < pose.getX() && pose.getX() < 16.25) && (5.51 < pose.getY() && pose.getY() < 7.99)) { // Box 4
                 return true;
             }
-        } else if (DriverStation.getAlliance() == Alliance.Red) { // Check if I did it right on field
+        } else if (DriverStation.getAlliance() == Alliance.Red) {
             if ((9.85 < pose.getX() && pose.getX() < 13.20) && (0.03 < pose.getY() && pose.getY() < 1.24) || // Box 3
                     (13.20 < pose.getX() && pose.getX() < 16.25) && (0.03 < pose.getY() && pose.getY() < 2.51)) { // Box 4
                 return true;

@@ -2,15 +2,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.AutoAlignConstants;
-import frc.robot.Constants.LimelightConstants;
-import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LimelightFront;
-import frc.robot.subsystems.Collector.GamePiece;
 import frc.thunder.shuffleboard.LightningShuffleboard;
 
 public class AprilTagLineUp extends CommandBase {
@@ -19,27 +14,25 @@ public class AprilTagLineUp extends CommandBase {
     private PIDController Xcontroller = new PIDController(-0.05, 0, -0.03);
     private PIDController Rcontroller = new PIDController(0.005, 0, 0);
     private double RSetpoint = 0;
-    private Collector collector;
     private double XOutput = 0;
     private double ROutput = 90;
     private double distance = 0;
 
-    public AprilTagLineUp(Drivetrain drivetrain, LimelightFront limelightFront, Collector collector) {
+    public AprilTagLineUp(Drivetrain drivetrain, LimelightFront limelightFront) {
         this.drivetrain = drivetrain;
         this.limelightFront = limelightFront;
-        this.collector = collector;
 
         addRequirements(drivetrain);
     }
 
     @Override
     public void initialize() {
-        limelightFront.setPipelineNum(0); // TODO see if pipeline 10 is working for non game tags
+        limelightFront.setPipelineNum(0); // Uses fornt limelight pipeline that is able to see all field AprilTags 
 
         Xcontroller.setSetpoint(0d);
         Xcontroller.setTolerance(AutoAlignConstants.X_TOLERANCE);
 
-        Rcontroller.setSetpoint(RSetpoint);// TODO figure out what it is to face the wall Might be different between red and blue
+        Rcontroller.setSetpoint(RSetpoint);
         Rcontroller.setTolerance(AutoAlignConstants.R_TOLERANCE);
 
         Rcontroller.enableContinuousInput(0, 360);
@@ -50,8 +43,9 @@ public class AprilTagLineUp extends CommandBase {
     @Override
     public void execute() {
         Rcontroller.setSetpoint(RSetpoint);
-        if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 3) {
-            if (drivetrain.getYaw2d().getDegrees() - RSetpoint < AutoAlignConstants.R_TOLERANCE) {
+        // If we have a target and and are on the right pipeline so that it doesn't return incorrect values 
+        if (limelightFront.hasVision() && limelightFront.getPipelineNum() == 3) { 
+            if (drivetrain.getYaw2d().getDegrees() - RSetpoint < AutoAlignConstants.R_TOLERANCE) { // Moves towards the wall and stops when close enough
                 distance = limelightFront.getHorizontalOffset();
                 XOutput = Xcontroller.calculate(distance);
             } else {
@@ -62,10 +56,10 @@ public class AprilTagLineUp extends CommandBase {
             XOutput = 0d;
         }
 
-        if (Math.abs(drivetrain.getYaw2d().getDegrees() - RSetpoint) < AutoAlignConstants.R_TOLERANCE) {
+        if (Math.abs(drivetrain.getYaw2d().getDegrees() - RSetpoint) < AutoAlignConstants.R_TOLERANCE) { // Stops when close enough to the target angle
             ROutput = 0;
         } else {
-            ROutput = Rcontroller.calculate(drivetrain.getYaw2d().getDegrees());
+            ROutput = Rcontroller.calculate(drivetrain.getYaw2d().getDegrees()); // Aligns towards the wall using pigeon heading
         }
 
         drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(drivetrain.percentOutputToMetersPerSecond(XOutput), 
@@ -73,6 +67,7 @@ public class AprilTagLineUp extends CommandBase {
         drivetrain.percentOutputToRadiansPerSecond(ROutput), 
         drivetrain.getYaw2d()));
 
+        // Only runs while button is pressed For Testing and performance evaluation
         LightningShuffleboard.setDouble("April-Align", "horizontal offset", distance);
         LightningShuffleboard.setDouble("April-Align", "X Pid output", Xcontroller.calculate(distance));
         LightningShuffleboard.setDouble("April-Align", "R Pid output", Rcontroller.calculate(drivetrain.getYaw2d().getDegrees()));

@@ -17,7 +17,6 @@ import frc.robot.Constants.LiftConstants.LiftState;
 public class StateTable {
 
     //SAFE ZONES
-
     private static final double ELEVATOR_MAX_EXTENSION = ElevatorConstants.MAX_EXTENSION;
     private static final double ARM_MAX_ANGLE = ArmConstants.MAX_ANGLE;
     private static final double WRIST_MAX_ANGLE = WristConstants.MAX_ANGLE;
@@ -26,20 +25,20 @@ public class StateTable {
     private static final double ARM_MIN_ANGLE = ArmConstants.MIN_ANGLE;
     private static final double WRIST_MIN_ANGLE = WristConstants.MIN_ANGLE;
 
-    private static final double ELEVATOR_STOW_SAFE = 8d;
+    private static final double ELEVATOR_STOW_SAFE = 7.8d;
     private static final double ARM_STOW_SAFE = -105d;
     private static final double WRIST_STOW_SAFE = 95;
 
-    private static final double WRIST_SCORE_TO_COLLECT_SAFE = 0d;
+    private static final double WRIST_SCORE_TO_COLLECT_SAFE = 0d; // TODO THink this is why the wrist straigthens first
 
     private static final double ELEVATOR_STOWED_POS = 2;
     private static final double ARM_STOWED_ANGLE = -112;
-    private static final double WRIST_STOWED_ANGLE = 112;
+    private static final double WRIST_STOWED_ANGLE = 145;
     private static final LiftPlan STOWED_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_STOW_COLLECT_TRANSITION_POS = 8;
     private static final double ARM_STOW_COLLECT_TRANSITION_ANGLE = -70;
-    private static final double WRIST_STOW_COLLECT_TRANSITION_ANGLE = 90;
+    private static final double WRIST_STOW_COLLECT_TRANSITION_ANGLE = 115;
 
     private static final double ELEVATOR_GROUND_CONE_POS = 0;
     private static final double ARM_GROUND_CONE_ANGLE = -74;
@@ -52,7 +51,7 @@ public class StateTable {
 
     private static final double ELEVATOR_GROUND_CUBE_POS = 0;
     private static final double ARM_GROUND_CUBE_ANGLE = -70.5;
-    private static final double WRIST_GROUND_CUBE_ANGLE = 91;
+    private static final double WRIST_GROUND_CUBE_ANGLE = 75;
     private static final LiftPlan GROUND_CUBE_PLAN = LiftPlan.parallel;
 
     private static final double ELEVATOR_MID_CUBE_POS = 14.2;
@@ -82,11 +81,11 @@ public class StateTable {
 
     private static final double ELEVATOR_OTB_HIGH_POS = 0d;
     private static final double ARM_OTB_HIGH_ANGLE = 160d;
-    private static final double WRIST_OTB_HIGH_ANGLE = -20d;
+    private static final double WRIST_OTB_HIGH_ANGLE = 50d;
 
     private static final double ELEVATOR_OTB_MID_POS = 0d;
     private static final double ARM_OTB_MID_ANGLE = 170d;
-    private static final double WRIST_OTB_MID_ANGLE = 10d;
+    private static final double WRIST_OTB_MID_ANGLE = 100d;
 
     private static final double ELEVATOR_OTB_DOUBLE_SUB_POS = 4d;
     private static final double ARM_OTB_DOUBLE_SUB_ANGLE = 160d;
@@ -138,8 +137,8 @@ public class StateTable {
     static {
         scoreTable.putAll(defaultTable);
             scoreTable.replace(LiftState.stowed, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.eleAndWristThenArm, LiftState.stowedScore, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_MIN_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_MIN_ANGLE, WRIST_MAX_ANGLE)));
-            scoreTable.replace(LiftState.groundCube, new StateTransition(ELEVATOR_GROUND_CUBE_POS, Rotation2d.fromDegrees(ARM_GROUND_CUBE_ANGLE), Rotation2d.fromDegrees(100), GROUND_CUBE_PLAN, LiftState.scoreToCollect, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_MIN_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
-            scoreTable.replace(LiftState.groundCone, new StateTransition(ELEVATOR_GROUND_CONE_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(100), GROUND_CONE_PLAN, LiftState.scoreToCollect, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_MIN_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
+            scoreTable.replace(LiftState.groundCube, new StateTransition(ELEVATOR_GROUND_CUBE_POS, Rotation2d.fromDegrees(ARM_GROUND_CUBE_ANGLE), Rotation2d.fromDegrees(100), LiftPlan.armAndWristThenEle, LiftState.scoreToCollect, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(-90d, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
+            scoreTable.replace(LiftState.groundCone, new StateTransition(ELEVATOR_GROUND_CONE_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(100), LiftPlan.armAndWristThenEle, LiftState.scoreToCollect, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(-90d, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
             scoreTable.replace(LiftState.groundConeVertical, new StateTransition(ELEVATOR_GROUND_CONE_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(100), GROUND_CONE_PLAN, LiftState.scoreToCollect, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_MIN_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
 
         groundTable.putAll(defaultTable);
@@ -151,7 +150,7 @@ public class StateTable {
             stowedTable.replace(LiftState.groundCube, new StateTransition(ELEVATOR_STOW_COLLECT_TRANSITION_POS, Rotation2d.fromDegrees(ARM_GROUND_CUBE_ANGLE), Rotation2d.fromDegrees(WRIST_STOW_COLLECT_TRANSITION_ANGLE), LiftPlan.eleArmWrist, LiftState.stowedCollect, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(-90d, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
             stowedTable.replace(LiftState.groundCone, new StateTransition(ELEVATOR_STOW_COLLECT_TRANSITION_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(WRIST_STOW_COLLECT_TRANSITION_ANGLE), LiftPlan.eleArmWrist, LiftState.stowedCollect, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(-90d, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
             stowedTable.replace(LiftState.groundConeVertical, new StateTransition(ELEVATOR_STOW_COLLECT_TRANSITION_POS, Rotation2d.fromDegrees(ARM_GROUND_CONE_ANGLE), Rotation2d.fromDegrees(WRIST_STOW_COLLECT_TRANSITION_ANGLE), LiftPlan.eleArmWrist, LiftState.stowedCollect, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(-90d, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
-            stowedTable.replace(LiftState.highCubeScore, new StateTransition(ELEVATOR_HIGH_CUBE_POS, Rotation2d.fromDegrees(ARM_HIGH_CUBE_ANGLE), Rotation2d.fromDegrees(WRIST_HIGH_CUBE_ANGLE), LiftPlan.eleArmWrist, LiftState.highCubeScore, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(ARM_DEPLOYED_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
+            stowedTable.replace(LiftState.highCubeScore, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.parallel, LiftState.stowedScore));
             stowedTable.replace(LiftState.highConeScore, new StateTransition(ELEVATOR_HIGH_CONE_POS, Rotation2d.fromDegrees(ARM_HIGH_CONE_ANGLE), Rotation2d.fromDegrees(WRIST_HIGH_CONE_ANGLE), LiftPlan.eleArmWrist, LiftState.highConeScore, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(ARM_DEPLOYED_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
             stowedTable.replace(LiftState.doubleSubstationCollect, new StateTransition(ELEVATOR_DEPLOYED_POS, Rotation2d.fromDegrees(ARM_STOWED_ANGLE), Rotation2d.fromDegrees(WRIST_STOWED_ANGLE), LiftPlan.parallel, LiftState.stowedScore, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(ARM_DEPLOYED_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
             stowedTable.replace(LiftState.singleSubCube, new StateTransition(ELEVATOR_SINGLE_SUB_CUBE_POS, Rotation2d.fromDegrees(ARM_SINGLE_SUB_CUBE_ANGLE), Rotation2d.fromDegrees(WRIST_SINGLE_SUB_CUBE_ANGLE), LiftPlan.eleArmWrist, LiftState.singleSubCube, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(ARM_DEPLOYED_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_STOW_SAFE, WRIST_MAX_ANGLE)));
@@ -185,7 +184,6 @@ public class StateTable {
             stowScoreTable.replace(LiftState.OTB_Mid, new StateTransition(ELEVATOR_OTB_MID_POS, Rotation2d.fromDegrees(ARM_OTB_MID_ANGLE), Rotation2d.fromDegrees(WRIST_OTB_MID_ANGLE), LiftPlan.armThenWristAndEle, LiftState.OTB_Mid, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_DEPLOYED_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_MIN_ANGLE, WRIST_MAX_ANGLE)));
             stowScoreTable.replace(LiftState.OTB_DoubleSubstationCollect, new StateTransition(ELEVATOR_OTB_DOUBLE_SUB_POS, Rotation2d.fromDegrees(ARM_OTB_DOUBLE_SUB_ANGLE), Rotation2d.fromDegrees(WRIST_OTB_DOUBLE_SUB_ANGLE), LiftPlan.armThenWristAndEle, LiftState.OTB_DoubleSubstationCollect, Range.between(ELEVATOR_MIN_EXTENSION, ELEVATOR_MAX_EXTENSION), Range.between(ARM_DEPLOYED_ANGLE, ARM_MAX_ANGLE), Range.between(WRIST_MIN_ANGLE, WRIST_MAX_ANGLE)));
 
-
         scoreToCollectTable.putAll(defaultTable);
             scoreToCollectTable.replace(LiftState.stowed, new StateTransition(ELEVATOR_STOW_COLLECT_TRANSITION_POS, Rotation2d.fromDegrees(ARM_STOW_COLLECT_TRANSITION_ANGLE), Rotation2d.fromDegrees(WRIST_STOW_COLLECT_TRANSITION_ANGLE), STOWED_PLAN, LiftState.stowedCollect, Range.between(ELEVATOR_STOW_SAFE, ELEVATOR_MAX_EXTENSION), Range.between(ARM_MIN_ANGLE, ARM_STOW_SAFE), Range.between(WRIST_SCORE_TO_COLLECT_SAFE, WRIST_MAX_ANGLE)));
 
@@ -214,9 +212,9 @@ public class StateTable {
             Map.entry(LiftState.groundCube, groundTable),
             Map.entry(LiftState.groundConeVertical, groundTable),
 
-            Map.entry(LiftState.midConeScore, scoreTable), 
+            Map.entry(LiftState.midConeScore, groundTable), 
             Map.entry(LiftState.midCubeScore, scoreTable), 
-            Map.entry(LiftState.highCubeScore, scoreTable),
+            Map.entry(LiftState.highCubeScore, groundTable),
             Map.entry(LiftState.highConeScore, scoreTable),
             
             Map.entry(LiftState.OTB_High, OTBTable),

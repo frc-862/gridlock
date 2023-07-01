@@ -5,9 +5,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -30,8 +28,6 @@ public class AutoBalance extends CommandBase {
     private double theta;
     private double magnitude;
     private double speedMetersPerSecond;
-    private double magnitudeRateOfChange;
-    private double filteredMagnitudeRateOfChange;
     private double timer;
 
     // List of swerve module states to be set to the drivetrain after determining the speed and angle of each motor
@@ -70,24 +66,23 @@ public class AutoBalance extends CommandBase {
     // Method to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", AutoBalanceConstants.LOG_PERIOD, new Pair<String, Object>("angle magnitude", (DoubleSupplier) () -> magnitude),
-                new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle), new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle),
-                new Pair<String, Object>("speed", (DoubleSupplier) () -> speedMetersPerSecond), new Pair<String, Object>("error", (DoubleSupplier) () -> controller.getPositionError()),
+        periodicShuffleboard = new LightningShuffleboardPeriodic("AutoBalance", AutoBalanceConstants.LOG_PERIOD, 
+                new Pair<String, Object>("angle magnitude", (DoubleSupplier) () -> magnitude),
+                new Pair<String, Object>("pitch", (DoubleSupplier) () -> pitchAngle),
+                new Pair<String, Object>("roll", (DoubleSupplier) () -> rollAngle),
+                new Pair<String, Object>("speed", (DoubleSupplier) () -> speedMetersPerSecond), 
+                new Pair<String, Object>("error", (DoubleSupplier) () -> controller.getPositionError()),
                 new Pair<String, Object>("pee", (DoubleSupplier) () -> rollAngle));
     }
 
     @Override
     public void initialize() {
         // Initialize our climb state to climb
-
         climbState = climbStates.CLIMB;
-        // TODO: get rid of this line after testing and proper calibration of odometry
-        // drivetrain.resetOdometry(new Pose2d(new Translation2d(3.25, drivetrain.getPose().getY()), drivetrain.getPose().getRotation()));
     }
 
     @Override
     public void execute() {
-
         // Get the pitch and roll of the robot
         pitchAngle = drivetrain.getPitch2d().getDegrees();
         rollAngle = drivetrain.getRoll2d().getDegrees();
@@ -106,17 +101,12 @@ public class AutoBalance extends CommandBase {
             speedMetersPerSecond = 0;
         } else {
             speedMetersPerSecond = MathUtil.clamp(controller.calculate(drivetrain.getPose().getX(), AutoBalanceConstants.TARGET_X), AutoBalanceConstants.MIN_SPEED_THRESHOLD,
-                    AutoBalanceConstants.MAX_SPEED_THRESHOLD);
+                AutoBalanceConstants.MAX_SPEED_THRESHOLD);
         }
-
-        // LightningShuffleboard.setDouble("autoBalance", "speed", speedMetersPerSecond);
-        // LightningShuffleboard.setDouble("autoBalance", "error", controller.getPositionError());
-        // LightningShuffleboard.setDouble("autoBalance", "Magnitude", magnitude);
 
         // Set the states of the swerve modules
         for (int i = 0; i < moduleStates.length; i++) {
             moduleStates[i] = new SwerveModuleState(speedMetersPerSecond, new Rotation2d(theta));
-
         }
 
         // Case statement to determine the state of the climb
@@ -132,7 +122,6 @@ public class AutoBalance extends CommandBase {
                     // If so, check if we start falling
                     climbState = climbStates.CHECK_FALLING;
                 }
-
                 break;
             case CHECK_FALLING:
                 drivetrain.setStates(moduleStates);
@@ -163,7 +152,7 @@ public class AutoBalance extends CommandBase {
                 break;
         }
 
-        // periodicShuffleboard.loop();
+        // periodicShuffleboard.loop(); // Enable to update the shuffleboard for testing
     }
 
     public boolean balanced() {

@@ -26,14 +26,13 @@ public class ServoTurn extends SubsystemBase {
     public ServoTurn() {
         // Initialize the shuffleboard values and start logging data
         initializeShuffleboard();
-
-        // turnServo(AutonomousConstants.SERVO_DOWN);
     }
 
     // Initializes the shuffleboard values and starts logging data   
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("ServoTurn", 2, new Pair<String, Object>("Servo Position", (DoubleSupplier) () -> position));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("ServoTurn", 2, 
+        new Pair<String, Object>("Servo Position", (DoubleSupplier) () -> position));
     }
 
     /**
