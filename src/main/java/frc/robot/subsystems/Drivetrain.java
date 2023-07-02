@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -64,6 +65,7 @@ import frc.thunder.pathplanner.com.pathplanner.lib.commands.PPSwerveControllerCo
 import frc.thunder.shuffleboard.LightningShuffleboard;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 
 /**
@@ -383,59 +385,45 @@ public class Drivetrain extends SubsystemBase {
 
     private boolean firstTime = true;
 
-    // public void updateVision() {
-    //     if (VisionBase.isVisionEnabled()) {
-    //         visionPose2d = null;
-    //         double latency = 0;
-    //         double tagDistance = 0;
-    //         if (frontCamera.hasVision()) {
-    //             visionPose2d = limelightFront.getRobotPose();
-    //             latency = limelightFront.getLatencyBotPoseBlue();
-    //             tagDistance = limelightFront.getTagDistance();
-    //             if (firstTime) {
-    //                 setInitialPose(visionPose2d);
-    //                 firstTime = false;
-    //             }
-    //         } else if (limelightBack.hasVision()) {
-    //             visionPose2d = limelightBack.getRobotPose();
-    //             latency = limelightBack.getLatencyBotPoseBlue();
-    //             tagDistance = limelightBack.getTagDistance();
-    //             if (firstTime) {
-    //                 setInitialPose(visionPose2d);
+    public void updateVision() {
+        if (VisionBase.isVisionEnabled()) {
+            // visionPose2d = null;
+            // double latency = 0;
+            // double tagDistance = 0;
+            Optional<EstimatedRobotPose> result = frontCamera.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
+            if (frontCamera.hasVision()) {
+                EstimatedRobotPose photonPose = result.get();
+                visionPose2d = photonPose.estimatedPose.toPose2d();
+                poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - .0472); // Todo: Add Latency!
+            }
 
-    //                 firstTime = false;
-    //             }
-    //         }
+            // if (visionPose2d == null || visionPose2d.getX() > 23.04 || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0 || tagDistance > 4) {
+            //     return;
+            // }
 
-    //         if (visionPose2d == null || visionPose2d.getX() > 23.04 || visionPose2d.getY() > 8.02 || visionPose2d.getX() < 0 || visionPose2d.getY() < 0 || tagDistance > 4) {
-    //             return;
-    //         }
+            double currTime = Timer.getFPGATimestamp();
+            // LightningShuffleboard.setDouble("Drivetrain", "Velocity between points", pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime));
+            // if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
+            //     return;
+            // }
 
-    //         double currTime = Timer.getFPGATimestamp();
-    //         LightningShuffleboard.setDouble("Drivetrain", "Velocity between points", pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime));
-    //         if (pose.getTranslation().getDistance(visionPose2d.getTranslation()) / (currTime - lastTime) > DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND) {
-    //             return;
-    //         }
+            // if (tagDistance != -1) {
+            //     double distanceBasedDev = VisionConstants.visionStandardDevMap.get(tagDistance + getDriveVelocity());
+            //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
+            // }
 
-    //         // if (tagDistance != -1) {
-    //         //     double distanceBasedDev = VisionConstants.visionStandardDevMap.get(tagDistance + getDriveVelocity());
-    //         //     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(distanceBasedDev, distanceBasedDev, distanceBasedDev));
-    //         // }
+            pose = poseEstimator.getEstimatedPosition();
 
-    //         visionPose2d = new Pose2d(visionPose2d.getX(), pose.getY(), getHeading());
-    //         poseEstimator.addVisionMeasurement(visionPose2d, Timer.getFPGATimestamp() - latency - .0472);
-    //         pose = poseEstimator.getEstimatedPosition();
+            lastKnownGoodVisionX = visionPose2d.getX();
+            lastKnownGoodVisionY = visionPose2d.getY();
+            lastKnownGoodVisionRotation = visionPose2d.getRotation().getDegrees();
+            lastTime = currTime;
 
-    //         lastKnownGoodVisionX = visionPose2d.getX();
-    //         lastKnownGoodVisionY = visionPose2d.getY();
-    //         lastKnownGoodVisionRotation = visionPose2d.getRotation().getDegrees();
-    //         lastTime = currTime;
-
-    //         LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
-    //         LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Y", lastKnownGoodVisionY);
-    //         LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Rotation", lastKnownGoodVisionRotation);
-    //     }
-    // }
+            LightningShuffleboard.setDouble("Drivetrain", "Accepted vision X", lastKnownGoodVisionX);
+            LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Y", lastKnownGoodVisionY);
+            LightningShuffleboard.setDouble("Drivetrain", "Accepted vision Rotation", lastKnownGoodVisionRotation);
+        }
+    }
 
     /**
      * ta
