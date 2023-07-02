@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
@@ -251,7 +250,7 @@ public class LimelightFront extends SubsystemBase {
      */
     public boolean validAngle(double angle) {
         // 29.8d represents the LL2+'s max FOV, from center of camera to edge of frame.
-        return Math.abs(angle) < Constants.VisionConstants.HORIZ_CAMERA_FOV;
+        return Math.abs(angle) < VisionConstants.HORIZ_CAMERA_FOV;
     }
 
     /**
@@ -261,10 +260,6 @@ public class LimelightFront extends SubsystemBase {
      *        Limelight
      * @return Whether we're within acceptable tolerance of the target.
      */
-    public boolean isOnTarget(double expectedAngle) {
-        // Should put consideration into how accurate we want to be later on.
-        return expectedAngle < Constants.VisionConstants.HORIZ_DEGREE_TOLERANCE;
-    }
 
     /**
      * setCameraPose

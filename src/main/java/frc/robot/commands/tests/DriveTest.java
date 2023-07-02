@@ -10,8 +10,8 @@ import frc.thunder.swervelib.SwerveModule;
 public class DriveTest extends CommandBase {
     private final SwerveModule module;
     private final Drivetrain drivetrain;
-    private double driveSpeed = 1;
-    private double driveAngle = 0;
+    private double driveSpeed;
+    private double driveAngle;
 
     /**
      * Drives a single module at a given speed and angle

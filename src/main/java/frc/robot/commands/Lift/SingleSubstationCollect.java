@@ -24,10 +24,10 @@ public class SingleSubstationCollect extends InstantCommand {
 
     @Override
     public void initialize() {
-        // if (gamePiece.get() == GamePiece.CONE) {
-        lift.setGoalState(LiftState.singleSubCone);
-        // } else {
-        //     lift.setGoalState(LiftState.singleSubCube);
-        // }
+        if (gamePiece.get() == GamePiece.CUBE) {
+        lift.setGoalState(LiftState.singleSubCube);
+        } else {
+            lift.setGoalState(LiftState.singleSubCone);
+        }
     }
 }

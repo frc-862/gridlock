@@ -10,7 +10,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,6 +31,8 @@ public class Arm extends SubsystemBase {
     private PIDController downController = new PIDController(ArmConstants.DOWN_kP, ArmConstants.DOWN_kI, ArmConstants.DOWN_kD);
     private SparkMaxAbsoluteEncoder encoder;
 
+    private int currCurrentLimit = ArmConstants.CURRENT_LIMIT;
+
     // The encoder offset 
     private double OFFSET;
 
@@ -45,6 +46,8 @@ public class Arm extends SubsystemBase {
     private boolean isDrawingMax = false;
     private double drawMaxTime = 0;
 
+    private boolean enable = false; // For squsih
+
     // The target angle to be set to the arm
     private double targetAngle;
 
@@ -57,8 +60,7 @@ public class Arm extends SubsystemBase {
         if (Constants.isBlackout()) {
             // If blackout, use the blackout offset
             OFFSET = ArmConstants.ENCODER_OFFSET_BLACKOUT;
-        } else {
-            // Otherwise, assume gridlock offset
+        } else { // Otherwise, assume gridlock offset
             OFFSET = ArmConstants.ENCODER_OFFSET_GRIDLOCK;
         }
 
@@ -91,15 +93,18 @@ public class Arm extends SubsystemBase {
     // Metod to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
-                new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
-                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()),
-                new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
-                new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
-        // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
-        // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
-        // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
-        // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, 
+            new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
+            new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), 
+            new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
+            new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), 
+            new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()),
+            new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
+            new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
+            // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
+            // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
+            // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
+            // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
     }
 
     /**
@@ -114,6 +119,13 @@ public class Arm extends SubsystemBase {
 
     public double getTargetAngle() {
         return targetAngle;
+    }
+
+    public void setCurrentLimit(int currentLimit) {
+        if (currentLimit != currCurrentLimit) {
+            motor.setSmartCurrentLimit(currentLimit);
+        }
+        currCurrentLimit = currentLimit;
     }
 
     /**
@@ -197,6 +209,9 @@ public class Arm extends SubsystemBase {
         return angle.getDegrees() >= ArmConstants.MIN_ANGLE && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
     }
 
+    /**
+     * Permenatly disables the arm, requires a reboot to re-enable
+     */
     public void disableArm() {
         disableArm = true;
     }
@@ -233,29 +248,46 @@ public class Arm extends SubsystemBase {
             motor.set(power);
         }
 
-        if(motor.getOutputCurrent() > 49.5 && !isDrawingMax) {
+        if (motor.getOutputCurrent() > 49.5 && !isDrawingMax) {
             isDrawingMax = true;
             drawMaxTime = Timer.getFPGATimestamp();
-        } else if(motor.getOutputCurrent() < 49.5){
+        } else if (motor.getOutputCurrent() < 49.5) {
             isDrawingMax = false;
         }
 
-        if(isDrawingMax) {
-            if(Timer.getFPGATimestamp() - drawMaxTime > 2) {
+        if (isDrawingMax) {
+            if (Timer.getFPGATimestamp() - drawMaxTime > 2) {
                 disableArm = true;
             }
         }
 
+        if (enable) {
+            setCurrentLimit(2);
+        } else {
+            setCurrentLimit(ArmConstants.CURRENT_LIMIT);
+        }
+
         periodicShuffleboard.loop();
 
+        // For Testing and Tuning
         // upController.setD(LightningShuffleboard.getDouble("Arm", "up kD", ArmConstants.UP_kD));
         // upController.setP(LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP));
 
         // downController.setD(LightningShuffleboard.getDouble("Arm", "down kD", ArmConstants.DOWN_kD));
         // downController.setP(LightningShuffleboard.getDouble("Arm", "down kP", ArmConstants.DOWN_kP));
-
-        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", -60)));
+        LightningShuffleboard.setDouble("Arm", "Current", motor.getOutputCurrent());
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", getAngle().getDegrees())));
         LightningShuffleboard.setDouble("Arm", "OUTPUT APPLIED", power);
+        LightningShuffleboard.setBool("Arm", "Squish", enable);
         // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
+    }
+
+    /**
+     * Makes the arm lower current to allow squishing against wall
+     * 
+     * @param enable true = on, fase = off
+     */
+    public void squishToggle(boolean enable) {
+        this.enable = enable;
     }
 }
