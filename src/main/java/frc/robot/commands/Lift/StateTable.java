@@ -25,11 +25,11 @@ public class StateTable {
     private static final double ARM_MIN_ANGLE = ArmConstants.MIN_ANGLE;
     private static final double WRIST_MIN_ANGLE = WristConstants.MIN_ANGLE;
 
-    private static final double ELEVATOR_STOW_SAFE = 8d;
+    private static final double ELEVATOR_STOW_SAFE = 7.8d;
     private static final double ARM_STOW_SAFE = -105d;
     private static final double WRIST_STOW_SAFE = 95;
 
-    private static final double WRIST_SCORE_TO_COLLECT_SAFE = 0d;
+    private static final double WRIST_SCORE_TO_COLLECT_SAFE = 0d; // TODO THink this is why the wrist straigthens first
 
     private static final double ELEVATOR_STOWED_POS = 2;
     private static final double ARM_STOWED_ANGLE = -112;
@@ -38,7 +38,7 @@ public class StateTable {
 
     private static final double ELEVATOR_STOW_COLLECT_TRANSITION_POS = 8;
     private static final double ARM_STOW_COLLECT_TRANSITION_ANGLE = -70;
-    private static final double WRIST_STOW_COLLECT_TRANSITION_ANGLE = 90;
+    private static final double WRIST_STOW_COLLECT_TRANSITION_ANGLE = 115;
 
     private static final double ELEVATOR_GROUND_CONE_POS = 0;
     private static final double ARM_GROUND_CONE_ANGLE = -74;
@@ -81,7 +81,7 @@ public class StateTable {
 
     private static final double ELEVATOR_OTB_HIGH_POS = 0d;
     private static final double ARM_OTB_HIGH_ANGLE = 160d;
-    private static final double WRIST_OTB_HIGH_ANGLE = 69d;
+    private static final double WRIST_OTB_HIGH_ANGLE = 50d;
 
     private static final double ELEVATOR_OTB_MID_POS = 0d;
     private static final double ARM_OTB_MID_ANGLE = 170d;

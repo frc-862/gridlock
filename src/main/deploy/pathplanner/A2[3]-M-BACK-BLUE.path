@@ -29,15 +29,15 @@
     {
       "anchorPoint": {
         "x": 6.86467565917588,
-        "y": 4.48
+        "y": 4.58
       },
       "prevControl": {
         "x": 5.949839022084632,
-        "y": 4.7544509911273725
+        "y": 4.854450991127372
       },
       "nextControl": {
         "x": 5.949839022084632,
-        "y": 4.7544509911273725
+        "y": 4.854450991127372
       },
       "holonomicAngle": 0,
       "isReversal": true,
@@ -124,7 +124,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Score-Slow",
+          "Score",
           "Stow"
         ],
         "executionBehavior": "sequential",

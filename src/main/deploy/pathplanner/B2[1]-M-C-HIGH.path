@@ -17,9 +17,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Throw-Cube",
-          "Turn-On-Vision",
-          "Pos2"
+          "Throw-Cube"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "minimum",
@@ -28,15 +26,15 @@
     },
     {
       "anchorPoint": {
-        "x": 6.5,
+        "x": 6.25,
         "y": 2.72
       },
       "prevControl": {
-        "x": 5.5,
+        "x": 5.25,
         "y": 2.72
       },
       "nextControl": {
-        "x": 5.5,
+        "x": 5.25,
         "y": 2.72
       },
       "holonomicAngle": 0,
@@ -50,7 +48,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "after",
-        "waitTime": 0.5
+        "waitTime": 0.0
       }
     },
     {

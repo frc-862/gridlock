@@ -158,9 +158,9 @@ public class Collector extends SubsystemBase {
         } else {
             motor.set(power);
         }
-            
+        // LightningShuffleboard.setDouble("Collector", "Desired output", power);
     }
-
+    
     /**
      * stop Sets the power of the collector motor to 0
      */

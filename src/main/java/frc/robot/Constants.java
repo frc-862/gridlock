@@ -264,7 +264,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
         public static final double HOLD_POWER_CUBE = 0.25;
-        public static final double HOLD_POWER_CONE = 0.50;
+        public static final double HOLD_POWER_CONE = 0.65;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
@@ -288,14 +288,14 @@ public final class Constants {
 
         // Motor configuration constants
         public static final boolean MOTOR_INVERT = true;
-        public static final int CURRENT_LIMIT = 30;
+        public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
         // PID gains for our wrist going up and down
-        public static final double UP_kP = 0.0075d;
+        public static final double UP_kP = 0.0079d;
         public static final double UP_kD = 0.0001d;
-        public static final double DOWN_kP = 0.005d;
+        public static final double DOWN_kP = 0.006d;
         public static final double DOWN_kD = 0d;
         public static final double kI = 0d;
 
@@ -339,7 +339,7 @@ public final class Constants {
                 put(-90d, 0d);
                 put(-45d, -0.008d);
                 put(0d, 0.017d);
-                put(45d, 0.008d);
+                put(45d, 0.01d);
                 put(90d, 0d);
                 put(135d, 0.008d);
 
@@ -511,8 +511,8 @@ public final class Constants {
         // Max velocity and acceleration for the path planner
         public static final double MAX_VELOCITY = 2;
         public static final double MAX_ACCELERATION = 1;
-        public static final double SERVO_UP = 0d;
-        public static final double SERVO_DOWN = 0.4d;
+        public static final double SERVO_UP = -1d;
+        public static final double SERVO_DOWN = 0.2d;
 
     }
 
