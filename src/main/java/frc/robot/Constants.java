@@ -551,6 +551,9 @@ public final class Constants {
 
         public static final double MAX_ACCELERATION_MUL = 1;
 
+        public static final double TOLERANCE_CUBE_ALLIGN_Y = 5d;
+        public static final double TOLERANCE_CUBE_ALLIGN_Z = 5d; 
+
         public static final double CONTROL_LENGTHS = 0.001;
 
         // Tolerance for auto align
