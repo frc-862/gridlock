@@ -26,6 +26,7 @@ import frc.robot.commands.AutoBalance;
 import frc.robot.commands.AutoScore;
 import frc.robot.commands.Collect;
 import frc.robot.commands.CubeAlign;
+import frc.robot.commands.Cubego;
 import frc.robot.commands.EleUpInCommunity;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.HoldPower;
@@ -112,6 +113,9 @@ public class RobotContainer extends LightningContainer {
         new Trigger(() -> buttonPad.getRawButton(9)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_9_POSE)));
         new Trigger(() -> buttonPad.getRawButton(12)).onTrue(new InstantCommand(() -> drivetrain.setDesiredPose(AutoAlignConstants.BluePoints.SLOT_10_POSE)));
 
+                
+        //cubego(Devin Cube Allign)
+        new Trigger(driver::getYButton).onTrue(new Cubego(drivetrain));
         // SERVO
         new Trigger(driver::getStartButton).onTrue(new InstantCommand(servoturn::flickServo)); // For testing Servo in the pits
 

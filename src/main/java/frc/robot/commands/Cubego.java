@@ -15,13 +15,14 @@ public class Cubego extends CommandBase {
     Drivetrain drivetrain;
     LimelightFront limelightFront;
 
+    //Set up PIDs
     PIDController cubePIDy = new PIDController(0,0,0);
     PIDController cubePIDz = new PIDController(0,0,0);
 
 
 
     /** Creates a new Cubego. */
-  public Cubego() {
+  public Cubego(Drivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     addRequirements(drivetrain);
@@ -30,11 +31,14 @@ public class Cubego extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //cube detect is in 3(I hope)
     limelightFront.setPipelineNum(3);
 
+    //TODO tune these 
     cubePIDy.setSetpoint(0);
     cubePIDz.setSetpoint(0);
 
+    //sets up tolerance 
     cubePIDy.setTolerance(0);
     cubePIDz.setTolerance(0);
   }
@@ -43,6 +47,7 @@ public class Cubego extends CommandBase {
   @Override
   public void execute() {
     if(limelightFront.hasVision()){ // If sees object
+        //if the cube is within 5 degrees for y and z planes
         if(Math.abs(limelightFront.getVerticalOffset()) > Constants.AutoAlignConstants.TOLERANCE_CUBE_ALLIGN_Y && Math.abs(limelightFront.getHorizontalOffset()) > Constants.AutoAlignConstants.TOLERANCE_CUBE_ALLIGN_Z){
             drivetrain.drive(new ChassisSpeeds(0,cubePIDy.calculate(limelightFront.getVerticalOffset()),cubePIDz.calculate(limelightFront.getHorizontalOffset())));
 
@@ -62,6 +67,7 @@ public class Cubego extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     return false;
   }
 }
