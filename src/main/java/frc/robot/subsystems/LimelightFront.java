@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 
 public class LimelightFront extends SubsystemBase {
 
@@ -67,6 +68,27 @@ public class LimelightFront extends SubsystemBase {
             new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
             new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()),
             new Pair<String, Object>(limelightName + "Tag distance", (DoubleSupplier) () -> getTagDistance()));
+    }
+
+    public void takeSnapshot() {
+        LimelightHelpers.takeSnapshot("Limelight-Snapshots", limelightName + Timer.getFPGATimestamp());
+    }
+
+    /*
+     * Changes the Camera's stream view to optimize bandwidth.
+     * Whichever Camera is focused will be bigger, while the other Camera will be in the corner of the screen.
+     * Standard is Side by Side view.
+     */
+    public void changeCameraFocusToSecondary() {
+        LimelightHelpers.setStreamMode_PiPSecondary(limelightName);
+    }
+
+    public void changeCameraFocusToPrimary() {
+        LimelightHelpers.setStreamMode_PiPMain(limelightName);
+    }
+
+    public void changeCameraFocusToStandard() {
+        LimelightHelpers.setStreamMode_Standard(limelightName);
     }
 
     /**
