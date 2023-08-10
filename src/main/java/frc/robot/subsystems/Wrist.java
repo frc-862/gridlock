@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -27,7 +28,8 @@ public class Wrist extends SubsystemBase {
     private PIDController upController = new PIDController(WristConstants.UP_kP, WristConstants.kI, WristConstants.UP_kD);
     private PIDController downController = new PIDController(WristConstants.DOWN_kP, WristConstants.kI, WristConstants.DOWN_kD);
 
-    private SparkMaxAbsoluteEncoder encoder;
+    private SparkMaxAbsoluteEncoder absEncoder;
+    private RelativeEncoder relEncoder;
 
     // The encoder offset
     private double OFFSET;
@@ -63,7 +65,12 @@ public class Wrist extends SubsystemBase {
         motor.setClosedLoopRampRate(2);
 
         // Create the absolute encoder and sets the conversion factor
-        encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+        absEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+
+        relEncoder = motor.getEncoder();
+        relEncoder.setPositionConversionFactor(4.9);
+
+        relEncoder.setPosition(getAbsoluteAngle());
 
         targetAngle = getAngle().getDegrees();
 
@@ -74,6 +81,10 @@ public class Wrist extends SubsystemBase {
         initializeShuffleboard();
 
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+
+    private double getAbsoluteAngle() {
+        return MathUtil.inputModulus(absEncoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180);
     }
 
     // Method to update the shuffleboard
@@ -97,7 +108,7 @@ public class Wrist extends SubsystemBase {
      * @return Rotation2d of the wrist from encoder
      */
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(MathUtil.inputModulus(encoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180));
+        return Rotation2d.fromDegrees(MathUtil.inputModulus(relEncoder.getPosition() * WristConstants.POSITION_CONVERSION_FACTOR - OFFSET, -180, 180));
     }
 
     public Rotation2d getGroundRelativeAngle(Rotation2d armAngle) {
