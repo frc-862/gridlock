@@ -92,11 +92,11 @@ public class Wrist extends SubsystemBase {
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Wrist", WristConstants.LOG_PERIOD, 
             new Pair<String, Object>("Wrist Target Angle", (DoubleSupplier) () -> targetAngle),
-            new Pair<String, Object>("Wrist angle", (DoubleSupplier) () -> getAngle().getDegrees()),
+            new Pair<String, Object>("Wrist Absolute angle", (DoubleSupplier) () -> getAbsoluteAngle()),
             new Pair<String, Object>("Wrist motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
             new Pair<String, Object>("Wrist on target", (BooleanSupplier) () -> onTarget()),
             new Pair<String, Object>("Wrist Motor Controller Output (Amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
-            new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
+            new Pair<String, Object>("Wrist Relative angle", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
             new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
             // new Pair<String, Object>("Wrist fwd Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
             // new Pair<String, Object>("Wrist rev Limit", (BooleanSupplier) () -> getBottomLimitSwitch()));

@@ -104,12 +104,12 @@ public class Arm extends SubsystemBase {
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, 
-            new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
+            new Pair<String, Object>("Arm absolute angle", (DoubleSupplier) () -> getAbsoluteAngle()),
             new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), 
             new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
             new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), 
             new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()),
-            new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
+            new Pair<String, Object>("Arm relative angle", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
             new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
             // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
             // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
