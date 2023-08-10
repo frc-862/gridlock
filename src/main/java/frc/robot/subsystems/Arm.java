@@ -80,7 +80,7 @@ public class Arm extends SubsystemBase {
         absEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
         relEncoder = motor.getEncoder();
-        relEncoder.setPositionConversionFactor(360 / 160);
+        relEncoder.setPositionConversionFactor(2d);
 
         relEncoder.setPosition(getAbsoluteAngle());
 
