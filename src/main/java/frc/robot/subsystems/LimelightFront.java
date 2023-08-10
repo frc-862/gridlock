@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 import frc.thunder.limelightlib.LimelightHelpers;
 import frc.thunder.shuffleboard.LightningShuffleboardPeriodic;
@@ -48,26 +47,26 @@ public class LimelightFront extends SubsystemBase {
     // Method to initialize shuffleboard with vision data\
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard =
-                new LightningShuffleboardPeriodic("Vision", 0.17, new Pair<String, Object>(limelightName + "Vision bot pose TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[0]),
-                        new Pair<String, Object>(limelightName + "Vision bot pose TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[1]),
-                        new Pair<String, Object>(limelightName + "Vision bot pose RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[5]),
-                        new Pair<String, Object>(limelightName + "Vision bot pose Blue TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[0]),
-                        new Pair<String, Object>(limelightName + "Vision bot pose Blue TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[1]),
-                        new Pair<String, Object>(limelightName + "Vision bot pose Blue RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[5]),
-                        new Pair<String, Object>(limelightName + "Vision bot pose Red TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[0]),
-                        new Pair<String, Object>(limelightName + "Vision bot pose Red TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[1]),
-                        new Pair<String, Object>(limelightName + "Vision bot pose Red RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[5]),
-                        new Pair<String, Object>(limelightName + "RR Tape Horizontal Offset", (DoubleSupplier) () -> getHorizontalOffset()),
-                        new Pair<String, Object>(limelightName + "RR Tape Vertical Offset", (DoubleSupplier) () -> getVerticalOffset()),
-                        new Pair<String, Object>(limelightName + "RR Tape Target Area", (DoubleSupplier) () -> getTargetArea()),
-                        new Pair<String, Object>(limelightName + "Vision latency pipeline", (DoubleSupplier) () -> getLatencyPipline()),
-                        new Pair<String, Object>(limelightName + "Vision latency capture", (DoubleSupplier) () -> getLatencyCapture()),
-                        new Pair<String, Object>(limelightName + "Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
-                        new Pair<String, Object>(limelightName + "Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
-                        new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
-                        new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()));
-
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Vision", 0.17, 
+            new Pair<String, Object>(limelightName + "Vision bot pose TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[0]),
+            new Pair<String, Object>(limelightName + "Vision bot pose TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[1]),
+            new Pair<String, Object>(limelightName + "Vision bot pose RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose(limelightName)[5]),
+            new Pair<String, Object>(limelightName + "Vision bot pose Blue TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[0]),
+            new Pair<String, Object>(limelightName + "Vision bot pose Blue TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[1]),
+            new Pair<String, Object>(limelightName + "Vision bot pose Blue RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiBlue(limelightName)[5]),
+            new Pair<String, Object>(limelightName + "Vision bot pose Red TX", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[0]),
+            new Pair<String, Object>(limelightName + "Vision bot pose Red TY", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[1]),
+            new Pair<String, Object>(limelightName + "Vision bot pose Red RZ", (DoubleSupplier) () -> LimelightHelpers.getBotPose_wpiRed(limelightName)[5]),
+            new Pair<String, Object>(limelightName + "RR Tape Horizontal Offset", (DoubleSupplier) () -> getHorizontalOffset()),
+            new Pair<String, Object>(limelightName + "RR Tape Vertical Offset", (DoubleSupplier) () -> getVerticalOffset()),
+            new Pair<String, Object>(limelightName + "RR Tape Target Area", (DoubleSupplier) () -> getTargetArea()),
+            new Pair<String, Object>(limelightName + "Vision latency pipeline", (DoubleSupplier) () -> getLatencyPipline()),
+            new Pair<String, Object>(limelightName + "Vision latency capture", (DoubleSupplier) () -> getLatencyCapture()),
+            new Pair<String, Object>(limelightName + "Vision bot pose latency", (DoubleSupplier) () -> getLatencyBotPose()),
+            new Pair<String, Object>(limelightName + "Vision bot pose blue latency", (DoubleSupplier) () -> getLatencyBotPoseBlue()),
+            new Pair<String, Object>(limelightName + "Vision bot pose red latency", (DoubleSupplier) () -> getLatencyBotPoseRed()),
+            new Pair<String, Object>(limelightName + "Vision has vision", (BooleanSupplier) () -> hasVision()),
+            new Pair<String, Object>(limelightName + "Tag distance", (DoubleSupplier) () -> getTagDistance()));
     }
 
     /**
@@ -85,6 +84,20 @@ public class LimelightFront extends SubsystemBase {
             robotPose = new Pose2d(new Translation2d(botPose[0] - cameraPose.getX(), botPose[1] - cameraPose.getY()), Rotation2d.fromDegrees(botPose[5]));
         }
         return robotPose;
+    }
+
+    /**
+     * Gets the distance from the seen tag
+     * 
+     * @return the distancce from the tag in meters
+     */
+    public double getTagDistance() {
+        if (hasVision()) {
+            if(LimelightHelpers.getTargetPose_RobotSpace(limelightName).length != 0) {
+            return LimelightHelpers.getTargetPose_RobotSpace(limelightName)[2];
+            }
+        } 
+            return -1;
     }
 
     /**
@@ -236,7 +249,7 @@ public class LimelightFront extends SubsystemBase {
      */
     public boolean validAngle(double angle) {
         // 29.8d represents the LL2+'s max FOV, from center of camera to edge of frame.
-        return Math.abs(angle) < Constants.VisionConstants.HORIZ_CAMERA_FOV;
+        return Math.abs(angle) < VisionConstants.HORIZ_CAMERA_FOV;
     }
 
     /**
@@ -248,7 +261,7 @@ public class LimelightFront extends SubsystemBase {
      */
     public boolean isOnTarget(double expectedAngle) {
         // Should put consideration into how accurate we want to be later on.
-        return expectedAngle < Constants.VisionConstants.HORIZ_DEGREE_TOLERANCE;
+        return expectedAngle < VisionConstants.HORIZ_DEGREE_TOLERANCE;
     }
 
     /**

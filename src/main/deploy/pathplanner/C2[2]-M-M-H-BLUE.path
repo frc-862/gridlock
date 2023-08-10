@@ -1,0 +1,127 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.7977873330924976,
+        "y": 0.98
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.427942664729837,
+        "y": 0.38741831854562414
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "Throw-Cube",
+          "Turn-Off-Vision"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "minimum",
+        "waitTime": 1.5
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.8,
+        "y": 0.91
+      },
+      "prevControl": {
+        "x": 4.4328602015263945,
+        "y": 0.4754525973816556
+      },
+      "nextControl": {
+        "x": 4.4328602015263945,
+        "y": 0.4754525973816556
+      },
+      "holonomicAngle": 0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Hold-Power",
+          "Mid-Score-Cube-Back"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "deadline",
+        "waitTime": 0.01
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.8092227910561378,
+        "y": 1.04
+      },
+      "prevControl": {
+        "x": 3.9133470563660104,
+        "y": 0.45679164385433024
+      },
+      "nextControl": {
+        "x": 3.9133470563660104,
+        "y": 0.45679164385433024
+      },
+      "holonomicAngle": 0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Score-Slow",
+          "Stow"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.708713956657585,
+        "y": 0.7661756835639195
+      },
+      "prevControl": {
+        "x": 4.633780908075368,
+        "y": 0.6175147300365919
+      },
+      "nextControl": null,
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": [
+    {
+      "position": 0.21818181818180993,
+      "names": [
+        "Collect"
+      ]
+    },
+    {
+      "position": 2.2036363636362872,
+      "names": [
+        "Stop-Collect"
+      ]
+    },
+    {
+      "position": 0.04363636363636427,
+      "names": [
+        "Ground-Collect-Cube"
+      ]
+    }
+  ]
+}

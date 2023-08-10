@@ -33,12 +33,22 @@ public class Arm extends SubsystemBase {
     private SparkMaxAbsoluteEncoder absEncoder;
     private RelativeEncoder relEncoder;
 
+    private int currCurrentLimit = ArmConstants.CURRENT_LIMIT;
+
     // The encoder offset 
     private double OFFSET;
 
     private double PIDOUT;
+    private double kFOut_POSITIONAL;
+    private double kFOut_VELOCITY;
+    private double power;
 
     private double tolerance = ArmConstants.TOLERANCE;
+
+    private boolean isDrawingMax = false;
+    private double drawMaxTime = 0;
+
+    private boolean enable = false; // For squsih
 
     // The target angle to be set to the arm
     private double targetAngle;
@@ -54,8 +64,7 @@ public class Arm extends SubsystemBase {
         if (Constants.isBlackout()) {
             // If blackout, use the blackout offset
             OFFSET = ArmConstants.ENCODER_OFFSET_BLACKOUT;
-        } else {
-            // Otherwise, assume gridlock offset
+        } else { // Otherwise, assume gridlock offset
             OFFSET = ArmConstants.ENCODER_OFFSET_GRIDLOCK;
         }
 
@@ -68,14 +77,19 @@ public class Arm extends SubsystemBase {
         // Create the absolute encoder and sets the conversion factor
         absEncoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
         absEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+        absEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
 
         relEncoder = motor.getEncoder();
         relEncoder.setPositionConversionFactor(360 / 160);
 
         relEncoder.setPosition(getAbsoluteAngle());
 
+
         motor.getReverseLimitSwitch(ArmConstants.BOTTOM_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
         motor.getForwardLimitSwitch(ArmConstants.TOP_LIMIT_SWITCH_TYPE).enableLimitSwitch(false);
+
+        upController.disableContinuousInput();
+        downController.disableContinuousInput();
 
         // Create the PID controller and set the output range
         targetAngle = getAngle().getDegrees();
@@ -89,14 +103,18 @@ public class Arm extends SubsystemBase {
     // Metod to starts logging and updates the shuffleboard
     @SuppressWarnings("unchecked")
     private void initializeShuffleboard() {
-        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, new Pair<String, Object>("Arm absolute encoder", (DoubleSupplier) () -> getAbsoluteAngle()),
-                new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
-                new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()),
-                new Pair<String, Object>("Arm built-in encoder", (DoubleSupplier) () -> getAngle().getDegrees()));
-        // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
-        // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
-        // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
-        // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
+        periodicShuffleboard = new LightningShuffleboardPeriodic("Arm", ArmConstants.LOG_PERIOD, 
+            new Pair<String, Object>("Arm angle", (DoubleSupplier) () -> getAngle().getDegrees()),
+            new Pair<String, Object>("Arm Target Angle", (DoubleSupplier) () -> targetAngle), 
+            new Pair<String, Object>("Arm on target", (BooleanSupplier) () -> onTarget()),
+            new Pair<String, Object>("Arm amps", (DoubleSupplier) () -> motor.getOutputCurrent()), 
+            new Pair<String, Object>("Arm velocity", (DoubleSupplier) () -> getVelocity()),
+            new Pair<String, Object>("built in position", (DoubleSupplier) () -> motor.getEncoder().getPosition()),
+            new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()));
+            // new Pair<String, Object>("Arm Bottom Limit", (BooleanSupplier) () -> getBottomLimitSwitch()),
+            // new Pair<String, Object>("Arm Top Limit", (BooleanSupplier) () -> getTopLimitSwitch()), 
+            // new Pair<String, Object>("Arm motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
+            // new Pair<String, Object>("Arm motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()));
     }
 
     /**
@@ -111,6 +129,13 @@ public class Arm extends SubsystemBase {
 
     public double getTargetAngle() {
         return targetAngle;
+    }
+
+    public void setCurrentLimit(int currentLimit) {
+        if (currentLimit != currCurrentLimit) {
+            motor.setSmartCurrentLimit(currentLimit);
+        }
+        currCurrentLimit = currentLimit;
     }
 
     /**
@@ -174,7 +199,6 @@ public class Arm extends SubsystemBase {
      */
     public boolean onTarget() {
         return Math.abs(getAngle().getDegrees() - targetAngle) < tolerance;
-        // return true;
     }
 
     /**
@@ -186,11 +210,14 @@ public class Arm extends SubsystemBase {
      */
     public boolean onTarget(double target) {
         return Math.abs(getAngle().getDegrees() - target) < tolerance;
-        // return true;
     }
 
     public void setTolerance(double tolerance) {
         this.tolerance = tolerance;
+    }
+
+    public double getVelocity() {
+        return relEncoder.getVelocity();
     }
 
     /**
@@ -202,6 +229,9 @@ public class Arm extends SubsystemBase {
         return angle.getDegrees() >= ArmConstants.MIN_ANGLE && angle.getDegrees() <= ArmConstants.MAX_ANGLE;
     }
 
+    /**
+     * Permenatly disables the arm, requires a reboot to re-enable
+     */
     public void disableArm() {
         disableArm = true;
     }
@@ -209,14 +239,28 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         double currentAngle = getAngle().getDegrees();
+        double currentVelocity = getVelocity();
+
         // double kFOut = LightningShuffleboard.getDouble("Arm", "kF in", 0);
-        double kFOut = ArmConstants.ARM_KF_MAP.get(currentAngle);
-        if (targetAngle - currentAngle > 0) {
-            PIDOUT = upController.calculate(currentAngle, targetAngle);
+        kFOut_POSITIONAL = ArmConstants.ARM_POSITIONAL_KF_MAP.get(currentAngle);
+        kFOut_VELOCITY = 0d;
+        // kFOut_VELOCITY = ArmConstants.ARM_VELOCITY_KF_MAP.get(currentVelocity);
+
+        //swap up and down controllers when in applicable quadrants
+        if (currentAngle < 90 && currentAngle > -90) {
+            if (targetAngle - currentAngle > 0) {
+                PIDOUT = upController.calculate(currentAngle, targetAngle);
+            } else {
+                PIDOUT = downController.calculate(currentAngle, targetAngle);
+            }
         } else {
-            PIDOUT = downController.calculate(currentAngle, targetAngle);
+            if (targetAngle - currentAngle > 0) {
+                PIDOUT = downController.calculate(currentAngle, targetAngle);
+            } else {
+                PIDOUT = upController.calculate(currentAngle, targetAngle);
+            }
         }
-        double power = kFOut + PIDOUT;
+        power = kFOut_POSITIONAL + kFOut_VELOCITY + PIDOUT;
 
         if (disableArm) {
             motor.set(0);
@@ -224,20 +268,46 @@ public class Arm extends SubsystemBase {
             motor.set(power);
         }
 
+        if (motor.getOutputCurrent() > 49.5 && !isDrawingMax) {
+            isDrawingMax = true;
+            drawMaxTime = Timer.getFPGATimestamp();
+        } else if (motor.getOutputCurrent() < 49.5) {
+            isDrawingMax = false;
+        }
+
+        if (isDrawingMax) {
+            if (Timer.getFPGATimestamp() - drawMaxTime > 2) {
+                disableArm = true;
+            }
+        }
+
+        if (enable) {
+            setCurrentLimit(2);
+        } else {
+            setCurrentLimit(ArmConstants.CURRENT_LIMIT);
+        }
+
         periodicShuffleboard.loop();
 
-        // if(Timer.getFPGATimestamp() - lastSyncedTime > 5) {
-        //     syncToAbsolute();
-        //     lastSyncedTime = Timer.getFPGATimestamp();
-        // }
-
+        // For Testing and Tuning
         // upController.setD(LightningShuffleboard.getDouble("Arm", "up kD", ArmConstants.UP_kD));
         // upController.setP(LightningShuffleboard.getDouble("Arm", "up kP", ArmConstants.UP_kP));
 
         // downController.setD(LightningShuffleboard.getDouble("Arm", "down kD", ArmConstants.DOWN_kD));
         // downController.setP(LightningShuffleboard.getDouble("Arm", "down kP", ArmConstants.DOWN_kP));
-
-        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", -60)));
+        LightningShuffleboard.setDouble("Arm", "Current", motor.getOutputCurrent());
+        // setAngle(Rotation2d.fromDegrees(LightningShuffleboard.getDouble("Arm", "arm setpoint", getAngle().getDegrees())));
+        LightningShuffleboard.setDouble("Arm", "OUTPUT APPLIED", power);
+        LightningShuffleboard.setBool("Arm", "Squish", enable);
         // LightningShuffleboard.setDouble("Arm", "kf map", ArmConstants.ARM_KF_MAP.get(currentAngle));
+    }
+
+    /**
+     * Makes the arm lower current to allow squishing against wall
+     * 
+     * @param enable true = on, fase = off
+     */
+    public void squishToggle(boolean enable) {
+        this.enable = enable;
     }
 }

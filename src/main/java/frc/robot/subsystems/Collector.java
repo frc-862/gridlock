@@ -1,14 +1,10 @@
 package frc.robot.subsystems;
 
-import java.time.Period;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
@@ -37,6 +33,8 @@ public class Collector extends SubsystemBase {
 
     // Periodic Shuffleboard
     private LightningShuffleboardPeriodic periodicShuffleboard;
+
+    private int currCurrentLimit = CollectorConstants.CURRENT_LIMIT;
 
     // Enum of possible game pieces
     public enum GamePiece {
@@ -74,16 +72,30 @@ public class Collector extends SubsystemBase {
     @SuppressWarnings("unchecked")
     private void initialiizeShuffleboard() {
         periodicShuffleboard = new LightningShuffleboardPeriodic("Collector", CollectorConstants.LOG_PERIOD,
-                new Pair<String, Object>("Collector motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
-                // new Pair<String, Object>("Collector motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
-                new Pair<String, Object>("Collector motor controller output (amps)", (DoubleSupplier) () -> motor.getOutputCurrent()));
-        // new Pair<String, Object>("Collector motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
-        // new Pair<String, Object>("Color sensor proximity", (Supplier<Double>) () -> (double) colorSensor.getProximity()),
-        // new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> getGamePiece().toString()));
-        // new Pair<String, Object>("Color sensor confidence", (DoubleSupplier) () -> getConfidence()));
+            new Pair<String, Object>("Collector motor temperature", (DoubleSupplier) () -> motor.getMotorTemperature()),
+            // new Pair<String, Object>("Collector motor controller input voltage", (DoubleSupplier) () -> motor.getBusVoltage()),
+            new Pair<String, Object>("Collector motor controller output (amps)", (DoubleSupplier) () -> motor.getOutputCurrent()),
+            new Pair<String, Object>("faults", (DoubleSupplier) () -> (double) motor.getFaults()),
+            new Pair<String, Object>("collector rpm", (DoubleSupplier) () -> (double) motor.getEncoder().getVelocity()));
+            // new Pair<String, Object>("Collector motor controller output (volts)", (DoubleSupplier) () -> motor.getAppliedOutput()),
+            // new Pair<String, Object>("Color sensor proximity", (Supplier<Double>) () -> (double) colorSensor.getProximity()),
+            // new Pair<String, Object>("Color sensor detected game piece", (Supplier<String>) () -> getGamePiece().toString()));
+            // new Pair<String, Object>("Color sensor confidence", (DoubleSupplier) () -> getConfidence()));
 
     }
 
+    /**
+     * Sets smart current limit if its different from the current current limit
+     * @param currentLimit the new smart current limit
+     */
+    public void setCurrentLimit(int currentLimit) {
+        if(currentLimit != currCurrentLimit) {
+            motor.setSmartCurrentLimit(currentLimit);
+        }
+        currCurrentLimit = currentLimit;        
+    }
+
+    //Used to check if the collector is stalling. Used to detect if the collector is holding a game piece
     public boolean isStalling(){
         return motor.getOutputCurrent() > CollectorConstants.STALL_POWER;
     }
@@ -95,6 +107,7 @@ public class Collector extends SubsystemBase {
      */
 
     public GamePiece getGamePiece() {
+        // THIS is for the color sensor
         // Color detectedColor = colorSensor.getColor();
         // ColorMatchResult match = colorMatch.matchClosestColor(detectedColor);
 
@@ -108,6 +121,7 @@ public class Collector extends SubsystemBase {
         return gamePiece;
     }
 
+    // For the driver to set the game piece manually
     public void setGamePiece(GamePiece gamePiece) {
         this.gamePiece = gamePiece;
     }
@@ -144,9 +158,9 @@ public class Collector extends SubsystemBase {
         } else {
             motor.set(power);
         }
-            
+        // LightningShuffleboard.setDouble("Collector", "Desired output", power);
     }
-
+    
     /**
      * stop Sets the power of the collector motor to 0
      */

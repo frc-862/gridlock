@@ -2,6 +2,8 @@ package frc.robot;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
@@ -16,7 +18,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.commands.AutoScore;
@@ -58,7 +59,6 @@ public final class Constants {
         public static final double DEADBAND = 0.1d;
         public static final double MIN_POWER = 0d;
         public static final double MAX_POWER = 1d;
-
     }
 
     // Constants for our system tests    
@@ -69,10 +69,9 @@ public final class Constants {
         public static final int MAX_ROTATIONS_PER_DIRECTION = 2;
     }
 
-    // COnstants for our drivetrain
+    // Constants for our drivetrain
     public static final class DrivetrainConstants {
-        // Our drivetrain and track width
-        // TODO: remeasure these
+        // Our drivetrain track width and Wheelbase
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(20.8125d);
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.8125d);
 
@@ -87,7 +86,7 @@ public final class Constants {
         // public static final double MAX_VELOCITY_METERS_PER_SECOND = 5676.0 / 60.0 * SdsModuleConfigurations.MK4I_L2.getDriveReduction() * SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
         public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.5;
         public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
-        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI / 5;
+        public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = +MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI / 5;
 
         // Module configuration constants
         public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -96,14 +95,14 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.18;
 
-        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.5;
+        public static final double SLOW_MODE_TRANSLATIONAL_MULT = 0.7;
         public static final double SLOW_MODE_ROTATIONAL_MULT = 0.5;
 
-        // Pigeon heading offset 
+        // Pigeon heading offset
         public static final Rotation2d HEADING_OFFSET = Rotation2d.fromDegrees(90);
 
         // Standard dev for robot pose
-        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(0, 0, 0);// (1, 1, 0.0368);
+        public static final Matrix<N3, N1> STANDARD_DEV_POSE_MATRIX = VecBuilder.fill(0.1, 0.1, 0.1);
 
         // Gains vaules for PIDControllers
         public static final class Gains {
@@ -119,7 +118,6 @@ public final class Constants {
             public static final double kP = 0d;
             public static final double kI = 0d;
             public static final double kD = 0d;
-
         }
 
         // PID gains for our heading compensation
@@ -131,15 +129,16 @@ public final class Constants {
 
         // Steer offsets for our modules
         public static final class Offsets {
-            // Gridlocks steer offsets
+            // Gridlocks swerve module absolute encoder offsets
             public static final class Gridlock {
                 public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(193.535);
                 public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(145.547);
-                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(198.721);
+                // public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(198.721);
+                public static final double BACK_LEFT_STEER_OFFSET = -Math.toRadians(199.688);
                 public static final double BACK_RIGHT_STEER_OFFSET = -Math.toRadians(210.938);
             }
 
-            // Blackouts steer offsets
+            // Blackouts swerve module absolute encoder offsets
             public static final class Blackout {
                 public static final double FRONT_LEFT_STEER_OFFSET = -Math.toRadians(253.916);
                 public static final double FRONT_RIGHT_STEER_OFFSET = -Math.toRadians(222.451);
@@ -163,7 +162,6 @@ public final class Constants {
         public static final double kD = 0d;
         public static final double kF = 0.007d;
 
-        // TODO: set a tolerance
         public static final double TOLERANCE = 1d;
 
         // Conversion factor for our elevator
@@ -189,9 +187,9 @@ public final class Constants {
     public static final class LimelightConstants {
         public static final String FRONT_NAME = "limelight-front";
         public static final String BACK_NAME = "limelight-back";
-        public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0));
-        public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180));
-
+        public static final Pose3d FRONT_POSE = new Pose3d(.1, 0.28, 0.72, new Rotation3d(0, 0, 0)); // Position on robot
+        public static final Pose3d BACK_POSE = new Pose3d(.1, 0.28, 0.83, new Rotation3d(0, 10, 180)); // Position on robot
+        public static final double CUBE_OFFSET = 0.0; // TODO find this value
     }
 
     public static final class ArmConstants {
@@ -214,8 +212,7 @@ public final class Constants {
         public static final double TOLERANCE = 10d;
 
         // Min and Max arm angles in degrees
-        // TODO: change to actual values
-        public static final double MAX_ANGLE = 90d;
+        public static final double MAX_ANGLE = 180;
         public static final double MIN_ANGLE = -113d;
 
         // Min and Max power
@@ -225,7 +222,7 @@ public final class Constants {
         public static final double LENGTH = 26.519; // arm length in inches
 
         // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = 52.3d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -104.68;
         public static final double ENCODER_OFFSET_BLACKOUT = 89.8;
 
         // Conversion factor for our arm, multiply this by the navite units to get degrees
@@ -238,14 +235,27 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.21;
 
         // Interpolation map for our arm Feedforward values to make sure we have enough minimum power to move the arm
-        public static InterpolationMap ARM_KF_MAP = new InterpolationMap() {
+        public static InterpolationMap ARM_POSITIONAL_KF_MAP = new InterpolationMap() {
             {
                 put(-135d, -0.005d);
                 put(-90d, 0d);
                 put(-45d, 0.005d);
-                put(10d, 0.02d);
-                put(15d, 0d);
-                put(90d, -0.1);
+                put(10d, 0.02);
+                put(45d, 0.005d);
+                put(90d, 0d);
+                put(135d, -0.005d);
+            }
+        };
+
+        public static InterpolationMap ARM_VELOCITY_KF_MAP = new InterpolationMap() {
+            {
+                put(300d, -.2);
+                put(200d, -.1);
+                put(80d, -.01);
+                put(0d, 0d);
+                put(-80d, .01);
+                put(-200d, .07);
+                put(-300d, .1);
             }
         };
     }
@@ -254,11 +264,11 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
         public static final double HOLD_POWER_CUBE = 0.25;
-        public static final double HOLD_POWER_CONE = 0.35;
+        public static final double HOLD_POWER_CONE = 0.65;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double STALL_POWER = 35d;
+        public static final double STALL_POWER = 35d; // Used to detect wether or not the collector is stalling meaning it has a game piece
 
         public static final double LOG_PERIOD = 0.22;
 
@@ -278,14 +288,14 @@ public final class Constants {
 
         // Motor configuration constants
         public static final boolean MOTOR_INVERT = true;
-        public static final int CURRENT_LIMIT = 30;
+        public static final int CURRENT_LIMIT = 40;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        // PID gains for our wrist going up
-        public static final double UP_kP = 0.0065d;
+        // PID gains for our wrist going up and down
+        public static final double UP_kP = 0.0079d;
         public static final double UP_kD = 0.0001d;
-        public static final double DOWN_kP = 0.004d;
+        public static final double DOWN_kP = 0.006d;
         public static final double DOWN_kD = 0d;
         public static final double kI = 0d;
 
@@ -293,8 +303,8 @@ public final class Constants {
         public static final double TOLERANCE = 12d;
 
         // Min/max angles in degrees
-        public static final double MAX_ANGLE = 126d;
-        public static final double MIN_ANGLE = -90d;
+        public static final double MAX_ANGLE = 151d;
+        public static final double MIN_ANGLE = -100d;
 
         // Min and Max power
         public static final double MIN_POWER = -1d;
@@ -302,9 +312,10 @@ public final class Constants {
 
         public static final double LOG_PERIOD = 0.24;
 
-        // Offsets in degrees
-        public static final double ENCODER_OFFSET_GRIDLOCK = -131d;
-        public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: change
+        // Offsets in degrees        
+        public static final double ENCODER_OFFSET_GRIDLOCK = 20.8; //-161.5d;
+
+        public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: check this
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;
@@ -326,14 +337,16 @@ public final class Constants {
                 // put(110d, 0d);
 
                 put(-90d, 0d);
-                put(-45d, -0.01d);
-                put(0d, 0.015d);
+                put(-45d, -0.008d);
+                put(0d, 0.017d);
                 put(45d, 0.01d);
                 put(90d, 0d);
+                put(135d, 0.008d);
 
             }
         };
-    }
+    };
+
 
     // RobotMap Constants
     public static final class RobotMap {
@@ -396,7 +409,7 @@ public final class Constants {
 
         // Upper and lower magnitude thresholds for checking if we are on the charge station at all
         public static final double UPPER_MAGNITUDE_THRESHOLD = 11;
-        public static final double LOWER_MAGNITUDE_THRESHOLD = 7; // TODO RESET Value if possible was 2.5 If mag jumps during Auton
+        public static final double LOWER_MAGNITUDE_THRESHOLD = 7;
         // Min and max speeds for our auto balance
         public static final double MIN_SPEED_THRESHOLD = 0.35;
         public static final double MAX_SPEED_THRESHOLD = 1.5;
@@ -432,16 +445,27 @@ public final class Constants {
         // Represents camera FOV from center to edge
         public static final double HORIZ_CAMERA_FOV = 29.8d;
 
-        // Arbitrary value for how close the robot needs to be to the target (in angles)
+        // Arbitrary value for how close the robot needs to be to the target (in degrees)
         public static final double HORIZ_DEGREE_TOLERANCE = 3d;
 
         // Standard deviation for vision, heading is 1000 becuase were using pigeon, so i dont want to use vision heading
-        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(1000, 1000, 1000); //(1.195384707229739, 0.7850610924749237, 2.2025094640913276);
+        public static final Matrix<N3, N1> STANDARD_DEV_VISION_MATRIX = VecBuilder.fill(0.6, 0.6, 0.6);
 
         // Distance from the center of the field, used for getIsolatedTagPose()
         public static final double ISOLATEDTAGXOFFSET = 7.24;
 
         public static final double ISOLATEDTAGYOFFSET = 1.07;
+
+        public static final InterpolationMap visionStandardDevMap = new InterpolationMap() {
+            {
+                put(0d, 0.3);
+                put(2d, 0.4);
+                put(5d, 0.5);
+                put(7d, 1d);
+                put(8d, 1.5d);
+                put(12d, 10d);
+            }
+        };
 
     }
 
@@ -452,16 +476,16 @@ public final class Constants {
         // All of the different states the lift can be in
         public enum LiftState {
             //ground collects
-            groundCone, groundCube,
+            groundCone, groundCube, groundConeVertical,
 
             //substation collects (TODO: see if we need seperate setpoints/states for cube vs cone)
-            doubleSubstationCollect, singleSubstationCollect,
+            doubleSubstationCollect, singleSubCone, singleSubCube, OTB_DoubleSubstationCollect,
 
-            //score states1000
-            midCubeScore, highCubeScore, midConeScore, highConeScore,
+            //score states
+            midCubeScore, highCubeScore, midConeScore, highConeScore, OTB_Mid, OTB_High,
 
             //substates
-            stowedCollect, stowedScore, stowedSingleSub, scoreToCollect,
+            stowedCollect, stowedScore, stowedSingleSub, scoreToCollect, elevatorDeployed,
 
             //s t o w e d
             stowed
@@ -471,6 +495,8 @@ public final class Constants {
         public enum LiftPlan {
             parallel, armThenWristAndEle, eleWristArm, eleArmWrist, armAndWristThenEle, eleThenArmAndWrist, eleAndWristThenArm, wristArmEle
         }
+
+        public static final Object[] squishList = new Object[] {LiftState.singleSubCone, LiftState.singleSubCube, LiftState.midCubeScore, LiftState.groundCube};
 
         public static final double LOG_PERIOD = 0.23;
     }
@@ -485,8 +511,8 @@ public final class Constants {
         // Max velocity and acceleration for the path planner
         public static final double MAX_VELOCITY = 2;
         public static final double MAX_ACCELERATION = 1;
-        public static final double SERVO_UP = 0d;
-        public static final double SERVO_DOWN = 0.4d;
+        public static final double SERVO_UP = -1d;
+        public static final double SERVO_DOWN = 0.2d;
 
     }
 
@@ -519,7 +545,7 @@ public final class Constants {
             public static final Pose2d SLOT_1_POSE = new Pose2d(2.44, 2.9, Rotation2d.fromDegrees(180));
         }
 
-        public static enum SlotPosition {
+        public static enum SlotPosition { // Position of each colum of scoring nodes for AutoScoring
             slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9
         }
 
@@ -528,11 +554,11 @@ public final class Constants {
         public static final double CONTROL_LENGTHS = 0.001;
 
         // Tolerance for auto align
-        public static final double TOLERANCE = 1d;
+        public static final double X_TOLERANCE = 7d;
+        public static final double R_TOLERANCE = 5d;
 
         //Log period auto align
         public static final double LOG_PERIOD = 0.25;
-
     }
 
     public static final class AutoScoreConstants {
