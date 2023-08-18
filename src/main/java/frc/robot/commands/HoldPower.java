@@ -41,7 +41,7 @@ public class HoldPower extends CommandBase {
     public void execute() {
         if (input.getAsDouble() > 0) { // Collector collects
             doHoldPower = true;
-            power = input.getAsDouble();
+            power = input.getAsDouble() * 0.6;
         } else if (input.getAsDouble() < 0) { // Collector spits 
             doHoldPower = false;
             power = input.getAsDouble();

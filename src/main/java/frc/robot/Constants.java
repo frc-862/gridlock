@@ -264,7 +264,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERT = false;
         public static final int CURRENT_LIMIT = 30;
         public static final double HOLD_POWER_CUBE = 0.25;
-        public static final double HOLD_POWER_CONE = 0.65;
+        public static final double HOLD_POWER_CONE = 0.03;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
