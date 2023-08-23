@@ -160,8 +160,6 @@ public class RobotContainer extends LightningContainer {
         //         new PathConstraints(AutonomousConstants.MAX_VELOCITY, AutonomousConstants.MAX_ACCELERATION));
 
         //A paths OPEN 
-        autoFactory.makeTrajectory("A2[3]-M-BACK-RED", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
-                new PathConstraints(3.5, 2));
         autoFactory.makeTrajectory("A2[3]-M-BACK-BLUE", Maps.getPathMap(drivetrain, servoturn, lift, collector, leds, arm), 
                 new PathConstraints(3.5, 2));
         //B paths MIDDLE

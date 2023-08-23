@@ -89,7 +89,7 @@ public final class Constants {
         public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND = +MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2 * Math.PI / 5;
 
         // Module configuration constants
-        public static final int DRIVE_CURRENT_LIMIT = 40;
+        public static final int DRIVE_CURRENT_LIMIT = 35;
         public static final int STEER_CURRENT_LIMIT = 30;
         public static final double NOMINAL_VOLTAGE = 12d;
 
@@ -262,13 +262,13 @@ public final class Constants {
 
     public static final class CollectorConstants {
         public static final boolean MOTOR_INVERT = false;
-        public static final int CURRENT_LIMIT = 30;
+        public static final int CURRENT_LIMIT = 50;
         public static final double HOLD_POWER_CUBE = 0.25;
-        public static final double HOLD_POWER_CONE = 0.03;
+        public static final double HOLD_POWER_CONE = 0.35;
         public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
         public static final IdleMode NEUTRAL_MODE = IdleMode.kBrake;
 
-        public static final double STALL_POWER = 35d; // Used to detect wether or not the collector is stalling meaning it has a game piece
+        public static final double STALL_POWER = 40d; // Used to detect wether or not the collector is stalling meaning it has a game piece
 
         public static final double LOG_PERIOD = 0.22;
 
@@ -313,9 +313,9 @@ public final class Constants {
         public static final double LOG_PERIOD = 0.24;
 
         // Offsets in degrees        
-        public static final double ENCODER_OFFSET_GRIDLOCK = 20.8; //-161.5d;
+        public static final double ENCODER_OFFSET_GRIDLOCK = -105.3; //-161.5d;
 
-        public static final double ENCODER_OFFSET_BLACKOUT = -22; //TODO: check this
+        public static final double ENCODER_OFFSET_BLACKOUT = -65.7; //TODO: check this
 
         // Conversion factor for our wrist, multiply this by the navite units to get degrees
         public static final double POSITION_CONVERSION_FACTOR = 360;
