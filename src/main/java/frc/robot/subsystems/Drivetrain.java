@@ -307,6 +307,7 @@ public class Drivetrain extends SubsystemBase {
 
     public void flipFR() {
         flipFR = !flipFR;
+        
     }
 
     public void flipBL() {

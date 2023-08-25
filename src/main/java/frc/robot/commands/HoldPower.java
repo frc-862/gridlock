@@ -41,7 +41,7 @@ public class HoldPower extends CommandBase {
     public void execute() {
         if (input.getAsDouble() > 0) { // Collector collects
             doHoldPower = true;
-            power = input.getAsDouble() * 0.6;
+            power = input.getAsDouble();
         } else if (input.getAsDouble() < 0) { // Collector spits 
             doHoldPower = false;
             power = input.getAsDouble();
@@ -49,23 +49,23 @@ public class HoldPower extends CommandBase {
             if(collector.getGamePiece() == GamePiece.CUBE){ // If the collector is holding a cube, hold at a lower power
                 power = CollectorConstants.HOLD_POWER_CUBE;
             } else{
-                if(lift.getGoalState() == LiftState.stowed){
-                    power = .35;
-                } else {
+                // if(lift.getGoalState() == LiftState.stowed){
+                //     power = .35;
+                // } else {
                     power = CollectorConstants.HOLD_POWER_CONE;
-                }
+                // }
             }
         } else {
             power = 0;
         }
 
-        if (input.getAsDouble() < 0) {
-            collector.setCurrentLimit(60);
-        } else if (input.getAsDouble() > 0 && collector.getGamePiece() == GamePiece.CONE) {
-            collector.setCurrentLimit(50);
-        } else {
-            collector.setCurrentLimit(CollectorConstants.CURRENT_LIMIT);
-        }
+        // if (input.getAsDouble() < 0) {
+        //     collector.setCurrentLimit(60);
+        // } else if (input.getAsDouble() > 0 && collector.getGamePiece() == GamePiece.CONE) {
+        //     collector.setCurrentLimit(50);
+        // } else {
+        //     collector.setCurrentLimit(CollectorConstants.CURRENT_LIMIT);
+        // }
 
         if(DriverStation.isTeleop()) {
             if(collector.getGamePiece() == GamePiece.CONE){
