@@ -566,4 +566,13 @@ public final class Constants {
             setLift, moveToScore, score, moveToStow, stow
         }
     }
+
+    public static final class AlertsConstants {
+        public static final double LOG_PERIOD = 0.5;
+        public static enum AlertType {
+            ERROR, // High priority alert  RED X
+            WARNING, // Medium priority alert YELLOW !
+            INFO // Low priority alert GREEN i
+        }
+    }
 }
